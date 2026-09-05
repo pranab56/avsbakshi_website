@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,13 +55,22 @@ function RegisterFormContent() {
         Back
       </Link>
 
-      <div className="space-y-1">
-        <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
-          Create your account
-        </h1>
-        <p className="text-xs text-zinc-500 capitalize">
-          Signing up as <span className="font-semibold text-[#B78735]">{role}</span>
-        </p>
+      <div className="space-y-3">
+        <Image
+          src="/icons/logo.png"
+          alt="Cloud Salon Logo"
+          width={80}
+          height={80}
+          className="object-contain"
+        />
+        <div className="space-y-1">
+          <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+            Create your account
+          </h1>
+          <p className="text-xs text-zinc-500 capitalize">
+            Signing up as <span className="font-semibold text-[#B78735]">{role}</span>
+          </p>
+        </div>
       </div>
 
       {/* Social Register */}
@@ -106,7 +116,7 @@ function RegisterFormContent() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* First & Last Name */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1 text-left">
             <label className="text-xs font-semibold text-zinc-700 block">First name</label>
             <input

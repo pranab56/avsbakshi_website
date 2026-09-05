@@ -33,7 +33,7 @@ export default function FaqAccordion() {
           <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block">
             GOOD TO KNOW
           </span>
-          <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-[#1A1A1A]">
+          <h2 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-[#1A1A1A]">
             Questions, answered.
           </h2>
         </div>
@@ -57,11 +57,19 @@ export default function FaqAccordion() {
                   }`}
                 />
               </button>
-              {openFaq === idx && (
-                <div className="pt-3 pb-2 text-xs sm:text-sm text-[#666159] font-normal leading-relaxed max-w-xl animate-in fade-in duration-300">
-                  {faq.a}
+              <div
+                className={`grid transition-all duration-300 ease-in-out ${
+                  openFaq === idx
+                    ? "grid-rows-[1fr] opacity-100 pt-3 pb-2"
+                    : "grid-rows-[0fr] opacity-0 pt-0 pb-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <p className="text-xs sm:text-sm text-[#666159] font-normal leading-relaxed max-w-xl">
+                    {faq.a}
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
@@ -69,3 +77,7 @@ export default function FaqAccordion() {
     </section>
   );
 }
+
+
+
+

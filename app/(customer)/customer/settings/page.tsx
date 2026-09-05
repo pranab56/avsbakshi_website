@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
@@ -9,12 +10,28 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 type SettingsTab = "Profile" | "Notifications" | "Privacy" | "Security";
 
 export default function CustomerSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select a valid image file");
+        return;
+      }
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarPreview(imageUrl);
+      toast.success("Profile photo updated!");
+    }
+  };
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: "",
     newPassword: "",
@@ -95,15 +112,33 @@ export default function CustomerSettingsPage() {
 
               {/* Avatar Photo Section */}
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#A27933] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0">
-                  R
+                <div className="relative w-16 h-16 rounded-full bg-[#A27933] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+                  {avatarPreview ? (
+                    <Image
+                      src={avatarPreview}
+                      alt="Profile Avatar"
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <span>R</span>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-serif font-bold text-lg text-[#2C2E33]">
-                    Rachel Thompson
+                    {profileForm.firstName} {profileForm.lastName}
                   </h3>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
                   <button
                     type="button"
+                    onClick={() => fileInputRef.current?.click()}
                     className="px-4 py-1.5 rounded-xl bg-[#DFD9CE] hover:bg-[#D5CEBF] text-[#2C2E33] text-xs sm:text-sm font-medium transition-colors cursor-pointer"
                   >
                     Change photo

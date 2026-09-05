@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
+import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
@@ -9,12 +10,31 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Plus, X, Eye, CheckCircle2, MapPin } from "lucide-react";
+import { toast } from "sonner";
 
-type SettingsTab = "Profile" | "Notifications" | "Privacy" | "Security";
+type SettingsTab = "Profile" | "About Profile" | "Notifications" | "Privacy" | "Security";
 
 export default function ProfessionalSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select a valid image file");
+        return;
+      }
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarPreview(imageUrl);
+      toast.success("Profile photo updated!");
+    }
+  };
+
   const [passwordForm, setPasswordForm] = useState({
     oldPassword: "",
     newPassword: "",
@@ -26,13 +46,52 @@ export default function ProfessionalSettingsPage() {
     confirmPassword: "",
   });
 
-  // Profile Form State
+  // Profile & Public About Form State
   const [profileForm, setProfileForm] = useState({
     fullName: "Sophia Martinez",
     professionalTitle: "Senior Hair Stylist & Colorist",
     email: "sophia@noirstudio.co.uk",
     phone: "+44 7700 900077",
+    location: "Soho, London",
+    startingPrice: "£45",
+    experienceYears: "10",
+    happyClients: "500+",
+    philosophyQuote:
+      '"My philosophy is simple — listen first, create second. Every client\'s hair has its own history, and I work with that history, not against it."',
+    bio: "Award-winning hair stylist with 10+ years of experience specialising in colour, cuts, and transformations for all hair types. With a dedication to her craft and a calm, attentive approach to every client, Sofia has built a loyal following across London over more than a decade behind the chair.",
   });
+
+  // Specialities tags
+  const [specialities, setSpecialities] = useState<string[]>([
+    "Balayage",
+    "Colour Correction",
+    "Keratin Treatments",
+    "Bridal Hair",
+    "Short Cuts",
+    "Curly Hair Specialist",
+    "Extensions",
+    "Toning",
+  ]);
+  const [newSpeciality, setNewSpeciality] = useState("");
+
+  const handleAddSpeciality = () => {
+    if (!newSpeciality.trim()) return;
+    if (specialities.includes(newSpeciality.trim())) {
+      toast.error("Speciality already exists!");
+      return;
+    }
+    setSpecialities([...specialities, newSpeciality.trim()]);
+    setNewSpeciality("");
+    toast.success("Speciality tag added!");
+  };
+
+  const handleRemoveSpeciality = (tag: string) => {
+    setSpecialities(specialities.filter((s) => s !== tag));
+  };
+
+  const handleSaveProfile = () => {
+    toast.success("Profile & About Information updated successfully!");
+  };
 
   // Notifications Toggle States
   const [notifications, setNotifications] = useState({
@@ -52,18 +111,40 @@ export default function ProfessionalSettingsPage() {
   };
 
   return (
-    <div className="space-y-6 pb-16">
-      {/* Page Title */}
-      <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
-        Settings
-      </h1>
+    <div className="space-y-6 pb-16 font-sans text-[#1A1A1A]">
+      {/* Page Title & Subtitle */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E3DDD3] pb-4">
+        <div>
+          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+            Account &amp; Profile Settings
+          </h1>
+          <p className="text-xs sm:text-sm text-[#787570] font-normal mt-1">
+            Manage your personal credentials and customize what customers see on your public About page
+          </p>
+        </div>
+
+        {/* <button
+          type="button"
+          onClick={() => setShowPreviewModal(true)}
+          className="bg-[#E5DFD5] hover:bg-[#DCD5C9] text-[#2C2E33] px-4 py-2 rounded-md text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shadow-xs self-start sm:self-auto"
+        >
+          <Eye className="w-4 h-4 text-[#B78735]" />
+          <span>Preview Public Profile</span>
+        </button> */}
+      </div>
 
       {/* Main Settings Layout (Sidebar Navigation + Tab Content) */}
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left Sidebar Menu */}
         <div className="w-full md:w-56 lg:w-64 shrink-0 bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden shadow-xs divide-y divide-[#E3DDD3]/70">
           {(
-            ["Profile", "Notifications", "Privacy", "Security"] as SettingsTab[]
+            [
+              "Profile",
+              "About Profile",
+              "Notifications",
+              "Privacy",
+              "Security",
+            ] as SettingsTab[]
           ).map((tab) => {
             const isActive = activeTab === tab;
             return (
@@ -71,13 +152,17 @@ export default function ProfessionalSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-[#E2DDD3] text-[#B78735] font-medium"
-                    : "text-[#2C2E33] hover:bg-[#E2DDD3]/40 font-normal"
-                }`}
+                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${isActive
+                  ? "bg-[#E2DDD3] text-[#B78735] font-semibold"
+                  : "text-[#2C2E33] hover:bg-[#E2DDD3]/40 font-normal"
+                  }`}
               >
-                {tab}
+                <span>{tab}</span>
+                {/* {tab === "About Profile" && (
+                  <span className="bg-[#B78735]/15 text-[#B78735] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    Public
+                  </span>
+                )} */}
               </button>
             );
           })}
@@ -86,25 +171,48 @@ export default function ProfessionalSettingsPage() {
         {/* Right Tab Content Card */}
         <div className="flex-1 w-full bg-white border border-[#E3DDD3]/70 rounded-lg p-6 sm:p-8 shadow-xs">
           {/* ------------------------------------------------------------- */}
-          {/* TAB 1: PROFILE INFORMATION */}
+          {/* TAB 1: BASIC PROFILE INFORMATION */}
           {/* ------------------------------------------------------------- */}
           {activeTab === "Profile" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
-                Profile Information
-              </h2>
+              <div className="border-b border-[#E3DDD3]/50 pb-3">
+                <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+                  Basic Profile Information
+                </h2>
+                <p className="text-xs text-[#787570] mt-0.5">
+                  Update your display name, contact email, and professional title
+                </p>
+              </div>
 
               {/* Avatar Photo Section */}
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-md bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0">
-                  S
+                <div className="relative w-16 h-16 rounded-md bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+                  {avatarPreview ? (
+                    <Image
+                      src={avatarPreview}
+                      alt="Profile Avatar"
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <span>S</span>
+                  )}
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-serif font-bold text-lg text-[#2C2E33]">
                     {profileForm.fullName}
                   </h3>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
                   <button
                     type="button"
+                    onClick={() => fileInputRef.current?.click()}
                     className="px-4 py-1.5 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer"
                   >
                     Change photo
@@ -147,7 +255,7 @@ export default function ProfessionalSettingsPage() {
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-[#2C2E33] block">
-                    Email
+                    Email Address
                   </label>
                   <input
                     type="email"
@@ -161,7 +269,7 @@ export default function ProfessionalSettingsPage() {
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-[#2C2E33] block">
-                    Phone
+                    Phone Number
                   </label>
                   <input
                     type="text"
@@ -175,19 +283,219 @@ export default function ProfessionalSettingsPage() {
               </div>
 
               {/* Save Action */}
-              <div className="pt-2">
+              <div className="pt-2 flex items-center justify-between">
                 <button
                   type="button"
+                  onClick={handleSaveProfile}
                   className="px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
                 >
                   Save Changes
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("About Profile")}
+                  className="text-xs text-[#B78735] font-semibold underline hover:text-[#8F6929]"
+                >
+                  Configure Customer &quot;About&quot; Profile &rarr;
                 </button>
               </div>
             </div>
           )}
 
           {/* ------------------------------------------------------------- */}
-          {/* TAB 2: NOTIFICATIONS */}
+          {/* TAB 2: PUBLIC "ABOUT" PROFILE (BIO, PHILOSOPHY, SPECIALITIES) */}
+          {/* ------------------------------------------------------------- */}
+          {activeTab === "About Profile" && (
+            <div className="space-y-6">
+              <div className="border-b border-[#E3DDD3]/50 pb-3 flex items-center justify-between">
+                <div>
+                  <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+                    Public About Page Information
+                  </h2>
+                  <p className="text-xs text-[#787570] mt-0.5">
+                    Customize your biography, philosophy quote, specialities tags, and stats shown to customers
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowPreviewModal(true)}
+                  className="text-xs text-[#B78735] cursor-pointer font-semibold flex items-center gap-1 hover:underline"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Preview</span>
+                </button>
+              </div>
+
+              {/* Personal Philosophy Quote */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-[#2C2E33] block flex items-center justify-between">
+                  <span>Personal Philosophy Quote</span>
+                  <span className="text-[11px] text-[#787570] font-normal">
+                    Displayed prominently on your About tab
+                  </span>
+                </label>
+                <textarea
+                  rows={2}
+                  value={profileForm.philosophyQuote}
+                  onChange={(e) =>
+                    setProfileForm({
+                      ...profileForm,
+                      philosophyQuote: e.target.value,
+                    })
+                  }
+                  placeholder="e.g. My philosophy is simple — listen first, create second..."
+                  className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm p-4 text-sm italic font-serif text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                />
+              </div>
+
+              {/* Full Bio / Experience Description */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-[#2C2E33] block">
+                  Detailed Bio &amp; Background
+                </label>
+                <textarea
+                  rows={4}
+                  value={profileForm.bio}
+                  onChange={(e) =>
+                    setProfileForm({ ...profileForm, bio: e.target.value })
+                  }
+                  placeholder="Write a warm introduction about your qualifications, experience, awards..."
+                  className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm p-4 text-sm text-[#2C2E33] leading-relaxed outline-none focus:ring-1 focus:ring-[#B78735]"
+                />
+              </div>
+
+              {/* Experience Stats & Pricing */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                    Years of Experience
+                  </label>
+                  <input
+                    type="text"
+                    value={profileForm.experienceYears}
+                    onChange={(e) =>
+                      setProfileForm({
+                        ...profileForm,
+                        experienceYears: e.target.value,
+                      })
+                    }
+                    placeholder="e.g. 10"
+                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                    Location / Area
+                  </label>
+                  <input
+                    type="text"
+                    value={profileForm.location}
+                    onChange={(e) =>
+                      setProfileForm({ ...profileForm, location: e.target.value })
+                    }
+                    placeholder="e.g. Soho, London"
+                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                    Starting Service Price
+                  </label>
+                  <input
+                    type="text"
+                    value={profileForm.startingPrice}
+                    onChange={(e) =>
+                      setProfileForm({
+                        ...profileForm,
+                        startingPrice: e.target.value,
+                      })
+                    }
+                    placeholder="e.g. £45"
+                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                  />
+                </div>
+              </div>
+
+              {/* Specialities Tags Section */}
+              <div className="space-y-3 pt-2">
+                <label className="text-xs font-semibold text-[#2C2E33] block">
+                  Specialities &amp; Technical Skills
+                </label>
+
+                {/* Tags List */}
+                <div className="flex flex-wrap gap-2 bg-[#FAF8F4] p-4 rounded-lg border border-[#E3DDD3]/70 min-h-[60px] items-center">
+                  {specialities.map((spec) => (
+                    <span
+                      key={spec}
+                      className="bg-[#EBE5D9] text-[#2C2E33] text-xs font-medium px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-xs"
+                    >
+                      <span>{spec}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveSpeciality(spec)}
+                        className="text-zinc-400 hover:text-red-600 cursor-pointer"
+                        title="Remove speciality"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </span>
+                  ))}
+                  {specialities.length === 0 && (
+                    <span className="text-xs text-zinc-400 italic">
+                      No specialities added yet. Add tags below.
+                    </span>
+                  )}
+                </div>
+
+                {/* Add Speciality Input */}
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={newSpeciality}
+                    onChange={(e) => setNewSpeciality(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddSpeciality())}
+                    placeholder="Type speciality (e.g. Balayage, Bridal Hair)..."
+                    className="flex-1 bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-2.5 text-xs sm:text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddSpeciality}
+                    className="bg-[#B78735] hover:bg-[#8F6929] text-white px-4 py-2.5 rounded-sm font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Tag</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Save Action */}
+              <div className="pt-4 flex items-center justify-between border-t border-[#E3DDD3]/50">
+                <button
+                  type="button"
+                  onClick={handleSaveProfile}
+                  className="px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                >
+                  Save About Profile Changes
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowPreviewModal(true)}
+                  className="px-4 py-2 rounded-sm border border-[#E3DDD3] text-[#2C2E33] hover:bg-[#FAF8F4] text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Eye className="w-3.5 h-3.5 text-[#B78735]" />
+                  <span>Preview Page</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------- */}
+          {/* TAB 3: NOTIFICATIONS */}
           {/* ------------------------------------------------------------- */}
           {activeTab === "Notifications" && (
             <div className="space-y-6">
@@ -198,7 +506,7 @@ export default function ProfessionalSettingsPage() {
               {/* APPOINTMENTS */}
               <div className="space-y-3">
                 <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
-                  APPOINTMENTS & BOOKINGS
+                  APPOINTMENTS &amp; BOOKINGS
                 </h3>
 
                 <div className="space-y-2.5">
@@ -292,7 +600,7 @@ export default function ProfessionalSettingsPage() {
               {/* PROMOTIONS */}
               <div className="space-y-3 pt-2">
                 <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
-                  MARKETING & PROMOTIONS
+                  MARKETING &amp; PROMOTIONS
                 </h3>
 
                 <div className="space-y-2.5">
@@ -309,7 +617,7 @@ export default function ProfessionalSettingsPage() {
 
                   <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
                     <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
-                      Loyalty & reward alerts
+                      Loyalty &amp; reward alerts
                     </span>
                     <Switch
                       checked={notifications.loyaltyRewards}
@@ -323,7 +631,7 @@ export default function ProfessionalSettingsPage() {
           )}
 
           {/* ------------------------------------------------------------- */}
-          {/* TAB 3: PRIVACY SETTINGS */}
+          {/* TAB 4: PRIVACY SETTINGS */}
           {/* ------------------------------------------------------------- */}
           {activeTab === "Privacy" && (
             <div className="space-y-6">
@@ -363,7 +671,7 @@ export default function ProfessionalSettingsPage() {
                 <div className="pt-4 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
                     <h4 className="font-medium text-xs sm:text-sm text-[#2C2E33]">
-                      Analytics & Recommendations
+                      Analytics &amp; Recommendations
                     </h4>
                     <p className="text-xs text-[#787570]">
                       Use aggregated data to improve client match recommendations
@@ -396,7 +704,7 @@ export default function ProfessionalSettingsPage() {
           )}
 
           {/* ------------------------------------------------------------- */}
-          {/* TAB 4: SECURITY */}
+          {/* TAB 5: SECURITY */}
           {/* ------------------------------------------------------------- */}
           {activeTab === "Security" && (
             <div className="space-y-6">
@@ -425,6 +733,139 @@ export default function ProfessionalSettingsPage() {
           )}
         </div>
       </div>
+
+      {/* CUSTOMER ABOUT PROFILE PREVIEW DIALOG MODAL */}
+      <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
+        <DialogContent className="sm:max-w-4xl bg-[#EBE7DF]/90 border border-[#E3DDD3] p-6 rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="flex flex-row items-center justify-between pb-3 border-b border-[#D5CDBF]">
+            <div>
+              <DialogTitle className="font-serif font-bold text-2xl text-[#2C2E33]">
+                Live Public Profile Preview
+              </DialogTitle>
+              <DialogDescription className="text-xs text-[#787570]">
+                This is how customers will see your &quot;About&quot; section on your profile
+              </DialogDescription>
+            </div>
+          </DialogHeader>
+
+          {/* Customer View Mockup Card matching user screenshot */}
+          <div className="bg-[#FAF9F5] border border-[#E5E0D6] rounded-2xl p-6 shadow-sm space-y-6 mt-4">
+            {/* Header info */}
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 rounded-full bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shrink-0 overflow-hidden">
+                  {avatarPreview ? (
+                    <Image
+                      src={avatarPreview}
+                      alt={profileForm.fullName}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <span>S</span>
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-serif font-bold text-2xl text-[#2C2E33]">
+                      {profileForm.fullName}
+                    </h2>
+                    <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                      VERIFIED
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#787570] font-medium mt-0.5">
+                    {profileForm.professionalTitle} · {profileForm.experienceYears} years experience
+                  </p>
+                  <p className="text-[11px] text-zinc-500 mt-1 flex items-center gap-2">
+                    <span>★ 4.8 (312 reviews)</span>
+                    <span>·</span>
+                    <span className="flex items-center gap-0.5">
+                      <MapPin className="w-3 h-3" /> {profileForm.location}
+                    </span>
+                    <span>·</span>
+                    <span>from {profileForm.startingPrice}</span>
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="bg-[#B78735] text-white px-5 py-2.5 rounded-xl font-semibold text-xs shadow-sm"
+              >
+                Book Appointment
+              </button>
+            </div>
+
+            {/* Profile Tabs Bar */}
+            <div className="border-b border-[#E3DDD3] flex gap-6 text-xs font-semibold text-[#787570]">
+              <span className="text-[#B78735] border-b-2 border-[#B78735] pb-2">About</span>
+              <span className="pb-2">Services</span>
+              <span className="pb-2">Portfolio</span>
+              <span className="pb-2">Reviews</span>
+              <span className="pb-2">Availability</span>
+            </div>
+
+            {/* Philosophy Quote */}
+            {profileForm.philosophyQuote && (
+              <div className="pl-4 border-l-2 border-[#B78735] italic font-serif text-lg text-[#2C2E33] leading-relaxed bg-[#F3EFE6] p-4 rounded-r-xl">
+                {profileForm.philosophyQuote}
+              </div>
+            )}
+
+            {/* Bio Description */}
+            <div className="text-xs sm:text-sm text-[#5C5954] leading-relaxed space-y-3">
+              <p>{profileForm.bio}</p>
+            </div>
+
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="bg-[#EBE7DF] p-4 rounded-xl text-center space-y-0.5 border border-[#E2DDD3]">
+                <div className="font-serif font-bold text-xl text-[#2C2E33]">
+                  {profileForm.experienceYears} years
+                </div>
+                <div className="text-[11px] text-[#787570]">Experience</div>
+              </div>
+
+              <div className="bg-[#EBE7DF] p-4 rounded-xl text-center space-y-0.5 border border-[#E2DDD3]">
+                <div className="font-serif font-bold text-xl text-[#2C2E33]">
+                  {profileForm.happyClients}
+                </div>
+                <div className="text-[11px] text-[#787570]">Happy clients</div>
+              </div>
+
+              <div className="bg-[#EBE7DF] p-4 rounded-xl text-center space-y-0.5 border border-[#E2DDD3]">
+                <div className="font-serif font-bold text-xl text-[#2C2E33]">312</div>
+                <div className="text-[11px] text-[#787570]">Reviews</div>
+              </div>
+
+              <div className="bg-[#EBE7DF] p-4 rounded-xl text-center space-y-0.5 border border-[#E2DDD3]">
+                <div className="font-serif font-bold text-xl text-[#2C2E33]">4.9★</div>
+                <div className="text-[11px] text-[#787570]">Average rating</div>
+              </div>
+            </div>
+
+            {/* Specialities Chips */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#787570]">
+                SPECIALITIES
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {specialities.map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#E5DFD5] text-[#2C2E33] text-xs font-medium px-3 py-1.5 rounded-lg"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Change Password Dialog Modal */}
       <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
@@ -469,6 +910,7 @@ export default function ProfessionalSettingsPage() {
               setShowPasswordModal(false);
               setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
               setPasswordErrors({ oldPassword: "", newPassword: "", confirmPassword: "" });
+              toast.success("Password updated successfully!");
             }}
             className="space-y-4 pt-2"
           >
@@ -486,9 +928,8 @@ export default function ProfessionalSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                 }}
                 placeholder="Enter current password"
-                className={`w-full bg-[#FAF8F4] border ${
-                  passwordErrors.oldPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-[#FAF8F4] border ${passwordErrors.oldPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
+                  } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
               />
               {passwordErrors.oldPassword && (
                 <p className="text-[11px] text-[#DC3545] font-medium mt-1">
@@ -511,9 +952,8 @@ export default function ProfessionalSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                 }}
                 placeholder="Enter new password"
-                className={`w-full bg-[#FAF8F4] border ${
-                  passwordErrors.newPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-[#FAF8F4] border ${passwordErrors.newPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
+                  } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
               />
               {passwordErrors.newPassword && (
                 <p className="text-[11px] text-[#DC3545] font-medium mt-1">
@@ -536,9 +976,8 @@ export default function ProfessionalSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                 }}
                 placeholder="Confirm new password"
-                className={`w-full bg-[#FAF8F4] border ${
-                  passwordErrors.confirmPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-[#FAF8F4] border ${passwordErrors.confirmPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
+                  } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
               />
               {passwordErrors.confirmPassword && (
                 <p className="text-[11px] text-[#DC3545] font-medium mt-1">
@@ -571,3 +1010,4 @@ export default function ProfessionalSettingsPage() {
     </div>
   );
 }
+

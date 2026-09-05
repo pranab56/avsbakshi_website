@@ -162,50 +162,52 @@ export default function CustomerCalendarPage() {
       {/* VIEW 1: MONTH VIEW */}
       {/* ------------------------------------------------------------- */}
       {view === "Month" && (
-        <div className="bg-[#EBE7DF]/80 border border-[#E3DDD3]/70 rounded-lg overflow-hidden shadow-xs">
-          {/* Days of Week Header Row */}
-          <div className="grid grid-cols-7 bg-[#E5E0D8] border-b border-[#E3DDD3]/70 text-center text-xs font-semibold text-[#787570] py-3">
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
-            <div>Sun</div>
-          </div>
+        <div className="overflow-x-auto rounded-lg border border-[#E3DDD3]/70 shadow-xs">
+          <div className="bg-[#EBE7DF]/80 min-w-[640px] overflow-hidden">
+            {/* Days of Week Header Row */}
+            <div className="grid grid-cols-7 bg-[#E5E0D8] border-b border-[#E3DDD3]/70 text-center text-xs font-semibold text-[#787570] py-3">
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
+              <div>Sun</div>
+            </div>
 
-          {/* Days Grid (5 Rows x 7 Cols) */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-[#E5E0D8] bg-white">
-            {monthDays.map((item, index) => {
-              const appt = appointments.find((a) => a.dayNumber === item.day);
-              return (
-                <div
-                  key={index}
-                  className={`min-h-[90px] sm:min-h-[110px] p-2 flex flex-col justify-between transition-colors ${item.isHighlight ? "bg-[#E2DDD3]/60" : "hover:bg-[#E2DDD3]/20"
-                    }`}
-                >
-                  <span
-                    className={`text-xs font-medium ${item.isHighlight
-                      ? "text-[#A27933] font-bold"
-                      : "text-[#A27933]"
+            {/* Days Grid (5 Rows x 7 Cols) */}
+            <div className="grid grid-cols-7 divide-x divide-y divide-[#E5E0D8] bg-white">
+              {monthDays.map((item, index) => {
+                const appt = appointments.find((a) => a.dayNumber === item.day);
+                return (
+                  <div
+                    key={index}
+                    className={`min-h-[90px] sm:min-h-[110px] p-2 flex flex-col justify-between transition-colors ${item.isHighlight ? "bg-[#E2DDD3]/60" : "hover:bg-[#E2DDD3]/20"
                       }`}
                   >
-                    {item.day || ""}
-                  </span>
-
-                  {/* Appointment Event Pill */}
-                  {appt && (
-                    <div
-                      className={`w-full text-white text-[11px] font-medium px-2 py-1.5 rounded-sm shadow-2xs leading-tight flex items-center justify-between ${appt.color}`}
+                    <span
+                      className={`text-xs font-medium ${item.isHighlight
+                        ? "text-[#A27933] font-bold"
+                        : "text-[#A27933]"
+                        }`}
                     >
-                      <span className="">
-                        {appt.shortName} · {appt.time}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                      {item.day || ""}
+                    </span>
+
+                    {/* Appointment Event Pill */}
+                    {appt && (
+                      <div
+                        className={`w-full text-white text-[11px] font-medium px-2 py-1.5 rounded-sm shadow-2xs leading-tight flex items-center justify-between ${appt.color}`}
+                      >
+                        <span className="">
+                          {appt.shortName} · {appt.time}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -214,33 +216,34 @@ export default function CustomerCalendarPage() {
       {/* VIEW 2: WEEK VIEW */}
       {/* ------------------------------------------------------------- */}
       {view === "Week" && (
-        <div className="bg-[#F3F0EA] border border-[#E3DDD3]/70 rounded-2xl overflow-hidden shadow-xs">
-          {/* Week Header Row */}
-          <div className="grid grid-cols-8 border-b border-[#E3DDD3]/70 bg-[#E5E0D8] text-center py-3">
-            <div className="text-xs text-[#787570] font-medium self-center"></div>
-            {weekDays.map((wd, i) => (
-              <div key={i} className="space-y-0.5">
-                <span className="text-xs text-[#787570] font-medium block">
-                  {wd.dayName}
-                </span>
-                <span
-                  className={`font-serif text-lg font-bold block ${wd.isHighlighted ? "text-[#A27933]" : "text-[#2C2E33]"
-                    }`}
-                >
-                  {wd.dateNum}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Time Slots Table */}
-          <div className="divide-y divide-[#E3DDD3]/50 bg-white">
-            {timeSlots.slice(1, 10).map((time, rowIdx) => (
-              <div key={rowIdx} className="grid grid-cols-8 min-h-[90px] divide-x divide-[#E3DDD3]/50">
-                {/* Time Label */}
-                <div className="p-2 text-[11px] text-[#787570] font-medium text-right pr-3 flex items-center justify-end">
-                  {time}
+        <div className="overflow-x-auto rounded-2xl border border-[#E3DDD3]/70 shadow-xs">
+          <div className="bg-[#F3F0EA] min-w-[640px] overflow-hidden">
+            {/* Week Header Row */}
+            <div className="grid grid-cols-8 border-b border-[#E3DDD3]/70 bg-[#E5E0D8] text-center py-3">
+              <div className="text-xs text-[#787570] font-medium self-center"></div>
+              {weekDays.map((wd, i) => (
+                <div key={i} className="space-y-0.5">
+                  <span className="text-xs text-[#787570] font-medium block">
+                    {wd.dayName}
+                  </span>
+                  <span
+                    className={`font-serif text-lg font-bold block ${wd.isHighlighted ? "text-[#A27933]" : "text-[#2C2E33]"
+                      }`}
+                  >
+                    {wd.dateNum}
+                  </span>
                 </div>
+              ))}
+            </div>
+
+            {/* Time Slots Table */}
+            <div className="divide-y divide-[#E3DDD3]/50 bg-white">
+              {timeSlots.slice(1, 10).map((time, rowIdx) => (
+                <div key={rowIdx} className="grid grid-cols-8 min-h-[90px] divide-x divide-[#E3DDD3]/50">
+                  {/* Time Label */}
+                  <div className="p-2 text-[11px] text-[#787570] font-medium text-right pr-3 flex items-center justify-end">
+                    {time}
+                  </div>
 
                 {/* 7 Days Columns */}
                 {weekDays.map((wd, colIdx) => {
@@ -271,6 +274,7 @@ export default function CustomerCalendarPage() {
             ))}
           </div>
         </div>
+      </div>
       )}
 
       {/* ------------------------------------------------------------- */}

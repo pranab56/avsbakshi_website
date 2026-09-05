@@ -42,14 +42,14 @@ export default function CustomerReviews() {
   ];
 
   return (
-    <section className="bg-[#1E1C1A] text-white py-20 sm:py-28">
+    <section className="bg-[#1E1C1A] text-white py-14 sm:py-28">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Header */}
-        <div className="mb-10 sm:mb-12">
-          <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-3">
+        <div className="mb-8 sm:mb-12">
+          <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-2 sm:mb-3">
             REVIEWS
           </span>
-          <h2 className="font-title text-4xl sm:text-5xl font-normal text-white">
+          <h2 className="font-title text-3xl sm:text-5xl font-normal text-white">
             What our customers say
           </h2>
         </div>
@@ -69,9 +69,9 @@ export default function CustomerReviews() {
         >
           {reviews.map((review) => (
             <SwiperSlide key={review.id}>
-              <div className="bg-[#242428] rounded-[28px] p-8 sm:p-12 border border-white/10 shadow-2xl max-w-3xl mx-auto">
+              <div className="bg-[#242428] rounded-[20px] sm:rounded-[28px] p-5 sm:p-12 border border-white/10 shadow-2xl max-w-3xl mx-auto">
                 {/* Avatar */}
-                <div className="relative w-16 h-16 rounded-full border-2 border-[#B78735] p-0.5 mx-auto mb-4 overflow-hidden shadow-lg">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#B78735] p-0.5 mx-auto mb-3 sm:mb-4 overflow-hidden shadow-lg">
                   <img
                     src={review.avatar}
                     alt={review.name}
@@ -80,14 +80,14 @@ export default function CustomerReviews() {
                 </div>
 
                 {/* Star Rating */}
-                <div className="flex justify-center gap-1.5 mb-5 text-[#B78735]">
+                <div className="flex justify-center gap-1.5 mb-4 sm:mb-5 text-[#B78735]">
                   {[...Array(review.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-[#B78735] text-[#B78735]" />
+                    <Star key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#B78735] text-[#B78735]" />
                   ))}
                 </div>
 
                 {/* Quote */}
-                <blockquote className="font-title font-light italic text-lg sm:text-xl lg:text-2xl text-zinc-200 leading-relaxed max-w-xl mx-auto text-center mb-6">
+                <blockquote className="font-title font-light italic text-base sm:text-xl lg:text-2xl text-zinc-200 leading-relaxed max-w-xl mx-auto text-center mb-5 sm:mb-6">
                   {review.quote}
                 </blockquote>
 

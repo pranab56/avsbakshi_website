@@ -23,7 +23,7 @@ export default function Navbar() {
               alt="The Cloud Salon"
               width={180}
               height={44}
-              className="h-10 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform"
+              className="h-8 xs:h-9 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform"
               priority
             />
           </Link>
@@ -79,11 +79,20 @@ export default function Navbar() {
               For Professionals
             </Link>
 
+
+
             <Link
               href="/for-businesses"
               className={`hover:text-[#B78735] transition-colors ${pathname === '/for-businesses' ? 'text-[#B78735] font-semibold' : ''}`}
             >
               For Businesses
+            </Link>
+
+            <Link
+              href="/how-it-works"
+              className={`hover:text-[#B78735] transition-colors ${pathname === '/how-it-works' ? 'text-[#B78735] font-semibold' : ''}`}
+            >
+              How it Works
             </Link>
 
             <Link
@@ -122,7 +131,8 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-[#2C2E33] hover:text-[#B78735] focus:outline-none"
+              className="p-2 text-[#2C2E33] hover:text-[#B78735] focus:outline-none cursor-pointer"
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -132,7 +142,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-[#E5E0D6] px-4 pt-2 pb-6 space-y-3">
+        <div className="md:hidden bg-white border-b border-[#E5E0D6] px-4 pt-2 pb-6 space-y-3 max-h-[calc(100vh-5rem)] overflow-y-auto">
           <Link
             href="/discover"
             onClick={() => setMobileMenuOpen(false)}
@@ -153,6 +163,13 @@ export default function Navbar() {
             className="block px-3 py-2 rounded-lg text-base font-medium hover:bg-[#E8E4DA]"
           >
             For Businesses
+          </Link>
+          <Link
+            href="/how-it-works"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block px-3 py-2 rounded-lg text-base font-medium hover:bg-[#E8E4DA]"
+          >
+            How it Works
           </Link>
           <Link
             href="/about"

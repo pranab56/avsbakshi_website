@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email or username is required").email("Please enter a valid email address"),
@@ -37,21 +37,23 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-lg mx-auto w-full space-y-6">
-      <Link
-        href="/select-role"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#B78735] transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back
-      </Link>
 
-      <div className="space-y-1.5">
-        <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
-          Welcome back
-        </h1>
-        <p className="text-xs text-zinc-500">
-          Log in to your Cloud Salon account
-        </p>
+      <div className="space-y-3">
+        <Image
+          src="/icons/logo.png"
+          alt="Cloud Salon Logo"
+          width={80}
+          height={80}
+          className="object-contain"
+        />
+        <div className="space-y-1">
+          <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+            Welcome back
+          </h1>
+          <p className="text-xs text-zinc-500">
+            Log in to your Cloud Salon account.
+          </p>
+        </div>
       </div>
 
       {/* Social Logins */}

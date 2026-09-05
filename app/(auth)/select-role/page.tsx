@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { User, Scissors, Building2, CheckCircle2 } from "lucide-react";
 
@@ -15,13 +16,22 @@ export default function SelectRolePage() {
 
   return (
     <div className="max-w-lg mx-auto w-full space-y-6">
-      <div className="space-y-2">
-        <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
-          Join Cloud Salon
-        </h1>
-        <p className="text-sm text-zinc-600">
-          How would you like to use Cloud Salon?
-        </p>
+      <div className="space-y-3">
+        <Image
+          src="/icons/logo.png"
+          alt="Cloud Salon Logo"
+          width={80}
+          height={80}
+          className="object-contain"
+        />
+        <div className="space-y-1">
+          <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+            Join Cloud Salon
+          </h1>
+          <p className="text-sm text-zinc-600">
+            How would you like to use Cloud Salon?
+          </p>
+        </div>
       </div>
 
       {/* Role Selection Options */}

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, MailCheck } from 'lucide-react';
@@ -89,6 +90,14 @@ export default function VerifyEmailForm() {
           Back
         </Link>
       </div>
+
+      <Image
+        src="/icons/logo.png"
+        alt="Cloud Salon Logo"
+        width={80}
+        height={80}
+        className="object-contain mx-auto"
+      />
 
       <div className="w-12 h-12 rounded-full bg-[#B78735]/10 text-[#B78735] flex items-center justify-center mx-auto">
         <MailCheck className="w-6 h-6" />

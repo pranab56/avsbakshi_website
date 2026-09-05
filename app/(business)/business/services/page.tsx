@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Check, Edit2, Power, ChevronDown } from "lucide-react";
+import { useState, useRef } from "react";
+import Image from "next/image";
+import { Plus, Check, Edit2, Power, ChevronDown, Upload, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +17,7 @@ interface Service {
   duration: string; // e.g. "120 min"
   price: string; // e.g. "£145"
   active: boolean;
+  image?: string;
 }
 
 const INITIAL_SERVICES: Service[] = [
@@ -26,6 +28,7 @@ const INITIAL_SERVICES: Service[] = [
     duration: "120 min",
     price: "£145",
     active: true,
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=400",
   },
   {
     id: "2",
@@ -34,6 +37,7 @@ const INITIAL_SERVICES: Service[] = [
     duration: "120 min",
     price: "£145",
     active: true,
+    image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=400",
   },
   {
     id: "3",
@@ -42,6 +46,7 @@ const INITIAL_SERVICES: Service[] = [
     duration: "120 min",
     price: "£145",
     active: true,
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=400",
   },
   {
     id: "4",
@@ -91,11 +96,29 @@ export default function BusinessServicesPage() {
     description: "",
     duration: "60 min",
     price: "65",
+    image: "",
   });
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const activeServicesCount = services.filter((s) => s.active).length;
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImagePreview(url);
+      setForm((prev) => ({ ...prev, image: url }));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setForm((prev) => ({ ...prev, image: "" }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleOpenAdd = () => {
     setForm({
@@ -103,7 +126,9 @@ export default function BusinessServicesPage() {
       description: "",
       duration: "60 min",
       price: "65",
+      image: "",
     });
+    setImagePreview(null);
     setEditingServiceId(null);
     setModalMode("add");
     setIsModalOpen(true);
@@ -115,7 +140,9 @@ export default function BusinessServicesPage() {
       description: service.description,
       duration: service.duration,
       price: service.price.replace("£", ""),
+      image: service.image || "",
     });
+    setImagePreview(service.image || null);
     setEditingServiceId(service.id);
     setModalMode("edit");
     setIsModalOpen(true);
@@ -139,6 +166,7 @@ export default function BusinessServicesPage() {
         duration: form.duration,
         price: `£${form.price || "65"}`,
         active: true,
+        image: form.image,
       };
       setServices((prev) => [newService, ...prev]);
     } else if (modalMode === "edit" && editingServiceId) {
@@ -151,6 +179,7 @@ export default function BusinessServicesPage() {
                 description: form.description,
                 duration: form.duration,
                 price: `£${form.price || "65"}`,
+                image: form.image,
               }
             : s
         )
@@ -200,18 +229,31 @@ export default function BusinessServicesPage() {
                 : "opacity-60 bg-[#FAF8F4]"
             }`}
           >
-            {/* Left Service Info */}
-            <div className="space-y-1 max-w-xl">
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2C2E33]">
-                {service.name}
-              </h3>
-              <p className="text-xs sm:text-sm text-[#787570] font-normal leading-relaxed">
-                {service.description}
-              </p>
-              <div className="pt-2">
-                <span className="px-3 py-1 bg-[#FAF8F4] border border-[#E3DDD3]/70 text-[#787570] text-xs font-medium rounded-full">
-                  {service.duration}
-                </span>
+            {/* Left Service Info + Image Thumbnail */}
+            <div className="flex items-start gap-4 max-w-xl">
+              {service.image && (
+                <div className="relative w-20 h-20 rounded-md overflow-hidden bg-[#FAF8F4] border border-[#E3DDD3]/70 shrink-0">
+                  <Image
+                    src={service.image}
+                    alt={service.name}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+              )}
+              <div className="space-y-1">
+                <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2C2E33]">
+                  {service.name}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#787570] font-normal leading-relaxed">
+                  {service.description}
+                </p>
+                <div className="pt-2">
+                  <span className="px-3 py-1 bg-[#FAF8F4] border border-[#E3DDD3]/70 text-[#787570] text-xs font-medium rounded-full">
+                    {service.duration}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -289,7 +331,68 @@ export default function BusinessServicesPage() {
               />
             </div>
 
-            {/* Field 3 & 4 Grid: Duration & Price */}
+            {/* Field 3: Service Image Upload */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#2C2E33] block">
+                Service Image <span className="text-[#787570] font-normal">(Optional)</span>
+              </label>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/*"
+                className="hidden"
+              />
+
+              {imagePreview ? (
+                <div className="relative w-full h-36 rounded-lg overflow-hidden border border-[#E3DDD3] bg-[#FAF8F4] group">
+                  <Image
+                    src={imagePreview}
+                    alt="Service Preview"
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-3 py-1.5 bg-white/90 hover:bg-white text-[#2C2E33] text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
+                    >
+                      Change
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="px-3 py-1.5 bg-red-600/90 hover:bg-red-600 text-white text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-28 border-2 border-dashed border-[#E3DDD3] hover:border-[#B78735] bg-[#FAF8F4] rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group"
+                >
+                  <div className="w-9 h-9 rounded-full bg-[#EBE7DF] text-[#787570] group-hover:bg-[#B78735]/15 group-hover:text-[#B78735] flex items-center justify-center transition-colors">
+                    <Upload className="w-4 h-4" />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-xs font-semibold text-[#2C2E33] group-hover:text-[#B78735] transition-colors">
+                      Click to upload service image
+                    </span>
+                    <span className="text-[11px] text-[#787570] block">
+                      PNG, JPG or WEBP (Max 5MB)
+                    </span>
+                  </div>
+                </button>
+              )}
+            </div>
+
+            {/* Field 4 & 5 Grid: Duration & Price */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-[#2C2E33] block">

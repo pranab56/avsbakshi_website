@@ -91,7 +91,7 @@ export default function BookingFlowPage() {
           </button>
 
           {/* Stepper Steps */}
-          <div className="flex items-center gap-2 sm:gap-3 text-xs">
+          <div className="flex items-center gap-2 sm:gap-3 text-xs overflow-x-auto no-scrollbar py-1 max-w-full shrink-0">
             {[
               { num: 1, label: "Service" },
               { num: 2, label: "Date" },
@@ -99,10 +99,10 @@ export default function BookingFlowPage() {
               { num: 4, label: "Review" },
               { num: 5, label: "Submitted" },
             ].map((s, idx) => (
-              <div key={s.num} className="flex items-center gap-2">
-                <div className="flex items-center gap-2">
+              <div key={s.num} className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <span
-                    className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center transition-all ${step === s.num
+                    className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center transition-all ${step === s.num
                       ? "bg-[#B78735] text-white shadow-xs"
                       : step > s.num
                         ? "bg-[#2E7D32] text-white"
@@ -118,7 +118,7 @@ export default function BookingFlowPage() {
                     {s.label}
                   </span>
                 </div>
-                {idx < 4 && <span className="w-4 sm:w-8 h-[1px] bg-[#DCD5C9]" />}
+                {idx < 4 && <span className="w-3 sm:w-8 h-[1px] bg-[#DCD5C9]" />}
               </div>
             ))}
           </div>
@@ -272,13 +272,13 @@ export default function BookingFlowPage() {
                     <h4 className="text-[10px] font-bold text-[#666159] uppercase tracking-[0.15em]">
                       MORNING
                     </h4>
-                    <div className="grid grid-cols-3 gap-3.5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3.5">
                       {["9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM"].map((t, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => setSelectedTime(t)}
-                          className={`py-3.5 px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
+                          className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
                             ? "bg-[#B78735] hover:bg-[#A37428] text-white font-semibold border-[#B78735] shadow-xs"
                             : "bg-white hover:bg-gray-50 text-[#1A1A1A] font-medium border-gray-200"
                             }`}
@@ -294,13 +294,13 @@ export default function BookingFlowPage() {
                     <h4 className="text-[10px] font-bold text-[#666159] uppercase tracking-[0.15em]">
                       AFTERNOON
                     </h4>
-                    <div className="grid grid-cols-3 gap-3.5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3.5">
                       {["12:00 PM", "1:00 PM", "2:00 PM", "2:30 PM", "3:00 PM", "4:00 PM"].map((t, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => setSelectedTime(t)}
-                          className={`py-3.5 px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
+                          className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
                             ? "bg-[#B78735] hover:bg-[#A37428] text-white font-semibold border-[#B78735] shadow-xs"
                             : "bg-white hover:bg-gray-50 text-[#1A1A1A] font-medium border-gray-200"
                             }`}
@@ -311,18 +311,18 @@ export default function BookingFlowPage() {
                     </div>
                   </div>
 
-                  {/* AFTERNOON 2 */}
+                  {/* EVENING */}
                   <div className="space-y-3">
                     <h4 className="text-[10px] font-bold text-[#666159] uppercase tracking-[0.15em]">
-                      AFTERNOON
+                      EVENING
                     </h4>
-                    <div className="grid grid-cols-3 gap-3.5">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3.5">
                       {["5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM"].map((t, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => setSelectedTime(t)}
-                          className={`py-3.5 px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
+                          className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
                             ? "bg-[#B78735] hover:bg-[#A37428] text-white font-semibold border-[#B78735] shadow-xs"
                             : "bg-white hover:bg-gray-50 text-[#1A1A1A] font-medium border-gray-200"
                             }`}

@@ -56,26 +56,28 @@ export default function DashboardHeader({
       {/* Right: Quick Actions, Notifications, User Profile */}
       <div className="flex items-center gap-3 sm:gap-4">
         {/* Action Button */}
-        {config.actionButtonLabel && (
+        {/* {config.actionButtonLabel && (
           <Link
             href={config.actionButtonHref}
             className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#B78735] text-white font-medium text-sm hover:bg-[#A0742B] active:scale-[0.98] transition-all duration-200 shadow-md shadow-[#B78735]/20 cursor-pointer"
           >
             <span>{config.actionButtonLabel}</span>
           </Link>
-        )}
+        )} */}
 
         {/* Notifications Icon */}
-        <button
-          className="relative p-2.5 rounded-xl text-[#2C2E33] hover:bg-[#F5F3EF] border border-transparent hover:border-[#E5E0D6] transition-all cursor-pointer"
+        <Link
+          href={`/${config.role}/notifications`}
+          className="relative p-2.5 rounded-xl text-[#2C2E33] hover:bg-[#F5F3EF] border border-transparent hover:border-[#E5E0D6] transition-all cursor-pointer block"
           aria-label="Notifications"
         >
           <Bell className="w-5 h-5" />
           <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#B78735] ring-2 ring-white" />
-        </button>
+        </Link>
 
         {/* User Profile Avatar */}
         <div className="flex items-center gap-3 pl-2 sm:pl-3 border-l border-[#E5E0D6]">
+          
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#B78735]/15 text-[#B78735] font-bold text-sm border border-[#B78735]/30">
             RA
           </div>

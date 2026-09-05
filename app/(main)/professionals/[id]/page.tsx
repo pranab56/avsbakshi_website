@@ -133,7 +133,7 @@ export default function ProfessionalDetailsPage() {
           </div>
 
           {/* Interactive Navigation Tabs */}
-          <div className="flex items-center gap-8 border-b border-[#DCD5C9] pt-4 text-sm font-medium">
+          <div className="flex items-center gap-4 sm:gap-8 border-b border-[#DCD5C9] pt-4 text-sm font-medium overflow-x-auto no-scrollbar whitespace-nowrap">
             {[
               { id: "about", label: "About" },
               { id: "services", label: "Services" },
@@ -145,7 +145,7 @@ export default function ProfessionalDetailsPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id as "about" | "services" | "portfolio" | "reviews" | "availability")}
-                className={`pb-3.5 transition-colors cursor-pointer relative ${activeTab === tab.id
+                className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === tab.id
                   ? "text-[#1A1A1A] font-semibold"
                   : "text-[#666159] hover:text-[#1A1A1A]"
                   }`}
@@ -182,22 +182,22 @@ export default function ProfessionalDetailsPage() {
                 </div>
 
                 {/* 4 Stat Boxes */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="bg-[#E2DACD]/60 p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
-                    <h4 className="font-title text-2xl font-normal text-[#1A1A1A]">10 years</h4>
-                    <p className="text-xs text-[#666159]">Experience</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="bg-[#E2DACD]/60 p-4 sm:p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
+                    <h4 className="font-title text-xl sm:text-2xl font-normal text-[#1A1A1A]">10 years</h4>
+                    <p className="text-[11px] sm:text-xs text-[#666159]">Experience</p>
                   </div>
-                  <div className="bg-[#E2DACD]/60 p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
-                    <h4 className="font-title text-2xl font-normal text-[#1A1A1A]">500+</h4>
-                    <p className="text-xs text-[#666159]">Happy clients</p>
+                  <div className="bg-[#E2DACD]/60 p-4 sm:p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
+                    <h4 className="font-title text-xl sm:text-2xl font-normal text-[#1A1A1A]">500+</h4>
+                    <p className="text-[11px] sm:text-xs text-[#666159]">Happy clients</p>
                   </div>
-                  <div className="bg-[#E2DACD]/60 p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
-                    <h4 className="font-title text-2xl font-normal text-[#1A1A1A]">312</h4>
-                    <p className="text-xs text-[#666159]">Reviews</p>
+                  <div className="bg-[#E2DACD]/60 p-4 sm:p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
+                    <h4 className="font-title text-xl sm:text-2xl font-normal text-[#1A1A1A]">312</h4>
+                    <p className="text-[11px] sm:text-xs text-[#666159]">Reviews</p>
                   </div>
-                  <div className="bg-[#E2DACD]/60 p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
-                    <h4 className="font-title text-2xl font-normal text-[#1A1A1A]">4.9★</h4>
-                    <p className="text-xs text-[#666159]">Average rating</p>
+                  <div className="bg-[#E2DACD]/60 p-4 sm:p-8 rounded-lg text-center border border-[#DCD5C9] space-y-1">
+                    <h4 className="font-title text-xl sm:text-2xl font-normal text-[#1A1A1A]">4.9★</h4>
+                    <p className="text-[11px] sm:text-xs text-[#666159]">Average rating</p>
                   </div>
                 </div>
 

@@ -2,6 +2,7 @@
 
 import { useState, useRef, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
@@ -75,6 +76,14 @@ function VerifyOtpContent() {
         </Link>
       </div>
 
+      <Image
+        src="/icons/logo.png"
+        alt="Cloud Salon Logo"
+        width={80}
+        height={80}
+        className="object-contain mx-auto"
+      />
+
       <div className="w-12 h-12 rounded-full bg-[#B78735]/10 text-[#B78735] flex items-center justify-center mx-auto">
         <CheckCircle2 className="w-6 h-6" />
       </div>
@@ -103,13 +112,12 @@ function VerifyOtpContent() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-sm border transition-all focus:outline-none focus:ring-2 ${
-                error
+              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-sm border transition-all focus:outline-none focus:ring-2 ${error
                   ? "border-red-500 bg-red-50/20 focus:ring-red-300 text-red-600"
                   : digit
-                  ? "border-[#B78735] bg-[#B78735]/5 text-[#B78735] focus:ring-[#B78735]/30"
-                  : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20 text-[#1A1A1A]"
-              }`}
+                    ? "border-[#B78735] bg-[#B78735]/5 text-[#B78735] focus:ring-[#B78735]/30"
+                    : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20 text-[#1A1A1A]"
+                }`}
             />
           ))}
         </div>

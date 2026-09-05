@@ -2,13 +2,13 @@ import Link from "next/link";
 
 export default function GetStartedCta() {
   return (
-    <section className="bg-[#E6DFD5] py-20 sm:py-28 lg:py-32">
+    <section className="bg-[#E6DFD5] py-14 sm:py-28 lg:py-32">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-4">
+        <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-3 sm:mb-4">
           GET STARTED
         </span>
 
-        <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal text-[#1A1A1A] leading-[1.15] mb-4">
+        <h2 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal text-[#1A1A1A] leading-[1.15] mb-4">
           Ready for Your Next <br />
           <span className="font-light italic text-[#B78735]">Appointment?</span>
         </h2>

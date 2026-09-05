@@ -26,13 +26,13 @@ export default function CTABanner() {
             <p className="text-sm md:text-lg opacity-90">We have hundreds of properties for you to choose from.</p>
           </div>
 
-          <div className="relative w-full max-w-sm px-4 md:px-0">
+          <div className="relative w-full max-w-sm px-2 sm:px-0">
             <input
               type="text"
               placeholder="Find your location agent"
-              className="w-full h-12 md:h-14 bg-white rounded-lg px-5 md:px-6 pr-12 text-neutral-1 font-medium focus:outline-none shadow-lg focus:ring-2 focus:ring-white/20 text-sm md:text-base"
+              className="w-full h-12 md:h-14 bg-white rounded-lg px-4 sm:px-6 pr-10 md:pr-12 text-neutral-1 font-medium focus:outline-none shadow-lg focus:ring-2 focus:ring-white/20 text-xs sm:text-base"
             />
-            <Search className="absolute right-8 md:right-4 top-1/2 -translate-y-1/2 text-primary size-5 md:size-6" />
+            <Search className="absolute right-5 sm:right-4 top-1/2 -translate-y-1/2 text-primary size-5 md:size-6" />
           </div>
         </div>
       </div>

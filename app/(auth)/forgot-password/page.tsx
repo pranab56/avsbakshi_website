@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -160,13 +161,22 @@ export default function ForgotPasswordPage() {
       {/* Step 1: Email Input */}
       {step === 1 && (
         <div className="space-y-6">
-          <div className="space-y-1.5">
-            <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
-              Reset Password
-            </h1>
-            <p className="text-xs text-zinc-500">
-              Enter your email address and we&apos;ll send you a verification code to reset your password.
-            </p>
+          <div className="space-y-3">
+            <Image
+              src="/icons/logo.png"
+              alt="Cloud Salon Logo"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
+            <div className="space-y-1.5">
+              <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+                Reset Password
+              </h1>
+              <p className="text-xs text-zinc-500">
+                Enter your email address and we&apos;ll send you a verification code to reset your password.
+              </p>
+            </div>
           </div>
 
           <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">

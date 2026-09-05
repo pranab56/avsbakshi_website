@@ -8,7 +8,7 @@ export default function Footer() {
     <footer className="bg-[#18181A] text-white pt-16 sm:pt-20 pb-10 sm:pb-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navigation Link Columns */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-8 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 sm:gap-8 text-sm">
           {/* Column 1: Product */}
           <div className="flex flex-col gap-3">
             <h4 className="font-semibold text-white text-sm sm:text-base">
@@ -87,11 +87,11 @@ export default function Footer() {
               Legal
             </h4>
             <div className="flex flex-col gap-2.5 text-xs sm:text-sm">
-              <Link href="/faq" className="text-zinc-400 hover:text-white transition-colors">
-                Terms
+              <Link href="/terms" className="text-zinc-400 hover:text-white transition-colors">
+                Terms &amp; Conditions
               </Link>
-              <Link href="/faq" className="text-zinc-400 hover:text-white transition-colors">
-                Privacy
+              <Link href="/privacy" className="text-zinc-400 hover:text-white transition-colors">
+                Privacy Policy
               </Link>
               <Link href="/faq" className="text-zinc-400 hover:text-white transition-colors">
                 Cancellation Policy
@@ -132,13 +132,13 @@ export default function Footer() {
         </div>
 
         {/* Bottom Copyright & Legal Row */}
-        <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
+        <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 text-center sm:text-left">
           <p>© 2026 Cloud Salon Ltd. All rights reserved.</p>
-          <div className="flex items-center gap-6 text-zinc-400">
-            <Link href="/faq" className="hover:text-white transition-colors">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-zinc-400">
+            <Link href="/terms" className="hover:text-white transition-colors">
               Terms
             </Link>
-            <Link href="/faq" className="hover:text-white transition-colors">
+            <Link href="/privacy" className="hover:text-white transition-colors">
               Privacy
             </Link>
             <Link href="/faq" className="hover:text-white transition-colors">

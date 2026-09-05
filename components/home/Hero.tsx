@@ -18,7 +18,7 @@ export default function Hero() {
 
     return (
         <div className="w-full">
-            <section className="relative min-h-[680px] lg:min-h-[740px] bg-[#1E1C1A] text-white overflow-hidden flex items-center">
+            <section className="relative min-h-[560px] sm:min-h-[680px] lg:min-h-[740px] bg-[#1E1C1A] text-white overflow-hidden flex items-center">
                 <div
                     className="absolute inset-0 bg-cover bg-center opacity-80 transform scale-105 transition-all duration-700"
                     style={{ backgroundImage: `url('/images/hero/image.png')` }}
@@ -29,8 +29,8 @@ export default function Hero() {
                 <div className="absolute inset-0 bg-gradient-to-tl from-[#7C4F24]/55 via-[#5A3819]/25 to-transparent pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#3D250F]/45 via-transparent to-transparent pointer-events-none" />
 
-                <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 w-full">
-                    <div className="max-w-2xl space-y-6">
+                <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 w-full">
+                    <div className="max-w-2xl space-y-5 sm:space-y-6">
                         <div className="flex items-center gap-2">
                             <span className="w-8 h-[2px] bg-[#B78735]" />
                             <span className="text-xs font-semibold text-[#B78735] uppercase tracking-widest">
@@ -38,7 +38,7 @@ export default function Hero() {
                             </span>
                         </div>
 
-                        <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] text-white drop-shadow-md">
+                        <h1 className="font-title text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.15] sm:leading-[1.1] text-white drop-shadow-md">
                             Find your people. <br />
                             <span className="font-light italic text-[#CAA054]">Feel like yourself.</span>
                         </h1>
@@ -48,8 +48,8 @@ export default function Hero() {
                         </p>
 
                         {/* Search Bar Widget */}
-                        <form onSubmit={handleSearch} className="bg-white/95 backdrop-blur-md p-2.5 rounded-2xl shadow-2xl border border-white/30 flex flex-col sm:flex-row gap-2 max-w-2xl">
-                            <div className="flex-1 flex items-center gap-2.5 px-3.5 py-2.5 bg-[#F5F3EF]/70 rounded-xl border border-black/5">
+                        <form onSubmit={handleSearch} className="bg-white/95 backdrop-blur-md p-2.5 rounded-lg shadow-2xl border border-white/30 flex flex-col sm:flex-row gap-2 max-w-2xl">
+                            <div className="flex-1 flex items-center gap-2.5 px-3.5 py-2.5 bg-[#F5F3EF]/70 rounded-sm border border-black/5">
                                 <Search className="w-4 h-4 text-[#B78735] shrink-0" />
                                 <input
                                     type="text"
@@ -60,7 +60,7 @@ export default function Hero() {
                                 />
                             </div>
 
-                            <div className="flex-1 flex items-center gap-2.5 px-3.5 py-2.5 bg-[#F5F3EF]/70 rounded-xl border border-black/5">
+                            <div className="flex-1 flex items-center gap-2.5 px-3.5 py-2.5 bg-[#F5F3EF]/70 rounded-sm border border-black/5">
                                 <MapPin className="w-4 h-4 text-[#B78735] shrink-0" />
                                 <input
                                     type="text"
@@ -73,7 +73,7 @@ export default function Hero() {
 
                             <button
                                 type="submit"
-                                className="px-6 py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium text-sm rounded-xl shadow-md transition-all whitespace-nowrap cursor-pointer hover:scale-[1.02]"
+                                className="px-6 py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium text-sm rounded-sm shadow-md transition-all whitespace-nowrap cursor-pointer hover:scale-[1.02]"
                             >
                                 Find a Service
                             </button>

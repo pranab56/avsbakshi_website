@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,13 +74,22 @@ function ResetPasswordContent() {
         Back to Log In
       </Link>
 
-      <div className="space-y-1.5">
-        <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
-          Set New Password
-        </h1>
-        <p className="text-xs text-zinc-500">
-          Your new password must be different from previously used passwords.
-        </p>
+      <div className="space-y-3">
+        <Image
+          src="/icons/logo.png"
+          alt="Cloud Salon Logo"
+          width={80}
+          height={80}
+          className="object-contain"
+        />
+        <div className="space-y-1.5">
+          <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+            Set New Password
+          </h1>
+          <p className="text-xs text-zinc-500">
+            Your new password must be different from previously used passwords.
+          </p>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

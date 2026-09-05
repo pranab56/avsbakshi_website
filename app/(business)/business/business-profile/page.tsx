@@ -1,15 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
-import { CheckCircle2, Clock, Plus, Upload, Check } from "lucide-react";
+import { CheckCircle2, Clock, Plus, Upload, Check, Trash2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 type TabType = "Overview" | "Edit Profile" | "Location" | "Business Hours" | "Photos";
+
+const TIME_OPTIONS = [
+  "06:00 AM",
+  "06:30 AM",
+  "07:00 AM",
+  "07:30 AM",
+  "08:00 AM",
+  "08:30 AM",
+  "09:00 AM",
+  "09:30 AM",
+  "10:00 AM",
+  "10:30 AM",
+  "11:00 AM",
+  "11:30 AM",
+  "12:00 PM",
+  "12:30 PM",
+  "01:00 PM",
+  "01:30 PM",
+  "02:00 PM",
+  "02:30 PM",
+  "03:00 PM",
+  "03:30 PM",
+  "04:00 PM",
+  "04:30 PM",
+  "05:00 PM",
+  "05:30 PM",
+  "06:00 PM",
+  "06:30 PM",
+  "07:00 PM",
+  "07:30 PM",
+  "08:00 PM",
+  "08:30 PM",
+  "09:00 PM",
+  "09:30 PM",
+  "10:00 PM",
+];
+
+const INITIAL_PHOTOS = [
+  "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80",
+  "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=80",
+];
 
 export default function BusinessProfilePage() {
   const [activeTab, setActiveTab] = useState<TabType>("Overview");
   const [savedFeedback, setSavedFeedback] = useState<string | null>(null);
+
+  // Logo upload state & ref
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  // Photos gallery state & ref
+  const [photos, setPhotos] = useState<string[]>(INITIAL_PHOTOS);
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   // Edit Profile Form State
   const [profileForm, setProfileForm] = useState({
@@ -41,18 +98,43 @@ export default function BusinessProfilePage() {
     { day: "Sunday", open: false, start: "09:00 AM", end: "06:00 PM" },
   ]);
 
-  // Photos State
-  const [photos] = useState([
-    "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=80",
-  ]);
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select a valid image file");
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      setLogoPreview(url);
+      toast.success("Business logo updated successfully!");
+    }
+  };
+
+  const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const validFiles = Array.from(files).filter((file) =>
+        file.type.startsWith("image/")
+      );
+
+      if (validFiles.length === 0) {
+        toast.error("Please select valid image files");
+        return;
+      }
+
+      const newUrls = validFiles.map((file) => URL.createObjectURL(file));
+      setPhotos((prev) => [...newUrls, ...prev]);
+      toast.success(
+        `${validFiles.length} photo${validFiles.length > 1 ? "s" : ""} added to studio gallery!`
+      );
+    }
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
+    toast.success("Photo removed from gallery");
+  };
 
   const toggleHour = (index: number) => {
     setHours((prev) =>
@@ -68,13 +150,14 @@ export default function BusinessProfilePage() {
 
   const handleSave = (section: string) => {
     setSavedFeedback(section);
+    toast.success("Changes saved successfully!");
     setTimeout(() => {
       setSavedFeedback(null);
     }, 2500);
   };
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16 font-sans text-[#1A1A1A]">
       {/* Header Title */}
       <div className="space-y-1">
         <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
@@ -126,15 +209,25 @@ export default function BusinessProfilePage() {
 
                 {/* Banner Overlay Info */}
                 <div className="absolute bottom-6 left-6 flex items-end gap-4 text-white">
-                  <div className="w-14 h-14 rounded-md bg-white border border-[#E3DDD3] font-serif font-bold text-2xl flex items-center justify-center text-[#2C2E33] shadow-md shrink-0">
-                    N
+                  <div className="relative w-14 h-14 rounded-md bg-white border border-[#E3DDD3] font-serif font-bold text-2xl flex items-center justify-center text-[#2C2E33] shadow-md shrink-0 overflow-hidden">
+                    {logoPreview ? (
+                      <Image
+                        src={logoPreview}
+                        alt="Business Logo"
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <span>N</span>
+                    )}
                   </div>
                   <div className="space-y-0.5">
                     <h2 className="font-serif font-bold text-2xl sm:text-3xl drop-shadow-md leading-tight">
-                      Noir Studio
+                      {profileForm.businessName}
                     </h2>
                     <p className="text-xs sm:text-sm text-white/90 drop-shadow-md">
-                      Hair & Beauty Salon · Soho, London W1D 3QL
+                      {profileForm.businessType} · Soho, London W1D 3QL
                     </p>
                   </div>
                 </div>
@@ -199,28 +292,28 @@ export default function BusinessProfilePage() {
                 <div className="py-2.5 flex items-center justify-between gap-2">
                   <span className="text-[#787570]">Phone</span>
                   <span className="font-medium text-[#2C2E33]">
-                    +44 20 7123 4567
+                    {profileForm.phone}
                   </span>
                 </div>
 
                 <div className="py-2.5 flex items-center justify-between gap-2">
                   <span className="text-[#787570]">Email</span>
                   <span className="font-medium text-[#2C2E33]">
-                    hello@noirstudio.co.uk
+                    {profileForm.email}
                   </span>
                 </div>
 
                 <div className="py-2.5 flex items-center justify-between gap-2">
                   <span className="text-[#787570]">Website</span>
                   <span className="font-medium text-[#2C2E33]">
-                    noirstudio.co.uk
+                    {profileForm.website}
                   </span>
                 </div>
 
                 <div className="py-2.5 flex items-center justify-between gap-2">
                   <span className="text-[#787570]">Instagram</span>
                   <span className="font-medium text-[#2C2E33]">
-                    @noirstudiosoho
+                    {profileForm.instagram}
                   </span>
                 </div>
 
@@ -256,17 +349,35 @@ export default function BusinessProfilePage() {
       {/* ----------------------------------------------------------------- */}
       {activeTab === "Edit Profile" && (
         <div className="max-w-2xl bg-white border border-[#E3DDD3]/70 rounded-lg p-6 sm:p-8 space-y-6 shadow-xs">
-          {/* Logo Section */}
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-md bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shrink-0">
-              N
+          {/* Logo Section with Image Upload & Live Preview */}
+          <div className="flex items-center gap-4 border-b border-[#E3DDD3]/50 pb-6">
+            <div className="relative w-16 h-16 rounded-md bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+              {logoPreview ? (
+                <Image
+                  src={logoPreview}
+                  alt="Business Logo"
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <span>N</span>
+              )}
             </div>
             <div className="space-y-1">
               <h3 className="font-serif font-bold text-lg text-[#2C2E33]">
-                Noir Studio
+                {profileForm.businessName}
               </h3>
+              <input
+                type="file"
+                ref={logoInputRef}
+                onChange={handleLogoChange}
+                accept="image/*"
+                className="hidden"
+              />
               <button
                 type="button"
+                onClick={() => logoInputRef.current?.click()}
                 className="px-4 py-2 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-2xs active:scale-[0.98]"
               >
                 <Upload className="w-3.5 h-3.5" />
@@ -358,21 +469,6 @@ export default function BusinessProfilePage() {
                   setProfileForm({ ...profileForm, instagram: e.target.value })
                 }
                 className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
-                Description
-              </label>
-              <textarea
-                rows={4}
-                value={profileForm.description}
-                onChange={(e) =>
-                  setProfileForm({ ...profileForm, description: e.target.value })
-                }
-                placeholder="Tell clients about your salon..."
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735] resize-none"
               />
             </div>
           </div>
@@ -486,7 +582,7 @@ export default function BusinessProfilePage() {
         <div className="space-y-6">
           <div className="bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden shadow-xs">
             {/* Table Header */}
-            <div className="bg-[#F3F0EA] px-6 py-3.5 grid grid-cols-12 text-xs font-semibold text-[#787570] border-b border-[#E3DDD3]/70">
+            <div className="bg-[#F3F0EA] px-6 py-3.5 grid grid-cols-12 text-[11px] font-bold uppercase tracking-wider text-[#787570] border-b border-[#E3DDD3]/70">
               <div className="col-span-4">DAY</div>
               <div className="col-span-2">OPEN</div>
               <div className="col-span-3">START</div>
@@ -520,9 +616,11 @@ export default function BusinessProfilePage() {
                           onChange={(e) => updateHourTime(i, "start", e.target.value)}
                           className="bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-3.5 py-2 pr-9 text-xs sm:text-sm font-medium text-[#2C2E33] outline-none cursor-pointer appearance-none focus:ring-1 focus:ring-[#B78735] focus:border-[#B78735] hover:border-[#B78735]/60 transition-colors"
                         >
-                          <option value="08:00 AM">08:00 AM</option>
-                          <option value="09:00 AM">09:00 AM</option>
-                          <option value="10:00 AM">10:00 AM</option>
+                          {TIME_OPTIONS.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          ))}
                         </select>
                         <Clock className="w-4 h-4 text-[#787570] absolute right-2.5 pointer-events-none" />
                       </div>
@@ -539,10 +637,11 @@ export default function BusinessProfilePage() {
                           onChange={(e) => updateHourTime(i, "end", e.target.value)}
                           className="bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-3.5 py-2 pr-9 text-xs sm:text-sm font-medium text-[#2C2E33] outline-none cursor-pointer appearance-none focus:ring-1 focus:ring-[#B78735] focus:border-[#B78735] hover:border-[#B78735]/60 transition-colors"
                         >
-                          <option value="05:00 PM">05:00 PM</option>
-                          <option value="06:00 PM">06:00 PM</option>
-                          <option value="07:00 PM">07:00 PM</option>
-                          <option value="08:00 PM">08:00 PM</option>
+                          {TIME_OPTIONS.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          ))}
                         </select>
                         <Clock className="w-4 h-4 text-[#787570] absolute right-2.5 pointer-events-none" />
                       </div>
@@ -577,6 +676,15 @@ export default function BusinessProfilePage() {
       {/* ----------------------------------------------------------------- */}
       {activeTab === "Photos" && (
         <div className="space-y-6">
+          <input
+            type="file"
+            ref={photoInputRef}
+            onChange={handlePhotoAdd}
+            accept="image/*"
+            multiple
+            className="hidden"
+          />
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {photos.map((src, i) => (
               <div
@@ -592,15 +700,28 @@ export default function BusinessProfilePage() {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   unoptimized
                 />
+                <button
+                  type="button"
+                  onClick={() => handleRemovePhoto(i)}
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-red-600/80 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 cursor-pointer shadow-xs"
+                  title="Remove photo"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             ))}
 
             {/* Add Photo Dotted Card */}
-            <div className="h-48 sm:h-56 bg-[#FAF8F4] border-2 border-dashed border-[#E3DDD3] rounded-lg flex flex-col items-center justify-center p-6 text-center text-[#787570] cursor-pointer hover:bg-[#F3F0EA] transition-colors group">
-              <div className="w-10 h-10 rounded-full bg-[#E0D9CE]/60 flex items-center justify-center text-[#787570] mb-2 group-hover:scale-110 transition-transform">
-                <Plus className="w-5 h-5 text-[#787570]" />
+            <div
+              onClick={() => photoInputRef.current?.click()}
+              className="h-48 sm:h-56 bg-[#FAF8F4] border-2 border-dashed border-[#E3DDD3] rounded-lg flex flex-col items-center justify-center p-6 text-center text-[#787570] cursor-pointer hover:bg-[#F3F0EA] hover:border-[#B78735] transition-all group"
+            >
+              <div className="w-10 h-10 rounded-full bg-[#E0D9CE]/60 flex items-center justify-center text-[#787570] mb-2 group-hover:scale-110 group-hover:bg-[#B78735]/15 group-hover:text-[#B78735] transition-all">
+                <Plus className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium text-[#2C2E33]">Add Photo</span>
+              <span className="text-xs font-medium text-[#2C2E33] group-hover:text-[#B78735] transition-colors">
+                Add Photo
+              </span>
             </div>
           </div>
         </div>

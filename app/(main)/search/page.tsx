@@ -10,6 +10,7 @@ function SearchResultContent() {
   const q = searchParams.get("q") || "";
   const loc = searchParams.get("loc") || "London";
 
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [providerFilter, setProviderFilter] = useState("all");
   const [availabilityFilter, setAvailabilityFilter] = useState<string[]>(["today"]);
   const [distanceFilter, setDistanceFilter] = useState("5");
@@ -78,7 +79,7 @@ function SearchResultContent() {
   return (
     <div className="min-h-screen bg-white">
       {/* Dark Search Header */}
-      <section className="bg-[#1E1C1A] text-white py-16 sm:py-20 relative overflow-hidden">
+      <section className="bg-[#1E1C1A] text-white py-12 sm:py-20 relative overflow-hidden">
         {/* Bottom-right warm amber color gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-tl from-[#7C4F24]/35 via-[#5A3819]/10 to-transparent pointer-events-none" />
 
@@ -89,7 +90,7 @@ function SearchResultContent() {
         />
 
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 space-y-6 z-10">
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div className="flex items-center gap-2">
               <span className="w-8 h-[2px] bg-[#B78735]" />
               <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em]">
@@ -97,7 +98,7 @@ function SearchResultContent() {
               </span>
             </div>
 
-            <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-white">
+            <h1 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
               Find your perfect <br />
               <span className="font-light italic text-[#CAA054]">beauty experience</span>
             </h1>
@@ -154,11 +155,23 @@ function SearchResultContent() {
       </section>
 
       {/* Search Layout Grid */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14">
+        {/* Mobile Filter Toggle Button */}
+        <div className="lg:hidden mb-4">
+          <button
+            type="button"
+            onClick={() => setShowMobileFilters(!showMobileFilters)}
+            className="w-full py-3 px-4 bg-[#F5F3EF] hover:bg-[#EAE5DC] border border-[#DCD5C9] rounded-lg text-xs font-semibold text-[#1A1A1A] flex items-center justify-between transition-colors cursor-pointer"
+          >
+            <span>{showMobileFilters ? "Hide Filters ▲" : "Show Filters & Search Options ▼"}</span>
+            <span className="text-[10px] text-[#B78735] uppercase font-bold">Filters</span>
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
           {/* Left Sidebar Filters */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className={`lg:col-span-3 space-y-6 ${showMobileFilters ? "block mb-6 lg:mb-0" : "hidden lg:block"}`}>
             <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6 shadow-xs">
               <h3 className="font-title font-bold text-base text-[#1A1A1A]">
                 Filters
@@ -246,12 +259,12 @@ function SearchResultContent() {
 
           {/* Right Results List */}
           <div className="lg:col-span-9 space-y-6">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <p className="text-xs sm:text-sm font-medium text-[#1A1A1A]">
                 <span className="font-bold">124</span> professionals found near <span className="font-bold">{loc}</span>
               </p>
 
-              <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-2 text-xs self-start sm:self-auto">
                 <span className="text-[#666159]">Sort:</span>
                 <div className="relative">
                   <button
@@ -300,7 +313,7 @@ function SearchResultContent() {
                   className="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-xs hover:shadow-md transition-all grid grid-cols-1 sm:grid-cols-12 gap-0 group"
                 >
                   {/* Left Image */}
-                  <div className="sm:col-span-4 relative h-56 sm:h-auto overflow-hidden min-h-[220px]">
+                  <div className="sm:col-span-4 relative h-48 sm:h-auto overflow-hidden min-h-[180px] sm:min-h-[220px]">
                     <div
                       className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700"
                       style={{ backgroundImage: `url('${item.img}')` }}
@@ -308,14 +321,14 @@ function SearchResultContent() {
                   </div>
 
                   {/* Right Content */}
-                  <div className="sm:col-span-8 p-6 sm:p-7 flex flex-col justify-between space-y-4">
+                  <div className="sm:col-span-8 p-5 sm:p-7 flex flex-col justify-between space-y-4">
                     <div>
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start justify-between gap-2">
                         <div>
-                          <h3 className="font-title text-xl font-bold text-[#1A1A1A] group-hover:text-[#B78735] transition-colors">
+                          <h3 className="font-title text-lg sm:text-xl font-bold text-[#1A1A1A] group-hover:text-[#B78735] transition-colors">
                             {item.name}
                           </h3>
-                          <p className="text-xs text-[#666159] mb-2">{item.category}</p>
+                          <p className="text-xs text-[#666159] mb-1.5 sm:mb-2">{item.category}</p>
 
                           <div className="flex items-center gap-1 text-xs text-[#1A1A1A]">
                             <div className="flex items-center text-[#B78735] text-sm">
@@ -327,23 +340,23 @@ function SearchResultContent() {
 
                           <p className="text-xs text-[#666159] flex items-center gap-1 mt-1">
                             <MapPin className="w-3.5 h-3.5 text-[#666159] shrink-0" />
-                            <span>{item.location}</span>
+                            <span className="truncate max-w-[200px] sm:max-w-none">{item.location}</span>
                           </p>
                         </div>
 
-                        <div className="text-right">
-                          <span className="font-title text-xl font-bold text-[#C59B4C] block">
+                        <div className="text-right shrink-0">
+                          <span className="font-title text-lg sm:text-xl font-bold text-[#C59B4C] block">
                             {item.price}
                           </span>
                           <span className="text-[10px] text-[#666159] block">per service</span>
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-2 mt-4">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3 sm:mt-4">
                         {item.tags.map((tag, idx) => (
                           <span
                             key={idx}
-                            className="bg-[#E2DACD] text-[#2C2E33] text-[11px] font-medium px-3 py-1 rounded-md border border-[#D5CBB9]"
+                            className="bg-[#E2DACD] text-[#2C2E33] text-[10px] sm:text-[11px] font-medium px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-md border border-[#D5CBB9]"
                           >
                             {tag}
                           </span>
@@ -351,21 +364,21 @@ function SearchResultContent() {
                       </div>
                     </div>
 
-                    <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#DCD5C9]">
+                    <div className="pt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-[#DCD5C9]">
                       <span className="text-xs font-semibold text-[#2E7D32]">
                         Next: {item.nextSlot}
                       </span>
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-row items-center gap-2.5 w-full sm:w-auto">
                         <Link
                           href="/professionals/1"
-                          className="px-5 py-2.5 bg-[#E2DACD] hover:bg-[#D6C9B7] text-[#2C2E33] text-xs font-semibold rounded-sm transition-colors"
+                          className="flex-1 sm:flex-none text-center px-4 py-2.5 bg-[#E2DACD] hover:bg-[#D6C9B7] text-[#2C2E33] text-xs font-semibold rounded-sm transition-colors"
                         >
                           View profile
                         </Link>
                         <Link
                           href="/book/1"
-                          className="px-5 py-2.5 bg-[#B78735] hover:bg-[#A37428] text-white text-xs font-semibold rounded-sm shadow-xs transition-colors"
+                          className="flex-1 sm:flex-none text-center px-4 py-2.5 bg-[#B78735] hover:bg-[#A37428] text-white text-xs font-semibold rounded-sm shadow-xs transition-colors whitespace-nowrap"
                         >
                           Book Appointment
                         </Link>
@@ -377,11 +390,11 @@ function SearchResultContent() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-center gap-2.5 pt-10">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 pt-8 sm:pt-10">
               <button
                 disabled={page === 1}
                 onClick={() => setPage(prev => Math.max(1, prev - 1))}
-                className="text-xs font-semibold text-[#1A1A1A] hover:text-[#B78735] px-3 py-2 disabled:opacity-40 cursor-pointer"
+                className="text-xs font-semibold text-[#1A1A1A] hover:text-[#B78735] px-2.5 py-1.5 disabled:opacity-40 cursor-pointer"
               >
                 Prev
               </button>
@@ -390,7 +403,7 @@ function SearchResultContent() {
                 <button
                   key={num}
                   onClick={() => setPage(num)}
-                  className={`w-9 h-9 rounded-full text-xs font-semibold transition-all cursor-pointer ${page === num
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full text-xs font-semibold transition-all cursor-pointer ${page === num
                       ? "bg-[#B78735] text-white shadow-xs"
                       : "bg-[#E2DACD] hover:bg-[#D6C9B7] text-[#2C2E33] border border-[#DCD5C9]"
                     }`}
@@ -399,17 +412,9 @@ function SearchResultContent() {
                 </button>
               ))}
 
-              <span className="w-9 h-9 rounded-full bg-[#E2DACD] text-[#2C2E33] text-xs flex items-center justify-center border border-[#DCD5C9]">
-                ...
-              </span>
-
-              <button className="w-9 h-9 rounded-full bg-[#E2DACD] text-[#2C2E33] text-xs font-semibold border border-[#DCD5C9] cursor-pointer">
-                24
-              </button>
-
               <button
                 onClick={() => setPage(prev => prev + 1)}
-                className="text-xs font-semibold text-[#B78735] hover:text-[#B78735] px-3 py-2 cursor-pointer"
+                className="text-xs font-semibold text-[#B78735] hover:text-[#B78735] px-2.5 py-1.5 cursor-pointer ml-1"
               >
                 Next
               </button>

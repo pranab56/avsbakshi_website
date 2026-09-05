@@ -33,7 +33,7 @@ export default function WhyCloudSalon() {
             <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-3">
               WHY CLOUD SALON
             </span>
-            <h2 className="font-title text-4xl sm:text-5xl font-normal text-[#1A1A1A] leading-[1.15] mb-4">
+            <h2 className="font-title text-3xl sm:text-5xl font-normal text-[#1A1A1A] leading-[1.15] mb-4">
               Beauty discovery, built different.
             </h2>
             <p className="text-xs sm:text-sm text-[#666159] font-normal leading-relaxed max-w-md">
@@ -63,7 +63,7 @@ export default function WhyCloudSalon() {
 
         {/* Right Column: Hero Image */}
         <div className="lg:col-span-6">
-          <div className="relative rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 h-[460px] sm:h-[640px] w-full">
+          <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 h-[320px] sm:h-[640px] w-full">
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
               style={{

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Check, Edit2 } from "lucide-react";
+import { useState, useRef } from "react";
+import Image from "next/image";
+import { Plus, Check, Edit2, Upload, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +19,7 @@ interface Chair {
   price: string;
   description?: string;
   amenities: string[];
+  image?: string;
 }
 
 const INITIAL_CHAIRS: Chair[] = [
@@ -30,6 +32,7 @@ const INITIAL_CHAIRS: Chair[] = [
     price: "£45/day",
     description: "Spacious main floor styling chair with hydraulic lift.",
     amenities: ["WiFi", "Backwash", "Towels"],
+    image: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "2",
@@ -40,6 +43,7 @@ const INITIAL_CHAIRS: Chair[] = [
     price: "£45/day",
     description: "Premium leather chair adjacent to shampoo stations.",
     amenities: ["WiFi", "Backwash"],
+    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "3",
@@ -50,6 +54,7 @@ const INITIAL_CHAIRS: Chair[] = [
     price: "£60/day",
     description: "Private booth chair with direct ring light setup.",
     amenities: ["WiFi", "Storage", "Tea & Coffee", "Reception"],
+    image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: "4",
@@ -106,8 +111,11 @@ export default function ChairsSpacePage() {
     price: "45",
     description: "",
     amenities: ["WiFi", "Backwash"],
+    image: "",
   });
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   // Calculate dynamic stats
@@ -116,6 +124,21 @@ export default function ChairsSpacePage() {
   const occupiedChairs = chairs.filter((c) => c.status === "Occupied").length;
   const maintenanceChairs = chairs.filter((c) => c.status === "Maintenance").length;
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImagePreview(url);
+      setForm((prev) => ({ ...prev, image: url }));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setForm((prev) => ({ ...prev, image: "" }));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const handleOpenAdd = () => {
     setForm({
       name: "",
@@ -123,7 +146,9 @@ export default function ChairsSpacePage() {
       price: "45",
       description: "",
       amenities: ["WiFi", "Backwash"],
+      image: "",
     });
+    setImagePreview(null);
     setEditingChairId(null);
     setModalMode("add");
     setIsModalOpen(true);
@@ -136,7 +161,9 @@ export default function ChairsSpacePage() {
       price: chair.price.replace("£", "").replace("/day", ""),
       description: chair.description || "",
       amenities: chair.amenities,
+      image: chair.image || "",
     });
+    setImagePreview(chair.image || null);
     setEditingChairId(chair.id);
     setModalMode("edit");
     setIsModalOpen(true);
@@ -168,6 +195,7 @@ export default function ChairsSpacePage() {
         price: `£${form.price || "45"}/day`,
         description: form.description,
         amenities: form.amenities,
+        image: form.image,
       };
       setChairs((prev) => [newChair, ...prev]);
     } else if (modalMode === "edit" && editingChairId) {
@@ -181,6 +209,7 @@ export default function ChairsSpacePage() {
                 price: `£${form.price || "45"}/day`,
                 description: form.description,
                 amenities: form.amenities,
+                image: form.image,
               }
             : c
         )
@@ -203,7 +232,7 @@ export default function ChairsSpacePage() {
             {totalChairs} chairs total · {availableChairs} available today
           </p>
           <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
-            Chairs & Space
+            Chairs &amp; Space
           </h1>
         </div>
 
@@ -257,26 +286,39 @@ export default function ChairsSpacePage() {
             key={chair.id}
             className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs hover:border-[#B78735]/40 transition-colors"
           >
-            {/* Left Chair Info */}
-            <div className="space-y-1">
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2C2E33]">
-                {chair.name}
-              </h3>
-              <p className="text-xs text-[#787570] font-normal">
-                {chair.until}
-              </p>
-              <div className="pt-1.5 flex items-center gap-2 flex-wrap">
-                <span className="px-3 py-1 bg-[#FAF8F4] border border-[#E3DDD3]/70 text-[#787570] text-xs font-medium rounded-full">
-                  {chair.location}
-                </span>
-                {chair.amenities.map((amenity) => (
-                  <span
-                    key={amenity}
-                    className="px-2.5 py-0.5 bg-[#FAF8F4] text-[#A09D96] text-[11px] rounded-md"
-                  >
-                    {amenity}
+            {/* Left Chair Info + Thumbnail */}
+            <div className="flex items-start gap-4 max-w-xl">
+              {chair.image && (
+                <div className="relative w-20 h-20 rounded-md overflow-hidden bg-[#FAF8F4] border border-[#E3DDD3]/70 shrink-0">
+                  <Image
+                    src={chair.image}
+                    alt={chair.name}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+              )}
+              <div className="space-y-1">
+                <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2C2E33]">
+                  {chair.name}
+                </h3>
+                <p className="text-xs text-[#787570] font-normal">
+                  {chair.until}
+                </p>
+                <div className="pt-1.5 flex items-center gap-2 flex-wrap">
+                  <span className="px-3 py-1 bg-[#FAF8F4] border border-[#E3DDD3]/70 text-[#787570] text-xs font-medium rounded-full">
+                    {chair.location}
                   </span>
-                ))}
+                  {chair.amenities.map((amenity) => (
+                    <span
+                      key={amenity}
+                      className="px-2.5 py-0.5 bg-[#FAF8F4] text-[#A09D96] text-[11px] rounded-md"
+                    >
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -368,7 +410,68 @@ export default function ChairsSpacePage() {
               />
             </div>
 
-            {/* Field 5: Amenities Selection */}
+            {/* Field 5: Chair Image Upload */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#2C2E33] block">
+                Chair Image <span className="text-[#787570] font-normal">(Optional)</span>
+              </label>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/*"
+                className="hidden"
+              />
+
+              {imagePreview ? (
+                <div className="relative w-full h-36 rounded-lg overflow-hidden border border-[#E3DDD3] bg-[#FAF8F4] group">
+                  <Image
+                    src={imagePreview}
+                    alt="Chair Space Preview"
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-3 py-1.5 bg-white/90 hover:bg-white text-[#2C2E33] text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
+                    >
+                      Change
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="px-3 py-1.5 bg-red-600/90 hover:bg-red-600 text-white text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-28 border-2 border-dashed border-[#E3DDD3] hover:border-[#B78735] bg-[#FAF8F4] rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group"
+                >
+                  <div className="w-9 h-9 rounded-full bg-[#EBE7DF] text-[#787570] group-hover:bg-[#B78735]/15 group-hover:text-[#B78735] flex items-center justify-center transition-colors">
+                    <Upload className="w-4 h-4" />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-xs font-semibold text-[#2C2E33] group-hover:text-[#B78735] transition-colors">
+                      Click to upload chair space photo
+                    </span>
+                    <span className="text-[11px] text-[#787570] block">
+                      PNG, JPG or WEBP (Max 5MB)
+                    </span>
+                  </div>
+                </button>
+              )}
+            </div>
+
+            {/* Field 6: Amenities Selection */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-[#2C2E33] block">
                 Amenities

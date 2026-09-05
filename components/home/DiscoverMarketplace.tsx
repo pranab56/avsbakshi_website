@@ -93,7 +93,7 @@ export default function DiscoverMarketplace() {
           <span className="text-xs font-bold text-[#B78735] uppercase tracking-widest block mb-1">
             DISCOVER
           </span>
-          <h2 className="font-title text-3xl sm:text-4xl font-bold text-[#1A1A1A]">
+          <h2 className="font-title text-3xl sm:text-4xl font-medium">
             Find your perfect beauty experience
           </h2>
           <p className="text-xs text-zinc-500 mt-1 font-light">
@@ -102,7 +102,7 @@ export default function DiscoverMarketplace() {
         </div>
         <Link
           href="/discover?tab=professionals"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm border border-[#E5E0D6] bg-white text-xs font-semibold text-[#2C2E33] hover:bg-[#F5F3EF] hover:border-[#B78735] transition-all self-start md:self-auto"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm border border-[#B78735]/30 bg-[#F3F0EA] text-xs font-semibold text-[#2C2E33] hover:bg-[#F5F3EF] hover:border-[#B78735] transition-all self-start md:self-auto"
         >
           Browse all services
           <ArrowRight className="w-3.5 h-3.5 text-[#B78735]" />
