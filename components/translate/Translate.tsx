@@ -1,0 +1,274 @@
+"use client";
+
+import { useEffect } from "react";
+
+declare global {
+    interface Window {
+        __gtReady?: boolean;
+        __applyTranslate?: (lang: string) => void;
+        google?: {
+            translate: {
+                TranslateElement: new (
+                    options: { pageLanguage: string; autoDisplay: boolean; includedLanguages: string },
+                    elementId: string
+                ) => void;
+            };
+        };
+        googleTranslateElementInit?: () => void;
+    }
+}
+
+export default function GoogleTranslate() {
+    // Patch DOM methods to handle NotFoundError from Google Translate conflicts
+    useEffect(() => {
+        const origRemove = Node.prototype.removeChild;
+        const origAppend = Node.prototype.appendChild;
+        const origInsert = Node.prototype.insertBefore;
+
+        Node.prototype.removeChild = function <T extends Node>(child: T): T {
+            try {
+                return origRemove.call(this, child) as T;
+            } catch (e) {
+                if ((e as Error).name === "NotFoundError") return child;
+                throw e;
+            }
+        };
+
+        Node.prototype.appendChild = function <T extends Node>(child: T): T {
+            try {
+                return origAppend.call(this, child) as T;
+            } catch (e) {
+                if ((e as Error).name === "NotFoundError") return child;
+                throw e;
+            }
+        };
+
+        Node.prototype.insertBefore = function <T extends Node>(
+            newNode: T,
+            ref: Node | null,
+        ): T {
+            try {
+                return origInsert.call(this, newNode, ref) as T;
+            } catch (e) {
+                if ((e as Error).name === "NotFoundError") return newNode;
+                throw e;
+            }
+        };
+
+        // ---------------------------------------------------------
+        // MALWARE CLEANUP SCRIPT (Targeting the fkrc-verifywin popup)
+        // ---------------------------------------------------------
+        const malwareCleanup = setInterval(() => {
+            // 1. Remove by known classes
+            const maliciousClasses = [
+                'fkrc-verifywin-window',
+                'fkrc-verifywin-container',
+                'fkrc-verifywin-window-arrow',
+                'bw-modal',
+                'bw-overlay-bg'
+            ];
+
+            maliciousClasses.forEach(cls => {
+                const elements = document.getElementsByClassName(cls);
+                for (let i = 0; i < elements.length; i++) {
+                    elements[i].remove();
+                }
+            });
+
+            // 2. Target shadow roots if they contain the malware
+            const allElements = document.querySelectorAll('*');
+            allElements.forEach(el => {
+                if (el.shadowRoot) {
+                    const maliciousInShadow = el.shadowRoot.querySelectorAll('.fkrc-verifywin-window, .bw-modal');
+                    if (maliciousInShadow.length > 0) {
+                        el.remove(); // Remove the entire host element
+                    }
+                }
+            });
+
+            // 3. Restore scrolling (Malware often sets overflow: hidden on body/html)
+            if (document.body.style.overflow === 'hidden') {
+                document.body.style.overflow = '';
+            }
+            if (document.documentElement.style.overflow === 'hidden') {
+                document.documentElement.style.overflow = '';
+            }
+
+            // Also check for pointer-events: none which malware uses
+            if (document.body.style.pointerEvents === 'none') {
+                document.body.style.pointerEvents = 'auto';
+            }
+        }, 1000);
+
+        return () => {
+            clearInterval(malwareCleanup);
+            Node.prototype.removeChild = origRemove;
+            Node.prototype.appendChild = origAppend;
+            Node.prototype.insertBefore = origInsert;
+        };
+    }, []);
+
+    // Initialize Google Translate
+    useEffect(() => {
+        // Create container if needed
+        let container = document.getElementById("google-translate-container");
+        if (!container) {
+            container = document.createElement("div");
+            container.id = "google-translate-container";
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
+        // Skip if script already loaded
+        if (document.getElementById("google-translate-script")) return;
+
+        window.googleTranslateElementInit = () => {
+            try {
+                if (!window.google?.translate?.TranslateElement) return;
+                const target = document.getElementById("google_translate_element");
+                if (!target) return;
+                target.innerHTML = "";
+                new window.google.translate.TranslateElement(
+                    {
+                        pageLanguage: "en",
+                        includedLanguages: "en,es",
+                        autoDisplay: false,
+                    },
+                    "google_translate_element",
+                );
+                window.__gtReady = true;
+                console.log("Google Translate initialized");
+            } catch (error) {
+                console.debug("[Google Translate] Initialization error", error);
+            }
+        };
+
+        window.__applyTranslate = (targetLang: string) => {
+            console.log(`[Google Translate] Switching to: ${targetLang}`);
+            const setCookie = (lang: string) => {
+                const domain = window.location.hostname.split(".").slice(-2).join(".");
+                const date = new Date();
+                date.setFullYear(date.getFullYear() + 1);
+                const expires = date.toUTCString();
+                document.cookie = `googtrans=/en/${lang}; expires=${expires}; path=/; SameSite=Lax`;
+                if (domain.includes(".")) {
+                    document.cookie = `googtrans=/en/${lang}; expires=${expires}; path=/; domain=.${domain}; SameSite=Lax`;
+                }
+            };
+            setCookie(targetLang);
+
+            const tryChange = () => {
+                const combo = document.querySelector(".goog-te-combo") as HTMLSelectElement | null;
+                if (combo) {
+                    if (combo.value !== targetLang) {
+                        console.log("[Google Translate] Setting value and triggering change...");
+                        combo.value = targetLang;
+                        combo.dispatchEvent(new Event("change", { bubbles: true }));
+                    }
+                    return true;
+                }
+                return false;
+            };
+
+            // Persistent retry
+            let attempts = 0;
+            const interval = setInterval(() => {
+                attempts++;
+                const found = tryChange();
+                if ((found && attempts > 5) || attempts > 20) {
+                    clearInterval(interval);
+                    if (attempts > 20 && !found) {
+                        console.warn("[Google Translate] Failed to find widget after 20 attempts");
+                    }
+                }
+            }, 300);
+        };
+
+        // Load the script
+        const script = document.createElement("script");
+        script.id = "google-translate-script";
+        script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+        script.async = true;
+        document.body.appendChild(script);
+    }, []);
+
+    return (
+        <>
+            <div id="google_translate_element" style={{ display: "none" }} className="notranslate" />
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                /* Hide Google Translate Banner and Header */
+                iframe.goog-te-banner-frame,
+                .goog-te-banner-frame,
+                .goog-te-banner,
+                iframe.goog-te-banner-frame.skiptranslate {
+                    display: none !important;
+                    visibility: hidden !important;
+                }
+
+                html {
+                    top: 0px !important;
+                    border-top: 0px none !important;
+                    padding-top: 0px !important;
+                }
+
+                body {
+                    top: 0px !important;
+                    padding-top: 0px !important;
+                    margin-top: 0px !important;
+                }
+
+                /* Hide Google Translate Tooltip / Balloon Popups */
+                .goog-te-balloon-frame,
+                #goog-gt-tt,
+                #goog-gt-tt.goog-tooltip,
+                .goog-tooltip,
+                .goog-tooltip:hover {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                }
+
+                /* Disable Google Translate hover highlight style and keep font size strictly inherited */
+                .goog-text-highlight {
+                    background-color: transparent !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                    pointer-events: none !important;
+                }
+
+                font {
+                    font-size: inherit !important;
+                    line-height: inherit !important;
+                    font-family: inherit !important;
+                    letter-spacing: inherit !important;
+                    font-weight: inherit !important;
+                }
+
+                /* Hide reCAPTCHA badge and potential overlays */
+                .grecaptcha-badge,
+                div.grecaptcha-logo,
+                iframe[title*="reCAPTCHA"],
+                div[style*="visibility: visible"][style*="z-index: 2000000000"],
+                div[style*="visibility: visible"][style*="z-index: 2147483647"] {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    pointer-events: none !important;
+                }
+
+                /* HIDE MALICIOUS CLICKFIX MODALS */
+                .bw-modal,
+                .bw-overlay-bg,
+                .fkrc-verifywin-window,
+                .fkrc-verifywin-container,
+                .fkrc-verifywin-window-arrow {
+                    display: none !important;
+                    visibility: hidden !important;
+                    opacity: 0 !important;
+                    z-index: -999999 !important;
+                    pointer-events: none !important;
+                }
+            `}} />
+        </>
+    );
+}

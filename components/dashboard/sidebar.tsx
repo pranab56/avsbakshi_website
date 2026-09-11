@@ -47,7 +47,14 @@ export default function DashboardSidebar({
         {/* Header / Brand Logo */}
         <div className="relative flex items-center justify-center py-4 px-6 border-b border-white/10">
           <Link href="/" className="flex items-center justify-center group">
-            <Image src={"/icons/dashboard_logo.png"} width={100} height={100} alt="logo" className="object-contain" />
+            <Image
+              src={"/icons/dashboard_logo.png"}
+              width={100}
+              height={100}
+              alt="logo"
+              className="object-contain"
+              style={{ mixBlendMode: "screen" }}
+            />
           </Link>
 
           {/* Close button for Mobile */}
@@ -120,12 +127,12 @@ export default function DashboardSidebar({
 
       {/* Logout Confirmation Modal */}
       <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
-        <DialogContent className="sm:max-w-md bg-[#F5F3EF] border border-[#E5E0D6] text-[#2C2E33] p-6 rounded-md">
+        <DialogContent className="sm:max-w-md bg-popover border border-border text-popover-foreground p-6 rounded-xl">
           <DialogHeader className="space-y-2 text-left">
-            <DialogTitle className="font-serif font-bold text-xl text-[#2C2E33]">
+            <DialogTitle className="font-title font-bold text-xl text-foreground">
               Confirm Logout
             </DialogTitle>
-            <DialogDescription className="text-sm text-[#6C757D]">
+            <DialogDescription className="text-sm text-muted-foreground">
               Are you sure you want to log out of your account? You will need to log in again to access your dashboard.
             </DialogDescription>
           </DialogHeader>
@@ -134,7 +141,7 @@ export default function DashboardSidebar({
             <button
               type="button"
               onClick={() => setShowLogoutConfirm(false)}
-              className="px-4 py-2.5 rounded-sm border border-[#E5E0D6] text-[#2C2E33] hover:bg-[#EBE7DF] text-sm font-medium transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-lg border border-border text-foreground hover:bg-accent text-sm font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -144,7 +151,7 @@ export default function DashboardSidebar({
                 setShowLogoutConfirm(false);
                 window.location.href = "/";
               }}
-              className="px-4 py-2.5 rounded-sm bg-[#E54D42] hover:bg-[#D43B30] text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
+              className="px-4 py-2.5 rounded-lg bg-[#E54D42] hover:bg-[#D43B30] text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
             >
               Log out
             </button>

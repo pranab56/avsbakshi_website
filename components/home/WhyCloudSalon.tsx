@@ -25,18 +25,18 @@ export default function WhyCloudSalon() {
   ];
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
         {/* Left Column: Info & Reasons List */}
-        <div className="lg:col-span-6 space-y-8">
+        <div className="lg:col-span-6 space-y-6 sm:space-y-8">
           <div>
-            <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-3">
+            <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
               WHY CLOUD SALON
             </span>
-            <h2 className="font-title text-3xl sm:text-5xl font-normal text-[#1A1A1A] leading-[1.15] mb-4">
+            <h2 className="font-title text-2xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-[1.15] mb-3 sm:mb-4">
               Beauty discovery, built different.
             </h2>
-            <p className="text-xs sm:text-sm text-[#666159] font-normal leading-relaxed max-w-md">
+            <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">
               We built Cloud Salon because finding and booking great beauty services should be as easy as ordering a coffee.
             </p>
           </div>
@@ -45,14 +45,14 @@ export default function WhyCloudSalon() {
           <div className="space-y-6">
             {reasons.map((item, idx) => (
               <div key={idx} className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-sm bg-[#E4DACB] text-[#B78735] flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                  <CheckCheck className="w-5 h-5 text-[#B78735]" strokeWidth={2.5} />
+                <div className="w-11 h-11 rounded-xl bg-accent text-primary flex items-center justify-center shrink-0 mt-0.5 border border-border/50 shadow-xs">
+                  <CheckCheck className="w-5 h-5 text-primary" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm sm:text-base text-[#1A1A1A] mb-0.5">
+                  <h4 className="font-semibold text-sm sm:text-base text-foreground mb-0.5">
                     {item.title}
                   </h4>
-                  <p className="text-xs sm:text-sm text-[#666159] font-normal leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
                     {item.desc}
                   </p>
                 </div>

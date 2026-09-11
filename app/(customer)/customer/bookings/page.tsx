@@ -12,7 +12,7 @@ export default function CustomerBookingsPage() {
       stylistName: "James Chen",
       service: "Balayage & Toner",
       dateTime: "Mon 19 Aug · 2:30 PM",
-      price: "from £40",
+      price: "from $40",
       image:
         "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80",
     },
@@ -21,7 +21,7 @@ export default function CustomerBookingsPage() {
       stylistName: "James Chen",
       service: "Balayage & Toner",
       dateTime: "Mon 19 Aug · 2:30 PM",
-      price: "from £74",
+      price: "from $74",
       image:
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
     },
@@ -33,7 +33,7 @@ export default function CustomerBookingsPage() {
       stylistName: "James Chen",
       service: "Balayage & Toner",
       dateTime: "Mon 19 Aug · 2:30 PM",
-      price: "from £40",
+      price: "from $40",
       image:
         "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80",
     },
@@ -42,7 +42,7 @@ export default function CustomerBookingsPage() {
       stylistName: "James Chen",
       service: "Balayage & Toner",
       dateTime: "Mon 19 Aug · 2:30 PM",
-      price: "from £74",
+      price: "from $74",
       image:
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
     },
@@ -55,41 +55,43 @@ export default function CustomerBookingsPage() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
           My Bookings
         </h1>
-        <p className="text-xs sm:text-sm text-[#787570] font-normal tracking-wide">
+        <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
           Find your bookings lists
         </p>
       </div>
 
       {/* Tabs Bar */}
-      <div className="border-b border-[#E3DDD3] flex items-center gap-8 text-sm">
+      <div className="border-b border-border flex items-center gap-8 text-sm">
         <button
           type="button"
           onClick={() => setActiveTab("upcoming")}
-          className={`pb-2.5 font-medium transition-all cursor-pointer relative ${activeTab === "upcoming"
-              ? "text-[#A27933]"
-              : "text-[#787570] hover:text-[#2C2E33]"
-            }`}
+          className={`pb-2.5 font-medium transition-all cursor-pointer relative ${
+            activeTab === "upcoming"
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
         >
           Upcoming
           {activeTab === "upcoming" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#A27933] rounded-full" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
           )}
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("past")}
-          className={`pb-2.5 font-medium transition-all cursor-pointer relative ${activeTab === "past"
-              ? "text-[#A27933]"
-              : "text-[#787570] hover:text-[#2C2E33]"
-            }`}
+          className={`pb-2.5 font-medium transition-all cursor-pointer relative ${
+            activeTab === "past"
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
         >
           Past
           {activeTab === "past" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#A27933] rounded-full" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
           )}
         </button>
       </div>
@@ -99,11 +101,11 @@ export default function CustomerBookingsPage() {
         {currentBookings.map((booking) => (
           <div
             key={booking.id}
-            className="bg-[#FDFDFD] border border-gray-200 rounded-lg p-2 sm:p-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all"
+            className="bg-card border border-border rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all shadow-xs"
           >
             <div className="flex items-center gap-4">
               {/* Thumbnail Image */}
-              <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-sm overflow-hidden shrink-0 bg-[#E0D9CE]">
+              <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-sm overflow-hidden shrink-0 bg-accent">
                 <Image
                   src={booking.image}
                   alt={booking.stylistName}
@@ -115,15 +117,15 @@ export default function CustomerBookingsPage() {
 
               {/* Booking Info */}
               <div className="space-y-1">
-                <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2C2E33] leading-tight">
+                <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground leading-tight">
                   {booking.stylistName}
                 </h3>
-                <p className="text-[#A27933] font-medium text-xs sm:text-sm">
+                <p className="text-primary font-medium text-xs sm:text-sm">
                   {booking.service}
                 </p>
-                <p className="text-xs sm:text-sm text-[#787570] flex items-center gap-2">
+                <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
                   <span>{booking.dateTime}</span>
-                  <span className="font-serif italic font-bold text-[#A27933] text-sm sm:text-base ml-1">
+                  <span className="font-serif italic font-bold text-primary text-sm sm:text-base ml-1">
                     {booking.price}
                   </span>
                 </p>
@@ -134,7 +136,7 @@ export default function CustomerBookingsPage() {
             <div className="sm:self-center">
               <button
                 type="button"
-                className="w-full sm:w-auto px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer"
+                className="w-full sm:w-auto px-6 py-3 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer"
               >
                 {activeTab === "upcoming" ? "Reschedule" : "Re-Book"}
               </button>

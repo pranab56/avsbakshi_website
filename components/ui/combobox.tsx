@@ -8,6 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 export interface ComboboxOption {
   value: string;
   label: string;
+  description?: string;
+  icon?: React.ComponentType<{ className?: string }>;
 }
 
 interface ComboboxProps {
@@ -20,6 +22,10 @@ interface ComboboxProps {
   error?: boolean;
   disabled?: boolean;
   className?: string;
+  triggerClassName?: string;
+  contentClassName?: string;
+  prefix?: React.ReactNode;
+  align?: 'start' | 'center' | 'end';
 }
 
 export function Combobox({
@@ -32,79 +38,126 @@ export function Combobox({
   error,
   disabled,
   className,
+  triggerClassName,
+  contentClassName,
+  prefix,
+  align = 'end',
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
 
   const selected = options.find((o) => o.value === value);
   const filtered = searchable
-    ? options.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
+    ? options.filter(
+        (o) =>
+          o.label.toLowerCase().includes(search.toLowerCase()) ||
+          (o.description && o.description.toLowerCase().includes(search.toLowerCase()))
+      )
     : options;
+
+  const SelectedIcon = selected?.icon;
 
   return (
     <Popover open={disabled ? false : open} onOpenChange={disabled ? undefined : setOpen}>
       <PopoverTrigger
         disabled={disabled}
         className={cn(
-          'h-12 w-full rounded-sm px-4 text-sm font-medium flex items-center justify-between gap-2 outline-none transition-all border',
-          disabled
-            ? 'bg-gray-100 border-transparent text-neutral-2/40 cursor-not-allowed opacity-60'
-            : error
-              ? 'bg-red-50/30 border-red-400 cursor-pointer'
-              : 'bg-[#F6F6F6] border-transparent hover:border-gray-200 cursor-pointer',
-          !disabled && (selected ? 'text-neutral-1' : 'text-neutral-2/60'),
+          'inline-flex items-center justify-between gap-2.5 outline-none transition-all cursor-pointer border select-none',
+          triggerClassName ||
+            cn(
+              'h-11 w-full rounded-lg px-3.5 text-sm font-medium',
+              disabled
+                ? 'bg-muted text-muted-foreground/50 cursor-not-allowed border-transparent opacity-60'
+                : error
+                  ? 'bg-destructive/10 border-destructive text-foreground'
+                  : 'bg-card border-border hover:bg-accent text-foreground'
+            ),
           className
         )}
       >
-        <span>{selected ? selected.label : placeholder}</span>
+        <div className="flex items-center gap-2 truncate">
+          {prefix}
+          {SelectedIcon && <SelectedIcon className="w-4 h-4 text-primary shrink-0" />}
+          <span className="truncate">{selected ? selected.label : placeholder}</span>
+        </div>
         <ChevronDown
-          size={15}
-          className={cn('shrink-0 text-neutral-2/60 transition-transform duration-200', open && 'rotate-180')}
+          className={cn(
+            'w-3.5 h-3.5 shrink-0 transition-transform duration-200 opacity-70',
+            open && 'rotate-180'
+          )}
         />
       </PopoverTrigger>
       <PopoverContent
         side="bottom"
-        align="start"
-        sideOffset={4}
-        className="w-(--anchor-width) min-w-0 p-0 rounded-sm border border-gray-100 shadow-md overflow-hidden"
+        align={align}
+        sideOffset={6}
+        className={cn(
+          'w-auto min-w-[180px] max-w-[320px] p-0 rounded-xl border border-border bg-popover text-popover-foreground shadow-xl overflow-hidden z-50',
+          contentClassName
+        )}
       >
         {searchable && (
-          <div className="flex items-center gap-2 px-3 py-2.5 border-b border-gray-100 bg-gray-50/50">
-            <Search size={13} className="text-neutral-2/60 shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-accent/30">
+            <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
             <input
-              ref={(el) => { if (el) el.focus({ preventScroll: true }); }}
+              ref={(el) => {
+                if (el) el.focus({ preventScroll: true });
+              }}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
-              className="flex-1 text-sm outline-none bg-transparent text-neutral-1 font-medium placeholder:text-neutral-2/50"
+              className="flex-1 text-xs outline-none bg-transparent text-foreground font-medium placeholder:text-muted-foreground"
             />
           </div>
         )}
-        <ul className="max-h-52 overflow-y-auto py-1">
-          {filtered.map((option) => (
-            <li
-              key={option.value}
-              onMouseDown={() => {
-                onChange(option.value);
-                setSearch('');
-                setOpen(false);
-              }}
-              className={cn(
-                'flex items-center justify-between px-4 py-2.5 text-sm font-medium cursor-pointer transition-colors select-none',
-                option.value === value
-                  ? 'bg-primary/5 text-primary'
-                  : 'text-neutral-1 hover:bg-gray-50'
-              )}
-            >
-              <span>{option.label}</span>
-              {option.value === value && <Check size={13} className="text-primary shrink-0" />}
-            </li>
-          ))}
+        <ul className="max-h-60 overflow-y-auto py-1">
+          {filtered.map((option) => {
+            const Icon = option.icon;
+            const isSelected = option.value === value;
+            return (
+              <li
+                key={option.value}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  onChange(option.value);
+                  setSearch('');
+                  setOpen(false);
+                }}
+                className={cn(
+                  'flex items-center justify-between px-3.5 py-2.5 text-xs font-medium cursor-pointer transition-colors select-none gap-3',
+                  isSelected
+                    ? 'bg-primary/10 text-primary font-semibold'
+                    : 'text-popover-foreground hover:bg-accent'
+                )}
+              >
+                <div className="flex items-center gap-2.5 truncate">
+                  {Icon && (
+                    <Icon
+                      className={cn(
+                        'w-4 h-4 shrink-0',
+                        isSelected ? 'text-primary' : 'text-muted-foreground'
+                      )}
+                    />
+                  )}
+                  <div className="flex flex-col text-left truncate">
+                    <span className="truncate">{option.label}</span>
+                    {option.description && (
+                      <span className="text-[10px] text-muted-foreground font-normal truncate">
+                        {option.description}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                {isSelected && <Check className="w-3.5 h-3.5 text-primary shrink-0 ml-auto" />}
+              </li>
+            );
+          })}
           {filtered.length === 0 && (
-            <li className="px-4 py-3 text-sm text-neutral-2/60 text-center">No results found</li>
+            <li className="px-4 py-3 text-xs text-muted-foreground text-center">No results found</li>
           )}
         </ul>
       </PopoverContent>
     </Popover>
   );
 }
+

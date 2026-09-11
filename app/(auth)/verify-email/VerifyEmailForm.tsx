@@ -96,7 +96,15 @@ export default function VerifyEmailForm() {
         alt="Cloud Salon Logo"
         width={80}
         height={80}
-        className="object-contain mx-auto"
+        className="object-contain mx-auto block dark:hidden"
+      />
+      <Image
+        src="/icons/logo.png"
+        alt="Cloud Salon Logo"
+        width={80}
+        height={80}
+        className="object-contain mx-auto hidden dark:block"
+        style={{ mixBlendMode: "screen" }}
       />
 
       <div className="w-12 h-12 rounded-full bg-[#B78735]/10 text-[#B78735] flex items-center justify-center mx-auto">

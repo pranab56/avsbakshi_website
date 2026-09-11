@@ -2,19 +2,42 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
-import { Suspense } from "react";
+import { ArrowLeft, User, Scissors, Building2 } from "lucide-react";
+import { Suspense, useState } from "react";
+import { Combobox } from "@/components/ui/combobox";
+
+const roles = [
+  {
+    value: "customer",
+    label: "Customer",
+    description: "Book beauty services",
+    icon: User,
+  },
+  {
+    value: "professional",
+    label: "Professional",
+    description: "Offer your skills & services",
+    icon: Scissors,
+  },
+  {
+    value: "business",
+    label: "Business / Salon Owner",
+    description: "Manage your salon",
+    icon: Building2,
+  },
+];
 
 const registerSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
   phone: z.string().min(1, "Phone number is required").min(10, "Please enter a valid phone number"),
+  role: z.string().min(1, "Please select a role"),
   password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
 });
 
@@ -22,12 +45,12 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 function RegisterFormContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const role = searchParams.get("role") || "customer";
+  const [selectedRole, setSelectedRole] = useState(roles[0]);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -36,23 +59,24 @@ function RegisterFormContent() {
       lastName: "",
       email: "",
       phone: "",
+      role: "customer",
       password: "",
     },
   });
 
   const onSubmit = (data: RegisterFormValues) => {
     toast.success("Account details saved! Please verify your phone number.");
-    router.push(`/verify-otp?email=${encodeURIComponent(data.email)}&phone=${encodeURIComponent(data.phone)}`);
+    router.push(`/verify-otp?email=${encodeURIComponent(data.email)}&phone=${encodeURIComponent(data.phone)}&role=${encodeURIComponent(data.role)}`);
   };
 
   return (
     <div className="max-w-lg mx-auto w-full space-y-6">
       <Link
-        href="/select-role"
+        href="/login"
         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#B78735] transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back
+        Back to Login
       </Link>
 
       <div className="space-y-3">
@@ -61,14 +85,22 @@ function RegisterFormContent() {
           alt="Cloud Salon Logo"
           width={80}
           height={80}
-          className="object-contain"
+          className="object-contain block dark:hidden"
+        />
+        <Image
+          src="/icons/logo.png"
+          alt="Cloud Salon Logo"
+          width={80}
+          height={80}
+          className="object-contain hidden dark:block"
+          style={{ mixBlendMode: "screen" }}
         />
         <div className="space-y-1">
-          <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+          <h1 className="font-title text-3xl font-bold text-foreground">
             Create your account
           </h1>
-          <p className="text-xs text-zinc-500 capitalize">
-            Signing up as <span className="font-semibold text-[#B78735]">{role}</span>
+          <p className="text-xs text-muted-foreground">
+            Join The Cloud Salon and get started today.
           </p>
         </div>
       </div>
@@ -81,7 +113,7 @@ function RegisterFormContent() {
             toast.success("Google signup successful!");
             router.push("/verify-otp");
           }}
-          className="w-full py-3 px-4 bg-white border border-[#E5E0D6] rounded-sm text-xs font-semibold text-[#1A1A1A] flex items-center justify-center gap-2 hover:bg-[#F5F3EF] transition-colors shadow-sm cursor-pointer"
+          className="w-full py-3 px-4 bg-card border border-border rounded-xl text-xs font-semibold text-foreground flex items-center justify-center gap-2 hover:bg-accent transition-colors shadow-xs cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -98,7 +130,7 @@ function RegisterFormContent() {
             toast.success("Facebook signup successful!");
             router.push("/verify-otp");
           }}
-          className="w-full py-3 px-4 bg-white border border-[#E5E0D6] rounded-sm text-xs font-semibold text-[#1A1A1A] flex items-center justify-center gap-2 hover:bg-[#F5F3EF] transition-colors shadow-sm cursor-pointer"
+          className="w-full py-3 px-4 bg-card border border-border rounded-xl text-xs font-semibold text-foreground flex items-center justify-center gap-2 hover:bg-accent transition-colors shadow-xs cursor-pointer"
         >
           <svg className="w-4 h-4 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -108,8 +140,8 @@ function RegisterFormContent() {
       </div>
 
       <div className="relative flex items-center justify-center">
-        <div className="border-t border-[#E5E0D6] w-full" />
-        <span className="bg-[#FAF9F5] px-3 text-[10px] text-zinc-400 font-medium tracking-wider uppercase absolute">
+        <div className="border-t border-border w-full" />
+        <span className="bg-background px-3 text-[10px] text-muted-foreground font-medium tracking-wider uppercase absolute">
           or register with email
         </span>
       </div>
@@ -118,38 +150,36 @@ function RegisterFormContent() {
         {/* First & Last Name */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1 text-left">
-            <label className="text-xs font-semibold text-zinc-700 block">First name</label>
+            <label className="text-xs font-semibold text-foreground block">First name</label>
             <input
               type="text"
               placeholder="First name"
               {...register("firstName")}
-              className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${errors.firstName
-                ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-                : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+              className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.firstName
+                ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+                : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
                 }`}
             />
-            {/* Error directly under input field */}
             {errors.firstName && (
-              <p className="text-red-500 text-[11px] font-medium mt-1">
+              <p className="text-destructive text-[11px] font-medium mt-1">
                 {errors.firstName.message}
               </p>
             )}
           </div>
 
           <div className="space-y-1 text-left">
-            <label className="text-xs font-semibold text-zinc-700 block">Last name</label>
+            <label className="text-xs font-semibold text-foreground block">Last name</label>
             <input
               type="text"
               placeholder="Last name"
               {...register("lastName")}
-              className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${errors.lastName
-                ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-                : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+              className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.lastName
+                ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+                : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
                 }`}
             />
-            {/* Error directly under input field */}
             {errors.lastName && (
-              <p className="text-red-500 text-[11px] font-medium mt-1">
+              <p className="text-destructive text-[11px] font-medium mt-1">
                 {errors.lastName.message}
               </p>
             )}
@@ -158,19 +188,18 @@ function RegisterFormContent() {
 
         {/* Email Field */}
         <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-zinc-700 block">Email address</label>
+          <label className="text-xs font-semibold text-foreground block">Email address</label>
           <input
             type="email"
             placeholder="you@example.com"
             {...register("email")}
-            className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${errors.email
-              ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-              : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.email
+              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
               }`}
           />
-          {/* Error directly under input field */}
           {errors.email && (
-            <p className="text-red-500 text-[11px] font-medium mt-1">
+            <p className="text-destructive text-[11px] font-medium mt-1">
               {errors.email.message}
             </p>
           )}
@@ -178,39 +207,60 @@ function RegisterFormContent() {
 
         {/* Phone Field */}
         <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-zinc-700 block">Phone number</label>
+          <label className="text-xs font-semibold text-foreground block">Phone number</label>
           <input
             type="tel"
             placeholder="+1 234 567 8900"
             {...register("phone")}
-            className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${errors.phone
-              ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-              : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.phone
+              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
               }`}
           />
-          {/* Error directly under input field */}
           {errors.phone && (
-            <p className="text-red-500 text-[11px] font-medium mt-1">
+            <p className="text-destructive text-[11px] font-medium mt-1">
               {errors.phone.message}
+            </p>
+          )}
+        </div>
+
+        {/* Role Dropdown — after phone number */}
+        <div className="space-y-1 text-left">
+          <label className="text-xs font-semibold text-foreground block">I am joining as</label>
+          <input type="hidden" {...register("role")} value={selectedRole.value} />
+          <Combobox
+            options={roles}
+            value={selectedRole.value}
+            onChange={(val) => {
+              const r = roles.find((role) => role.value === val) || roles[0];
+              setSelectedRole(r);
+              setValue("role", r.value, { shouldValidate: true });
+            }}
+            error={!!errors.role}
+            triggerClassName="w-full px-3.5 py-3 rounded-xl border border-border bg-card hover:bg-accent text-foreground text-sm font-medium transition-all"
+            align="start"
+          />
+          {errors.role && (
+            <p className="text-destructive text-[11px] font-medium mt-1">
+              {errors.role.message}
             </p>
           )}
         </div>
 
         {/* Password Field */}
         <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-zinc-700 block">Password</label>
+          <label className="text-xs font-semibold text-foreground block">Password</label>
           <input
             type="password"
             placeholder="••••••••"
             {...register("password")}
-            className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
-              ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-              : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
+              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
               }`}
           />
-          {/* Error directly under input field */}
           {errors.password && (
-            <p className="text-red-500 text-[11px] font-medium mt-1">
+            <p className="text-destructive text-[11px] font-medium mt-1">
               {errors.password.message}
             </p>
           )}
@@ -219,15 +269,15 @@ function RegisterFormContent() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer mt-2"
+          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer mt-2"
         >
-          {isSubmitting ? "Creating account..." : "Continue"}
+          {isSubmitting ? "Creating account..." : "Create Account"}
         </button>
       </form>
 
-      <p className="text-xs text-center text-zinc-500">
+      <p className="text-xs text-center text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/login" className="text-[#B78735] font-semibold hover:underline">
+        <Link href="/login" className="text-primary font-semibold hover:underline">
           Log In
         </Link>
       </p>

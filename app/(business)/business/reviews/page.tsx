@@ -78,20 +78,20 @@ export default function BusinessReviewsPage() {
     <div className="space-y-6 pb-16">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
           Reviews
         </h1>
-        <p className="text-xs sm:text-sm text-[#787570] font-normal tracking-wide">
+        <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
           5 reviews · 4.8 average
         </p>
       </div>
 
       {/* Main Overall Rating Card */}
-      <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-6 sm:p-8 shadow-xs">
+      <div className="bg-card border border-border rounded-lg p-6 sm:p-8 shadow-xs">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Left Rating Overview */}
-          <div className="md:col-span-4 flex flex-col items-center sm:items-start space-y-2 border-b md:border-b-0 md:border-r border-[#E3DDD3]/60 pb-6 md:pb-0 md:pr-8">
-            <div className="font-serif italic font-normal text-5xl sm:text-6xl text-[#2C2E33] leading-none">
+          <div className="md:col-span-4 flex flex-col items-center sm:items-start space-y-2 border-b md:border-b-0 md:border-r border-border pb-6 md:pb-0 md:pr-8">
+            <div className="font-serif italic font-normal text-5xl sm:text-6xl text-foreground leading-none">
               4.9
             </div>
             <div className="flex items-center gap-1 text-[#B78735]">
@@ -102,7 +102,7 @@ export default function BusinessReviewsPage() {
                 />
               ))}
             </div>
-            <p className="text-xs text-[#787570] font-normal pt-1">
+            <p className="text-xs text-muted-foreground font-normal pt-1">
               312 reviews
             </p>
           </div>
@@ -112,21 +112,21 @@ export default function BusinessReviewsPage() {
             {RATING_BREAKDOWN.map((item) => (
               <div
                 key={item.stars}
-                className="flex items-center gap-3 text-xs sm:text-sm text-[#787570]"
+                className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground"
               >
                 <div className="flex items-center gap-1 w-8 shrink-0 font-medium">
                   <span>{item.stars}</span>
                   <Star className="w-3.5 h-3.5 fill-[#B78735] text-[#B78735]" />
                 </div>
 
-                <div className="flex-1 h-2 bg-[#E8E4DD] rounded-full overflow-hidden relative">
+                <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden relative border border-border/40">
                   <div
                     className="h-full bg-[#B78735] rounded-full transition-all duration-500"
                     style={{ width: `${item.percentage}%` }}
                   />
                 </div>
 
-                <span className="w-10 text-right font-medium text-[#2C2E33] shrink-0">
+                <span className="w-10 text-right font-medium text-foreground shrink-0">
                   {item.percentage}%
                 </span>
               </div>
@@ -137,25 +137,25 @@ export default function BusinessReviewsPage() {
 
       {/* 3 Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
+          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             4.9
           </div>
-          <p className="text-xs text-[#787570] font-normal">Communication</p>
+          <p className="text-xs text-muted-foreground font-normal">Communication</p>
         </div>
 
-        <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
+          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             5.0
           </div>
-          <p className="text-xs text-[#787570] font-normal">Skill</p>
+          <p className="text-xs text-muted-foreground font-normal">Skill</p>
         </div>
 
-        <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
+          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             4.7
           </div>
-          <p className="text-xs text-[#787570] font-normal">Value</p>
+          <p className="text-xs text-muted-foreground font-normal">Value</p>
         </div>
       </div>
 
@@ -164,12 +164,12 @@ export default function BusinessReviewsPage() {
         {REVIEWS_DATA.map((review) => (
           <div
             key={review.id}
-            className="bg-white border border-[#E3DDD3]/70 rounded-lg p-6 space-y-3.5 shadow-xs hover:border-[#B78735]/40 transition-colors"
+            className="bg-card border border-border rounded-lg p-6 space-y-3.5 shadow-xs hover:border-[#B78735]/40 transition-colors"
           >
             {/* Header: User & Rating & Date */}
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#E0D9CE] shrink-0 border border-[#E3DDD3]/70">
+                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-secondary shrink-0 border border-border">
                   <Image
                     src={review.clientAvatar}
                     alt={review.clientName}
@@ -181,12 +181,12 @@ export default function BusinessReviewsPage() {
 
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-serif font-bold text-base sm:text-lg text-[#2C2E33]">
+                    <h3 className="font-serif font-bold text-base sm:text-lg text-foreground">
                       {review.clientName}
                     </h3>
                     {review.verified && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#E8F3EA] text-[#2E6B38] border border-[#C5E1CA] text-[10px] font-bold rounded-full uppercase tracking-wider">
-                        <CheckCircle2 className="w-3 h-3 text-[#2E6B38]" />
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold rounded-full uppercase tracking-wider">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                         VERIFIED
                       </span>
                     )}
@@ -206,7 +206,7 @@ export default function BusinessReviewsPage() {
 
               {/* Right Side: Date & Service */}
               <div className="text-right shrink-0">
-                <span className="text-xs text-[#787570] block font-normal">
+                <span className="text-xs text-muted-foreground block font-normal">
                   {review.date}
                 </span>
                 <span className="text-xs font-semibold text-[#B78735] block mt-0.5">
@@ -216,7 +216,7 @@ export default function BusinessReviewsPage() {
             </div>
 
             {/* Review Comment Text */}
-            <p className="text-xs sm:text-sm text-[#5C5954] leading-relaxed pt-1">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed pt-1">
               {review.comment}
             </p>
           </div>

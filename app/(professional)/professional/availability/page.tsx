@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Clock } from "lucide-react";
 import { toast } from "sonner";
+import { Combobox } from "@/components/ui/combobox";
 
 interface DaySchedule {
   day: string;
@@ -100,14 +101,14 @@ export default function AvailabilityPage() {
   const totalWeeklyHours = openDaysCount * 9; // average 9 hrs per open day
 
   return (
-    <div className="space-y-6 pb-16 font-sans text-[#1A1A1A]">
+    <div className="space-y-6 pb-16 font-sans text-foreground">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
             Availability
           </h1>
-          <p className="text-xs sm:text-sm text-[#787570] font-normal">
+          <p className="text-xs sm:text-sm text-muted-foreground font-normal">
             Manage your working hours, breaks, and daily schedule
           </p>
         </div>
@@ -116,7 +117,7 @@ export default function AvailabilityPage() {
           type="button"
           onClick={handleSaveChanges}
           disabled={isSaving}
-          className="px-6 py-2.5 bg-[#B78735] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium rounded-sm shadow-xs transition-colors cursor-pointer disabled:opacity-70 active:scale-[0.98] self-start sm:self-auto"
+          className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-medium rounded-sm shadow-xs transition-colors cursor-pointer disabled:opacity-70 active:scale-[0.98] self-start sm:self-auto"
         >
           {isSaving ? "Saving..." : "Save Changes"}
         </button>
@@ -124,35 +125,35 @@ export default function AvailabilityPage() {
 
       {/* Stat Metric Cards matching business-profile overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+        <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors shadow-2xs">
+          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             {openDaysCount} Days
           </div>
-          <p className="text-xs text-[#787570] font-normal">Working Days / Week</p>
+          <p className="text-xs text-muted-foreground font-normal">Working Days / Week</p>
         </div>
 
-        <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+        <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors shadow-2xs">
+          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             {totalWeeklyHours} hrs
           </div>
-          <p className="text-xs text-[#787570] font-normal">Total Weekly Hours</p>
+          <p className="text-xs text-muted-foreground font-normal">Total Weekly Hours</p>
         </div>
 
-        <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+        <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors shadow-2xs">
+          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             {sundayStatus}
           </div>
-          <p className="text-xs text-[#787570] font-normal">Sunday Status</p>
+          <p className="text-xs text-muted-foreground font-normal">Sunday Status</p>
         </div>
       </div>
 
       {/* Schedule Table Container */}
-      <div className="bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden shadow-xs">
+      <div className="bg-card border border-border rounded-lg overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[640px]">
             {/* Table Header */}
             <thead>
-              <tr className="bg-[#F3F0EA] border-b border-[#E3DDD3]/70 text-[11px] font-semibold uppercase tracking-wider text-[#787570]">
+              <tr className="bg-accent border-b border-border text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 <th className="py-3.5 px-6 w-1/4">DAY</th>
                 <th className="py-3.5 px-4 w-1/6">STATUS</th>
                 <th className="py-3.5 px-4 w-1/3">START TIME</th>
@@ -161,21 +162,21 @@ export default function AvailabilityPage() {
             </thead>
 
             {/* Table Body */}
-            <tbody className="divide-y divide-[#E3DDD3]/60 text-xs sm:text-sm">
+            <tbody className="divide-y divide-border text-xs sm:text-sm">
               {schedule.map((item, idx) => (
                 <tr
                   key={item.day}
                   className={`transition-colors ${
                     item.isOpen
-                      ? "bg-white hover:bg-[#FAF8F4]"
-                      : "bg-[#FAF8F4]/60"
+                      ? "bg-card hover:bg-accent/50"
+                      : "bg-accent/40"
                   }`}
                 >
                   {/* Day Column */}
                   <td className="py-4 px-6">
                     <span
                       className={`font-semibold ${
-                        item.isOpen ? "text-[#2C2E33]" : "text-[#787570]"
+                        item.isOpen ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
                       {item.day}
@@ -188,12 +189,12 @@ export default function AvailabilityPage() {
                       type="button"
                       onClick={() => toggleDayOpen(idx)}
                       className={`w-12 h-6 rounded-full p-0.5 transition-colors relative cursor-pointer focus:outline-none ${
-                        item.isOpen ? "bg-[#B78735]" : "bg-[#E5DFD5]"
+                        item.isOpen ? "bg-primary" : "bg-muted"
                       }`}
                       aria-label={`Toggle ${item.day}`}
                     >
                       <div
-                        className={`w-5 h-5 rounded-full bg-white shadow-md transform transition-transform ${
+                        className={`w-5 h-5 rounded-full bg-background shadow-md transform transition-transform ${
                           item.isOpen ? "translate-x-6" : "translate-x-0"
                         }`}
                       />
@@ -205,44 +206,34 @@ export default function AvailabilityPage() {
                     <>
                       {/* Start Time */}
                       <td className="py-4 px-4">
-                        <div className="relative inline-block w-40">
-                          <select
+                        <div className="w-40">
+                          <Combobox
+                            options={TIME_OPTIONS.map((t) => ({ value: t, label: t }))}
                             value={item.start}
-                            onChange={(e) => updateStartTime(idx, e.target.value)}
-                            className="w-full appearance-none bg-[#FAF8F4] hover:border-[#B78735]/60 text-xs font-medium text-[#2C2E33] py-2.5 pl-4 pr-9 rounded-sm border border-[#E3DDD3]/70 focus:outline-none focus:ring-1 focus:ring-[#B78735] focus:border-[#B78735] cursor-pointer transition-colors"
-                          >
-                            {TIME_OPTIONS.map((time) => (
-                              <option key={time} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </select>
-                          <Clock className="w-4 h-4 text-[#787570] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            onChange={(val) => updateStartTime(idx, val)}
+                            triggerClassName="w-full h-10 bg-accent hover:border-primary/60 text-xs font-medium text-foreground px-3 rounded-sm border border-border"
+                            align="start"
+                          />
                         </div>
                       </td>
 
                       {/* End Time */}
                       <td className="py-4 px-6">
-                        <div className="relative inline-block w-40">
-                          <select
+                        <div className="w-40">
+                          <Combobox
+                            options={TIME_OPTIONS.map((t) => ({ value: t, label: t }))}
                             value={item.end}
-                            onChange={(e) => updateEndTime(idx, e.target.value)}
-                            className="w-full appearance-none bg-[#FAF8F4] hover:border-[#B78735]/60 text-xs font-medium text-[#2C2E33] py-2.5 pl-4 pr-9 rounded-sm border border-[#E3DDD3]/70 focus:outline-none focus:ring-1 focus:ring-[#B78735] focus:border-[#B78735] cursor-pointer transition-colors"
-                          >
-                            {TIME_OPTIONS.map((time) => (
-                              <option key={time} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </select>
-                          <Clock className="w-4 h-4 text-[#787570] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            onChange={(val) => updateEndTime(idx, val)}
+                            triggerClassName="w-full h-10 bg-accent hover:border-primary/60 text-xs font-medium text-foreground px-3 rounded-sm border border-border"
+                            align="start"
+                          />
                         </div>
                       </td>
                     </>
                   ) : (
                     /* Day Off Text */
                     <td colSpan={2} className="py-4 px-4">
-                      <span className="text-xs italic text-[#787570] font-serif font-medium bg-[#FAF8F4] px-3 py-1.5 rounded-sm border border-[#E3DDD3]/70 inline-block">
+                      <span className="text-xs italic text-muted-foreground font-serif font-medium bg-accent px-3 py-1.5 rounded-sm border border-border inline-block">
                         Day off
                       </span>
                     </td>

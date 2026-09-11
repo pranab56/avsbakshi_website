@@ -30,10 +30,10 @@ export default function FaqAccordion() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
         {/* Left Column: Title */}
         <div className="md:col-span-5 space-y-3">
-          <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block">
+          <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
             GOOD TO KNOW
           </span>
-          <h2 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-[#1A1A1A]">
+          <h2 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-foreground">
             Questions, answered.
           </h2>
         </div>
@@ -43,16 +43,16 @@ export default function FaqAccordion() {
           {faqs.map((faq, idx) => (
             <div
               key={idx}
-              className="border-b border-[#D8CFC2] py-5 sm:py-6 first:pt-0 transition-colors"
+              className="border-b border-border py-5 sm:py-6 first:pt-0 transition-colors"
             >
               <button
                 type="button"
                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="w-full text-left flex items-center justify-between font-semibold text-base sm:text-lg text-[#1A1A1A] hover:text-[#B78735] transition-colors cursor-pointer"
+                className="w-full text-left flex items-center justify-between font-semibold text-base sm:text-lg text-foreground hover:text-primary transition-colors cursor-pointer"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-5 h-5 text-[#1A1A1A] transition-transform duration-300 shrink-0 ml-4 ${
+                  className={`w-5 h-5 text-foreground transition-transform duration-300 shrink-0 ml-4 ${
                     openFaq === idx ? "rotate-180" : ""
                   }`}
                 />
@@ -65,7 +65,7 @@ export default function FaqAccordion() {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <p className="text-xs sm:text-sm text-[#666159] font-normal leading-relaxed max-w-xl">
+                  <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-xl">
                     {faq.a}
                   </p>
                 </div>
@@ -77,6 +77,7 @@ export default function FaqAccordion() {
     </section>
   );
 }
+
 
 
 

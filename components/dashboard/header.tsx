@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Bell } from "lucide-react";
 import { DashboardConfig } from "./nav-config";
+import ThemeToggle from "@/components/shared/theme-toggle";
 
 interface DashboardHeaderProps {
   config: DashboardConfig;
@@ -30,60 +31,56 @@ export default function DashboardHeader({
   };
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-20 px-4 sm:px-6 lg:px-8 bg-white/95 backdrop-blur-md border-b border-[#E5E0D6] transition-all">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 sm:h-20 px-3 sm:px-6 lg:px-8 bg-background/95 backdrop-blur-md border-b border-border transition-colors duration-200">
       {/* Left: Mobile Toggle & Page Title */}
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
         <button
           onClick={onOpenMobileMenu}
-          className="p-2 rounded-xl text-[#2C2E33] hover:bg-[#F5F3EF] lg:hidden transition-colors cursor-pointer"
+          className="p-2 rounded-xl text-foreground hover:bg-accent lg:hidden transition-colors cursor-pointer shrink-0"
           aria-label="Open navigation sidebar"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-          <h1 className="text-xl sm:text-2xl font-bold font-title text-[#2C2E33]">
+        <div className="flex items-center gap-2 min-w-0">
+          <h1 className="text-base sm:text-xl md:text-2xl font-bold font-title text-foreground truncate max-w-[130px] xs:max-w-[190px] sm:max-w-none">
             {getPageTitle()}
           </h1>
           <span
-            className={`inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full border ${config.roleBadgeColor}`}
+            className={`hidden xs:inline-flex items-center px-2 py-0.5 text-[10px] sm:text-xs font-semibold rounded-full border shrink-0 ${config.roleBadgeColor}`}
           >
             {config.role.toUpperCase()}
           </span>
         </div>
       </div>
 
-      {/* Right: Quick Actions, Notifications, User Profile */}
-      <div className="flex items-center gap-3 sm:gap-4">
-        {/* Action Button */}
-        {/* {config.actionButtonLabel && (
-          <Link
-            href={config.actionButtonHref}
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#B78735] text-white font-medium text-sm hover:bg-[#A0742B] active:scale-[0.98] transition-all duration-200 shadow-md shadow-[#B78735]/20 cursor-pointer"
-          >
-            <span>{config.actionButtonLabel}</span>
-          </Link>
-        )} */}
+      {/* Right: Quick Actions, Theme Toggle, Notifications, User Profile */}
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <ThemeToggle />
 
         {/* Notifications Icon */}
         <Link
           href={`/${config.role}/notifications`}
-          className="relative p-2.5 rounded-xl text-[#2C2E33] hover:bg-[#F5F3EF] border border-transparent hover:border-[#E5E0D6] transition-all cursor-pointer block"
+          className="relative p-2 sm:p-2.5 rounded-xl text-foreground hover:bg-accent border border-transparent hover:border-border transition-all cursor-pointer block shrink-0"
           aria-label="Notifications"
         >
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#B78735] ring-2 ring-white" />
+          <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-2 h-2 rounded-full bg-primary ring-2 ring-background" />
         </Link>
 
         {/* User Profile Avatar */}
-        <div className="flex items-center gap-3 pl-2 sm:pl-3 border-l border-[#E5E0D6]">
-          
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#B78735]/15 text-[#B78735] font-bold text-sm border border-[#B78735]/30">
+        <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l border-border shrink-0">
+          <div
+            className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 text-primary font-bold text-xs sm:text-sm border border-primary/30 notranslate shrink-0 select-none"
+            translate="no"
+          >
             RA
           </div>
           <div className="hidden md:flex flex-col text-left">
-            <span className="text-sm font-semibold text-[#2C2E33]">Rasel</span>
-            <span className="text-xs text-[#6C757D] capitalize">{config.role}</span>
+            <span className="text-sm font-semibold text-foreground notranslate" translate="no">
+              Rasel
+            </span>
+            <span className="text-xs text-muted-foreground capitalize">{config.role}</span>
           </div>
         </div>
       </div>

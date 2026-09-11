@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CheckCircle2, Clock, Plus, Upload, Check, Trash2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { Combobox } from "@/components/ui/combobox";
 
 type TabType = "Overview" | "Edit Profile" | "Location" | "Business Hours" | "Photos";
 
@@ -81,10 +82,10 @@ export default function BusinessProfilePage() {
 
   // Location Form State
   const [locationForm, setLocationForm] = useState({
-    street: "12 Dean Street",
-    city: "London",
-    postcode: "123456",
-    country: "United Kingdom",
+    street: "142 Spring Street",
+    city: "New York",
+    postcode: "10012",
+    country: "United States",
   });
 
   // Business Hours State
@@ -157,16 +158,16 @@ export default function BusinessProfilePage() {
   };
 
   return (
-    <div className="space-y-6 pb-16 font-sans text-[#1A1A1A]">
+    <div className="space-y-6 pb-16 font-sans text-foreground">
       {/* Header Title */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
           Business Profile
         </h1>
       </div>
 
       {/* Tabs Bar */}
-      <div className="border-b border-[#E3DDD3] flex items-center gap-8 text-sm overflow-x-auto">
+      <div className="border-b border-border flex items-center gap-8 text-sm overflow-x-auto">
         {(["Overview", "Edit Profile", "Location", "Business Hours", "Photos"] as TabType[]).map(
           (tab) => (
             <button
@@ -175,13 +176,13 @@ export default function BusinessProfilePage() {
               onClick={() => setActiveTab(tab)}
               className={`pb-2.5 font-medium transition-all cursor-pointer whitespace-nowrap relative ${
                 activeTab === tab
-                  ? "text-[#B78735]"
-                  : "text-[#787570] hover:text-[#2C2E33]"
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {tab}
               {activeTab === tab && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B78735] rounded-full" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
               )}
             </button>
           )
@@ -196,8 +197,8 @@ export default function BusinessProfilePage() {
           {/* Left Column: Hero Card & Metric Cards */}
           <div className="lg:col-span-8 space-y-6">
             {/* Business Hero Card Banner */}
-            <div className="bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden relative shadow-xs">
-              <div className="relative h-56 sm:h-64 w-full bg-[#1C1C1E]">
+            <div className="bg-card border border-border rounded-lg overflow-hidden relative shadow-xs">
+              <div className="relative h-56 sm:h-64 w-full bg-muted">
                 <Image
                   src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1200&q=80"
                   alt="Noir Studio"
@@ -209,7 +210,7 @@ export default function BusinessProfilePage() {
 
                 {/* Banner Overlay Info */}
                 <div className="absolute bottom-6 left-6 flex items-end gap-4 text-white">
-                  <div className="relative w-14 h-14 rounded-md bg-white border border-[#E3DDD3] font-serif font-bold text-2xl flex items-center justify-center text-[#2C2E33] shadow-md shrink-0 overflow-hidden">
+                  <div className="relative w-14 h-14 rounded-md bg-card border border-border font-serif font-bold text-2xl flex items-center justify-center text-foreground shadow-md shrink-0 overflow-hidden">
                     {logoPreview ? (
                       <Image
                         src={logoPreview}
@@ -227,7 +228,7 @@ export default function BusinessProfilePage() {
                       {profileForm.businessName}
                     </h2>
                     <p className="text-xs sm:text-sm text-white/90 drop-shadow-md">
-                      {profileForm.businessType} · Soho, London W1D 3QL
+                      {profileForm.businessType} · Soho, New York, NY 10012
                     </p>
                   </div>
                 </div>
@@ -236,46 +237,46 @@ export default function BusinessProfilePage() {
 
             {/* 6 Metric Stat Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-                <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+              <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/40 transition-colors shadow-2xs">
+                <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
                   247
                 </div>
-                <p className="text-xs text-[#787570] font-normal">Total Reviews</p>
+                <p className="text-xs text-muted-foreground font-normal">Total Reviews</p>
               </div>
 
-              <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-                <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+              <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/40 transition-colors shadow-2xs">
+                <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
                   ★ 4.8
                 </div>
-                <p className="text-xs text-[#787570] font-normal">Avg Rating</p>
+                <p className="text-xs text-muted-foreground font-normal">Avg Rating</p>
               </div>
 
-              <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-                <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+              <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/40 transition-colors shadow-2xs">
+                <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
                   6,420
                 </div>
-                <p className="text-xs text-[#787570] font-normal">Profile Views</p>
+                <p className="text-xs text-muted-foreground font-normal">Profile Views</p>
               </div>
 
-              <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-                <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+              <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/40 transition-colors shadow-2xs">
+                <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
                   6
                 </div>
-                <p className="text-xs text-[#787570] font-normal">Chairs</p>
+                <p className="text-xs text-muted-foreground font-normal">Chairs</p>
               </div>
 
-              <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-                <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+              <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/40 transition-colors shadow-2xs">
+                <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
                   3
                 </div>
-                <p className="text-xs text-[#787570] font-normal">Active Pros</p>
+                <p className="text-xs text-muted-foreground font-normal">Active Pros</p>
               </div>
 
-              <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-5 hover:border-[#B78735]/40 transition-colors shadow-2xs">
-                <div className="font-serif italic text-3xl font-normal text-[#2C2E33] mb-1">
+              <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/40 transition-colors shadow-2xs">
+                <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
                   94%
                 </div>
-                <p className="text-xs text-[#787570] font-normal">Completion</p>
+                <p className="text-xs text-muted-foreground font-normal">Completion</p>
               </div>
             </div>
           </div>
@@ -283,43 +284,43 @@ export default function BusinessProfilePage() {
           {/* Right Column: Business Details & Verified Card */}
           <div className="lg:col-span-4 space-y-5">
             {/* Business Details Card */}
-            <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-6 space-y-4 shadow-xs">
-              <h3 className="font-serif italic font-normal text-lg text-[#2C2E33]">
+            <div className="bg-card border border-border rounded-lg p-6 space-y-4 shadow-xs">
+              <h3 className="font-serif italic font-normal text-lg text-foreground">
                 Business Details
               </h3>
 
-              <div className="divide-y divide-[#E3DDD3]/60 text-xs sm:text-sm">
+              <div className="divide-y divide-border text-xs sm:text-sm">
                 <div className="py-2.5 flex items-center justify-between gap-2">
-                  <span className="text-[#787570]">Phone</span>
-                  <span className="font-medium text-[#2C2E33]">
+                  <span className="text-muted-foreground">Phone</span>
+                  <span className="font-medium text-foreground">
                     {profileForm.phone}
                   </span>
                 </div>
 
                 <div className="py-2.5 flex items-center justify-between gap-2">
-                  <span className="text-[#787570]">Email</span>
-                  <span className="font-medium text-[#2C2E33]">
+                  <span className="text-muted-foreground">Email</span>
+                  <span className="font-medium text-foreground">
                     {profileForm.email}
                   </span>
                 </div>
 
                 <div className="py-2.5 flex items-center justify-between gap-2">
-                  <span className="text-[#787570]">Website</span>
-                  <span className="font-medium text-[#2C2E33]">
+                  <span className="text-muted-foreground">Website</span>
+                  <span className="font-medium text-foreground">
                     {profileForm.website}
                   </span>
                 </div>
 
                 <div className="py-2.5 flex items-center justify-between gap-2">
-                  <span className="text-[#787570]">Instagram</span>
-                  <span className="font-medium text-[#2C2E33]">
+                  <span className="text-muted-foreground">Instagram</span>
+                  <span className="font-medium text-foreground">
                     {profileForm.instagram}
                   </span>
                 </div>
 
                 <div className="py-2.5 flex items-center justify-between gap-2">
-                  <span className="text-[#787570]">Address</span>
-                  <span className="font-medium text-[#2C2E33] text-right">
+                  <span className="text-muted-foreground">Address</span>
+                  <span className="font-medium text-foreground text-right">
                     12 Dean St, Soho, W1D 3QL
                   </span>
                 </div>
@@ -327,15 +328,15 @@ export default function BusinessProfilePage() {
             </div>
 
             {/* Verified Business Callout */}
-            <div className="bg-[#E8F3EA] border border-[#C5E1CA] rounded-lg p-4 flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#2E6B38]/15 flex items-center justify-center text-[#2E6B38] shrink-0 mt-0.5">
-                <CheckCircle2 className="w-5 h-5 text-[#2E6B38]" />
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0 mt-0.5">
+                <CheckCircle2 className="w-5 h-5 text-emerald-500" />
               </div>
               <div className="space-y-0.5">
-                <h4 className="font-bold text-sm text-[#2E6B38]">
+                <h4 className="font-bold text-sm text-emerald-600 dark:text-emerald-400">
                   Verified Business
                 </h4>
-                <p className="text-xs text-[#3E7B48]">
+                <p className="text-xs text-muted-foreground">
                   ID, licence, and insurance confirmed.
                 </p>
               </div>
@@ -348,10 +349,10 @@ export default function BusinessProfilePage() {
       {/* TAB 2: EDIT PROFILE                                               */}
       {/* ----------------------------------------------------------------- */}
       {activeTab === "Edit Profile" && (
-        <div className="max-w-2xl bg-white border border-[#E3DDD3]/70 rounded-lg p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="max-w-2xl bg-card border border-border rounded-lg p-6 sm:p-8 space-y-6 shadow-xs">
           {/* Logo Section with Image Upload & Live Preview */}
-          <div className="flex items-center gap-4 border-b border-[#E3DDD3]/50 pb-6">
-            <div className="relative w-16 h-16 rounded-md bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+          <div className="flex items-center gap-4 border-b border-border pb-6">
+            <div className="relative w-16 h-16 rounded-md bg-muted text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
               {logoPreview ? (
                 <Image
                   src={logoPreview}
@@ -365,7 +366,7 @@ export default function BusinessProfilePage() {
               )}
             </div>
             <div className="space-y-1">
-              <h3 className="font-serif font-bold text-lg text-[#2C2E33]">
+              <h3 className="font-serif font-bold text-lg text-foreground">
                 {profileForm.businessName}
               </h3>
               <input
@@ -378,7 +379,7 @@ export default function BusinessProfilePage() {
               <button
                 type="button"
                 onClick={() => logoInputRef.current?.click()}
-                className="px-4 py-2 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-2xs active:scale-[0.98]"
+                className="px-4 py-2 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors cursor-pointer inline-flex items-center gap-1.5 shadow-2xs active:scale-[0.98]"
               >
                 <Upload className="w-3.5 h-3.5" />
                 <span>Change Logo</span>
@@ -389,7 +390,7 @@ export default function BusinessProfilePage() {
           {/* Form Fields */}
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Business Name
               </label>
               <input
@@ -398,12 +399,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setProfileForm({ ...profileForm, businessName: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Business Type
               </label>
               <input
@@ -412,12 +413,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setProfileForm({ ...profileForm, businessType: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Email
               </label>
               <input
@@ -426,12 +427,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setProfileForm({ ...profileForm, email: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Phone
               </label>
               <input
@@ -440,12 +441,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setProfileForm({ ...profileForm, phone: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Website
               </label>
               <input
@@ -454,12 +455,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setProfileForm({ ...profileForm, website: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Instagram
               </label>
               <input
@@ -468,7 +469,7 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setProfileForm({ ...profileForm, instagram: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
           </div>
@@ -478,7 +479,7 @@ export default function BusinessProfilePage() {
             <button
               type="button"
               onClick={() => handleSave("profile")}
-              className="px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] inline-flex items-center gap-2"
+              className="px-6 py-3 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] inline-flex items-center gap-2"
             >
               {savedFeedback === "profile" ? (
                 <>
@@ -497,10 +498,10 @@ export default function BusinessProfilePage() {
       {/* TAB 3: LOCATION                                                   */}
       {/* ----------------------------------------------------------------- */}
       {activeTab === "Location" && (
-        <div className="max-w-2xl bg-white border border-[#E3DDD3]/70 rounded-lg p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="max-w-2xl bg-card border border-border rounded-lg p-6 sm:p-8 space-y-6 shadow-xs">
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Street Address
               </label>
               <input
@@ -509,12 +510,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setLocationForm({ ...locationForm, street: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 City
               </label>
               <input
@@ -523,12 +524,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setLocationForm({ ...locationForm, city: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Postcode
               </label>
               <input
@@ -537,12 +538,12 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setLocationForm({ ...locationForm, postcode: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Country
               </label>
               <input
@@ -551,7 +552,7 @@ export default function BusinessProfilePage() {
                 onChange={(e) =>
                   setLocationForm({ ...locationForm, country: e.target.value })
                 }
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
           </div>
@@ -560,7 +561,7 @@ export default function BusinessProfilePage() {
             <button
               type="button"
               onClick={() => handleSave("location")}
-              className="px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] inline-flex items-center gap-2"
+              className="px-6 py-3 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] inline-flex items-center gap-2"
             >
               {savedFeedback === "location" ? (
                 <>
@@ -580,9 +581,9 @@ export default function BusinessProfilePage() {
       {/* ----------------------------------------------------------------- */}
       {activeTab === "Business Hours" && (
         <div className="space-y-6">
-          <div className="bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden shadow-xs">
+          <div className="bg-card border border-border rounded-lg overflow-hidden shadow-xs">
             {/* Table Header */}
-            <div className="bg-[#F3F0EA] px-6 py-3.5 grid grid-cols-12 text-[11px] font-bold uppercase tracking-wider text-[#787570] border-b border-[#E3DDD3]/70">
+            <div className="bg-muted/80 px-6 py-3.5 grid grid-cols-12 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border">
               <div className="col-span-4">DAY</div>
               <div className="col-span-2">OPEN</div>
               <div className="col-span-3">START</div>
@@ -590,13 +591,13 @@ export default function BusinessProfilePage() {
             </div>
 
             {/* Table Rows */}
-            <div className="divide-y divide-[#E3DDD3]/60">
+            <div className="divide-y divide-border">
               {hours.map((h, i) => (
                 <div
                   key={h.day}
                   className="px-6 py-4 grid grid-cols-12 items-center text-sm"
                 >
-                  <div className="col-span-4 font-semibold text-[#2C2E33]">
+                  <div className="col-span-4 font-semibold text-foreground">
                     {h.day}
                   </div>
 
@@ -604,47 +605,32 @@ export default function BusinessProfilePage() {
                     <Switch
                       checked={h.open}
                       onCheckedChange={() => toggleHour(i)}
-                      className="data-[state=checked]:bg-[#B78735]"
                     />
                   </div>
 
                   <div className="col-span-3">
                     {h.open ? (
-                      <div className="relative inline-flex items-center">
-                        <select
-                          value={h.start}
-                          onChange={(e) => updateHourTime(i, "start", e.target.value)}
-                          className="bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-3.5 py-2 pr-9 text-xs sm:text-sm font-medium text-[#2C2E33] outline-none cursor-pointer appearance-none focus:ring-1 focus:ring-[#B78735] focus:border-[#B78735] hover:border-[#B78735]/60 transition-colors"
-                        >
-                          {TIME_OPTIONS.map((time) => (
-                            <option key={time} value={time}>
-                              {time}
-                            </option>
-                          ))}
-                        </select>
-                        <Clock className="w-4 h-4 text-[#787570] absolute right-2.5 pointer-events-none" />
-                      </div>
+                      <Combobox
+                        options={TIME_OPTIONS.map((time) => ({ value: time, label: time }))}
+                        value={h.start}
+                        onChange={(val) => updateHourTime(i, "start", val)}
+                        triggerClassName="w-full h-9 bg-accent/50 border border-border rounded-sm px-3 text-xs sm:text-sm font-medium text-foreground"
+                        align="start"
+                      />
                     ) : (
-                      <span className="italic text-xs text-[#787570]">Day off</span>
+                      <span className="italic text-xs text-muted-foreground">Day off</span>
                     )}
                   </div>
 
                   <div className="col-span-3">
                     {h.open ? (
-                      <div className="relative inline-flex items-center">
-                        <select
-                          value={h.end}
-                          onChange={(e) => updateHourTime(i, "end", e.target.value)}
-                          className="bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-3.5 py-2 pr-9 text-xs sm:text-sm font-medium text-[#2C2E33] outline-none cursor-pointer appearance-none focus:ring-1 focus:ring-[#B78735] focus:border-[#B78735] hover:border-[#B78735]/60 transition-colors"
-                        >
-                          {TIME_OPTIONS.map((time) => (
-                            <option key={time} value={time}>
-                              {time}
-                            </option>
-                          ))}
-                        </select>
-                        <Clock className="w-4 h-4 text-[#787570] absolute right-2.5 pointer-events-none" />
-                      </div>
+                      <Combobox
+                        options={TIME_OPTIONS.map((time) => ({ value: time, label: time }))}
+                        value={h.end}
+                        onChange={(val) => updateHourTime(i, "end", val)}
+                        triggerClassName="w-full h-9 bg-accent/50 border border-border rounded-sm px-3 text-xs sm:text-sm font-medium text-foreground"
+                        align="start"
+                      />
                     ) : null}
                   </div>
                 </div>
@@ -656,7 +642,7 @@ export default function BusinessProfilePage() {
             <button
               type="button"
               onClick={() => handleSave("hours")}
-              className="px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] inline-flex items-center gap-2"
+              className="px-6 py-3 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] inline-flex items-center gap-2"
             >
               {savedFeedback === "hours" ? (
                 <>
@@ -689,7 +675,7 @@ export default function BusinessProfilePage() {
             {photos.map((src, i) => (
               <div
                 key={i}
-                className={`relative rounded-lg overflow-hidden bg-[#E0D9CE] border border-[#E3DDD3]/70 group ${
+                className={`relative rounded-lg overflow-hidden bg-muted border border-border group ${
                   i === 0 ? "sm:col-span-2 sm:row-span-2 h-80 sm:h-full min-h-[320px]" : "h-48 sm:h-56"
                 }`}
               >
@@ -714,12 +700,12 @@ export default function BusinessProfilePage() {
             {/* Add Photo Dotted Card */}
             <div
               onClick={() => photoInputRef.current?.click()}
-              className="h-48 sm:h-56 bg-[#FAF8F4] border-2 border-dashed border-[#E3DDD3] rounded-lg flex flex-col items-center justify-center p-6 text-center text-[#787570] cursor-pointer hover:bg-[#F3F0EA] hover:border-[#B78735] transition-all group"
+              className="h-48 sm:h-56 bg-accent/30 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center p-6 text-center text-muted-foreground cursor-pointer hover:bg-accent hover:border-primary transition-all group"
             >
-              <div className="w-10 h-10 rounded-full bg-[#E0D9CE]/60 flex items-center justify-center text-[#787570] mb-2 group-hover:scale-110 group-hover:bg-[#B78735]/15 group-hover:text-[#B78735] transition-all">
+              <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-muted-foreground mb-2 group-hover:scale-110 group-hover:bg-primary/15 group-hover:text-primary transition-all">
                 <Plus className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium text-[#2C2E33] group-hover:text-[#B78735] transition-colors">
+              <span className="text-xs font-medium text-foreground group-hover:text-primary transition-colors">
                 Add Photo
               </span>
             </div>

@@ -1,37 +1,32 @@
-import Link from "next/link";
+import Button from "../shared/Button";
 
 export default function GetStartedCta() {
   return (
-    <section className="bg-[#E6DFD5] py-14 sm:py-28 lg:py-32">
+    <section className="bg-accent/70 py-14 sm:py-28 lg:py-32 border-t border-border">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-3 sm:mb-4">
+        <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3 sm:mb-4">
           GET STARTED
         </span>
 
-        <h2 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal text-[#1A1A1A] leading-[1.15] mb-4">
+        <h2 className="font-title text-2xl sm:text-5xl lg:text-6xl font-normal text-foreground leading-[1.15] mb-3 sm:mb-4">
           Ready for Your Next <br />
-          <span className="font-light italic text-[#B78735]">Appointment?</span>
+          <span className="font-light italic text-primary">Appointment?</span>
         </h2>
 
-        <p className="text-xs sm:text-sm text-[#666159] font-normal leading-relaxed max-w-md mx-auto mb-8">
+        <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md mx-auto mb-6 sm:mb-8">
           Join thousands of customers discovering and booking beauty services they love.
         </p>
 
-        <div className="flex flex-wrap justify-center items-center gap-3">
-          <Link
-            href="/search"
-            className="px-7 py-3.5 bg-[#B78735] hover:bg-[#A37428] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-all hover:scale-[1.02]"
-          >
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 max-w-xs sm:max-w-none mx-auto">
+          <Button href="/search" variant="primary" size="md" className="w-full sm:w-auto">
             Find a Service
-          </Link>
-          <Link
-            href="/discover?tab=professionals"
-            className="px-7 py-3.5 bg-[#E2D8C9] hover:bg-[#D6C9B7] text-[#2C2E33] text-xs sm:text-sm font-semibold rounded-lg transition-all"
-          >
+          </Button>
+          <Button href="/discover?tab=professionals" variant="secondary" size="md" className="w-full sm:w-auto">
             Explore Professionals
-          </Link>
+          </Button>
         </div>
       </div>
     </section>
   );
 }
+

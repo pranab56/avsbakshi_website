@@ -71,14 +71,14 @@ export default function CustomerSettingsPage() {
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+      <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
         Settings
       </h1>
 
       {/* Main Settings Layout (Sidebar Navigation + Tab Content) */}
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left Sidebar Menu */}
-        <div className="w-full md:w-56 lg:w-64 shrink-0 bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden shadow-xs divide-y divide-[#E3DDD3]/70">
+        <div className="w-full md:w-56 lg:w-64 shrink-0 bg-card border border-border rounded-lg overflow-hidden shadow-xs divide-y divide-border">
           {(
             ["Profile", "Notifications", "Privacy", "Security"] as SettingsTab[]
           ).map((tab) => {
@@ -88,10 +88,11 @@ export default function CustomerSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer ${isActive
-                  ? "bg-[#E2DDD3] text-[#B78735] font-medium"
-                  : "text-[#2C2E33] hover:bg-[#E2DDD3]/40 font-normal"
-                  }`}
+                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-primary/15 text-primary font-medium"
+                    : "text-foreground hover:bg-accent font-normal"
+                }`}
               >
                 {tab}
               </button>
@@ -100,19 +101,19 @@ export default function CustomerSettingsPage() {
         </div>
 
         {/* Right Tab Content Card */}
-        <div className="flex-1 w-full bg-white border border-[#E3DDD3]/70 rounded-lg p-6 sm:p-8">
+        <div className="flex-1 w-full bg-card border border-border rounded-lg p-6 sm:p-8">
           {/* ------------------------------------------------------------- */}
           {/* TAB 1: PROFILE INFORMATION */}
           {/* ------------------------------------------------------------- */}
           {activeTab === "Profile" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Profile Information
               </h2>
 
               {/* Avatar Photo Section */}
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-full bg-[#A27933] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+                <div className="relative w-16 h-16 rounded-full bg-primary text-primary-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
                   {avatarPreview ? (
                     <Image
                       src={avatarPreview}
@@ -126,7 +127,7 @@ export default function CustomerSettingsPage() {
                   )}
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-serif font-bold text-lg text-[#2C2E33]">
+                  <h3 className="font-serif font-bold text-lg text-foreground">
                     {profileForm.firstName} {profileForm.lastName}
                   </h3>
                   <input
@@ -139,7 +140,7 @@ export default function CustomerSettingsPage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-1.5 rounded-xl bg-[#DFD9CE] hover:bg-[#D5CEBF] text-[#2C2E33] text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                    className="px-4 py-1.5 rounded-xl bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer border border-border"
                   >
                     Change photo
                   </button>
@@ -149,7 +150,7 @@ export default function CustomerSettingsPage() {
               {/* Form Input Fields Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     First name
                   </label>
                   <input
@@ -158,12 +159,12 @@ export default function CustomerSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, firstName: e.target.value })
                     }
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#A27933]"
+                    className="w-full bg-accent border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Last name
                   </label>
                   <input
@@ -172,12 +173,12 @@ export default function CustomerSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, lastName: e.target.value })
                     }
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#A27933]"
+                    className="w-full bg-accent border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Email
                   </label>
                   <input
@@ -186,12 +187,12 @@ export default function CustomerSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, email: e.target.value })
                     }
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#A27933]"
+                    className="w-full bg-accent border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Phone
                   </label>
                   <input
@@ -200,7 +201,7 @@ export default function CustomerSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, phone: e.target.value })
                     }
-                    className="w-full bg-[#DFD9CE] border-0 rounded-xl px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#A27933]"
+                    className="w-full bg-accent border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -209,7 +210,7 @@ export default function CustomerSettingsPage() {
               <div className="pt-2">
                 <button
                   type="button"
-                  className="px-6 py-3 rounded-lg bg-[#b08a3e] hover:bg-[#9a742f] text-white text-sm font-medium transition-colors cursor-pointer"
+                  className="px-6 py-3 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer"
                 >
                   Save Changes
                 </button>
@@ -222,19 +223,19 @@ export default function CustomerSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Notifications" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Notification Preferences
               </h2>
 
               {/* APPOINTMENTS */}
               <div className="space-y-3">
-                <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
+                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
                   APPOINTMENTS
                 </h3>
 
                 <div className="space-y-2.5">
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Booking confirmations
                     </span>
                     <Switch
@@ -242,12 +243,12 @@ export default function CustomerSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("bookingConfirmations")
                       }
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Appointment reminders
                     </span>
                     <Switch
@@ -255,12 +256,12 @@ export default function CustomerSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("appointmentReminders")
                       }
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Cancellation alerts
                     </span>
                     <Switch
@@ -268,12 +269,12 @@ export default function CustomerSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("cancellationAlerts")
                       }
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Reschedule requests
                     </span>
                     <Switch
@@ -281,7 +282,7 @@ export default function CustomerSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("rescheduleRequests")
                       }
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
                 </div>
@@ -289,24 +290,24 @@ export default function CustomerSettingsPage() {
 
               {/* MESSAGES */}
               <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
+                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
                   MESSAGES
                 </h3>
 
                 <div className="space-y-2.5">
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       New messages from professionals
                     </span>
                     <Switch
                       checked={notifications.newMessages}
                       onCheckedChange={() => toggleNotification("newMessages")}
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Unread message reminders
                     </span>
                     <Switch
@@ -314,7 +315,7 @@ export default function CustomerSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("unreadReminders")
                       }
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
                 </div>
@@ -322,35 +323,35 @@ export default function CustomerSettingsPage() {
 
               {/* PROMOTIONS */}
               <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
+                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
                   PROMOTIONS
                 </h3>
 
                 <div className="space-y-2.5">
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Special offers
                     </span>
                     <Switch
                       checked={notifications.specialOffers}
                       onCheckedChange={() => toggleNotification("specialOffers")}
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Loyalty rewards
                     </span>
                     <Switch
                       checked={notifications.loyaltyRewards}
                       onCheckedChange={() => toggleNotification("loyaltyRewards")}
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       New professionals near you
                     </span>
                     <Switch
@@ -358,7 +359,7 @@ export default function CustomerSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("newProfessionals")
                       }
-                      className="data-[state=checked]:bg-[#A27933]"
+                      className="data-[state=checked]:bg-primary"
                     />
                   </div>
                 </div>
@@ -371,67 +372,67 @@ export default function CustomerSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Privacy" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Privacy Settings
               </h2>
 
-              <div className="divide-y divide-[#E3DDD3]/70 space-y-4">
+              <div className="divide-y divide-border space-y-4">
                 <div className="pt-2 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-[#2C2E33]">
+                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
                       Profile visibility
                     </h4>
-                    <p className="text-xs text-[#787570]">
+                    <p className="text-xs text-muted-foreground">
                       Control who can see your profile information
                     </p>
                   </div>
-                  <span className="bg-[#DFD9CE] text-[#2C2E33] px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
+                  <span className="bg-secondary text-secondary-foreground border border-border px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
                     Private
                   </span>
                 </div>
 
                 <div className="pt-4 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-[#2C2E33]">
+                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
                       Search history
                     </h4>
-                    <p className="text-xs text-[#787570]">
+                    <p className="text-xs text-muted-foreground">
                       Your search and browsing history
                     </p>
                   </div>
-                  <span className="bg-[#DFD9CE] text-[#2C2E33] px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
+                  <span className="bg-secondary text-secondary-foreground border border-border px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
                     Stored for 90 days
                   </span>
                 </div>
 
                 <div className="pt-4 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-[#2C2E33]">
+                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
                       Data usage
                     </h4>
-                    <p className="text-xs text-[#787570]">
+                    <p className="text-xs text-muted-foreground">
                       How we use your data to improve recommendations
                     </p>
                   </div>
-                  <span className="bg-[#DFD9CE] text-[#2C2E33] px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
+                  <span className="bg-secondary text-secondary-foreground border border-border px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
                     Enabled
                   </span>
                 </div>
               </div>
 
               {/* Danger Zone Box */}
-              <div className="bg-[#F6EBEB] border border-[#E9C5C5] rounded-2xl p-5 sm:p-6 space-y-3 mt-8">
-                <h3 className="font-serif font-bold text-lg text-[#C84B4B]">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-5 sm:p-6 space-y-3 mt-8">
+                <h3 className="font-serif font-bold text-lg text-destructive">
                   Danger Zone
                 </h3>
-                <p className="text-xs text-[#8A5A5A] leading-relaxed">
+                <p className="text-xs text-destructive/80 leading-relaxed">
                   Permanently delete your account and all associated data. This
                   action cannot be undone.
                 </p>
                 <div className="pt-1">
                   <button
                     type="button"
-                    className="border border-[#C84B4B] text-[#C84B4B] hover:bg-[#C84B4B] hover:text-white px-5 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                    className="border border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-5 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
                   >
                     Delete Account
                   </button>
@@ -445,14 +446,14 @@ export default function CustomerSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Security" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Security
               </h2>
 
-              <div className="bg-[#F3F0EA]/80 p-5 sm:p-6 rounded-lg space-y-3">
+              <div className="bg-accent p-5 sm:p-6 rounded-lg space-y-3">
                 <div className="space-y-1">
-                  <h4 className="font-bold text-sm text-[#2C2E33]">Password</h4>
-                  <p className="text-xs text-[#787570]">
+                  <h4 className="font-bold text-sm text-foreground">Password</h4>
+                  <p className="text-xs text-muted-foreground">
                     Last changed 3 months ago
                   </p>
                 </div>
@@ -460,7 +461,7 @@ export default function CustomerSettingsPage() {
                   <button
                     type="button"
                     onClick={() => setShowPasswordModal(true)}
-                    className="px-5 py-2.5 rounded-lg bg-[#B78735] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                    className="px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer"
                   >
                     Change Password
                   </button>
@@ -473,12 +474,12 @@ export default function CustomerSettingsPage() {
 
       {/* Change Password Dialog Modal */}
       <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
-        <DialogContent className="sm:max-w-md bg-[#FFFDF9] border border-[#E3DDD3]/70 text-[#2C2E33] p-6 rounded-lg shadow-lg">
+        <DialogContent className="sm:max-w-md bg-card border border-border text-foreground p-6 rounded-lg shadow-lg">
           <DialogHeader className="space-y-1.5 text-left">
-            <DialogTitle className="font-serif font-bold text-xl text-[#2C2E33]">
+            <DialogTitle className="font-serif font-bold text-xl text-foreground">
               Change Password
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#787570]">
+            <DialogDescription className="text-xs text-muted-foreground">
               Enter your current password and a new password to update your account.
             </DialogDescription>
           </DialogHeader>
@@ -519,7 +520,7 @@ export default function CustomerSettingsPage() {
           >
             {/* Old Password Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Old password
               </label>
               <input
@@ -531,11 +532,12 @@ export default function CustomerSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                 }}
                 placeholder="Enter current password"
-                className={`w-full bg-[#FAF8F4] border ${passwordErrors.oldPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                  } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-accent border ${
+                  passwordErrors.oldPassword ? "border-destructive" : "border-border"
+                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.oldPassword && (
-                <p className="text-[11px] text-[#DC3545] font-medium mt-1">
+                <p className="text-[11px] text-destructive font-medium mt-1">
                   {passwordErrors.oldPassword}
                 </p>
               )}
@@ -543,7 +545,7 @@ export default function CustomerSettingsPage() {
 
             {/* New Password Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 New password
               </label>
               <input
@@ -555,11 +557,12 @@ export default function CustomerSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                 }}
                 placeholder="Enter new password"
-                className={`w-full bg-[#FAF8F4] border ${passwordErrors.newPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                  } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-accent border ${
+                  passwordErrors.newPassword ? "border-destructive" : "border-border"
+                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.newPassword && (
-                <p className="text-[11px] text-[#DC3545] font-medium mt-1">
+                <p className="text-[11px] text-destructive font-medium mt-1">
                   {passwordErrors.newPassword}
                 </p>
               )}
@@ -567,7 +570,7 @@ export default function CustomerSettingsPage() {
 
             {/* Confirm Password Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Confirm password
               </label>
               <input
@@ -579,11 +582,12 @@ export default function CustomerSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                 }}
                 placeholder="Confirm new password"
-                className={`w-full bg-[#FAF8F4] border ${passwordErrors.confirmPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                  } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-accent border ${
+                  passwordErrors.confirmPassword ? "border-destructive" : "border-border"
+                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.confirmPassword && (
-                <p className="text-[11px] text-[#DC3545] font-medium mt-1">
+                <p className="text-[11px] text-destructive font-medium mt-1">
                   {passwordErrors.confirmPassword}
                 </p>
               )}
@@ -596,13 +600,13 @@ export default function CustomerSettingsPage() {
                   setShowPasswordModal(false);
                   setPasswordErrors({ oldPassword: "", newPassword: "", confirmPassword: "" });
                 }}
-                className="px-4 py-2 rounded-sm border border-[#E3DDD3] text-[#2C2E33] hover:bg-[#F3F0EA] text-xs font-medium transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-sm border border-border text-foreground hover:bg-accent text-xs font-medium transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs font-medium transition-colors cursor-pointer"
+                className="px-5 py-2 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors cursor-pointer"
               >
                 Update Password
               </button>

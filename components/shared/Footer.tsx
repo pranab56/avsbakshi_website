@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#18181A] text-white pt-16 sm:pt-20 pb-10 sm:pb-12">
+    <footer className="bg-[#18181A] dark:bg-[#0B0B0C] border-t border-border/30 text-white pt-16 sm:pt-20 pb-10 sm:pb-12 transition-colors duration-200">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navigation Link Columns */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 sm:gap-8 text-sm">
@@ -99,6 +99,7 @@ export default function Footer() {
             </div>
           </div>
 
+
           {/* Column 6: Account */}
           <div className="flex flex-col gap-3">
             <h4 className="font-semibold text-white text-sm sm:text-base">
@@ -117,20 +118,31 @@ export default function Footer() {
 
         {/* Brand Badge & Description */}
         <div className="mt-12 sm:mt-16 mb-12">
-          <div className="bg-white p-2.5 rounded-xl inline-block shadow-sm mb-3">
+          <div className="inline-block mb-3">
+            {/* Light Mode Logo */}
             <Image
               src="/icons/logo.png"
               alt="The Cloud Salon"
               width={160}
               height={40}
-              className="h-9 w-auto object-contain"
+              className="h-9 w-auto object-contain block dark:hidden"
+            />
+            {/* Dark Mode Logo — screen blend makes white background invisible */}
+            <Image
+              src="/icons/logo.png"
+              alt="The Cloud Salon"
+              width={160}
+              height={40}
+              className="h-9 w-auto object-contain hidden dark:block"
+              style={{ mixBlendMode: "screen" }}
             />
           </div>
+
           <p className="text-xs sm:text-sm text-zinc-400 font-normal leading-relaxed max-w-md">
             Discover trusted beauty professionals and salons, and book your next appointment with confidence — all in one place.
           </p>
-        </div>
 
+        </div>
         {/* Bottom Copyright & Legal Row */}
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 text-center sm:text-left">
           <p>© 2026 Cloud Salon Ltd. All rights reserved.</p>

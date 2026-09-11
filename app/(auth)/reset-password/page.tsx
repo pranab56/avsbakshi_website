@@ -80,7 +80,15 @@ function ResetPasswordContent() {
           alt="Cloud Salon Logo"
           width={80}
           height={80}
-          className="object-contain"
+          className="object-contain block dark:hidden"
+        />
+        <Image
+          src="/icons/logo.png"
+          alt="Cloud Salon Logo"
+          width={80}
+          height={80}
+          className="object-contain hidden dark:block"
+          style={{ mixBlendMode: "screen" }}
         />
         <div className="space-y-1.5">
           <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">

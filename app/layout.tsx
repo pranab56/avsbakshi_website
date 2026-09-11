@@ -1,9 +1,10 @@
-import { GoogleTranslateProvider } from "@/components/ui/google-translate";
 import ReduxProvider from "@/components/providers/ReduxProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import type { Metadata } from "next";
 import { Manrope, Fraunces } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { I18nProvider } from "@/components/providers/i18n-provider";
 
 const manrope = Manrope({
   variable: "--font-sans",
@@ -33,14 +34,23 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${manrope.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#F5F3EF] text-[#2C2E33] font-sans selection:bg-[#B78735]/20 selection:text-[#B78735]">
-        <ReduxProvider>
-          <GoogleTranslateProvider />
-          {children}
-          <Toaster richColors position="top-center" />
-        </ReduxProvider>
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-[#B78735]/20 selection:text-[#B78735] transition-colors duration-200">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <I18nProvider>
+            <ReduxProvider>
+              {children}
+              <Toaster richColors position="top-center" />
+            </ReduxProvider>
+          </I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

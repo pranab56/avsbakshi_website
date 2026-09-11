@@ -28,10 +28,10 @@ export default function CustomerFavoritesPage() {
       id: "1",
       name: "Emma Studio",
       category: "Hair & Beauty",
-      price: "from £40",
+      price: "from $40",
       rating: 4.8,
       reviewCount: 89,
-      location: "Soho, London",
+      location: "Soho, New York",
       tags: ["Haircut", "Colour", "Blowout"],
       openBadge: "Open until 9:00 PM",
       image:
@@ -42,10 +42,10 @@ export default function CustomerFavoritesPage() {
       id: "2",
       name: "Maya Chen",
       category: "Colorist",
-      price: "from £40",
+      price: "from $40",
       rating: 4.8,
       reviewCount: 89,
-      location: "Soho, London",
+      location: "Beverly Hills, Los Angeles",
       tags: ["Haircut", "Colour", "Blowout"],
       image:
         "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80",
@@ -55,10 +55,10 @@ export default function CustomerFavoritesPage() {
       id: "3",
       name: "Amara Studio",
       category: "Nails",
-      price: "from £40",
+      price: "from $40",
       rating: 4.8,
       reviewCount: 89,
-      location: "Soho, London",
+      location: "West Village, New York",
       tags: ["Haircut", "Colour", "Blowout"],
       image:
         "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80",
@@ -68,10 +68,10 @@ export default function CustomerFavoritesPage() {
       id: "4",
       name: "Lune Nail Studio",
       category: "Hair & Beauty",
-      price: "from £40",
+      price: "from $40",
       rating: 4.8,
       reviewCount: 89,
-      location: "Soho, London",
+      location: "Tribeca, New York",
       tags: ["Haircut", "Colour", "Blowout"],
       openBadge: "Open until 9:00 PM",
       image:
@@ -92,28 +92,28 @@ export default function CustomerFavoritesPage() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
           Favorites
         </h1>
-        <p className="text-xs sm:text-sm text-[#787570] font-normal tracking-wide">
+        <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
           Professionals and salons you have saved
         </p>
       </div>
 
       {/* Tabs Bar */}
-      <div className="border-b border-[#E3DDD3] flex items-center gap-8 text-sm">
+      <div className="border-b border-border flex items-center gap-8 text-sm">
         <button
           type="button"
           onClick={() => setActiveTab("professionals")}
           className={`pb-2.5 font-medium transition-all cursor-pointer relative ${
             activeTab === "professionals"
-              ? "text-[#A27933]"
-              : "text-[#787570] hover:text-[#2C2E33]"
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Professionals
           {activeTab === "professionals" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#A27933] rounded-full" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
           )}
         </button>
 
@@ -122,13 +122,13 @@ export default function CustomerFavoritesPage() {
           onClick={() => setActiveTab("salons")}
           className={`pb-2.5 font-medium transition-all cursor-pointer relative ${
             activeTab === "salons"
-              ? "text-[#A27933]"
-              : "text-[#787570] hover:text-[#2C2E33]"
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Salons
           {activeTab === "salons" && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#A27933] rounded-full" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
           )}
         </button>
       </div>
@@ -139,10 +139,10 @@ export default function CustomerFavoritesPage() {
           {displayedItems.map((item) => (
             <div
               key={item.id}
-              className="bg-white border border-[#E3DDD3]/70 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between transition-all hover:border-[#D0C7B7]"
+              className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between transition-all hover:border-primary/50"
             >
               {/* Media Thumbnail Container */}
-              <div className="relative w-full h-52 sm:h-56 bg-[#E0D9CE]">
+              <div className="relative w-full h-52 sm:h-56 bg-accent">
                 <Image
                   src={item.image}
                   alt={item.name}
@@ -153,7 +153,7 @@ export default function CustomerFavoritesPage() {
 
                 {/* Open Status Badge */}
                 {item.openBadge && (
-                  <span className="absolute top-3 left-3 bg-white/80 backdrop-blur-xs text-[#2C2E33] text-[11px] font-medium px-3 py-1 rounded-full shadow-xs">
+                  <span className="absolute top-3 left-3 bg-background/80 backdrop-blur-xs text-foreground text-[11px] font-medium px-3 py-1 rounded-full shadow-xs border border-border">
                     {item.openBadge}
                   </span>
                 )}
@@ -163,9 +163,9 @@ export default function CustomerFavoritesPage() {
                   type="button"
                   onClick={() => toggleFavorite(item.id)}
                   aria-label="Remove from favorites"
-                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 backdrop-blur-xs flex items-center justify-center text-[#A27933] hover:bg-white transition-all cursor-pointer shadow-xs"
+                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-xs flex items-center justify-center text-primary hover:bg-background transition-all cursor-pointer shadow-xs border border-border"
                 >
-                  <Heart className="w-4 h-4 fill-[#A27933] text-[#A27933]" />
+                  <Heart className="w-4 h-4 fill-primary text-primary" />
                 </button>
               </div>
 
@@ -174,37 +174,37 @@ export default function CustomerFavoritesPage() {
                 <div className="space-y-2">
                   {/* Name & Price Row */}
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2C2E33] leading-tight">
+                    <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground leading-tight">
                       {item.name}
                     </h3>
-                    <span className="font-serif italic font-bold text-lg sm:text-xl text-[#A27933] shrink-0">
+                    <span className="font-serif italic font-bold text-lg sm:text-xl text-primary shrink-0">
                       {item.price}
                     </span>
                   </div>
 
                   {/* Category */}
-                  <p className="text-xs sm:text-sm text-[#787570]">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     {item.category}
                   </p>
 
                   {/* Rating Row */}
                   <div className="flex items-center gap-1 text-xs sm:text-sm">
-                    <div className="flex items-center gap-0.5 text-[#A27933]">
+                    <div className="flex items-center gap-0.5 text-primary">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className="w-3.5 h-3.5 fill-[#A27933] text-[#A27933]"
+                          className="w-3.5 h-3.5 fill-primary text-primary"
                         />
                       ))}
                     </div>
-                    <span className="text-[#2C2E33] font-medium ml-1">
+                    <span className="text-foreground font-medium ml-1">
                       {item.rating} ({item.reviewCount})
                     </span>
                   </div>
 
                   {/* Location Row */}
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#787570]">
-                    <MapPin className="w-3.5 h-3.5 shrink-0 text-[#787570]" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground">
+                    <MapPin className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
                     <span>{item.location}</span>
                   </div>
 
@@ -213,7 +213,7 @@ export default function CustomerFavoritesPage() {
                     {item.tags.map((tag, tIdx) => (
                       <span
                         key={tIdx}
-                        className="bg-white text-[#5C5954] px-3 py-1 border border-[#E3DDD3]/70 rounded-sm text-xs font-medium"
+                        className="bg-accent text-muted-foreground px-3 py-1 border border-border rounded-sm text-xs font-medium"
                       >
                         {tag}
                       </span>
@@ -225,7 +225,7 @@ export default function CustomerFavoritesPage() {
                 <div className="pt-2">
                   <Link
                     href={`/book/${item.id}`}
-                    className="w-full block text-center bg-[#B78735] hover:bg-[#8F6929] text-white py-2.5 rounded-sm font-medium text-xs sm:text-sm transition-colors cursor-pointer"
+                    className="w-full block text-center bg-primary hover:bg-primary/90 text-primary-foreground py-2.5 rounded-sm font-medium text-xs sm:text-sm transition-colors cursor-pointer"
                   >
                     Book Appointment
                   </Link>
@@ -235,8 +235,8 @@ export default function CustomerFavoritesPage() {
           ))}
         </div>
       ) : (
-        <div className="bg-[#EBE7DF]/80 border border-[#E3DDD3]/70 rounded-2xl p-12 text-center text-[#787570] space-y-2">
-          <p className="font-serif text-lg">No saved {activeTab} yet.</p>
+        <div className="bg-accent/60 border border-border rounded-2xl p-12 text-center text-muted-foreground space-y-2">
+          <p className="font-serif text-lg text-foreground">No saved {activeTab} yet.</p>
           <p className="text-xs">Browse professionals and click the heart icon to save them to your favorites.</p>
         </div>
       )}

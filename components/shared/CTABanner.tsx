@@ -30,7 +30,7 @@ export default function CTABanner() {
             <input
               type="text"
               placeholder="Find your location agent"
-              className="w-full h-12 md:h-14 bg-white rounded-lg px-4 sm:px-6 pr-10 md:pr-12 text-neutral-1 font-medium focus:outline-none shadow-lg focus:ring-2 focus:ring-white/20 text-xs sm:text-base"
+              className="w-full h-12 md:h-14 bg-card rounded-xl px-4 sm:px-6 pr-10 md:pr-12 text-foreground font-medium border border-border focus:outline-none shadow-lg focus:ring-2 focus:ring-white/20 text-xs sm:text-base"
             />
             <Search className="absolute right-5 sm:right-4 top-1/2 -translate-y-1/2 text-primary size-5 md:size-6" />
           </div>

@@ -7,7 +7,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-[#F5F3EF]">
+    <div className="min-h-screen flex flex-col justify-between bg-background text-foreground transition-colors duration-200">
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />

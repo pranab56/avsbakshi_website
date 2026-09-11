@@ -50,15 +50,15 @@ export default function BusinessSettingsPage() {
   const [profileForm, setProfileForm] = useState({
     businessName: "Noir Studio",
     ownerName: "James Chen",
-    email: "hello@noirstudio.co.uk",
-    phone: "+44 20 7123 4567",
+    email: "hello@noirstudio.com",
+    phone: "+1 (212) 555-0188",
     tagline: "Luxury Hair Salon & Beauty Studio",
-    location: "Soho, London",
+    location: "Soho, New York",
     establishedYear: "2015",
     chairsCount: "8 Chairs",
     philosophyQuote:
       '"Our philosophy is to craft an unparalleled luxury experience where artistry meets comfort, making every client feel valued and transformed."',
-    bio: "Noir Studio is a premier luxury salon located in the heart of Soho, London. Established in 2015, we offer state-of-the-art styling chairs, private treatment rooms, and top-tier amenities for independent stylists and clientele seeking world-class hair & beauty services.",
+    bio: "Noir Studio is a premier luxury salon located in the heart of Soho, New York. Established in 2015, we offer state-of-the-art styling chairs, private treatment rooms, and top-tier amenities for independent stylists and clientele seeking world-class hair & beauty services.",
   });
 
   // Salon Amenities & Services tags
@@ -111,14 +111,14 @@ export default function BusinessSettingsPage() {
   };
 
   return (
-    <div className="space-y-6 pb-16 font-sans text-[#1A1A1A]">
+    <div className="space-y-6 pb-16 font-sans text-foreground">
       {/* Page Title & Subtitle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E3DDD3] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
             Account &amp; Business Profile Settings
           </h1>
-          <p className="text-xs sm:text-sm text-[#787570] font-normal mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
             Manage your salon credentials and customize what clients and professionals see on your public About page
           </p>
         </div>
@@ -127,7 +127,7 @@ export default function BusinessSettingsPage() {
       {/* Main Settings Layout (Sidebar Navigation + Tab Content) */}
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left Sidebar Menu */}
-        <div className="w-full md:w-56 lg:w-64 shrink-0 bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden shadow-xs divide-y divide-[#E3DDD3]/70">
+        <div className="w-full md:w-56 lg:w-64 shrink-0 bg-card border border-border rounded-lg overflow-hidden shadow-xs divide-y divide-border">
           {(
             [
               "Profile",
@@ -145,8 +145,8 @@ export default function BusinessSettingsPage() {
                 onClick={() => setActiveTab(tab)}
                 className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${
                   isActive
-                    ? "bg-[#E2DDD3] text-[#B78735] font-semibold"
-                    : "text-[#2C2E33] hover:bg-[#E2DDD3]/40 font-normal"
+                    ? "bg-secondary text-[#B78735] font-semibold"
+                    : "text-foreground hover:bg-secondary/50 font-normal"
                 }`}
               >
                 <span>{tab}</span>
@@ -156,24 +156,24 @@ export default function BusinessSettingsPage() {
         </div>
 
         {/* Right Tab Content Card */}
-        <div className="flex-1 w-full bg-white border border-[#E3DDD3]/70 rounded-lg p-6 sm:p-8 shadow-xs">
+        <div className="flex-1 w-full bg-card border border-border rounded-lg p-6 sm:p-8 shadow-xs text-card-foreground">
           {/* ------------------------------------------------------------- */}
           {/* TAB 1: PROFILE INFORMATION */}
           {/* ------------------------------------------------------------- */}
           {activeTab === "Profile" && (
             <div className="space-y-6">
-              <div className="border-b border-[#E3DDD3]/50 pb-3">
-                <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <div className="border-b border-border pb-3">
+                <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                   Basic Profile Information
                 </h2>
-                <p className="text-xs text-[#787570] mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Update your business display name, owner contact info, and email address
                 </p>
               </div>
 
               {/* Avatar Photo Section */}
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-md bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+                <div className="relative w-16 h-16 rounded-md bg-secondary text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
                   {avatarPreview ? (
                     <Image
                       src={avatarPreview}
@@ -187,7 +187,7 @@ export default function BusinessSettingsPage() {
                   )}
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-serif font-bold text-lg text-[#2C2E33]">
+                  <h3 className="font-serif font-bold text-lg text-foreground">
                     {profileForm.businessName}
                   </h3>
                   <input
@@ -210,7 +210,7 @@ export default function BusinessSettingsPage() {
               {/* Form Input Fields Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Business Name
                   </label>
                   <input
@@ -219,12 +219,12 @@ export default function BusinessSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, businessName: e.target.value })
                     }
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Owner / Manager Name
                   </label>
                   <input
@@ -233,12 +233,12 @@ export default function BusinessSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, ownerName: e.target.value })
                     }
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Email Address
                   </label>
                   <input
@@ -247,12 +247,12 @@ export default function BusinessSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, email: e.target.value })
                     }
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Phone Number
                   </label>
                   <input
@@ -261,7 +261,7 @@ export default function BusinessSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, phone: e.target.value })
                     }
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
               </div>
@@ -292,12 +292,12 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "About Profile" && (
             <div className="space-y-6">
-              <div className="border-b border-[#E3DDD3]/50 pb-3 flex items-center justify-between">
+              <div className="border-b border-border pb-3 flex items-center justify-between">
                 <div>
-                  <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+                  <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                     Public About Page Information
                   </h2>
-                  <p className="text-xs text-[#787570] mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Customize your salon biography, philosophy quote, amenities tags, and stats shown to customers &amp; professionals
                   </p>
                 </div>
@@ -314,9 +314,9 @@ export default function BusinessSettingsPage() {
 
               {/* Salon Philosophy Quote */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#2C2E33] block flex items-center justify-between">
+                <label className="text-xs font-semibold text-foreground block flex items-center justify-between">
                   <span>Salon Philosophy Quote</span>
-                  <span className="text-[11px] text-[#787570] font-normal">
+                  <span className="text-[11px] text-muted-foreground font-normal">
                     Displayed prominently on your salon page
                   </span>
                 </label>
@@ -330,13 +330,13 @@ export default function BusinessSettingsPage() {
                     })
                   }
                   placeholder="e.g. Our philosophy is to craft an unparalleled luxury experience..."
-                  className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm p-4 text-sm italic font-serif text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                  className="w-full bg-background border border-input rounded-sm p-4 text-sm italic font-serif text-foreground outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
 
               {/* Detailed Salon Bio / History */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#2C2E33] block">
+                <label className="text-xs font-semibold text-foreground block">
                   Detailed Salon Bio &amp; Overview
                 </label>
                 <textarea
@@ -346,14 +346,14 @@ export default function BusinessSettingsPage() {
                     setProfileForm({ ...profileForm, bio: e.target.value })
                   }
                   placeholder="Write a warm overview of your salon space, values, amenities, and environment..."
-                  className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm p-4 text-sm text-[#2C2E33] leading-relaxed outline-none focus:ring-1 focus:ring-[#B78735]"
+                  className="w-full bg-background border border-input rounded-sm p-4 text-sm text-foreground leading-relaxed outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
 
               {/* Business Stats & Details */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Salon Tagline / Subtitle
                   </label>
                   <input
@@ -366,12 +366,12 @@ export default function BusinessSettingsPage() {
                       })
                     }
                     placeholder="e.g. Luxury Hair Salon & Beauty Studio"
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Location / Neighborhood
                   </label>
                   <input
@@ -380,13 +380,13 @@ export default function BusinessSettingsPage() {
                     onChange={(e) =>
                       setProfileForm({ ...profileForm, location: e.target.value })
                     }
-                    placeholder="e.g. Soho, London"
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    placeholder="e.g. Soho, New York"
+                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-[#2C2E33] block">
+                  <label className="text-xs font-semibold text-foreground block">
                     Established Year / Capacity
                   </label>
                   <input
@@ -399,29 +399,29 @@ export default function BusinessSettingsPage() {
                       })
                     }
                     placeholder="e.g. 2015"
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                 </div>
               </div>
 
               {/* Amenities & Features Tags Section */}
               <div className="space-y-3 pt-2">
-                <label className="text-xs font-semibold text-[#2C2E33] block">
+                <label className="text-xs font-semibold text-foreground block">
                   Salon Amenities &amp; Services Offered
                 </label>
 
                 {/* Tags List */}
-                <div className="flex flex-wrap gap-2 bg-[#FAF8F4] p-4 rounded-lg border border-[#E3DDD3]/70 min-h-[60px] items-center">
+                <div className="flex flex-wrap gap-2 bg-secondary p-4 rounded-lg border border-border min-h-[60px] items-center">
                   {amenities.map((amenity) => (
                     <span
                       key={amenity}
-                      className="bg-[#EBE5D9] text-[#2C2E33] text-xs font-medium px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-xs"
+                      className="bg-card text-foreground border border-border text-xs font-medium px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-xs"
                     >
                       <span>{amenity}</span>
                       <button
                         type="button"
                         onClick={() => handleRemoveAmenity(amenity)}
-                        className="text-zinc-400 hover:text-red-600 cursor-pointer"
+                        className="text-muted-foreground hover:text-red-600 cursor-pointer"
                         title="Remove amenity"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -429,7 +429,7 @@ export default function BusinessSettingsPage() {
                     </span>
                   ))}
                   {amenities.length === 0 && (
-                    <span className="text-xs text-zinc-400 italic">
+                    <span className="text-xs text-muted-foreground italic">
                       No amenities added yet. Add tags below.
                     </span>
                   )}
@@ -443,7 +443,7 @@ export default function BusinessSettingsPage() {
                     onChange={(e) => setNewAmenity(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddAmenity())}
                     placeholder="Type salon amenity (e.g. Private Wash Basins, High-Speed Wi-Fi)..."
-                    className="flex-1 bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-2.5 text-xs sm:text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]"
+                    className="flex-1 bg-background border border-input rounded-sm px-4 py-2.5 text-xs sm:text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                   />
                   <button
                     type="button"
@@ -457,7 +457,7 @@ export default function BusinessSettingsPage() {
               </div>
 
               {/* Save Action */}
-              <div className="pt-4 flex items-center justify-between border-t border-[#E3DDD3]/50">
+              <div className="pt-4 flex items-center justify-between border-t border-border">
                 <button
                   type="button"
                   onClick={handleSaveProfile}
@@ -469,7 +469,7 @@ export default function BusinessSettingsPage() {
                 <button
                   type="button"
                   onClick={() => setShowPreviewModal(true)}
-                  className="px-4 py-2 rounded-sm border border-[#E3DDD3] text-[#2C2E33] hover:bg-[#FAF8F4] text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-sm border border-border text-foreground hover:bg-secondary text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <Eye className="w-3.5 h-3.5 text-[#B78735]" />
                   <span>Preview Page</span>
@@ -483,19 +483,19 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Notifications" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Notification Preferences
               </h2>
 
               {/* APPOINTMENTS */}
               <div className="space-y-3">
-                <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
+                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
                   APPOINTMENTS &amp; BOOKINGS
                 </h3>
 
                 <div className="space-y-2.5">
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Booking confirmations
                     </span>
                     <Switch
@@ -507,8 +507,8 @@ export default function BusinessSettingsPage() {
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Appointment reminders
                     </span>
                     <Switch
@@ -520,8 +520,8 @@ export default function BusinessSettingsPage() {
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Cancellation alerts
                     </span>
                     <Switch
@@ -533,8 +533,8 @@ export default function BusinessSettingsPage() {
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Reschedule requests
                     </span>
                     <Switch
@@ -550,13 +550,13 @@ export default function BusinessSettingsPage() {
 
               {/* MESSAGES */}
               <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
+                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
                   MESSAGES
                 </h3>
 
                 <div className="space-y-2.5">
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       New client messages
                     </span>
                     <Switch
@@ -566,8 +566,8 @@ export default function BusinessSettingsPage() {
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Unread message reminders
                     </span>
                     <Switch
@@ -583,13 +583,13 @@ export default function BusinessSettingsPage() {
 
               {/* PROMOTIONS */}
               <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold text-[#787570] tracking-wider uppercase">
+                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
                   MARKETING &amp; PROMOTIONS
                 </h3>
 
                 <div className="space-y-2.5">
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Special promotional updates
                     </span>
                     <Switch
@@ -599,8 +599,8 @@ export default function BusinessSettingsPage() {
                     />
                   </div>
 
-                  <div className="bg-[#F3F0EA] px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-[#2C2E33] font-medium">
+                  <div className="bg-secondary px-4 py-3.5 rounded-lg flex items-center justify-between border border-border/40">
+                    <span className="text-xs sm:text-sm text-foreground font-medium">
                       Loyalty &amp; reward alerts
                     </span>
                     <Switch
@@ -619,66 +619,66 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Privacy" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Privacy Settings
               </h2>
 
-              <div className="divide-y divide-[#E3DDD3]/70 space-y-4">
+              <div className="divide-y divide-border space-y-4">
                 <div className="pt-2 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-[#2C2E33]">
+                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
                       Business Directory Visibility
                     </h4>
-                    <p className="text-xs text-[#787570]">
+                    <p className="text-xs text-muted-foreground">
                       Control whether your salon appears in public search results
                     </p>
                   </div>
-                  <span className="bg-[#DFD9CE] text-[#2C2E33] px-4 py-1.5 rounded-md text-xs font-medium shrink-0">
+                  <span className="bg-secondary text-foreground px-4 py-1.5 rounded-md text-xs font-medium shrink-0 border border-border">
                     Public
                   </span>
                 </div>
 
                 <div className="pt-4 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-[#2C2E33]">
+                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
                       Contact Number Visibility
                     </h4>
-                    <p className="text-xs text-[#787570]">
+                    <p className="text-xs text-muted-foreground">
                       Show contact number on your public business page
                     </p>
                   </div>
-                  <span className="bg-[#DFD9CE] text-[#2C2E33] px-4 py-1.5 rounded-md text-xs font-medium shrink-0">
+                  <span className="bg-secondary text-foreground px-4 py-1.5 rounded-md text-xs font-medium shrink-0 border border-border">
                     Visible
                   </span>
                 </div>
 
                 <div className="pt-4 flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-[#2C2E33]">
+                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
                       Analytics &amp; Recommendations
                     </h4>
-                    <p className="text-xs text-[#787570]">
+                    <p className="text-xs text-muted-foreground">
                       Use aggregated data to improve client match recommendations
                     </p>
                   </div>
-                  <span className="bg-[#DFD9CE] text-[#2C2E33] px-4 py-1.5 rounded-md text-xs font-medium shrink-0">
+                  <span className="bg-secondary text-foreground px-4 py-1.5 rounded-md text-xs font-medium shrink-0 border border-border">
                     Enabled
                   </span>
                 </div>
               </div>
 
               {/* Danger Zone Box */}
-              <div className="bg-[#F6EBEB] border border-[#E9C5C5] rounded-lg p-5 sm:p-6 space-y-3 mt-8">
-                <h3 className="font-serif font-bold text-lg text-[#C84B4B]">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-5 sm:p-6 space-y-3 mt-8">
+                <h3 className="font-serif font-bold text-lg text-red-600 dark:text-red-400">
                   Danger Zone
                 </h3>
-                <p className="text-xs text-[#8A5A5A] leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   Permanently deactivate your business profile and clear all listed services. This action cannot be undone.
                 </p>
                 <div className="pt-1">
                   <button
                     type="button"
-                    className="border border-[#C84B4B] text-[#C84B4B] hover:bg-[#C84B4B] hover:text-white px-5 py-2.5 rounded-sm text-xs font-semibold transition-colors cursor-pointer"
+                    className="border border-red-500/40 text-red-600 dark:text-red-400 hover:bg-red-600 hover:text-white px-5 py-2.5 rounded-sm text-xs font-semibold transition-colors cursor-pointer"
                   >
                     Deactivate Business Profile
                   </button>
@@ -692,14 +692,14 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Security" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Security
               </h2>
 
-              <div className="bg-[#F3F0EA]/80 border border-[#E3DDD3]/70 p-5 sm:p-6 rounded-lg space-y-3">
+              <div className="bg-secondary/60 border border-border p-5 sm:p-6 rounded-lg space-y-3">
                 <div className="space-y-1">
-                  <h4 className="font-bold text-sm text-[#2C2E33]">Password</h4>
-                  <p className="text-xs text-[#787570]">
+                  <h4 className="font-bold text-sm text-foreground">Password</h4>
+                  <p className="text-xs text-muted-foreground">
                     Last changed 2 months ago
                   </p>
                 </div>
@@ -720,25 +720,25 @@ export default function BusinessSettingsPage() {
 
       {/* Public About Profile Preview Modal */}
       <Dialog open={showPreviewModal} onOpenChange={setShowPreviewModal}>
-        <DialogContent className="sm:max-w-2xl bg-[#FFFDF9] border border-[#E3DDD3]/70 text-[#2C2E33] p-6 rounded-2xl shadow-xl max-h-[85vh] overflow-y-auto">
-          <DialogHeader className="space-y-1 text-left border-b border-[#E3DDD3]/70 pb-3">
+        <DialogContent className="sm:max-w-2xl bg-card border border-border text-card-foreground p-6 rounded-2xl shadow-xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader className="space-y-1 text-left border-b border-border pb-3">
             <div className="flex items-center justify-between">
-              <DialogTitle className="font-serif font-bold text-xl text-[#2C2E33]">
+              <DialogTitle className="font-serif font-bold text-xl text-foreground">
                 Public &quot;About&quot; Preview
               </DialogTitle>
               <span className="bg-[#B78735]/15 text-[#B78735] text-xs font-bold px-2.5 py-1 rounded-full">
                 Customer View
               </span>
             </div>
-            <DialogDescription className="text-xs text-[#787570]">
+            <DialogDescription className="text-xs text-muted-foreground">
               This is how your salon profile appears to customers browsing your page.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 pt-3">
             {/* Header Banner Mockup */}
-            <div className="flex items-start gap-4 p-5 bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-xl">
-              <div className="relative w-16 h-16 rounded-md bg-[#1C1C1E] text-white font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+            <div className="flex items-start gap-4 p-5 bg-secondary border border-border rounded-xl">
+              <div className="relative w-16 h-16 rounded-md bg-muted text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
                 {avatarPreview ? (
                   <Image
                     src={avatarPreview}
@@ -752,13 +752,13 @@ export default function BusinessSettingsPage() {
                 )}
               </div>
               <div className="space-y-1 flex-1">
-                <h3 className="font-serif font-bold text-xl text-[#2C2E33]">
+                <h3 className="font-serif font-bold text-xl text-foreground">
                   {profileForm.businessName}
                 </h3>
                 <p className="text-xs font-medium text-[#B78735]">
                   {profileForm.tagline}
                 </p>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-[#787570] pt-1">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground pt-1">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5 text-[#B78735]" />
                     {profileForm.location}
@@ -773,8 +773,8 @@ export default function BusinessSettingsPage() {
 
             {/* Philosophy Quote Box */}
             {profileForm.philosophyQuote && (
-              <div className="bg-[#F5F1EA] border-l-4 border-[#B78735] p-4 rounded-r-xl">
-                <p className="font-serif italic text-sm text-[#2C2E33] leading-relaxed">
+              <div className="bg-secondary/60 border-l-4 border-[#B78735] p-4 rounded-r-xl">
+                <p className="font-serif italic text-sm text-foreground leading-relaxed">
                   {profileForm.philosophyQuote}
                 </p>
               </div>
@@ -783,10 +783,10 @@ export default function BusinessSettingsPage() {
             {/* Bio Section */}
             {profileForm.bio && (
               <div className="space-y-2">
-                <h4 className="font-serif font-bold text-base text-[#2C2E33]">
+                <h4 className="font-serif font-bold text-base text-foreground">
                   About Salon
                 </h4>
-                <p className="text-xs sm:text-sm text-[#5C5954] leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   {profileForm.bio}
                 </p>
               </div>
@@ -795,14 +795,14 @@ export default function BusinessSettingsPage() {
             {/* Amenities Section */}
             {amenities.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-serif font-bold text-base text-[#2C2E33]">
+                <h4 className="font-serif font-bold text-base text-foreground">
                   Salon Amenities &amp; Services
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {amenities.map((amenity) => (
                     <span
                       key={amenity}
-                      className="bg-[#EBE5D9] text-[#2C2E33] text-xs font-medium px-3 py-1.5 rounded-full shadow-2xs"
+                      className="bg-secondary text-foreground border border-border text-xs font-medium px-3 py-1.5 rounded-full shadow-2xs"
                     >
                       {amenity}
                     </span>
@@ -811,7 +811,7 @@ export default function BusinessSettingsPage() {
               </div>
             )}
 
-            <div className="pt-2 flex justify-end border-t border-[#E3DDD3]/70">
+            <div className="pt-2 flex justify-end border-t border-border">
               <button
                 type="button"
                 onClick={() => setShowPreviewModal(false)}
@@ -826,12 +826,12 @@ export default function BusinessSettingsPage() {
 
       {/* Change Password Dialog Modal */}
       <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
-        <DialogContent className="sm:max-w-md bg-[#FFFDF9] border border-[#E3DDD3]/70 text-[#2C2E33] p-6 rounded-lg shadow-lg">
+        <DialogContent className="sm:max-w-md bg-card border border-border text-card-foreground p-6 rounded-lg shadow-lg">
           <DialogHeader className="space-y-1.5 text-left">
-            <DialogTitle className="font-serif font-bold text-xl text-[#2C2E33]">
+            <DialogTitle className="font-serif font-bold text-xl text-foreground">
               Change Password
             </DialogTitle>
-            <DialogDescription className="text-xs text-[#787570]">
+            <DialogDescription className="text-xs text-muted-foreground">
               Enter your current password and a new password to update your account.
             </DialogDescription>
           </DialogHeader>
@@ -873,7 +873,7 @@ export default function BusinessSettingsPage() {
           >
             {/* Old Password Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Old password
               </label>
               <input
@@ -885,12 +885,12 @@ export default function BusinessSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                 }}
                 placeholder="Enter current password"
-                className={`w-full bg-[#FAF8F4] border ${
-                  passwordErrors.oldPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-background border ${
+                  passwordErrors.oldPassword ? "border-red-500" : "border-input"
+                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
               />
               {passwordErrors.oldPassword && (
-                <p className="text-[11px] text-[#DC3545] font-medium mt-1">
+                <p className="text-[11px] text-red-500 font-medium mt-1">
                   {passwordErrors.oldPassword}
                 </p>
               )}
@@ -898,7 +898,7 @@ export default function BusinessSettingsPage() {
 
             {/* New Password Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 New password
               </label>
               <input
@@ -910,12 +910,12 @@ export default function BusinessSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                 }}
                 placeholder="Enter new password"
-                className={`w-full bg-[#FAF8F4] border ${
-                  passwordErrors.newPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-background border ${
+                  passwordErrors.newPassword ? "border-red-500" : "border-input"
+                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
               />
               {passwordErrors.newPassword && (
-                <p className="text-[11px] text-[#DC3545] font-medium mt-1">
+                <p className="text-[11px] text-red-500 font-medium mt-1">
                   {passwordErrors.newPassword}
                 </p>
               )}
@@ -923,7 +923,7 @@ export default function BusinessSettingsPage() {
 
             {/* Confirm Password Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
+              <label className="text-xs font-semibold text-foreground block">
                 Confirm password
               </label>
               <input
@@ -935,12 +935,12 @@ export default function BusinessSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                 }}
                 placeholder="Confirm new password"
-                className={`w-full bg-[#FAF8F4] border ${
-                  passwordErrors.confirmPassword ? "border-[#DC3545]" : "border-[#E3DDD3]/70"
-                } rounded-sm px-4 py-2.5 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735]`}
+                className={`w-full bg-background border ${
+                  passwordErrors.confirmPassword ? "border-red-500" : "border-input"
+                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
               />
               {passwordErrors.confirmPassword && (
-                <p className="text-[11px] text-[#DC3545] font-medium mt-1">
+                <p className="text-[11px] text-red-500 font-medium mt-1">
                   {passwordErrors.confirmPassword}
                 </p>
               )}
@@ -953,7 +953,7 @@ export default function BusinessSettingsPage() {
                   setShowPasswordModal(false);
                   setPasswordErrors({ oldPassword: "", newPassword: "", confirmPassword: "" });
                 }}
-                className="px-4 py-2 rounded-sm border border-[#E3DDD3] text-[#2C2E33] hover:bg-[#F3F0EA] text-xs font-medium transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-sm border border-border text-foreground hover:bg-secondary text-xs font-medium transition-colors cursor-pointer"
               >
                 Cancel
               </button>

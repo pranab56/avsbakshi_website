@@ -157,16 +157,16 @@ export default function CustomerMessagesPage() {
         <div className="space-y-6">
           {/* Header Title */}
           <div className="space-y-1">
-            <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+            <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
               Messages
             </h1>
-            <p className="text-xs sm:text-sm text-[#787570] font-normal tracking-wide">
+            <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
               Your conversations with professionals
             </p>
           </div>
 
           {/* Conversations List Container */}
-          <div className="bg-white border border-[#E3DDD3]/70 rounded-lg overflow-hidden divide-y divide-[#E2DDD3]/70 shadow-xs">
+          <div className="bg-card border border-border rounded-lg overflow-hidden divide-y divide-border shadow-xs">
             {conversations.map((conv) => (
               <div
                 key={conv.id}
@@ -179,12 +179,12 @@ export default function CustomerMessagesPage() {
                     )
                   );
                 }}
-                className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-[#E2DDD3]/40 transition-colors cursor-pointer"
+                className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-accent/50 transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-4">
                   {/* Avatar with optional badge */}
                   <div className="relative shrink-0">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#E0D9CE]">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-accent">
                       <Image
                         src={conv.avatar}
                         alt={conv.proName}
@@ -194,7 +194,7 @@ export default function CustomerMessagesPage() {
                       />
                     </div>
                     {conv.unreadCount && conv.unreadCount > 0 ? (
-                      <span className="absolute -top-0.5 -right-0.5 bg-[#A27933] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-[#EBE7DF]">
+                      <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-background">
                         {conv.unreadCount}
                       </span>
                     ) : null}
@@ -202,14 +202,14 @@ export default function CustomerMessagesPage() {
 
                   {/* Name & Preview Text */}
                   <div className="space-y-0.5">
-                    <h3 className="font-serif font-bold text-base text-[#2C2E33]">
+                    <h3 className="font-serif font-bold text-base text-foreground">
                       {conv.proName}
                     </h3>
                     <p
                       className={`text-xs sm:text-sm leading-tight ${
                         conv.unreadCount && conv.unreadCount > 0
-                          ? "font-semibold text-[#2C2E33]"
-                          : "text-[#787570]"
+                          ? "font-semibold text-foreground"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {conv.lastMessage}
@@ -218,7 +218,7 @@ export default function CustomerMessagesPage() {
                 </div>
 
                 {/* Timestamp */}
-                <span className="text-xs text-[#787570] shrink-0">
+                <span className="text-xs text-muted-foreground shrink-0">
                   {conv.timestamp}
                 </span>
               </div>
@@ -237,14 +237,14 @@ export default function CustomerMessagesPage() {
             <button
               type="button"
               onClick={() => setSelectedConversationId(null)}
-              className="flex items-center gap-1.5 text-xs sm:text-sm text-[#787570] hover:text-[#2C2E33] font-medium transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground hover:text-foreground font-medium transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </button>
 
             <div className="flex items-center gap-3 ml-2">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden bg-[#E0D9CE]">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent">
                 <Image
                   src={activeConversation.avatar}
                   alt={activeConversation.proName}
@@ -254,12 +254,12 @@ export default function CustomerMessagesPage() {
                 />
               </div>
               <div className="flex flex-col">
-                <h2 className="font-serif font-bold text-base sm:text-lg text-[#2C2E33] leading-tight">
+                <h2 className="font-serif font-bold text-base sm:text-lg text-foreground leading-tight">
                   {activeConversation.proName}
                 </h2>
                 {activeConversation.isOnline && (
-                  <span className="text-[11px] text-[#3F6B38] font-medium flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#3F6B38]" />
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" />
                     Online
                   </span>
                 )}
@@ -268,7 +268,7 @@ export default function CustomerMessagesPage() {
           </div>
 
           {/* Main Messages Thread Box */}
-          <div className="bg-white border h-[calc(100vh-220px)] min-h-[500px] border-[#E3DDD3]/70 rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4 shadow-xs">
+          <div className="bg-card border h-[calc(100vh-220px)] min-h-[500px] border-border rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4 shadow-xs">
             {/* Scrollable Messages Container */}
             <div className="flex-1 overflow-y-auto space-y-4 pr-2">
               {activeConversation.messages.map((msg) => {
@@ -283,13 +283,13 @@ export default function CustomerMessagesPage() {
                     <div
                       className={`max-w-md sm:max-w-xl p-3.5 sm:p-4 rounded-2xl text-xs sm:text-sm leading-relaxed ${
                         isUser
-                          ? "bg-[#A27933] text-white rounded-br-xs"
-                          : "bg-[#F3F0EA] text-[#2C2E33] rounded-bl-xs"
+                          ? "bg-primary text-primary-foreground rounded-br-xs"
+                          : "bg-accent text-foreground rounded-bl-xs"
                       }`}
                     >
                       {msg.text}
                     </div>
-                    <span className="text-[11px] text-[#787570] mt-1 px-1">
+                    <span className="text-[11px] text-muted-foreground mt-1 px-1">
                       {msg.time}
                     </span>
                   </div>
@@ -299,20 +299,20 @@ export default function CustomerMessagesPage() {
             </div>
 
             {/* Input Bar at Bottom */}
-            <div className="flex items-center gap-3 ">
+            <div className="flex items-center gap-3">
               <input
                 type="text"
                 value={newMessageText}
                 onChange={(e) => setNewMessageText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                 placeholder="Type a message..."
-                className="flex-1 bg-white border border-[#E3DDD3] rounded-sm  px-4 py-3 text-xs sm:text-sm text-[#2C2E33] placeholder-[#8A857C] outline-none transition-all focus:border-[#A27933]"
+                className="flex-1 bg-accent border border-border rounded-sm px-4 py-3 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all focus:border-primary"
               />
 
               <button
                 type="button"
                 onClick={handleSendMessage}
-                className="bg-[#A27933] hover:bg-[#8F6929] text-white px-6 py-3 rounded-sm font-medium text-xs sm:text-sm transition-colors cursor-pointer shrink-0"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-sm font-medium text-xs sm:text-sm transition-colors cursor-pointer shrink-0"
               >
                 Send
               </button>

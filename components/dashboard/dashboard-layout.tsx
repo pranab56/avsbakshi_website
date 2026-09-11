@@ -18,7 +18,7 @@ export default function DashboardLayout({
   const config = DASHBOARD_CONFIGS[role] || DASHBOARD_CONFIGS.customer;
 
   return (
-    <div className="min-h-screen bg-[#FFFDF9] text-[#2C2E33]">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
       {/* Sidebar Navigation */}
       <DashboardSidebar
         role={role}

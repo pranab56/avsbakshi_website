@@ -54,13 +54,13 @@ export default function ForProfessionalsSection() {
         {/* Left Column: Info, 2-Col Grid & Action Buttons */}
         <div className="lg:col-span-6 space-y-8">
           <div>
-            <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em] block mb-3">
+            <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
               FOR PROFESSIONALS
             </span>
-            <h2 className="font-title text-3xl sm:text-5xl font-normal text-[#1A1A1A] leading-[1.15] mb-4">
+            <h2 className="font-title text-3xl sm:text-5xl font-normal text-foreground leading-[1.15] mb-4">
               Turn your talent into a thriving beauty business.
             </h2>
-            <p className="text-xs sm:text-sm text-[#666159] font-normal leading-relaxed max-w-md">
+            <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">
               Create your professional profile, showcase your services, manage your availability, accept bookings, communicate with customers, and track your earnings — all from one place.
             </p>
           </div>
@@ -71,14 +71,14 @@ export default function ForProfessionalsSection() {
               const IconComp = item.icon;
               return (
                 <div key={idx} className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-lg bg-[#E4DACB] text-[#B78735] flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
-                    <IconComp className="w-5 h-5 text-[#B78735]" strokeWidth={1.8} />
+                  <div className="w-10 h-10 rounded-xl bg-accent text-primary flex items-center justify-center shrink-0 mt-0.5 border border-border/50 shadow-xs">
+                    <IconComp className="w-5 h-5 text-primary" strokeWidth={1.8} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-[#1A1A1A] mb-0.5">
+                    <h4 className="font-semibold text-sm text-foreground mb-0.5">
                       {item.title}
                     </h4>
-                    <p className="text-[11px] sm:text-xs text-[#666159] font-normal leading-relaxed">
+                    <p className="text-[11px] sm:text-xs text-muted-foreground font-normal leading-relaxed">
                       {item.desc}
                     </p>
                   </div>
@@ -91,13 +91,13 @@ export default function ForProfessionalsSection() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href="/for-professionals"
-              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-[#B78735] hover:bg-[#A37428] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors"
+              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-xl shadow-sm transition-colors"
             >
               Join as a Professional
             </Link>
             <Link
               href="/for-professionals"
-              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-[#E2D8C9] hover:bg-[#D6C9B7] text-[#2C2E33] text-xs sm:text-sm font-semibold rounded-lg transition-colors"
+              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-semibold rounded-xl border border-border transition-colors"
             >
               Learn More
             </Link>

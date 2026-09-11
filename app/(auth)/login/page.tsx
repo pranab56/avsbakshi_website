@@ -44,13 +44,21 @@ export default function LoginPage() {
           alt="Cloud Salon Logo"
           width={80}
           height={80}
-          className="object-contain"
+          className="object-contain block dark:hidden"
+        />
+        <Image
+          src="/icons/logo.png"
+          alt="Cloud Salon Logo"
+          width={80}
+          height={80}
+          className="object-contain hidden dark:block"
+          style={{ mixBlendMode: "screen" }}
         />
         <div className="space-y-1">
-          <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+          <h1 className="font-title text-3xl font-bold text-foreground">
             Welcome back
           </h1>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             Log in to your Cloud Salon account.
           </p>
         </div>
@@ -64,7 +72,7 @@ export default function LoginPage() {
             toast.success("Google login successful!");
             router.push("/");
           }}
-          className="w-full py-3 px-4 bg-white border border-[#E5E0D6] rounded-sm text-xs font-semibold text-[#1A1A1A] flex items-center justify-center gap-2 hover:bg-[#F5F3EF] transition-colors shadow-sm cursor-pointer"
+          className="w-full py-3 px-4 bg-card border border-border rounded-xl text-xs font-semibold text-foreground flex items-center justify-center gap-2 hover:bg-accent transition-colors shadow-xs cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -81,7 +89,7 @@ export default function LoginPage() {
             toast.success("Facebook login successful!");
             router.push("/");
           }}
-          className="w-full py-3 px-4 bg-white border border-[#E5E0D6] rounded-sm text-xs font-semibold text-[#1A1A1A] flex items-center justify-center gap-2 hover:bg-[#F5F3EF] transition-colors shadow-sm cursor-pointer"
+          className="w-full py-3 px-4 bg-card border border-border rounded-xl text-xs font-semibold text-foreground flex items-center justify-center gap-2 hover:bg-accent transition-colors shadow-xs cursor-pointer"
         >
           <svg className="w-4 h-4 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
             <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -91,8 +99,8 @@ export default function LoginPage() {
       </div>
 
       <div className="relative flex items-center justify-center">
-        <div className="border-t border-[#E5E0D6] w-full" />
-        <span className="bg-[#FAF9F5] px-3 text-[11px] text-zinc-400 font-medium tracking-wider uppercase absolute">
+        <div className="border-t border-border w-full" />
+        <span className="bg-background px-3 text-[11px] text-muted-foreground font-medium tracking-wider uppercase absolute">
           or continue with email
         </span>
       </div>
@@ -101,21 +109,21 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Email Field */}
         <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-zinc-700 block">
+          <label className="text-xs font-semibold text-foreground block">
             Email or username
           </label>
           <input
             type="email"
             placeholder="you@example.com"
             {...register("email")}
-            className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${errors.email
-              ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-              : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.email
+              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
               }`}
           />
           {/* Required error message displayed under input field */}
           {errors.email && (
-            <p className="text-red-500 text-xs font-medium mt-1">
+            <p className="text-destructive text-xs font-medium mt-1">
               {errors.email.message}
             </p>
           )}
@@ -124,10 +132,10 @@ export default function LoginPage() {
         {/* Password Field */}
         <div className="space-y-1 text-left">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-zinc-700 block">
+            <label className="text-xs font-semibold text-foreground block">
               Password
             </label>
-            <Link href="/forgot-password" className="text-[11px] text-[#B78735] hover:underline">
+            <Link href="/forgot-password" className="text-[11px] text-primary hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -135,14 +143,14 @@ export default function LoginPage() {
             type="password"
             placeholder="••••••••"
             {...register("password")}
-            className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
-              ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-              : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
+              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
               }`}
           />
           {/* Required error message displayed under input field */}
           {errors.password && (
-            <p className="text-red-500 text-xs font-medium mt-1">
+            <p className="text-destructive text-xs font-medium mt-1">
               {errors.password.message}
             </p>
           )}
@@ -151,15 +159,15 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer mt-2"
+          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer mt-2"
         >
           {isSubmitting ? "Logging in..." : "Log In"}
         </button>
       </form>
 
-      <p className="text-xs text-center text-zinc-500 pt-2">
+      <p className="text-xs text-center text-muted-foreground pt-2">
         Don&apos;t have an account?{" "}
-        <Link href="/select-role" className="text-[#B78735] font-semibold hover:underline">
+        <Link href="/register" className="text-primary font-semibold hover:underline">
           Sign up
         </Link>
       </p>

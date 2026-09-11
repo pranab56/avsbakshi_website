@@ -9,13 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Combobox } from "@/components/ui/combobox";
 
 interface Service {
   id: string;
   name: string;
   description: string;
   duration: string; // e.g. "120 min"
-  price: string; // e.g. "£145"
+  price: string; // e.g. "$145"
   active: boolean;
   image?: string;
 }
@@ -26,7 +27,7 @@ const INITIAL_SERVICES: Service[] = [
     name: "Haircut & Style",
     description: "Includes wash, cut, and blow-dry.",
     duration: "120 min",
-    price: "£145",
+    price: "$145",
     active: true,
     image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=400",
   },
@@ -35,7 +36,7 @@ const INITIAL_SERVICES: Service[] = [
     name: "Full Colour",
     description: "Root-to-tip colour with toning and treatment.",
     duration: "120 min",
-    price: "£145",
+    price: "$145",
     active: true,
     image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?q=80&w=400",
   },
@@ -44,7 +45,7 @@ const INITIAL_SERVICES: Service[] = [
     name: "Balayage & Toner",
     description: "Hand-painted colour with toner for a lived-in look.",
     duration: "120 min",
-    price: "£145",
+    price: "$145",
     active: true,
     image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=400",
   },
@@ -53,7 +54,7 @@ const INITIAL_SERVICES: Service[] = [
     name: "Highlights",
     description: "Foils, balayage, or ombre techniques.",
     duration: "120 min",
-    price: "£145",
+    price: "$145",
     active: true,
   },
   {
@@ -61,7 +62,7 @@ const INITIAL_SERVICES: Service[] = [
     name: "Blowout",
     description: "Wash and professional blow-dry. No cut.",
     duration: "120 min",
-    price: "£145",
+    price: "$145",
     active: true,
   },
   {
@@ -69,7 +70,7 @@ const INITIAL_SERVICES: Service[] = [
     name: "Keratin Treatment",
     description: "Smoothing treatment lasting 3–5 months.",
     duration: "120 min",
-    price: "£145",
+    price: "$145",
     active: true,
   },
 ];
@@ -139,7 +140,7 @@ export default function BusinessServicesPage() {
       name: service.name,
       description: service.description,
       duration: service.duration,
-      price: service.price.replace("£", ""),
+      price: service.price.replace("$", ""),
       image: service.image || "",
     });
     setImagePreview(service.image || null);
@@ -164,7 +165,7 @@ export default function BusinessServicesPage() {
         name: form.name,
         description: form.description,
         duration: form.duration,
-        price: `£${form.price || "65"}`,
+        price: `$${form.price || "65"}`,
         active: true,
         image: form.image,
       };
@@ -198,10 +199,10 @@ export default function BusinessServicesPage() {
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <p className="text-xs sm:text-sm text-[#787570] font-normal tracking-wide">
+          <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
             {activeServicesCount} active services
           </p>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
             Services
           </h1>
         </div>
@@ -223,16 +224,16 @@ export default function BusinessServicesPage() {
         {services.map((service) => (
           <div
             key={service.id}
-            className={`bg-white border border-[#E3DDD3]/70 rounded-lg p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs transition-colors ${
+            className={`bg-card border border-border rounded-lg p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs transition-colors ${
               service.active
                 ? "hover:border-[#B78735]/40"
-                : "opacity-60 bg-[#FAF8F4]"
+                : "opacity-60 bg-muted/40"
             }`}
           >
             {/* Left Service Info + Image Thumbnail */}
             <div className="flex items-start gap-4 max-w-xl">
               {service.image && (
-                <div className="relative w-20 h-20 rounded-md overflow-hidden bg-[#FAF8F4] border border-[#E3DDD3]/70 shrink-0">
+                <div className="relative w-20 h-20 rounded-md overflow-hidden bg-secondary border border-border shrink-0">
                   <Image
                     src={service.image}
                     alt={service.name}
@@ -243,14 +244,14 @@ export default function BusinessServicesPage() {
                 </div>
               )}
               <div className="space-y-1">
-                <h3 className="font-serif font-bold text-lg sm:text-xl text-[#2C2E33]">
+                <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground">
                   {service.name}
                 </h3>
-                <p className="text-xs sm:text-sm text-[#787570] font-normal leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
                   {service.description}
                 </p>
                 <div className="pt-2">
-                  <span className="px-3 py-1 bg-[#FAF8F4] border border-[#E3DDD3]/70 text-[#787570] text-xs font-medium rounded-full">
+                  <span className="px-3 py-1 bg-secondary border border-border text-muted-foreground text-xs font-medium rounded-full">
                     {service.duration}
                   </span>
                 </div>
@@ -258,17 +259,17 @@ export default function BusinessServicesPage() {
             </div>
 
             {/* Right Price & Actions */}
-            <div className="flex items-center gap-4 sm:gap-6 justify-between sm:justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#E3DDD3]/40">
-              <div className="font-serif italic font-normal text-2xl sm:text-3xl text-[#2C2E33] pr-2">
+            <div className="flex items-center gap-4 sm:gap-6 justify-between sm:justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
+              <div className="font-serif italic font-normal text-2xl sm:text-3xl text-foreground pr-2">
                 {service.price}
               </div>
 
               <button
                 type="button"
                 onClick={() => handleOpenEdit(service)}
-                className="px-4 py-2 rounded-sm bg-[#E2DDD3] hover:bg-[#D5CEBF] text-[#2C2E33] text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 rounded-sm bg-secondary hover:bg-secondary/80 text-foreground text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 border border-border"
               >
-                <Edit2 className="w-3.5 h-3.5 text-[#2C2E33]" />
+                <Edit2 className="w-3.5 h-3.5 text-foreground" />
                 <span>Edit</span>
               </button>
 
@@ -277,8 +278,8 @@ export default function BusinessServicesPage() {
                 onClick={() => toggleServiceActive(service.id)}
                 className={`px-4 py-2 rounded-sm text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                   service.active
-                    ? "border border-[#E0A8A8] bg-[#FDF2F2] hover:bg-[#FBE4E4] text-[#C54A4A]"
-                    : "border border-[#C5E1CA] bg-[#E8F3EA] hover:bg-[#D8EBDC] text-[#2E6B38]"
+                    ? "border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400"
+                    : "border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
                 }`}
               >
                 <Power className="w-3.5 h-3.5" />
@@ -293,9 +294,9 @@ export default function BusinessServicesPage() {
       {/* SHADCN DIALOG MODAL FOR ADD / EDIT SERVICE                        */}
       {/* ----------------------------------------------------------------- */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-xl bg-white border border-[#E3DDD3] p-6 sm:p-8 rounded-lg shadow-lg">
+        <DialogContent className="sm:max-w-xl bg-card border border-border p-6 sm:p-8 rounded-lg shadow-lg text-card-foreground">
           <DialogHeader className="text-left space-y-1 pb-2">
-            <DialogTitle className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+            <DialogTitle className="font-serif font-bold text-xl sm:text-2xl text-foreground">
               {modalMode === "add" ? "Create Service" : "Edit Service Details"}
             </DialogTitle>
           </DialogHeader>
@@ -303,8 +304,8 @@ export default function BusinessServicesPage() {
           <form onSubmit={handleSubmit} className="space-y-5 pt-2">
             {/* Field 1: Service Name */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
-                Service Name <span className="text-[#C54A4A]">*</span>
+              <label className="text-xs font-semibold text-foreground block">
+                Service Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -312,14 +313,14 @@ export default function BusinessServicesPage() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="e.g. Balayage & Toner"
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735] placeholder-[#A09D96]"
+                className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
               />
             </div>
 
             {/* Field 2: Description */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
-                Description <span className="text-[#C54A4A]">*</span>
+              <label className="text-xs font-semibold text-foreground block">
+                Description <span className="text-red-500">*</span>
               </label>
               <textarea
                 rows={3}
@@ -327,14 +328,14 @@ export default function BusinessServicesPage() {
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Describe what is included..."
-                className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735] placeholder-[#A09D96] resize-none"
+                className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground resize-none"
               />
             </div>
 
             {/* Field 3: Service Image Upload */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#2C2E33] block">
-                Service Image <span className="text-[#787570] font-normal">(Optional)</span>
+              <label className="text-xs font-semibold text-foreground block">
+                Service Image <span className="text-muted-foreground font-normal">(Optional)</span>
               </label>
 
               <input
@@ -346,7 +347,7 @@ export default function BusinessServicesPage() {
               />
 
               {imagePreview ? (
-                <div className="relative w-full h-36 rounded-lg overflow-hidden border border-[#E3DDD3] bg-[#FAF8F4] group">
+                <div className="relative w-full h-36 rounded-lg overflow-hidden border border-border bg-muted group">
                   <Image
                     src={imagePreview}
                     alt="Service Preview"
@@ -358,7 +359,7 @@ export default function BusinessServicesPage() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-3 py-1.5 bg-white/90 hover:bg-white text-[#2C2E33] text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
+                      className="px-3 py-1.5 bg-background/90 hover:bg-background text-foreground text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
                     >
                       Change
                     </button>
@@ -375,16 +376,16 @@ export default function BusinessServicesPage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-28 border-2 border-dashed border-[#E3DDD3] hover:border-[#B78735] bg-[#FAF8F4] rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group"
+                  className="w-full h-28 border-2 border-dashed border-border hover:border-[#B78735] bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-full bg-[#EBE7DF] text-[#787570] group-hover:bg-[#B78735]/15 group-hover:text-[#B78735] flex items-center justify-center transition-colors">
+                  <div className="w-9 h-9 rounded-full bg-secondary text-muted-foreground group-hover:bg-[#B78735]/15 group-hover:text-[#B78735] flex items-center justify-center transition-colors">
                     <Upload className="w-4 h-4" />
                   </div>
                   <div className="text-center">
-                    <span className="text-xs font-semibold text-[#2C2E33] group-hover:text-[#B78735] transition-colors">
+                    <span className="text-xs font-semibold text-foreground group-hover:text-[#B78735] transition-colors">
                       Click to upload service image
                     </span>
-                    <span className="text-[11px] text-[#787570] block">
+                    <span className="text-[11px] text-muted-foreground block">
                       PNG, JPG or WEBP (Max 5MB)
                     </span>
                   </div>
@@ -395,28 +396,21 @@ export default function BusinessServicesPage() {
             {/* Field 4 & 5 Grid: Duration & Price */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#2C2E33] block">
-                  Duration (minutes) <span className="text-[#C54A4A]">*</span>
+                <label className="text-xs font-semibold text-foreground block">
+                  Duration (minutes) <span className="text-red-500">*</span>
                 </label>
-                <div className="relative flex items-center">
-                  <select
-                    value={form.duration}
-                    onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                    className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 pr-10 text-sm font-medium text-[#2C2E33] outline-none cursor-pointer appearance-none focus:ring-1 focus:ring-[#B78735] focus:border-[#B78735] hover:border-[#B78735]/60 transition-colors"
-                  >
-                    {DURATION_OPTIONS.map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="w-4 h-4 text-[#787570] absolute right-3 pointer-events-none" />
-                </div>
+                <Combobox
+                  options={DURATION_OPTIONS.map((d) => ({ value: String(d), label: String(d) }))}
+                  value={String(form.duration)}
+                  onChange={(val) => setForm({ ...form, duration: val })}
+                  triggerClassName="w-full h-11 bg-background border-input rounded-sm px-4 text-sm font-medium text-foreground"
+                  align="start"
+                />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-[#2C2E33] block">
-                  Price (£) <span className="text-[#C54A4A]">*</span>
+                <label className="text-xs font-semibold text-foreground block">
+                  Price ($) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -424,13 +418,13 @@ export default function BusinessServicesPage() {
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
                   placeholder="65"
-                  className="w-full bg-[#FAF8F4] border border-[#E3DDD3]/70 rounded-sm px-4 py-3 text-sm text-[#2C2E33] outline-none focus:ring-1 focus:ring-[#B78735] placeholder-[#A09D96]"
+                  className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
                 />
               </div>
             </div>
 
             {/* Submit & Cancel Actions */}
-            <div className="pt-4 flex items-center gap-3 border-t border-[#E3DDD3]/60">
+            <div className="pt-4 flex items-center gap-3 border-t border-border">
               <button
                 type="submit"
                 className="px-6 py-2.5 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center gap-2"
@@ -448,7 +442,7 @@ export default function BusinessServicesPage() {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2.5 rounded-sm bg-[#FAF8F4] border border-[#E3DDD3]/70 text-[#787570] hover:text-[#2C2E33] text-sm font-medium transition-colors cursor-pointer"
+                className="px-5 py-2.5 rounded-sm bg-secondary border border-border text-muted-foreground hover:text-foreground text-sm font-medium transition-colors cursor-pointer"
               >
                 Cancel
               </button>

@@ -101,10 +101,10 @@ export default function ProfessionalPortfolioPage() {
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
             Portfolio
           </h1>
-          <p className="text-xs sm:text-sm text-[#787570] font-normal tracking-wide">
+          <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
             {images.length} images
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function ProfessionalPortfolioPage() {
         <button
           type="button"
           onClick={() => setIsAddModalOpen(true)}
-          className="bg-[#B78735] hover:bg-[#8F6929] active:scale-[0.98] text-white px-5 py-2.5 rounded-md font-medium text-xs sm:text-sm flex items-center gap-2 cursor-pointer transition-all shadow-2xs self-start sm:self-auto"
+          className="bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground px-5 py-2.5 rounded-md font-medium text-xs sm:text-sm flex items-center gap-2 cursor-pointer transition-all shadow-2xs self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Add Image</span>
@@ -125,7 +125,7 @@ export default function ProfessionalPortfolioPage() {
         {images[0] && (
           <div
             onClick={() => setSelectedImage(images[0])}
-            className="lg:col-span-2 lg:row-span-2 relative min-h-[300px] sm:min-h-[360px] lg:min-h-[460px] rounded-2xl overflow-hidden bg-[#E0D9CE] border border-[#E3DDD3]/70 group cursor-pointer shadow-xs hover:border-[#B78735] transition-all"
+            className="lg:col-span-2 lg:row-span-2 relative min-h-[300px] sm:min-h-[360px] lg:min-h-[460px] rounded-2xl overflow-hidden bg-muted border border-border group cursor-pointer shadow-xs hover:border-primary transition-all"
           >
             <Image
               src={images[0].url}
@@ -134,8 +134,8 @@ export default function ProfessionalPortfolioPage() {
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               unoptimized
             />
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-              <span className="text-white font-medium text-xs sm:text-sm bg-black/40 px-3 py-1 rounded-full backdrop-blur-xs">
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+              <span className="text-white font-medium text-xs sm:text-sm bg-black/60 px-3 py-1 rounded-full backdrop-blur-xs">
                 {images[0].title || "Featured Work"}
               </span>
             </div>
@@ -147,7 +147,7 @@ export default function ProfessionalPortfolioPage() {
           <div
             key={item.id}
             onClick={() => setSelectedImage(item)}
-            className="relative h-52 sm:h-56 lg:h-56 rounded-2xl overflow-hidden bg-[#E0D9CE] border border-[#E3DDD3]/70 group cursor-pointer shadow-xs hover:border-[#B78735] transition-all"
+            className="relative h-52 sm:h-56 lg:h-56 rounded-2xl overflow-hidden bg-muted border border-border group cursor-pointer shadow-xs hover:border-primary transition-all"
           >
             <Image
               src={item.url}
@@ -156,8 +156,8 @@ export default function ProfessionalPortfolioPage() {
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               unoptimized
             />
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-              <span className="text-white font-medium text-xs bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-xs">
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+              <span className="text-white font-medium text-xs bg-black/60 px-2.5 py-1 rounded-full backdrop-blur-xs">
                 {item.title || "View Image"}
               </span>
             </div>
@@ -167,12 +167,12 @@ export default function ProfessionalPortfolioPage() {
         {/* Add Photo Card Placeholder Box */}
         <div
           onClick={() => setIsAddModalOpen(true)}
-          className="relative h-52 sm:h-56 lg:h-56 rounded-2xl border border-dashed border-[#C5BEB3] bg-[#E5E0D8]/60 hover:bg-[#DCD6CC]/80 transition-colors flex flex-col items-center justify-center p-6 text-[#787570] hover:text-[#2C2E33] cursor-pointer group"
+          className="relative h-52 sm:h-56 lg:h-56 rounded-2xl border border-dashed border-border bg-accent/30 hover:bg-accent transition-colors flex flex-col items-center justify-center p-6 text-muted-foreground hover:text-foreground cursor-pointer group"
         >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center text-[#787570] group-hover:text-[#2C2E33] transition-colors mb-2">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-muted-foreground group-hover:text-foreground transition-colors mb-2">
             <Plus className="w-6 h-6 stroke-[1.5]" />
           </div>
-          <span className="text-xs font-normal text-[#787570] group-hover:text-[#2C2E33] transition-colors">
+          <span className="text-xs font-normal text-muted-foreground group-hover:text-foreground transition-colors">
             Add Photo
           </span>
         </div>
@@ -181,21 +181,21 @@ export default function ProfessionalPortfolioPage() {
       {/* View/Delete Image Detail Modal */}
       {selectedImage && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#F7F5F0] border border-[#E3DDD3] rounded-2xl max-w-xl w-full p-5 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150 space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E3DDD3] pb-3">
-              <h3 className="font-serif font-bold text-lg text-[#2C2E33]">
+          <div className="bg-card border border-border rounded-2xl max-w-xl w-full p-5 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150 space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <h3 className="font-serif font-bold text-lg text-foreground">
                 {selectedImage.title || "Portfolio Image"}
               </h3>
               <button
                 type="button"
                 onClick={() => setSelectedImage(null)}
-                className="text-[#787570] hover:text-[#2C2E33] p-1 rounded-md transition-colors cursor-pointer"
+                className="text-muted-foreground hover:text-foreground p-1 rounded-md transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="relative w-full h-80 sm:h-96 rounded-xl overflow-hidden bg-[#E0D9CE]">
+            <div className="relative w-full h-80 sm:h-96 rounded-xl overflow-hidden bg-muted">
               <Image
                 src={selectedImage.url}
                 alt={selectedImage.title || "Portfolio detail"}
@@ -209,7 +209,7 @@ export default function ProfessionalPortfolioPage() {
               <button
                 type="button"
                 onClick={() => handleDeleteImage(selectedImage.id)}
-                className="text-[#C54A4A] hover:bg-[#FDF2F2] px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="text-red-500 hover:bg-red-500/10 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" />
                 <span>Delete Photo</span>
@@ -218,7 +218,7 @@ export default function ProfessionalPortfolioPage() {
               <button
                 type="button"
                 onClick={() => setSelectedImage(null)}
-                className="bg-[#B78735] hover:bg-[#8F6929] text-white px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -229,16 +229,16 @@ export default function ProfessionalPortfolioPage() {
 
       {/* Add New Image Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#F7F5F0] border border-[#E3DDD3] rounded-2xl max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in-95 duration-150 space-y-5">
-            <div className="flex items-center justify-between border-b border-[#E3DDD3] pb-4">
-              <h3 className="font-serif font-bold text-xl text-[#2C2E33]">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-2xl max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in-95 duration-150 space-y-5">
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <h3 className="font-serif font-bold text-xl text-foreground">
                 Add Portfolio Image
               </h3>
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-[#787570] hover:text-[#2C2E33] p-1 rounded-md transition-colors cursor-pointer"
+                className="text-muted-foreground hover:text-foreground p-1 rounded-md transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -246,8 +246,8 @@ export default function ProfessionalPortfolioPage() {
 
             {uploadSuccess ? (
               <div className="py-8 text-center space-y-3">
-                <CheckCircle2 className="w-12 h-12 text-[#2E6B38] mx-auto animate-bounce" />
-                <h4 className="font-serif font-bold text-lg text-[#2C2E33]">
+                <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto animate-bounce" />
+                <h4 className="font-serif font-bold text-lg text-foreground">
                   Image Uploaded Successfully!
                 </h4>
               </div>
@@ -255,13 +255,13 @@ export default function ProfessionalPortfolioPage() {
               <form onSubmit={handleAddImage} className="space-y-4 text-xs sm:text-sm">
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#C5BEB3] bg-[#EBE7DF]/70 hover:bg-[#E2DCD4] rounded-xl p-8 text-center cursor-pointer transition-colors space-y-2"
+                  className="border-2 border-dashed border-border bg-accent/40 hover:bg-accent rounded-xl p-8 text-center cursor-pointer transition-colors space-y-2"
                 >
-                  <Upload className="w-8 h-8 text-[#787570] mx-auto" />
-                  <p className="font-medium text-[#2C2E33]">
+                  <Upload className="w-8 h-8 text-muted-foreground mx-auto" />
+                  <p className="font-medium text-foreground">
                     Click to choose photo or drop image here
                   </p>
-                  <p className="text-xs text-[#787570]">
+                  <p className="text-xs text-muted-foreground">
                     PNG, JPG or WEBP (Max 5MB)
                   </p>
                   <input
@@ -281,13 +281,13 @@ export default function ProfessionalPortfolioPage() {
                   <button
                     type="button"
                     onClick={() => setIsAddModalOpen(false)}
-                    className="flex-1 bg-white border border-[#E3DDD3] text-[#5C5954] hover:bg-[#EBE7DF] py-2.5 rounded-sm font-medium transition-colors cursor-pointer"
+                    className="flex-1 bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80 py-2.5 rounded-sm font-medium transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 bg-[#B78735] hover:bg-[#8F6929] text-white py-2.5 rounded-sm font-medium transition-colors cursor-pointer"
+                    className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground py-2.5 rounded-sm font-medium transition-colors cursor-pointer"
                   >
                     Upload Image
                   </button>

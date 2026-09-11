@@ -21,7 +21,7 @@ export default function CustomerCalendarPage() {
       dayNumber: 19,
       time: "2:30 PM",
       fullTime: "2:30 PM – 5:00 PM",
-      price: "£175",
+      price: "$175",
       color: "bg-[#A27933]",
     },
     {
@@ -33,7 +33,7 @@ export default function CustomerCalendarPage() {
       dayNumber: 24,
       time: "11:00 AM",
       fullTime: "11:00 AM – 12:30 PM",
-      price: "£55",
+      price: "$55",
       color: "bg-[#2C2E33]",
     },
   ];
@@ -113,7 +113,7 @@ export default function CustomerCalendarPage() {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Month / Year Title */}
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-[#2C2E33]">
+        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
           {currentMonth}
         </h1>
 
@@ -123,23 +123,24 @@ export default function CustomerCalendarPage() {
           <Button
             variant="ghost"
             size="lg"
-            className="bg-[#E5DFD5] hover:bg-[#DCD5C9] text-[#5C5954] text-xs font-medium px-3 py-3 rounded-sm flex items-center gap-1 cursor-pointer border-0"
+            className="bg-accent hover:bg-accent/80 text-foreground text-xs font-medium px-3 py-3 rounded-md flex items-center gap-1 cursor-pointer border-0"
           >
             <ChevronLeft className="w-5 h-5" />
             <span>Prev</span>
           </Button>
 
           {/* View Segmented Control */}
-          <div className="bg-[#E5DFD5] p-2 rounded-sm flex items-center gap-1">
+          <div className="bg-accent p-1 rounded-md flex items-center gap-1">
             {(["Month", "Week", "Day"] as CalendarView[]).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => setView(v)}
-                className={`px-3.5 py-1 text-xs font-medium rounded-sm transition-all cursor-pointer ${view === v
-                  ? "bg-white text-[#2C2E33]"
-                  : "text-[#5C5954] hover:text-[#2C2E33]"
-                  }`}
+                className={`px-3.5 py-1 text-xs font-medium rounded-sm transition-all cursor-pointer ${
+                  view === v
+                    ? "bg-card text-foreground shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 {v}
               </button>
@@ -150,7 +151,7 @@ export default function CustomerCalendarPage() {
           <Button
             variant="ghost"
             size="lg"
-            className="bg-[#E5DFD5] hover:bg-[#DCD5C9] text-[#5C5954] text-xs font-medium px-3 py-3 rounded-sm flex items-center gap-1 cursor-pointer border-0"
+            className="bg-accent hover:bg-accent/80 text-foreground text-xs font-medium px-3 py-3 rounded-md flex items-center gap-1 cursor-pointer border-0"
           >
             <span>Next</span>
             <ChevronRight className="w-5 h-5" />
@@ -162,10 +163,10 @@ export default function CustomerCalendarPage() {
       {/* VIEW 1: MONTH VIEW */}
       {/* ------------------------------------------------------------- */}
       {view === "Month" && (
-        <div className="overflow-x-auto rounded-lg border border-[#E3DDD3]/70 shadow-xs">
-          <div className="bg-[#EBE7DF]/80 min-w-[640px] overflow-hidden">
+        <div className="overflow-x-auto rounded-lg border border-border shadow-xs">
+          <div className="bg-card min-w-[640px] overflow-hidden">
             {/* Days of Week Header Row */}
-            <div className="grid grid-cols-7 bg-[#E5E0D8] border-b border-[#E3DDD3]/70 text-center text-xs font-semibold text-[#787570] py-3">
+            <div className="grid grid-cols-7 bg-accent/60 border-b border-border text-center text-xs font-semibold text-muted-foreground py-3">
               <div>Mon</div>
               <div>Tue</div>
               <div>Wed</div>
@@ -176,20 +177,22 @@ export default function CustomerCalendarPage() {
             </div>
 
             {/* Days Grid (5 Rows x 7 Cols) */}
-            <div className="grid grid-cols-7 divide-x divide-y divide-[#E5E0D8] bg-white">
+            <div className="grid grid-cols-7 divide-x divide-y divide-border bg-card">
               {monthDays.map((item, index) => {
                 const appt = appointments.find((a) => a.dayNumber === item.day);
                 return (
                   <div
                     key={index}
-                    className={`min-h-[90px] sm:min-h-[110px] p-2 flex flex-col justify-between transition-colors ${item.isHighlight ? "bg-[#E2DDD3]/60" : "hover:bg-[#E2DDD3]/20"
-                      }`}
+                    className={`min-h-[90px] sm:min-h-[110px] p-2 flex flex-col justify-between transition-colors ${
+                      item.isHighlight ? "bg-primary/10" : "hover:bg-accent/40"
+                    }`}
                   >
                     <span
-                      className={`text-xs font-medium ${item.isHighlight
-                        ? "text-[#A27933] font-bold"
-                        : "text-[#A27933]"
-                        }`}
+                      className={`text-xs font-medium ${
+                        item.isHighlight
+                          ? "text-primary font-bold"
+                          : "text-muted-foreground"
+                      }`}
                     >
                       {item.day || ""}
                     </span>
@@ -197,7 +200,9 @@ export default function CustomerCalendarPage() {
                     {/* Appointment Event Pill */}
                     {appt && (
                       <div
-                        className={`w-full text-white text-[11px] font-medium px-2 py-1.5 rounded-sm shadow-2xs leading-tight flex items-center justify-between ${appt.color}`}
+                        className={`w-full text-white text-[11px] font-medium px-2 py-1.5 rounded-sm shadow-2xs leading-tight flex items-center justify-between ${
+                          appt.color === "bg-[#2C2E33]" ? "bg-foreground text-background" : "bg-primary text-primary-foreground"
+                        }`}
                       >
                         <span className="">
                           {appt.shortName} · {appt.time}
@@ -216,19 +221,20 @@ export default function CustomerCalendarPage() {
       {/* VIEW 2: WEEK VIEW */}
       {/* ------------------------------------------------------------- */}
       {view === "Week" && (
-        <div className="overflow-x-auto rounded-2xl border border-[#E3DDD3]/70 shadow-xs">
-          <div className="bg-[#F3F0EA] min-w-[640px] overflow-hidden">
+        <div className="overflow-x-auto rounded-2xl border border-border shadow-xs">
+          <div className="bg-card min-w-[640px] overflow-hidden">
             {/* Week Header Row */}
-            <div className="grid grid-cols-8 border-b border-[#E3DDD3]/70 bg-[#E5E0D8] text-center py-3">
-              <div className="text-xs text-[#787570] font-medium self-center"></div>
+            <div className="grid grid-cols-8 border-b border-border bg-accent/60 text-center py-3">
+              <div className="text-xs text-muted-foreground font-medium self-center"></div>
               {weekDays.map((wd, i) => (
                 <div key={i} className="space-y-0.5">
-                  <span className="text-xs text-[#787570] font-medium block">
+                  <span className="text-xs text-muted-foreground font-medium block">
                     {wd.dayName}
                   </span>
                   <span
-                    className={`font-serif text-lg font-bold block ${wd.isHighlighted ? "text-[#A27933]" : "text-[#2C2E33]"
-                      }`}
+                    className={`font-serif text-lg font-bold block ${
+                      wd.isHighlighted ? "text-primary" : "text-foreground"
+                    }`}
                   >
                     {wd.dateNum}
                   </span>
@@ -237,53 +243,53 @@ export default function CustomerCalendarPage() {
             </div>
 
             {/* Time Slots Table */}
-            <div className="divide-y divide-[#E3DDD3]/50 bg-white">
+            <div className="divide-y divide-border bg-card">
               {timeSlots.slice(1, 10).map((time, rowIdx) => (
-                <div key={rowIdx} className="grid grid-cols-8 min-h-[90px] divide-x divide-[#E3DDD3]/50">
+                <div key={rowIdx} className="grid grid-cols-8 min-h-[90px] divide-x divide-border">
                   {/* Time Label */}
-                  <div className="p-2 text-[11px] text-[#787570] font-medium text-right pr-3 flex items-center justify-end">
+                  <div className="p-2 text-[11px] text-muted-foreground font-medium text-right pr-3 flex items-center justify-end">
                     {time}
                   </div>
 
-                {/* 7 Days Columns */}
-                {weekDays.map((wd, colIdx) => {
-                  // Check if Sofia appt on Mon 19 at 2 PM
-                  const isSofia = wd.dateNum === 19 && time === "2 PM";
-                  // Check if James appt on Sat 24 at 11 AM
-                  const isJames = wd.dateNum === 24 && time === "11 AM";
+                  {/* 7 Days Columns */}
+                  {weekDays.map((wd, colIdx) => {
+                    // Check if Sofia appt on Mon 19 at 2 PM
+                    const isSofia = wd.dateNum === 19 && time === "2 PM";
+                    // Check if James appt on Sat 24 at 11 AM
+                    const isJames = wd.dateNum === 24 && time === "11 AM";
 
-                  return (
-                    <div
-                      key={colIdx}
-                      className="p-1 relative hover:bg-[#E2DDD3]/20 transition-colors flex items-center"
-                    >
-                      {isSofia && (
-                        <div className="w-full bg-[#A27933] h-[62px] flex justify-center items-center text-white p-2 rounded-sm text-xs font-medium shadow-2xs">
-                          Sofia 2:30
-                        </div>
-                      )}
-                      {isJames && (
-                        <div className="w-full bg-[#1C1C1E] h-[62px] flex justify-center items-center text-white p-2.5 rounded-sm text-xs font-medium shadow-2xs">
-                          James 11:00
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
+                    return (
+                      <div
+                        key={colIdx}
+                        className="p-1 relative hover:bg-accent/40 transition-colors flex items-center"
+                      >
+                        {isSofia && (
+                          <div className="w-full bg-primary text-primary-foreground h-[62px] flex justify-center items-center p-2 rounded-sm text-xs font-medium shadow-2xs">
+                            Sofia 2:30
+                          </div>
+                        )}
+                        {isJames && (
+                          <div className="w-full bg-foreground text-background h-[62px] flex justify-center items-center p-2.5 rounded-sm text-xs font-medium shadow-2xs">
+                            James 11:00
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {/* ------------------------------------------------------------- */}
       {/* VIEW 3: DAY VIEW */}
       {/* ------------------------------------------------------------- */}
       {view === "Day" && (
-        <div className="bg-white border border-[#E3DDD3]/70 rounded-lg p-6 shadow-xs space-y-6">
+        <div className="bg-card border border-border rounded-lg p-6 shadow-xs space-y-6">
           {/* Day Title */}
-          <h2 className="font-serif font-bold text-xl sm:text-2xl text-[#2C2E33]">
+          <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
             Monday 19 August
           </h2>
 
@@ -294,18 +300,18 @@ export default function CustomerCalendarPage() {
               return (
                 <div key={idx} className="relative flex items-start gap-4">
                   {/* Time label */}
-                  <span className="w-14 text-xs font-medium text-[#787570] text-right pt-0.5 shrink-0">
+                  <span className="w-14 text-xs font-medium text-muted-foreground text-right pt-0.5 shrink-0">
                     {time}
                   </span>
 
                   {/* Horizontal Guideline & Event Container */}
-                  <div className="flex-1 border-t border-dashed border-[#D5CDBF] pt-2 min-h-[44px]">
+                  <div className="flex-1 border-t border-dashed border-border pt-2 min-h-[44px]">
                     {is2PM && (
-                      <div className="bg-[#A27933] text-white rounded-xl p-4 shadow-sm space-y-1 transition-all">
+                      <div className="bg-primary text-primary-foreground rounded-xl p-4 shadow-sm space-y-1 transition-all">
                         <div className="font-bold text-sm sm:text-base">
                           Sofia Martinez
                         </div>
-                        <div className="text-xs sm:text-sm text-white/90">
+                        <div className="text-xs sm:text-sm text-primary-foreground/90">
                           Balayage & Toner · 2:30 PM – 5:00 PM · £175
                         </div>
                       </div>
