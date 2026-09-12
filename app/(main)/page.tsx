@@ -28,6 +28,6 @@ export default function HomePage() {
       <DualBanners />
       <FaqAccordion />
       <GetStartedCta />
-    </div>
+    </div>  
   );
 }

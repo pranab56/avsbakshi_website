@@ -92,7 +92,7 @@ export function Combobox({
         align={align}
         sideOffset={6}
         className={cn(
-          'w-auto min-w-[180px] max-w-[320px] p-0 rounded-xl border border-border bg-popover text-popover-foreground shadow-xl overflow-hidden z-50',
+          'w-[var(--anchor-width)] min-w-[180px] p-0 rounded-xl border border-border bg-popover text-popover-foreground shadow-xl overflow-hidden z-50',
           contentClassName
         )}
       >

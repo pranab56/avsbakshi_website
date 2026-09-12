@@ -61,14 +61,16 @@ export default function WhyCloudSalon() {
           </div>
         </div>
 
-        {/* Right Column: Hero Image */}
+        {/* Right Column: Hero Video */}
         <div className="lg:col-span-6">
-          <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 h-[320px] sm:h-[640px] w-full">
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
-              style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1200&q=80')`,
-              }}
+          <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 h-[350px] sm:h-[800px] w-full bg-muted">
+            <video
+              src="/video/video.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
