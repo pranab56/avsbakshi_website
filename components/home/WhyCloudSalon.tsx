@@ -1,58 +1,66 @@
-import { CheckCheck } from "lucide-react";
+import { CheckCheck, Sparkles, ShieldCheck } from "lucide-react";
 
 export default function WhyCloudSalon() {
   const reasons = [
     {
       title: "Verified Professionals",
-      desc: "Every professional goes through our verification process so you know exactly who you are booking.",
+      desc: "Every professional goes through our rigorous 5-step verification process.",
     },
     {
       title: "Transparent Pricing",
-      desc: "See full service pricing before you book. No surprises, no hidden fees.",
+      desc: "See full service pricing upfront before you book. No surprises, no hidden fees.",
     },
     {
-      title: "Real Availability",
-      desc: "Live availability means you only see slots that are actually open to book right now.",
+      title: "Real-Time Availability",
+      desc: "Live calendar sync means you only see slots that are actually open to book right now.",
     },
     {
-      title: "Trusted Reviews",
-      desc: "Real reviews from verified customers help you make confident, informed decisions.",
+      title: "Trusted Customer Reviews",
+      desc: "Real reviews & ratings from verified clients help you make confident decisions.",
     },
     {
-      title: "Easy Booking",
+      title: "Seamless One-Click Booking",
       desc: "Manage everything from one place — discover, book, pay, and reschedule with ease.",
     },
   ];
 
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-        {/* Left Column: Info & Reasons List */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        
+        {/* Left Column: Info & Glassmorphic Reasons List */}
         <div className="lg:col-span-6 space-y-6 sm:space-y-8">
           <div>
-            <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
-              WHY CLOUD SALON
-            </span>
-            <h2 className="font-title text-2xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-[1.15] mb-3 sm:mb-4">
-              Beauty discovery, built different.
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B78735]/10 border border-[#B78735]/30 mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-[#B78735]" />
+              <span className="text-[11px] font-bold text-[#B78735] uppercase tracking-[0.2em]">
+                WHY CLOUD SALON
+              </span>
+            </div>
+            <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.12] mb-3">
+              Beauty discovery, <br />
+              <span className="text-[#B78735]">built different.</span>
             </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">
-              We built Cloud Salon because finding and booking great beauty services should be as easy as ordering a coffee.
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
+              We built Cloud Salon because finding and booking great beauty services should be as simple as ordering a coffee.
             </p>
           </div>
 
           {/* Reasons List */}
-          <div className="space-y-6">
+          <div className="space-y-3.5">
             {reasons.map((item, idx) => (
-              <div key={idx} className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-accent text-primary flex items-center justify-center shrink-0 mt-0.5 border border-border/50 shadow-xs">
-                  <CheckCheck className="w-5 h-5 text-primary" strokeWidth={2.5} />
+              <div
+                key={idx}
+                className="flex items-start gap-4 p-3.5 sm:p-4 rounded-2xl bg-card border border-border/60 shadow-xs hover:border-[#B78735]/40 hover:shadow-md transition-all group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-[#B78735]/15 text-[#B78735] flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#B78735] group-hover:text-white transition-colors">
+                  <CheckCheck className="w-5 h-5" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm sm:text-base text-foreground mb-0.5">
+                  <h4 className="font-bold text-sm sm:text-base text-foreground mb-0.5">
                     {item.title}
                   </h4>
-                  <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
+                  <p className="text-xs text-muted-foreground font-normal leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -61,19 +69,35 @@ export default function WhyCloudSalon() {
           </div>
         </div>
 
-        {/* Right Column: Hero Video */}
-        <div className="lg:col-span-6">
-          <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 h-[350px] sm:h-[800px] w-full bg-muted">
+        {/* Right Column: Hero Video Frame */}
+        <div className="lg:col-span-6 relative">
+          <div className="relative rounded-[28px] sm:rounded-[36px] overflow-hidden shadow-2xl shadow-black/15 h-[350px] sm:h-[680px] w-full bg-muted border border-border/60 group">
             <video
               src="/video/video.mp4"
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
+
+            {/* Subtle Gradient Shadow Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+
+            {/* Floating Verified Guarantee Badge */}
+            <div className="absolute bottom-6 left-6 bg-background/95 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-border shadow-xl flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#B78735]/15 text-[#B78735] flex items-center justify-center shrink-0 font-bold">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-foreground leading-tight">100% Verified Quality</p>
+                <p className="text-[10px] text-muted-foreground font-medium">Satisfaction Guaranteed</p>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
     </section>
   );

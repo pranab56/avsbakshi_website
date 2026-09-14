@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Plus, Check, Edit2, Power, ChevronDown, Upload, X } from "lucide-react";
+import { Plus, Check, Edit2, Power, Upload } from "lucide-react";
 import {
   Dialog,
   DialogContent,

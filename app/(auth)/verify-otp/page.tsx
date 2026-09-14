@@ -65,44 +65,45 @@ function VerifyOtpContent() {
   };
 
   return (
-    <div className="max-w-lg mx-auto w-full space-y-6 text-center">
-      <div className="text-left">
+    <div className="max-w-lg mx-auto w-full space-y-6 text-left">
+      <div>
         <Link
           href="/register"
-          className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#B78735] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back
+          Back to Register
         </Link>
       </div>
 
-      <Image
-        src="/icons/logo.png"
-        alt="Cloud Salon Logo"
-        width={80}
-        height={80}
-        className="object-contain mx-auto block dark:hidden"
-      />
-      <Image
-        src="/icons/logo.png"
-        alt="Cloud Salon Logo"
-        width={80}
-        height={80}
-        className="object-contain mx-auto hidden dark:block"
-        style={{ mixBlendMode: "screen" }}
-      />
-
-      <div className="w-12 h-12 rounded-full bg-[#B78735]/10 text-[#B78735] flex items-center justify-center mx-auto">
-        <CheckCircle2 className="w-6 h-6" />
-      </div>
-
-      <div className="space-y-1.5">
-        <h1 className="font-title text-2xl sm:text-3xl font-bold text-[#1A1A1A]">
-          Verify Phone Number
-        </h1>
-        <p className="text-xs text-zinc-500">
-          We sent a 6-digit verification code to <span className="font-semibold text-zinc-800">{phone}</span>
-        </p>
+      <div className="space-y-3">
+        <Image
+          src="/icons/Light_Mode.png"
+          alt="Cloud Salon Logo"
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain block dark:hidden"
+        />
+        <Image
+          src="/icons/Dark_Mode.png"
+          alt="Cloud Salon Logo"
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain hidden dark:block"
+        />
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <h1 className="font-title text-3xl font-bold text-foreground">
+              Verify Phone Number
+            </h1>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            We sent a 6-digit verification code to <span className="font-semibold text-foreground">{phone}</span>
+          </p>
+        </div>
       </div>
 
       {/* 6 Digit Input Boxes */}
@@ -120,39 +121,40 @@ function VerifyOtpContent() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-sm border transition-all focus:outline-none focus:ring-2 ${error
-                  ? "border-red-500 bg-red-50/20 focus:ring-red-300 text-red-600"
+              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${
+                error
+                  ? "border-destructive bg-destructive/10 focus:ring-destructive/30 text-destructive"
                   : digit
-                    ? "border-[#B78735] bg-[#B78735]/5 text-[#B78735] focus:ring-[#B78735]/30"
-                    : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20 text-[#1A1A1A]"
-                }`}
+                  ? "border-primary bg-primary/10 text-primary focus:ring-primary/20"
+                  : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
+              }`}
             />
           ))}
         </div>
-        {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
+        {error && <p className="text-destructive text-xs font-medium text-center">{error}</p>}
       </div>
 
       <button
         onClick={handleVerify}
-        className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer"
+        className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer"
       >
         Verify Phone Number
       </button>
 
       <div className="flex items-center justify-between text-xs pt-2">
-        <span className="text-zinc-500">Didn&apos;t receive code?</span>
+        <span className="text-muted-foreground">Didn&apos;t receive code?</span>
         <button
           type="button"
           onClick={handleResend}
-          className="text-[#B78735] font-semibold hover:underline cursor-pointer"
+          className="text-primary font-semibold hover:underline cursor-pointer"
         >
           Resend code
         </button>
       </div>
 
-      <p className="text-xs text-center text-zinc-500 pt-2">
+      <p className="text-xs text-center text-muted-foreground pt-2">
         Already verified?{" "}
-        <Link href="/login" className="text-[#B78735] font-semibold hover:underline">
+        <Link href="/login" className="text-primary font-semibold hover:underline">
           Log In
         </Link>
       </p>

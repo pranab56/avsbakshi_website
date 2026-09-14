@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { CheckCircle2, Clock, Plus, Upload, Check, Trash2 } from "lucide-react";
+import { CheckCircle2, Plus, Upload, Check, Trash2 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Combobox } from "@/components/ui/combobox";

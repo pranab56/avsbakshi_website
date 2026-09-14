@@ -88,11 +88,10 @@ export default function CustomerSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer ${
-                  isActive
+                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer ${isActive
                     ? "bg-primary/15 text-primary font-medium"
                     : "text-foreground hover:bg-accent font-normal"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -532,9 +531,8 @@ export default function CustomerSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                 }}
                 placeholder="Enter current password"
-                className={`w-full bg-accent border ${
-                  passwordErrors.oldPassword ? "border-destructive" : "border-border"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                className={`w-full bg-accent border ${passwordErrors.oldPassword ? "border-destructive" : "border-border"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.oldPassword && (
                 <p className="text-[11px] text-destructive font-medium mt-1">
@@ -557,9 +555,8 @@ export default function CustomerSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                 }}
                 placeholder="Enter new password"
-                className={`w-full bg-accent border ${
-                  passwordErrors.newPassword ? "border-destructive" : "border-border"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                className={`w-full bg-accent border ${passwordErrors.newPassword ? "border-destructive" : "border-border"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.newPassword && (
                 <p className="text-[11px] text-destructive font-medium mt-1">
@@ -582,9 +579,8 @@ export default function CustomerSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                 }}
                 placeholder="Confirm new password"
-                className={`w-full bg-accent border ${
-                  passwordErrors.confirmPassword ? "border-destructive" : "border-border"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                className={`w-full bg-accent border ${passwordErrors.confirmPassword ? "border-destructive" : "border-border"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.confirmPassword && (
                 <p className="text-[11px] text-destructive font-medium mt-1">

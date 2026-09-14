@@ -47,13 +47,21 @@ export default function DashboardSidebar({
         {/* Header / Brand Logo */}
         <div className="relative flex items-center justify-center py-4 px-6 border-b border-white/10">
           <Link href="/" className="flex items-center justify-center group">
+            {/* Light Mode Logo */}
             <Image
-              src={"/icons/dashboard_logo.png"}
-              width={100}
-              height={100}
-              alt="logo"
-              className="object-contain"
-              style={{ mixBlendMode: "screen" }}
+              src="/icons/Light_Mode.png"
+              width={140}
+              height={40}
+              alt="The Cloud Salon"
+              className="h-9 w-auto object-contain block dark:hidden"
+            />
+            {/* Dark Mode Logo */}
+            <Image
+              src="/icons/Dark_Mode.png"
+              width={140}
+              height={40}
+              alt="The Cloud Salon"
+              className="h-9 w-auto object-contain hidden dark:block"
             />
           </Link>
 

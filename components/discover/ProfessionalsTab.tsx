@@ -33,7 +33,7 @@ export default function ProfessionalsTab() {
             options={sortOptions}
             value={sortOption}
             onChange={setSortOption}
-            triggerClassName="bg-foreground text-background hover:bg-foreground/90 font-semibold rounded-full px-4 py-1.5 text-xs shadow-xs"
+            triggerClassName="bg-card border border-border text-foreground hover:border-primary/60 hover:bg-accent/50 font-semibold rounded-full px-3.5 py-1.5 text-xs shadow-xs transition-all cursor-pointer"
           />
         </div>
       </div>

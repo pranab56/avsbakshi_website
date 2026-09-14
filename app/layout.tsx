@@ -5,6 +5,7 @@ import { Manrope, Fraunces } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { I18nProvider } from "@/components/providers/i18n-provider";
+import Chatbot from "@/components/shared/Chatbot";
 
 const manrope = Manrope({
   variable: "--font-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
           <I18nProvider>
             <ReduxProvider>
               {children}
+              <Chatbot />
               <Toaster richColors position="top-center" />
             </ReduxProvider>
           </I18nProvider>

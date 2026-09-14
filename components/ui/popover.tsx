@@ -5,8 +5,8 @@ import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 
 import { cn } from "@/lib/utils"
 
-function Popover({ ...props }: PopoverPrimitive.Root.Props) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />
+function Popover({ modal = false, ...props }: PopoverPrimitive.Root.Props & { modal?: boolean }) {
+  return <PopoverPrimitive.Root modal={modal} data-slot="popover" {...props} />
 }
 
 function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {

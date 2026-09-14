@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe } from "lucide-react";
+import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors } from "lucide-react";
 import Button from "./Button";
 import ThemeToggle from "./theme-toggle";
 import { Combobox } from "@/components/ui/combobox";
@@ -17,6 +17,7 @@ const languageOptions = [
 export default function Navbar() {
   const pathname = usePathname();
   const [discoverOpen, setDiscoverOpen] = useState(false);
+  const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     if (typeof document !== "undefined") {
@@ -52,23 +53,22 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group shrink-0">
-            {/* Light Mode Logo — normal display */}
+            {/* Light Mode Logo */}
             <Image
-              src="/icons/logo.png"
+              src="/icons/Light_Mode.png"
               alt="The Cloud Salon"
               width={180}
               height={44}
               className="h-7 xs:h-8 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform block dark:hidden"
               priority
             />
-            {/* Dark Mode Logo — use brightness invert to make white background disappear */}
+            {/* Dark Mode Logo */}
             <Image
-              src="/icons/logo.png"
+              src="/icons/Dark_Mode.png"
               alt="The Cloud Salon"
               width={180}
               height={44}
               className="h-7 xs:h-8 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform hidden dark:block"
-              style={{ mixBlendMode: "screen" }}
               priority
             />
           </Link>
@@ -82,23 +82,20 @@ export default function Navbar() {
               onMouseLeave={() => setDiscoverOpen(false)}
             >
               <button
-                className={`relative flex items-center gap-1 py-2 transition-colors cursor-pointer hover:text-primary ${
-                  isDiscoverActive
+                className={`relative flex items-center gap-1 py-2 transition-colors cursor-pointer hover:text-primary ${isDiscoverActive
                     ? "text-primary font-semibold"
                     : "text-foreground"
-                }`}
+                  }`}
               >
                 <span>Discover</span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${
-                    discoverOpen ? "rotate-180 text-primary" : ""
-                  }`}
+                  className={`w-4 h-4 transition-transform duration-200 ${discoverOpen ? "rotate-180 text-primary" : ""
+                    }`}
                 />
                 {/* Animated Line (Start -> End) */}
                 <span
-                  className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${
-                    isDiscoverActive ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
+                  className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isDiscoverActive ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
                 />
               </button>
 
@@ -140,68 +137,60 @@ export default function Navbar() {
             {/* For Professionals */}
             <Link
               href="/for-professionals"
-              className={`relative group py-2 transition-colors cursor-pointer ${
-                isProActive
+              className={`relative group py-2 transition-colors cursor-pointer ${isProActive
                   ? "text-primary font-semibold"
                   : "text-foreground hover:text-primary"
-              }`}
+                }`}
             >
               <span>For Professionals</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${
-                  isProActive ? "w-full" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isProActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
 
             {/* For Businesses */}
             <Link
               href="/for-businesses"
-              className={`relative group py-2 transition-colors cursor-pointer ${
-                isBusinessActive
+              className={`relative group py-2 transition-colors cursor-pointer ${isBusinessActive
                   ? "text-primary font-semibold"
                   : "text-foreground hover:text-primary"
-              }`}
+                }`}
             >
               <span>For Businesses</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${
-                  isBusinessActive ? "w-full" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isBusinessActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
 
             {/* How it Works */}
             <Link
               href="/how-it-works"
-              className={`relative group py-2 transition-colors cursor-pointer ${
-                isHowItWorksActive
+              className={`relative group py-2 transition-colors cursor-pointer ${isHowItWorksActive
                   ? "text-primary font-semibold"
                   : "text-foreground hover:text-primary"
-              }`}
+                }`}
             >
               <span>How it Works</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${
-                  isHowItWorksActive ? "w-full" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isHowItWorksActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
 
             {/* About Us */}
             <Link
               href="/about"
-              className={`relative group py-2 transition-colors cursor-pointer ${
-                isAboutActive
+              className={`relative group py-2 transition-colors cursor-pointer ${isAboutActive
                   ? "text-primary font-semibold"
                   : "text-foreground hover:text-primary"
-              }`}
+                }`}
             >
               <span>About Us</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${
-                  isAboutActive ? "w-full" : "w-0 group-hover:w-full"
-                }`}
+                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isAboutActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
               />
             </Link>
           </nav>
@@ -224,9 +213,75 @@ export default function Navbar() {
               Log In
             </Button>
 
-            <Button href="/register" variant="secondary" size="sm">
-              Sign Up
-            </Button>
+            {/* Sign Up Dropdown (Click Triggered) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setSignUpOpen(!signUpOpen)}
+                className="h-9 px-4 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50"
+              >
+                <span>Sign Up</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${signUpOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {signUpOpen && (
+                <>
+                  {/* Click outside backdrop */}
+                  <div
+                    className="fixed inset-0 z-40 bg-transparent"
+                    onClick={() => setSignUpOpen(false)}
+                  />
+
+                  <div className="absolute top-full right-0 w-64 bg-popover rounded-2xl shadow-2xl border border-border p-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 mt-1.5">
+                    <div className="px-3 py-1.5 text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
+                      Create an account as
+                    </div>
+
+                    <Link
+                      href="/register?role=customer"
+                      onClick={() => setSignUpOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs">Customer</div>
+                        <div className="text-[11px] text-muted-foreground">Book services & appointments</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      href="/register?role=professional"
+                      onClick={() => setSignUpOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
+                        <Scissors className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs">Professional</div>
+                        <div className="text-[11px] text-muted-foreground">Offer skills & gain clients</div>
+                      </div>
+                    </Link>
+
+                    <Link
+                      href="/register?role=business"
+                      onClick={() => setSignUpOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs">Business / Salon Owner</div>
+                        <div className="text-[11px] text-muted-foreground">Manage your salon business</div>
+                      </div>
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button & Mobile Language Toggle */}
@@ -271,11 +326,10 @@ export default function Navbar() {
             <Link
               href="/discover"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${
-                isDiscoverActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isDiscoverActive
                   ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                   : "text-foreground hover:bg-accent/60"
-              }`}
+                }`}
             >
               <Compass className={`w-5 h-5 ${isDiscoverActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>Discover Services & Salons</span>
@@ -284,11 +338,10 @@ export default function Navbar() {
             <Link
               href="/for-professionals"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${
-                isProActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isProActive
                   ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                   : "text-foreground hover:bg-accent/60"
-              }`}
+                }`}
             >
               <Briefcase className={`w-5 h-5 ${isProActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>For Professionals</span>
@@ -297,11 +350,10 @@ export default function Navbar() {
             <Link
               href="/for-businesses"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${
-                isBusinessActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isBusinessActive
                   ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                   : "text-foreground hover:bg-accent/60"
-              }`}
+                }`}
             >
               <Building2 className={`w-5 h-5 ${isBusinessActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>For Businesses</span>
@@ -310,11 +362,10 @@ export default function Navbar() {
             <Link
               href="/how-it-works"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${
-                isHowItWorksActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isHowItWorksActive
                   ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                   : "text-foreground hover:bg-accent/60"
-              }`}
+                }`}
             >
               <FileText className={`w-5 h-5 ${isHowItWorksActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>How it Works</span>
@@ -323,11 +374,10 @@ export default function Navbar() {
             <Link
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${
-                isAboutActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isAboutActive
                   ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                   : "text-foreground hover:bg-accent/60"
-              }`}
+                }`}
             >
               <Info className={`w-5 h-5 ${isAboutActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>About Us</span>
@@ -336,36 +386,58 @@ export default function Navbar() {
             <Link
               href="/faq"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${
-                isFaqActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isFaqActive
                   ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                   : "text-foreground hover:bg-accent/60"
-              }`}
+                }`}
             >
               <HelpCircle className={`w-5 h-5 ${isFaqActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>FAQs</span>
             </Link>
 
-            {/* Bottom App Actions */}
-            <div className="pt-4 border-t border-border grid grid-cols-2 gap-3">
-              <Button
-                href="/login"
-                variant="outline"
-                fullWidth
-                size="md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Log In
-              </Button>
-              <Button
-                href="/register"
-                variant="primary"
-                fullWidth
-                size="md"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Sign Up
-              </Button>
+            {/* Mobile Sign Up As Options */}
+            <div className="pt-3 border-t border-border space-y-2">
+              <div className="px-1 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+                Sign Up As
+              </div>
+              <div className="grid grid-cols-1 gap-2">
+                <Link
+                  href="/register?role=customer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
+                >
+                  <User className="w-4 h-4 text-primary" />
+                  <span>Customer (Book Services)</span>
+                </Link>
+                <Link
+                  href="/register?role=professional"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
+                >
+                  <Scissors className="w-4 h-4 text-primary" />
+                  <span>Professional (Offer Services)</span>
+                </Link>
+                <Link
+                  href="/register?role=business"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
+                >
+                  <Building2 className="w-4 h-4 text-primary" />
+                  <span>Business / Salon Owner</span>
+                </Link>
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  href="/login"
+                  variant="outline"
+                  fullWidth
+                  size="md"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Log In
+                </Button>
+              </div>
             </div>
           </div>
         </>

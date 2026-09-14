@@ -81,19 +81,18 @@ function RegisterFormContent() {
 
       <div className="space-y-3">
         <Image
-          src="/icons/logo.png"
+          src="/icons/Light_Mode.png"
           alt="Cloud Salon Logo"
-          width={80}
-          height={80}
-          className="object-contain block dark:hidden"
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain block dark:hidden"
         />
         <Image
-          src="/icons/logo.png"
+          src="/icons/Dark_Mode.png"
           alt="Cloud Salon Logo"
-          width={80}
-          height={80}
-          className="object-contain hidden dark:block"
-          style={{ mixBlendMode: "screen" }}
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain hidden dark:block"
         />
         <div className="space-y-1">
           <h1 className="font-title text-3xl font-bold text-foreground">
@@ -106,7 +105,7 @@ function RegisterFormContent() {
       </div>
 
       {/* Social Register */}
-      <div className="grid gap-2.5">
+      {/* <div className="grid gap-2.5">
         <button
           type="button"
           onClick={() => {
@@ -137,14 +136,7 @@ function RegisterFormContent() {
           </svg>
           Continue with Facebook
         </button>
-      </div>
-
-      <div className="relative flex items-center justify-center">
-        <div className="border-t border-border w-full" />
-        <span className="bg-background px-3 text-[10px] text-muted-foreground font-medium tracking-wider uppercase absolute">
-          or register with email
-        </span>
-      </div>
+      </div> */}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* First & Last Name */}
@@ -237,7 +229,7 @@ function RegisterFormContent() {
               setValue("role", r.value, { shouldValidate: true });
             }}
             error={!!errors.role}
-            triggerClassName="w-full px-3.5 py-3 rounded-xl border border-border bg-card hover:bg-accent text-foreground text-sm font-medium transition-all"
+            triggerClassName="w-full px-4 py-3 rounded-2xl border border-border/80 bg-card hover:bg-accent/40 text-foreground text-sm font-medium transition-all shadow-2xs"
             align="start"
           />
           {errors.role && (

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { ArrowLeft, Loader2, MailCheck } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useResendOtpMutation, useVerifyOtpMutation } from '@/features/auth/authApi';
 
 export default function VerifyEmailForm() {
@@ -80,45 +80,46 @@ export default function VerifyEmailForm() {
   };
 
   return (
-    <div className="max-w-lg mx-auto w-full space-y-6 text-center">
-      <div className="text-left">
+    <div className="max-w-lg mx-auto w-full space-y-6 text-left">
+      <div>
         <Link
-          href="/register"
-          className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#B78735] transition-colors"
+          href="/login"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back
+          Back to Log In
         </Link>
       </div>
 
-      <Image
-        src="/icons/logo.png"
-        alt="Cloud Salon Logo"
-        width={80}
-        height={80}
-        className="object-contain mx-auto block dark:hidden"
-      />
-      <Image
-        src="/icons/logo.png"
-        alt="Cloud Salon Logo"
-        width={80}
-        height={80}
-        className="object-contain mx-auto hidden dark:block"
-        style={{ mixBlendMode: "screen" }}
-      />
-
-      <div className="w-12 h-12 rounded-full bg-[#B78735]/10 text-[#B78735] flex items-center justify-center mx-auto">
-        <MailCheck className="w-6 h-6" />
-      </div>
-
-      <div className="space-y-1.5">
-        <h1 className="font-title text-2xl sm:text-3xl font-bold text-[#1A1A1A]">
-          Verify Your Email
-        </h1>
-        <p className="text-xs text-zinc-500">
-          We&apos;ve sent a 6-digit verification code to{' '}
-          {email ? <span className="font-semibold text-zinc-800 break-all">{email}</span> : 'your email'}
-        </p>
+      <div className="space-y-3">
+        <Image
+          src="/icons/Light_Mode.png"
+          alt="Cloud Salon Logo"
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain block dark:hidden"
+        />
+        <Image
+          src="/icons/Dark_Mode.png"
+          alt="Cloud Salon Logo"
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain hidden dark:block"
+        />
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            {/* <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <MailCheck className="w-5 h-5" />
+            </div> */}
+            <h1 className="font-title text-3xl font-bold text-foreground">
+              Verify Your Email
+            </h1>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            We&apos;ve sent a 6-digit verification code to{' '}
+            {email ? <span className="font-semibold text-foreground break-all">{email}</span> : 'your email'}
+          </p>
+        </div>
       </div>
 
       {/* 6 Digit Input Boxes */}
@@ -136,43 +137,42 @@ export default function VerifyEmailForm() {
               value={digit}
               onChange={(e) => handleOtpChange(idx, e.target.value)}
               onKeyDown={(e) => handleKeyDown(idx, e)}
-              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-sm border transition-all focus:outline-none focus:ring-2 ${
-                otpError
-                  ? 'border-red-500 bg-red-50/20 focus:ring-red-300 text-red-600'
+              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${otpError
+                  ? 'border-destructive bg-destructive/10 focus:ring-destructive/30 text-destructive'
                   : digit
-                  ? 'border-[#B78735] bg-[#B78735]/5 text-[#B78735] focus:ring-[#B78735]/30'
-                  : 'border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20 text-[#1A1A1A]'
-              }`}
+                    ? 'border-primary bg-primary/10 text-primary focus:ring-primary/20'
+                    : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
+                }`}
             />
           ))}
         </div>
-        {otpError && <p className="text-red-500 text-xs font-medium">{otpError}</p>}
+        {otpError && <p className="text-destructive text-xs font-medium text-center">{otpError}</p>}
       </div>
 
       <button
         onClick={handleVerify}
         disabled={isVerifying}
-        className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 disabled:opacity-70"
+        className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 disabled:opacity-70"
       >
         {isVerifying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify Email'}
       </button>
 
       <div className="flex items-center justify-between text-xs pt-2">
-        <span className="text-zinc-500">Didn&apos;t receive code?</span>
+        <span className="text-muted-foreground">Didn&apos;t receive code?</span>
         <button
           type="button"
           onClick={handleResend}
           disabled={isResending}
-          className="text-[#B78735] font-semibold hover:underline cursor-pointer disabled:opacity-50 flex items-center gap-1"
+          className="text-primary font-semibold hover:underline cursor-pointer disabled:opacity-50 flex items-center gap-1"
         >
           {isResending && <Loader2 className="w-3 h-3 animate-spin" />}
           Resend Code
         </button>
       </div>
 
-      <p className="text-xs text-center text-zinc-500 pt-2">
+      <p className="text-xs text-center text-muted-foreground pt-2">
         Already verified?{' '}
-        <Link href="/login" className="text-[#B78735] font-semibold hover:underline">
+        <Link href="/login" className="text-primary font-semibold hover:underline">
           Log In
         </Link>
       </p>

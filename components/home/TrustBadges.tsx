@@ -1,34 +1,59 @@
-import { CheckCircle2, ShieldCheck, Tag, Star, RotateCcw } from "lucide-react";
+import { Calendar, Users, Clock, MapPin, Monitor } from "lucide-react";
 
 export default function TrustBadges() {
-  return (
-    <section className="border-y border-border bg-card/60 py-6 sm:py-10 transition-colors duration-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <p className="text-[10px] sm:text-[11px] uppercase tracking-widest text-center text-muted-foreground font-semibold mb-4 sm:mb-5">
-          TRUSTED BY BEAUTY PROFESSIONALS AND CUSTOMERS
-        </p>
+  const features = [
+    {
+      icon: Calendar,
+      title: "Book Anytime",
+      desc: "Easy. Fast. On your schedule.",
+    },
+    {
+      icon: Users,
+      title: "Expert Specialists",
+      desc: "Verified pros. Top rated.",
+    },
+    {
+      icon: Clock,
+      title: "Flexible Scheduling",
+      desc: "Choose what works best for you.",
+    },
+    {
+      icon: MapPin,
+      title: "Services Wherever You Are",
+      desc: "At home, on-site or in-salon.",
+    },
+    {
+      icon: Monitor,
+      title: "Work From Anywhere",
+      desc: "Run your beauty business in the cloud.",
+    },
+  ];
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 text-center">
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-foreground">
-            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Verified Professionals</span>
-          </div>
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-foreground">
-            <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Secure Booking</span>
-          </div>
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-foreground">
-            <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Transparent Pricing</span>
-          </div>
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-foreground">
-            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Trusted Reviews</span>
-          </div>
-          <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold text-foreground col-span-2 md:col-span-1">
-            <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Easy Rescheduling</span>
-          </div>
+  return (
+    <section className="border-y border-border/80 bg-accent/40 py-8 sm:py-12 transition-colors duration-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
+          {features.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={idx}
+                className="bg-card border border-border/60 rounded-2xl p-4 sm:p-5 flex flex-col items-center text-center space-y-2.5 transition-all duration-300 hover:shadow-md hover:border-primary/40 hover:-translate-y-1 group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <Icon className="w-5 h-5" strokeWidth={2.2} />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-xs sm:text-sm text-foreground mb-1">
+                    {item.title}
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground font-normal leading-snug">
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

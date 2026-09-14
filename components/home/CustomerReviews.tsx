@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
-import { Star } from "lucide-react";
+import { Star, Sparkles, CheckCircle2 } from "lucide-react";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -12,9 +12,9 @@ export default function CustomerReviews() {
     {
       id: 1,
       name: "Rachel Thompson",
-      service: "Full Colour with Sofia Martinez",
+      service: "Full Hair Color & Styling",
       quote:
-        "“Sofia completely transformed my hair. The colour is exactly what I imagined, and her attention to detail is unmatched. Already booked my next appointment.”",
+        "“Sofia completely transformed my hair. The colour is exactly what I imagined, and her attention to detail is unmatched. Already booked my next appointment!”",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=300&q=80",
@@ -22,7 +22,7 @@ export default function CustomerReviews() {
     {
       id: 2,
       name: "Marcus Vance",
-      service: "Skin Fade & Beard Trim at The Fold",
+      service: "Skin Fade & Beard Trim",
       quote:
         "“The best barbershop experience I've had in NYC. Hot towel, skin fade, and beard sculpting executed to absolute perfection.”",
       rating: 5,
@@ -32,9 +32,9 @@ export default function CustomerReviews() {
     {
       id: 3,
       name: "Ashley Morgan",
-      service: "LED Facial at Noir Studio",
+      service: "LED Luxury Facial Spa",
       quote:
-        "“Booking through Cloud Salon was completely effortless. Transparent pricing and an incredible luxury facial service!”",
+        "“Booking through Cloud Salon was completely effortless. Transparent pricing, live calendar booking, and an incredible luxury facial service!”",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=300&q=80",
@@ -42,7 +42,7 @@ export default function CustomerReviews() {
     {
       id: 4,
       name: "James Holloway",
-      service: "Balayage at Maya Chen Color Studio",
+      service: "Balayage Highlight",
       quote:
         "“Incredible results and a seamless experience from start to finish. The app made booking so simple. 10/10 would recommend!”",
       rating: 5,
@@ -52,9 +52,9 @@ export default function CustomerReviews() {
     {
       id: 5,
       name: "Priya Daniels",
-      service: "Gel Manicure at Luxe Nail Bar",
+      service: "Gel Manicure & Nail Art",
       quote:
-        "“Love how easy it is to find top-rated nail artists nearby. The gel manicure lasted weeks and looked flawless every day.”",
+        "“Love how easy it is to find top-rated nail artists nearby. The gel manicure lasted weeks and looked flawless every single day.”",
       rating: 5,
       avatar:
         "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=300&q=80",
@@ -62,16 +62,23 @@ export default function CustomerReviews() {
   ];
 
   return (
-    <section className="bg-card text-card-foreground border-y border-border py-14 sm:py-28 transition-colors duration-200">
+    <section className="bg-card text-card-foreground border-y border-border/70 py-14 sm:py-24 transition-colors duration-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        
         {/* Header */}
-        <div className="mb-8 sm:mb-12">
-          <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
-            REVIEWS
-          </span>
-          <h2 className="font-title text-2xl sm:text-4xl lg:text-5xl font-normal text-foreground">
-            What our customers say
+        <div className="mb-10 space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B78735]/10 border border-[#B78735]/30">
+            <Sparkles className="w-3.5 h-3.5 text-[#B78735]" />
+            <span className="text-[11px] font-bold text-[#B78735] uppercase tracking-[0.2em]">
+              CLIENT TESTIMONIALS
+            </span>
+          </div>
+          <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+            What Our Clients Say
           </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Real reviews from verified beauty customers.
+          </p>
         </div>
 
         {/* Swiper Carousel */}
@@ -89,9 +96,18 @@ export default function CustomerReviews() {
         >
           {reviews.map((review) => (
             <SwiperSlide key={review.id}>
-              <div className="bg-accent/50 rounded-[20px] sm:rounded-[28px] p-5 sm:p-12 border border-border shadow-xl max-w-3xl mx-auto">
+              <div className="bg-accent/40 rounded-[28px] p-6 sm:p-12 border border-border/80 shadow-2xl max-w-3xl mx-auto relative">
+                
+                {/* Verified Pill */}
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#B78735]/15 border border-[#B78735]/30 mb-6">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#B78735]" />
+                  <span className="text-[10px] font-bold text-[#B78735] uppercase tracking-wider">
+                    Verified Customer
+                  </span>
+                </div>
+
                 {/* Avatar */}
-                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-primary p-0.5 mx-auto mb-3 sm:mb-4 overflow-hidden shadow-lg">
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#B78735] p-1 mx-auto mb-4 overflow-hidden shadow-xl">
                   <img
                     src={review.avatar}
                     alt={review.name}
@@ -100,21 +116,21 @@ export default function CustomerReviews() {
                 </div>
 
                 {/* Star Rating */}
-                <div className="flex justify-center gap-1.5 mb-4 sm:mb-5 text-primary">
+                <div className="flex justify-center gap-1 mb-4 text-[#B78735]">
                   {[...Array(review.rating)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-primary text-primary" />
+                    <Star key={i} className="w-4 h-4 fill-[#B78735] text-[#B78735]" />
                   ))}
                 </div>
 
                 {/* Quote */}
-                <blockquote className="font-title font-light italic text-base sm:text-xl lg:text-2xl text-foreground/90 leading-relaxed max-w-xl mx-auto text-center mb-5 sm:mb-6">
+                <blockquote className="font-title font-light italic text-base sm:text-xl lg:text-2xl text-foreground leading-relaxed max-w-xl mx-auto text-center mb-6">
                   {review.quote}
                 </blockquote>
 
                 {/* Customer Details */}
                 <div>
                   <h4 className="font-bold text-base text-foreground">{review.name}</h4>
-                  <p className="text-xs text-primary mt-0.5">{review.service}</p>
+                  <p className="text-xs text-[#B78735] font-semibold mt-0.5">{review.service}</p>
                 </div>
               </div>
             </SwiperSlide>
@@ -129,14 +145,14 @@ export default function CustomerReviews() {
         .custom-swiper-pagination .swiper-pagination-bullet {
           width: 8px;
           height: 8px;
-          background: rgba(255, 255, 255, 0.4);
+          background: rgba(183, 135, 53, 0.3);
           opacity: 1;
           border-radius: 9999px;
           transition: all 0.3s ease;
           margin: 0 !important;
         }
         .custom-swiper-pagination .swiper-pagination-bullet-active {
-          width: 24px;
+          width: 28px;
           background: #b78735;
           border-radius: 9999px;
         }

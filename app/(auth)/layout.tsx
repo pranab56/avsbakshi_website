@@ -16,12 +16,18 @@ export default function AuthLayout({
         <div className="relative z-10">
           <Link href="/" className="inline-block">
             <Image
-              src="/icons/logo.png"
+              src="/icons/Light_Mode.png"
               alt="The Cloud Salon"
-              width={75}
-              height={75}
-              className="object-contain"
-              style={{ mixBlendMode: "screen" }}
+              width={140}
+              height={40}
+              className="h-10 w-auto object-contain block dark:hidden"
+            />
+            <Image
+              src="/icons/Dark_Mode.png"
+              alt="The Cloud Salon"
+              width={140}
+              height={40}
+              className="h-10 w-auto object-contain hidden dark:block"
             />
           </Link>
         </div>

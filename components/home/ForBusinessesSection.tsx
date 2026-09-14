@@ -63,7 +63,7 @@ export default function ForBusinessesSection() {
             <div
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
               style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1200&q=80')`,
+                backgroundImage: `url('https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=1200&auto=format&fit=crop&q=80')`,
               }}
             />
           </div>

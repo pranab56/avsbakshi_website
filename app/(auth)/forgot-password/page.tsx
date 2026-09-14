@@ -152,7 +152,7 @@ export default function ForgotPasswordPage() {
     <div className="max-w-lg mx-auto w-full space-y-6">
       <Link
         href="/login"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#B78735] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Log In
@@ -163,25 +163,24 @@ export default function ForgotPasswordPage() {
         <div className="space-y-6">
           <div className="space-y-3">
             <Image
-              src="/icons/logo.png"
+              src="/icons/Light_Mode.png"
               alt="Cloud Salon Logo"
-              width={80}
-              height={80}
-              className="object-contain block dark:hidden"
+              width={150}
+              height={40}
+              className="h-10 w-auto object-contain block dark:hidden"
             />
             <Image
-              src="/icons/logo.png"
+              src="/icons/Dark_Mode.png"
               alt="Cloud Salon Logo"
-              width={80}
-              height={80}
-              className="object-contain hidden dark:block"
-              style={{ mixBlendMode: "screen" }}
+              width={150}
+              height={40}
+              className="h-10 w-auto object-contain hidden dark:block"
             />
-            <div className="space-y-1.5">
-              <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+            <div className="space-y-1">
+              <h1 className="font-title text-3xl font-bold text-foreground">
                 Reset Password
               </h1>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 Enter your email address and we&apos;ll send you a verification code to reset your password.
               </p>
             </div>
@@ -189,21 +188,21 @@ export default function ForgotPasswordPage() {
 
           <form onSubmit={emailForm.handleSubmit(onEmailSubmit)} className="space-y-4">
             <div className="space-y-1 text-left">
-              <label className="text-xs font-semibold text-zinc-700 block">
+              <label className="text-xs font-semibold text-foreground block">
                 Email address
               </label>
               <input
                 type="email"
                 placeholder="you@example.com"
                 {...emailForm.register('email')}
-                className={`w-full px-3.5 py-3 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${
+                className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
                   emailForm.formState.errors.email
-                    ? 'border-red-500 bg-red-50/20 focus:ring-red-300'
-                    : 'border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20'
+                    ? 'border-destructive bg-destructive/10 focus:ring-destructive/30'
+                    : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
                 }`}
               />
               {emailForm.formState.errors.email && (
-                <p className="text-red-500 text-xs font-medium mt-1">
+                <p className="text-destructive text-xs font-medium mt-1">
                   {emailForm.formState.errors.email.message}
                 </p>
               )}
@@ -212,7 +211,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isSendingOtp}
-              className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
+              className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
             >
               {isSendingOtp ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -227,16 +226,16 @@ export default function ForgotPasswordPage() {
       {/* Step 2: Verification Code */}
       {step === 2 && (
         <div className="space-y-6 text-center">
-          <div className="w-12 h-12 rounded-full bg-[#B78735]/10 text-[#B78735] flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
             <KeyRound className="w-6 h-6" />
           </div>
 
-          <div className="space-y-1.5">
-            <h1 className="font-title text-2xl sm:text-3xl font-bold text-[#1A1A1A]">
+          <div className="space-y-1">
+            <h1 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
               Enter Verification Code
             </h1>
-            <p className="text-xs text-zinc-500">
-              Enter the 6-digit code sent to <span className="font-semibold text-zinc-800">{submittedEmail}</span>
+            <p className="text-xs text-muted-foreground">
+              Enter the 6-digit code sent to <span className="font-semibold text-foreground">{submittedEmail}</span>
             </p>
           </div>
 
@@ -254,34 +253,34 @@ export default function ForgotPasswordPage() {
                   value={digit}
                   onChange={(e) => handleOtpChange(idx, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(idx, e)}
-                  className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-sm border transition-all focus:outline-none focus:ring-2 ${
+                  className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${
                     otpError
-                      ? 'border-red-500 bg-red-50/20 focus:ring-red-300 text-red-600'
+                      ? 'border-destructive bg-destructive/10 focus:ring-destructive/30 text-destructive'
                       : digit
-                      ? 'border-[#B78735] bg-[#B78735]/5 text-[#B78735] focus:ring-[#B78735]/30'
-                      : 'border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20 text-[#1A1A1A]'
+                      ? 'border-primary bg-primary/10 text-primary focus:ring-primary/20'
+                      : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
                   }`}
                 />
               ))}
             </div>
-            {otpError && <p className="text-red-500 text-xs font-medium">{otpError}</p>}
+            {otpError && <p className="text-destructive text-xs font-medium">{otpError}</p>}
           </div>
 
           <button
             onClick={onVerifyOtp}
             disabled={isVerifyingOtp}
-            className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 disabled:opacity-70"
+            className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 disabled:opacity-70"
           >
             {isVerifyingOtp ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify Code'}
           </button>
 
           <div className="flex items-center justify-between text-xs pt-2">
-            <span className="text-zinc-500">Didn&apos;t receive code?</span>
+            <span className="text-muted-foreground">Didn&apos;t receive code?</span>
             <button
               type="button"
               onClick={handleResend}
               disabled={isResending}
-              className="text-[#B78735] font-semibold hover:underline cursor-pointer disabled:opacity-50 flex items-center gap-1"
+              className="text-primary font-semibold hover:underline cursor-pointer disabled:opacity-50 flex items-center gap-1"
             >
               {isResending && <Loader2 className="w-3 h-3 animate-spin" />}
               Resend Code
@@ -293,18 +292,18 @@ export default function ForgotPasswordPage() {
       {/* Step 3: New Password */}
       {step === 3 && (
         <div className="space-y-6">
-          <div className="space-y-1.5">
-            <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+          <div className="space-y-1">
+            <h1 className="font-title text-3xl font-bold text-foreground">
               Set New Password
             </h1>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted-foreground">
               Please enter a secure new password for your account.
             </p>
           </div>
 
           <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
             <div className="space-y-1 text-left">
-              <label className="text-xs font-semibold text-zinc-700 block">
+              <label className="text-xs font-semibold text-foreground block">
                 New Password
               </label>
               <div className="relative">
@@ -312,29 +311,29 @@ export default function ForgotPasswordPage() {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   {...passwordForm.register('password')}
-                  className={`w-full px-3.5 py-3 pr-10 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${
+                  className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
                     passwordForm.formState.errors.password
-                      ? 'border-red-500 bg-red-50/20 focus:ring-red-300'
-                      : 'border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20'
+                      ? 'border-destructive bg-destructive/10 focus:ring-destructive/30'
+                      : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {passwordForm.formState.errors.password && (
-                <p className="text-red-500 text-xs font-medium mt-1">
+                <p className="text-destructive text-xs font-medium mt-1">
                   {passwordForm.formState.errors.password.message}
                 </p>
               )}
             </div>
 
             <div className="space-y-1 text-left">
-              <label className="text-xs font-semibold text-zinc-700 block">
+              <label className="text-xs font-semibold text-foreground block">
                 Confirm New Password
               </label>
               <div className="relative">
@@ -342,22 +341,22 @@ export default function ForgotPasswordPage() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   {...passwordForm.register('confirmPassword')}
-                  className={`w-full px-3.5 py-3 pr-10 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${
+                  className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
                     passwordForm.formState.errors.confirmPassword
-                      ? 'border-red-500 bg-red-50/20 focus:ring-red-300'
-                      : 'border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20'
+                      ? 'border-destructive bg-destructive/10 focus:ring-destructive/30'
+                      : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {passwordForm.formState.errors.confirmPassword && (
-                <p className="text-red-500 text-xs font-medium mt-1">
+                <p className="text-destructive text-xs font-medium mt-1">
                   {passwordForm.formState.errors.confirmPassword.message}
                 </p>
               )}
@@ -366,7 +365,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={isResetting}
-              className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
+              className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
             >
               {isResetting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Update Password'}
             </button>

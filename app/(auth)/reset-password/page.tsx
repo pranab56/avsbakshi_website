@@ -68,7 +68,7 @@ function ResetPasswordContent() {
     <div className="max-w-lg mx-auto w-full space-y-6">
       <Link
         href="/login"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#B78735] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Log In
@@ -76,25 +76,24 @@ function ResetPasswordContent() {
 
       <div className="space-y-3">
         <Image
-          src="/icons/logo.png"
+          src="/icons/Light_Mode.png"
           alt="Cloud Salon Logo"
-          width={80}
-          height={80}
-          className="object-contain block dark:hidden"
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain block dark:hidden"
         />
         <Image
-          src="/icons/logo.png"
+          src="/icons/Dark_Mode.png"
           alt="Cloud Salon Logo"
-          width={80}
-          height={80}
-          className="object-contain hidden dark:block"
-          style={{ mixBlendMode: "screen" }}
+          width={150}
+          height={40}
+          className="h-10 w-auto object-contain hidden dark:block"
         />
         <div className="space-y-1.5">
-          <h1 className="font-title text-3xl font-bold text-[#1A1A1A]">
+          <h1 className="font-title text-3xl font-bold text-foreground">
             Set New Password
           </h1>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted-foreground">
             Your new password must be different from previously used passwords.
           </p>
         </div>
@@ -103,7 +102,7 @@ function ResetPasswordContent() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Password Field */}
         <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-zinc-700 block">
+          <label className="text-xs font-semibold text-foreground block">
             New Password
           </label>
           <div className="relative">
@@ -111,22 +110,22 @@ function ResetPasswordContent() {
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               {...register("password")}
-              className={`w-full px-3.5 py-3 pr-10 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${
+              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
                 errors.password
-                  ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-                  : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+                  ? "border-destructive bg-destructive/10 text-foreground placeholder:text-muted-foreground focus:ring-destructive/30"
+                  : "border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
               }`}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
           {errors.password && (
-            <p className="text-red-500 text-xs font-medium mt-1">
+            <p className="text-destructive text-xs font-medium mt-1">
               {errors.password.message}
             </p>
           )}
@@ -134,7 +133,7 @@ function ResetPasswordContent() {
 
         {/* Confirm Password Field */}
         <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-zinc-700 block">
+          <label className="text-xs font-semibold text-foreground block">
             Confirm New Password
           </label>
           <div className="relative">
@@ -142,22 +141,22 @@ function ResetPasswordContent() {
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
               {...register("confirmPassword")}
-              className={`w-full px-3.5 py-3 pr-10 rounded-sm border text-sm transition-all focus:outline-none focus:ring-2 ${
+              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
                 errors.confirmPassword
-                  ? "border-red-500 bg-red-50/20 focus:ring-red-300"
-                  : "border-[#E5E0D6] bg-white focus:border-[#B78735] focus:ring-[#B78735]/20"
+                  ? "border-destructive bg-destructive/10 text-foreground placeholder:text-muted-foreground focus:ring-destructive/30"
+                  : "border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
               }`}
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
             >
               {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
           {errors.confirmPassword && (
-            <p className="text-red-500 text-xs font-medium mt-1">
+            <p className="text-destructive text-xs font-medium mt-1">
               {errors.confirmPassword.message}
             </p>
           )}
@@ -166,15 +165,15 @@ function ResetPasswordContent() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-3 bg-[#B78735] hover:bg-[#A37428] text-white font-medium rounded-sm shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
+          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
         >
           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Reset Password"}
         </button>
       </form>
 
-      <p className="text-xs text-center text-zinc-500 pt-2">
+      <p className="text-xs text-center text-muted-foreground pt-2">
         Remember your password?{" "}
-        <Link href="/login" className="text-[#B78735] font-semibold hover:underline">
+        <Link href="/login" className="text-primary font-semibold hover:underline">
           Log In
         </Link>
       </p>
@@ -184,8 +183,9 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="text-center py-10 text-xs text-zinc-500">Loading screen...</div>}>
+    <Suspense fallback={<div className="text-center py-10 text-xs text-muted-foreground">Loading screen...</div>}>
       <ResetPasswordContent />
     </Suspense>
   );
 }
+

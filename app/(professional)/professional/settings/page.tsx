@@ -143,11 +143,10 @@ export default function ProfessionalSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${
-                  isActive
+                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${isActive
                     ? "bg-primary/15 text-primary font-semibold"
                     : "text-foreground hover:bg-accent font-normal"
-                }`}
+                  }`}
               >
                 <span>{tab}</span>
               </button>
@@ -907,9 +906,8 @@ export default function ProfessionalSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                 }}
                 placeholder="Enter current password"
-                className={`w-full bg-accent/50 border ${
-                  passwordErrors.oldPassword ? "border-red-500" : "border-border"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                className={`w-full bg-accent/50 border ${passwordErrors.oldPassword ? "border-red-500" : "border-border"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.oldPassword && (
                 <p className="text-[11px] text-red-500 font-medium mt-1">
@@ -932,9 +930,8 @@ export default function ProfessionalSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                 }}
                 placeholder="Enter new password"
-                className={`w-full bg-accent/50 border ${
-                  passwordErrors.newPassword ? "border-red-500" : "border-border"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                className={`w-full bg-accent/50 border ${passwordErrors.newPassword ? "border-red-500" : "border-border"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.newPassword && (
                 <p className="text-[11px] text-red-500 font-medium mt-1">
@@ -957,9 +954,8 @@ export default function ProfessionalSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                 }}
                 placeholder="Confirm new password"
-                className={`w-full bg-accent/50 border ${
-                  passwordErrors.confirmPassword ? "border-red-500" : "border-border"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                className={`w-full bg-accent/50 border ${passwordErrors.confirmPassword ? "border-red-500" : "border-border"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
               />
               {passwordErrors.confirmPassword && (
                 <p className="text-[11px] text-red-500 font-medium mt-1">

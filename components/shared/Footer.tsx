@@ -121,20 +121,19 @@ export default function Footer() {
           <div className="inline-block mb-3">
             {/* Light Mode Logo */}
             <Image
-              src="/icons/logo.png"
+              src="/icons/Light_Mode.png"
               alt="The Cloud Salon"
               width={160}
               height={40}
               className="h-9 w-auto object-contain block dark:hidden"
             />
-            {/* Dark Mode Logo — screen blend makes white background invisible */}
+            {/* Dark Mode Logo */}
             <Image
-              src="/icons/logo.png"
+              src="/icons/Dark_Mode.png"
               alt="The Cloud Salon"
               width={160}
               height={40}
               className="h-9 w-auto object-contain hidden dark:block"
-              style={{ mixBlendMode: "screen" }}
             />
           </div>
 

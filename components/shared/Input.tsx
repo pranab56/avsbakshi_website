@@ -38,7 +38,17 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       default:
         "bg-card border-border text-foreground placeholder:text-muted-foreground focus-within:border-primary focus-within:ring-1 focus-within:ring-primary",
       dark:
-        "bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-400 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary",
+        "bg-zinc-900/90 border-zinc-700 text-white placeholder:text-zinc-300 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary",
+    };
+
+    const inputVariantStyles: Record<InputVariant, string> = {
+      default: "text-foreground placeholder:text-muted-foreground",
+      dark: "text-white placeholder:text-zinc-300",
+    };
+
+    const iconVariantStyles: Record<InputVariant, string> = {
+      default: "text-muted-foreground",
+      dark: "text-zinc-400",
     };
 
     const sizeStyles: Record<InputSize, string> = {
@@ -62,18 +72,21 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className={combinedContainer}>
           {leftIcon && (
-            <span className="shrink-0 mr-2.5 text-muted-foreground flex items-center justify-center">
+            <span className={cn("shrink-0 mr-2.5 flex items-center justify-center", iconVariantStyles[variant])}>
               {leftIcon}
             </span>
           )}
           <ShadcnInput
             id={inputId}
             ref={ref}
-            className="w-full border-0 bg-transparent p-0 shadow-none focus-visible:ring-0 md:text-sm text-foreground placeholder:text-muted-foreground"
+            className={cn(
+              "w-full border-0 bg-transparent p-0 shadow-none focus-visible:ring-0 md:text-sm",
+              inputVariantStyles[variant]
+            )}
             {...props}
           />
           {rightIcon && (
-            <span className="shrink-0 ml-2.5 text-muted-foreground flex items-center justify-center">
+            <span className={cn("shrink-0 ml-2.5 flex items-center justify-center", iconVariantStyles[variant])}>
               {rightIcon}
             </span>
           )}

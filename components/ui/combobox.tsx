@@ -41,7 +41,7 @@ export function Combobox({
   triggerClassName,
   contentClassName,
   prefix,
-  align = 'end',
+  align = 'start',
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -49,41 +49,54 @@ export function Combobox({
   const selected = options.find((o) => o.value === value);
   const filtered = searchable
     ? options.filter(
-        (o) =>
-          o.label.toLowerCase().includes(search.toLowerCase()) ||
-          (o.description && o.description.toLowerCase().includes(search.toLowerCase()))
-      )
+      (o) =>
+        o.label.toLowerCase().includes(search.toLowerCase()) ||
+        (o.description && o.description.toLowerCase().includes(search.toLowerCase()))
+    )
     : options;
 
   const SelectedIcon = selected?.icon;
 
   return (
-    <Popover open={disabled ? false : open} onOpenChange={disabled ? undefined : setOpen}>
+    <Popover modal={false} open={disabled ? false : open} onOpenChange={disabled ? undefined : setOpen}>
       <PopoverTrigger
         disabled={disabled}
         className={cn(
-          'inline-flex items-center justify-between gap-2.5 outline-none transition-all cursor-pointer border select-none',
+          'inline-flex items-center justify-between gap-3 outline-none transition-all duration-200 cursor-pointer border select-none',
           triggerClassName ||
-            cn(
-              'h-11 w-full rounded-lg px-3.5 text-sm font-medium',
-              disabled
-                ? 'bg-muted text-muted-foreground/50 cursor-not-allowed border-transparent opacity-60'
-                : error
-                  ? 'bg-destructive/10 border-destructive text-foreground'
-                  : 'bg-card border-border hover:bg-accent text-foreground'
-            ),
+          cn(
+            'h-14 w-full rounded-2xl px-3.5 py-2.5 text-sm font-medium',
+            disabled
+              ? 'bg-muted text-muted-foreground/50 cursor-not-allowed border-transparent opacity-60'
+              : error
+                ? 'bg-destructive/10 border-destructive text-foreground'
+                : 'bg-card border-border hover:border-primary/50 hover:bg-accent/40 text-foreground shadow-2xs'
+          ),
           className
         )}
       >
-        <div className="flex items-center gap-2 truncate">
+        <div className="flex items-center gap-3 truncate text-left">
           {prefix}
-          {SelectedIcon && <SelectedIcon className="w-4 h-4 text-primary shrink-0" />}
-          <span className="truncate">{selected ? selected.label : placeholder}</span>
+          {SelectedIcon && (
+            <div className="w-8 h-8 rounded-xl bg-primary/15 text-primary flex items-center justify-center shrink-0 shadow-2xs">
+              <SelectedIcon className="w-4 h-4" />
+            </div>
+          )}
+          <div className="flex flex-col text-left truncate">
+            <span className="font-bold text-xs sm:text-sm truncate leading-tight">
+              {selected ? selected.label : placeholder}
+            </span>
+            {selected?.description && (
+              <span className="text-[11px] opacity-80 font-medium truncate mt-0.5">
+                {selected.description}
+              </span>
+            )}
+          </div>
         </div>
         <ChevronDown
           className={cn(
-            'w-3.5 h-3.5 shrink-0 transition-transform duration-200 opacity-70',
-            open && 'rotate-180'
+            'w-4 h-4 shrink-0 transition-transform duration-300 ease-out opacity-70',
+            open && 'rotate-180 text-primary opacity-100'
           )}
         />
       </PopoverTrigger>
@@ -92,12 +105,12 @@ export function Combobox({
         align={align}
         sideOffset={6}
         className={cn(
-          'w-[var(--anchor-width)] min-w-[180px] p-0 rounded-xl border border-border bg-popover text-popover-foreground shadow-xl overflow-hidden z-50',
+          'w-[var(--anchor-width)] min-w-[200px] p-1.5 rounded-2xl border border-border/80 bg-card/95 backdrop-blur-xl text-popover-foreground shadow-2xl overflow-hidden z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200',
           contentClassName
         )}
       >
         {searchable && (
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-accent/30">
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-border/60 bg-accent/40 rounded-xl mb-1">
             <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
             <input
               ref={(el) => {
@@ -110,7 +123,7 @@ export function Combobox({
             />
           </div>
         )}
-        <ul className="max-h-60 overflow-y-auto py-1">
+        <ul className="max-h-64 overflow-y-auto space-y-1 py-0.5">
           {filtered.map((option) => {
             const Icon = option.icon;
             const isSelected = option.value === value;
@@ -124,31 +137,37 @@ export function Combobox({
                   setOpen(false);
                 }}
                 className={cn(
-                  'flex items-center justify-between px-3.5 py-2.5 text-xs font-medium cursor-pointer transition-colors select-none gap-3',
+                  'flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all duration-150 select-none gap-3 group',
                   isSelected
-                    ? 'bg-primary/10 text-primary font-semibold'
-                    : 'text-popover-foreground hover:bg-accent'
+                    ? 'bg-primary/15 text-primary border border-primary/30 shadow-2xs font-bold'
+                    : 'text-foreground hover:bg-accent/70'
                 )}
               >
-                <div className="flex items-center gap-2.5 truncate">
+                <div className="flex items-center gap-3 truncate">
                   {Icon && (
-                    <Icon
+                    <div
                       className={cn(
-                        'w-4 h-4 shrink-0',
-                        isSelected ? 'text-primary' : 'text-muted-foreground'
+                        'w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors',
+                        isSelected
+                          ? 'bg-primary text-primary-foreground shadow-2xs'
+                          : 'bg-accent text-muted-foreground group-hover:bg-primary/15 group-hover:text-primary'
                       )}
-                    />
+                    >
+                      <Icon className="w-4 h-4" />
+                    </div>
                   )}
                   <div className="flex flex-col text-left truncate">
-                    <span className="truncate">{option.label}</span>
+                    <span className={cn('truncate font-bold text-xs', isSelected ? 'text-primary' : 'text-foreground')}>
+                      {option.label}
+                    </span>
                     {option.description && (
-                      <span className="text-[10px] text-muted-foreground font-normal truncate">
+                      <span className="text-[11px] text-muted-foreground font-medium truncate mt-0.5">
                         {option.description}
                       </span>
                     )}
                   </div>
                 </div>
-                {isSelected && <Check className="w-3.5 h-3.5 text-primary shrink-0 ml-auto" />}
+                {isSelected && <Check className="w-4 h-4 text-primary shrink-0 ml-auto" />}
               </li>
             );
           })}

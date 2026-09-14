@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, X, Eye, CheckCircle2, MapPin, Building2 } from "lucide-react";
+import { Plus, X, Eye, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 type SettingsTab = "Profile" | "About Profile" | "Notifications" | "Privacy" | "Security";
@@ -143,11 +143,10 @@ export default function BusinessSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${
-                  isActive
+                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${isActive
                     ? "bg-secondary text-[#B78735] font-semibold"
                     : "text-foreground hover:bg-secondary/50 font-normal"
-                }`}
+                  }`}
               >
                 <span>{tab}</span>
               </button>
@@ -885,9 +884,8 @@ export default function BusinessSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                 }}
                 placeholder="Enter current password"
-                className={`w-full bg-background border ${
-                  passwordErrors.oldPassword ? "border-red-500" : "border-input"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
+                className={`w-full bg-background border ${passwordErrors.oldPassword ? "border-red-500" : "border-input"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
               />
               {passwordErrors.oldPassword && (
                 <p className="text-[11px] text-red-500 font-medium mt-1">
@@ -910,9 +908,8 @@ export default function BusinessSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                 }}
                 placeholder="Enter new password"
-                className={`w-full bg-background border ${
-                  passwordErrors.newPassword ? "border-red-500" : "border-input"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
+                className={`w-full bg-background border ${passwordErrors.newPassword ? "border-red-500" : "border-input"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
               />
               {passwordErrors.newPassword && (
                 <p className="text-[11px] text-red-500 font-medium mt-1">
@@ -935,9 +932,8 @@ export default function BusinessSettingsPage() {
                     setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                 }}
                 placeholder="Confirm new password"
-                className={`w-full bg-background border ${
-                  passwordErrors.confirmPassword ? "border-red-500" : "border-input"
-                } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
+                className={`w-full bg-background border ${passwordErrors.confirmPassword ? "border-red-500" : "border-input"
+                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring`}
               />
               {passwordErrors.confirmPassword && (
                 <p className="text-[11px] text-red-500 font-medium mt-1">
