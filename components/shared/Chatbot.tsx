@@ -187,14 +187,31 @@ export default function Chatbot() {
       backgroundColor: "#B78735",
       color: "#FFFFFF",
     },
-    chatInputAreaStyle: {
+    bodyStyle: {
       backgroundColor: isDark ? "#18181B" : "#FFFFFF",
+    },
+    chatInputContainerStyle: {
+      backgroundColor: isDark ? "#18181B" : "#FFFFFF",
+      borderColor: isDark ? "#27272A" : "#E4E4E7",
+    },
+    chatInputAreaStyle: {
+      backgroundColor: isDark ? "#27272A" : "#F4F4F5",
       color: isDark ? "#FAFAFA" : "#18181B",
+    },
+    chatInputAreaFocusedStyle: {
+      backgroundColor: isDark ? "#27272A" : "#F4F4F5",
+      color: isDark ? "#FAFAFA" : "#18181B",
+    },
+    chatHistoryButtonStyle: {
+      backgroundColor: isDark ? "#27272A" : "#F4F4F5",
+      color: isDark ? "#FAFAFA" : "#18181B",
+      borderColor: isDark ? "#3F3F46" : "#E4E4E7",
     },
   };
 
   return (
     <ChatBot
+      key={resolvedTheme || "light"}
       flow={flow}
       settings={settings}
       styles={styles}
