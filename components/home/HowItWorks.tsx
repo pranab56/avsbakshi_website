@@ -32,9 +32,9 @@ export default function HowItWorks() {
         
         {/* Header */}
         <div className="mb-12 max-w-xl mx-auto space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B78735]/10 border border-[#B78735]/30">
-            <Sparkles className="w-3.5 h-3.5 text-[#B78735]" />
-            <span className="text-[11px] font-bold text-[#B78735] uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D99722]/10 border border-[#D99722]/30">
+            <Sparkles className="w-3.5 h-3.5 text-[#D99722]" />
+            <span className="text-[11px] font-bold text-[#D99722] uppercase tracking-[0.2em]">
               THE PROCESS
             </span>
           </div>
@@ -55,8 +55,8 @@ export default function HowItWorks() {
                 key={idx}
                 className={`relative rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1.5 shadow-lg border ${
                   step.active
-                    ? "bg-gradient-to-b from-[#B78735] to-[#8C621E] text-white border-[#D4AF37] shadow-2xl shadow-[#B78735]/25"
-                    : "bg-card border-border/70 text-foreground hover:border-[#B78735]/40"
+                    ? "bg-gradient-to-b from-[#D99722] to-[#8C621E] text-white border-[#D4AF37] shadow-2xl shadow-[#D99722]/25"
+                    : "bg-card border-border/70 text-foreground hover:border-[#D99722]/40"
                 }`}
               >
                 {/* Top Badge & Number */}
@@ -65,14 +65,14 @@ export default function HowItWorks() {
                     className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
                       step.active
                         ? "bg-white/20 text-white"
-                        : "bg-[#B78735]/10 text-[#B78735]"
+                        : "bg-[#D99722]/10 text-[#D99722]"
                     }`}
                   >
                     {step.badge}
                   </span>
                   <span
                     className={`font-title font-bold italic text-3xl sm:text-4xl ${
-                      step.active ? "text-white/60" : "text-[#B78735]/40"
+                      step.active ? "text-white/60" : "text-[#D99722]/40"
                     }`}
                   >
                     {step.num}
@@ -83,8 +83,8 @@ export default function HowItWorks() {
                 <div
                   className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shrink-0 shadow-md ${
                     step.active
-                      ? "bg-white text-[#B78735]"
-                      : "bg-[#B78735]/15 text-[#B78735]"
+                      ? "bg-white text-[#D99722]"
+                      : "bg-[#D99722]/15 text-[#D99722]"
                   }`}
                 >
                   <Icon className="w-6 h-6" strokeWidth={2.2} />

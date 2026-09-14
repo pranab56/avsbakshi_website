@@ -144,7 +144,7 @@ export default function BusinessSettingsPage() {
                 type="button"
                 onClick={() => setActiveTab(tab)}
                 className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${isActive
-                    ? "bg-secondary text-[#B78735] font-semibold"
+                    ? "bg-secondary text-[#D99722] font-semibold"
                     : "text-foreground hover:bg-secondary/50 font-normal"
                   }`}
               >
@@ -199,7 +199,7 @@ export default function BusinessSettingsPage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-1.5 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                    className="px-4 py-1.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer"
                   >
                     Change photo
                   </button>
@@ -270,7 +270,7 @@ export default function BusinessSettingsPage() {
                 <button
                   type="button"
                   onClick={handleSaveProfile}
-                  className="px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                  className="px-6 py-3 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
                 >
                   Save Changes
                 </button>
@@ -278,7 +278,7 @@ export default function BusinessSettingsPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab("About Profile")}
-                  className="text-xs text-[#B78735] font-semibold underline hover:text-[#8F6929]"
+                  className="text-xs text-[#D99722] font-semibold underline hover:text-[#8F6929]"
                 >
                   Configure Salon &quot;About&quot; Profile &rarr;
                 </button>
@@ -304,7 +304,7 @@ export default function BusinessSettingsPage() {
                 <button
                   type="button"
                   onClick={() => setShowPreviewModal(true)}
-                  className="text-xs text-[#B78735] cursor-pointer font-semibold flex items-center gap-1 hover:underline"
+                  className="text-xs text-[#D99722] cursor-pointer font-semibold flex items-center gap-1 hover:underline"
                 >
                   <Eye className="w-3.5 h-3.5" />
                   <span>Preview</span>
@@ -447,7 +447,7 @@ export default function BusinessSettingsPage() {
                   <button
                     type="button"
                     onClick={handleAddAmenity}
-                    className="bg-[#B78735] hover:bg-[#8F6929] text-white px-4 py-2.5 rounded-sm font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                    className="bg-[#D99722] hover:bg-[#8F6929] text-white px-4 py-2.5 rounded-sm font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add Tag</span>
@@ -460,7 +460,7 @@ export default function BusinessSettingsPage() {
                 <button
                   type="button"
                   onClick={handleSaveProfile}
-                  className="px-6 py-3 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                  className="px-6 py-3 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
                 >
                   Save About Profile Changes
                 </button>
@@ -470,7 +470,7 @@ export default function BusinessSettingsPage() {
                   onClick={() => setShowPreviewModal(true)}
                   className="px-4 py-2 rounded-sm border border-border text-foreground hover:bg-secondary text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  <Eye className="w-3.5 h-3.5 text-[#B78735]" />
+                  <Eye className="w-3.5 h-3.5 text-[#D99722]" />
                   <span>Preview Page</span>
                 </button>
               </div>
@@ -502,7 +502,7 @@ export default function BusinessSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("bookingConfirmations")
                       }
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
 
@@ -515,7 +515,7 @@ export default function BusinessSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("appointmentReminders")
                       }
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
 
@@ -528,7 +528,7 @@ export default function BusinessSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("cancellationAlerts")
                       }
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
 
@@ -541,7 +541,7 @@ export default function BusinessSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("rescheduleRequests")
                       }
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
                 </div>
@@ -561,7 +561,7 @@ export default function BusinessSettingsPage() {
                     <Switch
                       checked={notifications.newMessages}
                       onCheckedChange={() => toggleNotification("newMessages")}
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
 
@@ -574,7 +574,7 @@ export default function BusinessSettingsPage() {
                       onCheckedChange={() =>
                         toggleNotification("unreadReminders")
                       }
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
                 </div>
@@ -594,7 +594,7 @@ export default function BusinessSettingsPage() {
                     <Switch
                       checked={notifications.specialOffers}
                       onCheckedChange={() => toggleNotification("specialOffers")}
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
 
@@ -605,7 +605,7 @@ export default function BusinessSettingsPage() {
                     <Switch
                       checked={notifications.loyaltyRewards}
                       onCheckedChange={() => toggleNotification("loyaltyRewards")}
-                      className="data-[state=checked]:bg-[#B78735]"
+                      className="data-[state=checked]:bg-[#D99722]"
                     />
                   </div>
                 </div>
@@ -706,7 +706,7 @@ export default function BusinessSettingsPage() {
                   <button
                     type="button"
                     onClick={() => setShowPasswordModal(true)}
-                    className="px-5 py-2.5 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                    className="px-5 py-2.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
                   >
                     Change Password
                   </button>
@@ -725,7 +725,7 @@ export default function BusinessSettingsPage() {
               <DialogTitle className="font-serif font-bold text-xl text-foreground">
                 Public &quot;About&quot; Preview
               </DialogTitle>
-              <span className="bg-[#B78735]/15 text-[#B78735] text-xs font-bold px-2.5 py-1 rounded-full">
+              <span className="bg-[#D99722]/15 text-[#D99722] text-xs font-bold px-2.5 py-1 rounded-full">
                 Customer View
               </span>
             </div>
@@ -754,12 +754,12 @@ export default function BusinessSettingsPage() {
                 <h3 className="font-serif font-bold text-xl text-foreground">
                   {profileForm.businessName}
                 </h3>
-                <p className="text-xs font-medium text-[#B78735]">
+                <p className="text-xs font-medium text-[#D99722]">
                   {profileForm.tagline}
                 </p>
                 <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground pt-1">
                   <span className="flex items-center gap-1">
-                    <MapPin className="w-3.5 h-3.5 text-[#B78735]" />
+                    <MapPin className="w-3.5 h-3.5 text-[#D99722]" />
                     {profileForm.location}
                   </span>
                   <span>•</span>
@@ -772,7 +772,7 @@ export default function BusinessSettingsPage() {
 
             {/* Philosophy Quote Box */}
             {profileForm.philosophyQuote && (
-              <div className="bg-secondary/60 border-l-4 border-[#B78735] p-4 rounded-r-xl">
+              <div className="bg-secondary/60 border-l-4 border-[#D99722] p-4 rounded-r-xl">
                 <p className="font-serif italic text-sm text-foreground leading-relaxed">
                   {profileForm.philosophyQuote}
                 </p>
@@ -814,7 +814,7 @@ export default function BusinessSettingsPage() {
               <button
                 type="button"
                 onClick={() => setShowPreviewModal(false)}
-                className="px-5 py-2.5 rounded-sm bg-[#B78735] text-white text-xs font-semibold hover:bg-[#8F6929] transition-colors cursor-pointer"
+                className="px-5 py-2.5 rounded-sm bg-[#D99722] text-white text-xs font-semibold hover:bg-[#8F6929] transition-colors cursor-pointer"
               >
                 Close Preview
               </button>
@@ -955,7 +955,7 @@ export default function BusinessSettingsPage() {
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                className="px-5 py-2 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-xs font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
               >
                 Update Password
               </button>

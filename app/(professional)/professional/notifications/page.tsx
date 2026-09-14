@@ -112,7 +112,7 @@ export default function ProfessionalNotificationsPage() {
   const getIcon = (type: NotificationType) => {
     switch (type) {
       case "booking":
-        return <Calendar className="w-5 h-5 text-[#B78735]" />;
+        return <Calendar className="w-5 h-5 text-[#D99722]" />;
       case "message":
         return <MessageSquare className="w-5 h-5 text-blue-600" />;
       case "review":

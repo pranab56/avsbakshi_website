@@ -27,7 +27,7 @@ export default function CategoriesSection() {
         </div>
         <Link
           href="/discover?tab=services"
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#B78735] hover:text-[#A0732A] transition-colors group shrink-0"
+          className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#D99722] hover:text-[#A0732A] transition-colors group shrink-0"
         >
           <span>View All</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

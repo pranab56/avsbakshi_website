@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors } from "lucide-react";
 import Button from "./Button";
 import ThemeToggle from "./theme-toggle";
@@ -19,6 +19,7 @@ export default function Navbar() {
   const [discoverOpen, setDiscoverOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     if (typeof document !== "undefined") {
       const match = document.cookie.match(/googtrans=\/en\/([a-z]{2})/);
@@ -29,12 +30,29 @@ export default function Navbar() {
     return "en";
   });
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const changeLanguage = (code: string) => {
     if (typeof window !== "undefined" && window.__applyTranslate) {
       window.__applyTranslate(code);
       setCurrentLangCode(code);
     }
   };
+
+  const isHome = pathname === "/";
+  const isExpandedLogo = isHome && !isScrolled;
 
   const isDiscoverActive =
     pathname === "/discover" ||
@@ -47,119 +65,120 @@ export default function Navbar() {
   const isFaqActive = pathname === "/faq";
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border transition-colors duration-200">
-      <div className="container mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20">
+    <header className="sticky top-0 z-50 bg-white dark:bg-[#121214] border-b border-border/20 transition-colors duration-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-18">
 
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
-            {/* Light Mode Logo */}
+          {/* Logo with Smooth Scroll & Route Transition */}
+          <Link
+            href="/"
+            className={`relative z-50 flex items-center shrink-0 group transition-all duration-300 ease-in-out ${isExpandedLogo ? "-mb-6 sm:-mb-8 lg:-mb-10 top-1" : "mb-0 top-0"
+              }`}
+          >
             <Image
               src="/icons/Light_Mode.png"
               alt="The Cloud Salon"
-              width={180}
-              height={44}
-              className="h-7 xs:h-8 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform block dark:hidden"
+              width={1000}
+              height={1000}
+              className={`w-auto block dark:hidden object-contain transition-all duration-300 ease-in-out group-hover:scale-105 ${isExpandedLogo ? "h-16 sm:h-20 lg:h-24" : "h-9 sm:h-10"
+                }`}
               priority
             />
-            {/* Dark Mode Logo */}
             <Image
               src="/icons/Dark_Mode.png"
               alt="The Cloud Salon"
-              width={180}
-              height={44}
-              className="h-7 xs:h-8 sm:h-11 w-auto object-contain group-hover:scale-105 transition-transform hidden dark:block"
+              width={1000}
+              height={1000}
+              className={`w-auto hidden dark:block object-contain transition-all duration-300 ease-in-out group-hover:scale-105 ${isExpandedLogo ? "h-16 sm:h-20 lg:h-24" : "h-9 sm:h-10"
+                }`}
               priority
             />
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            {/* Discover Dropdown */}
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-xs sm:text-sm font-medium text-muted-foreground">
+            {/* Home Link */}
+            <Link
+              href="/"
+              className={`group relative py-2 transition-colors ${pathname === "/"
+                  ? "text-foreground font-semibold"
+                  : "hover:text-foreground"
+                }`}
+            >
+              <span>Home</span>
+              <span
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${pathname === "/" ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+              />
+            </Link>
+
+            {/* Services Dropdown */}
             <div
-              className="relative group"
+              className="relative group/dropdown py-2"
               onMouseEnter={() => setDiscoverOpen(true)}
               onMouseLeave={() => setDiscoverOpen(false)}
             >
               <button
-                className={`relative flex items-center gap-1 py-2 transition-colors cursor-pointer hover:text-primary ${isDiscoverActive
-                    ? "text-primary font-semibold"
-                    : "text-foreground"
+                className={`group relative flex items-center gap-1 transition-colors cursor-pointer ${isDiscoverActive ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
                   }`}
               >
-                <span>Discover</span>
+                <span>Services</span>
                 <ChevronDown
-                  className={`w-4 h-4 transition-transform duration-200 ${discoverOpen ? "rotate-180 text-primary" : ""
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${discoverOpen ? "rotate-180 text-primary" : ""
                     }`}
                 />
-                {/* Animated Line (Start -> End) */}
                 <span
-                  className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isDiscoverActive ? "w-full" : "w-0 group-hover:w-full"
+                  className={`absolute -bottom-2 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isDiscoverActive ? "w-full" : "w-0 group-hover:w-full"
                     }`}
                 />
               </button>
 
               {discoverOpen && (
-                <div className="absolute top-full left-0 w-48 bg-popover rounded-xl shadow-xl border border-border py-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground">
+                <div className="absolute top-full left-0 w-48 bg-popover rounded-sm border border-border animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50">
                   <Link
                     href="/discover?tab=services"
-                    className="relative group/item block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                    className="block px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors"
                   >
-                    <span>Services</span>
-                    <span className="absolute bottom-1 left-4 h-[1.5px] bg-primary w-0 transition-all duration-300 ease-out group-hover/item:w-[calc(100%-2rem)]" />
+                    All Services
                   </Link>
                   <Link
                     href="/discover?tab=professionals"
-                    className="relative group/item block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                    className="block px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors"
                   >
-                    <span>Professionals</span>
-                    <span className="absolute bottom-1 left-4 h-[1.5px] bg-primary w-0 transition-all duration-300 ease-out group-hover/item:w-[calc(100%-2rem)]" />
+                    Top Professionals
                   </Link>
                   <Link
                     href="/discover?tab=salons"
-                    className="relative group/item block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                    className="block px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors"
                   >
-                    <span>Salons</span>
-                    <span className="absolute bottom-1 left-4 h-[1.5px] bg-primary w-0 transition-all duration-300 ease-out group-hover/item:w-[calc(100%-2rem)]" />
-                  </Link>
-                  <div className="my-1 border-t border-border" />
-                  <Link
-                    href="/search"
-                    className="relative group/item block px-4 py-2 text-sm text-primary font-semibold hover:bg-accent transition-colors"
-                  >
-                    <span>Search All</span>
-                    <span className="absolute bottom-1 left-4 h-[1.5px] bg-primary w-0 transition-all duration-300 ease-out group-hover/item:w-[calc(100%-2rem)]" />
+                    Featured Salons
                   </Link>
                 </div>
               )}
             </div>
 
-            {/* For Professionals */}
+            {/* Professionals */}
             <Link
               href="/for-professionals"
-              className={`relative group py-2 transition-colors cursor-pointer ${isProActive
-                  ? "text-primary font-semibold"
-                  : "text-foreground hover:text-primary"
+              className={`group relative py-2 transition-colors ${isProActive ? "text-foreground font-semibold" : "hover:text-foreground"
                 }`}
             >
-              <span>For Professionals</span>
+              <span>Professionals</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isProActive ? "w-full" : "w-0 group-hover:w-full"
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isProActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
               />
             </Link>
 
-            {/* For Businesses */}
+            {/* Salons */}
             <Link
-              href="/for-businesses"
-              className={`relative group py-2 transition-colors cursor-pointer ${isBusinessActive
-                  ? "text-primary font-semibold"
-                  : "text-foreground hover:text-primary"
+              href="/discover?tab=salons"
+              className={`group relative py-2 transition-colors ${pathname.includes("tab=salons") ? "text-foreground font-semibold" : "hover:text-foreground"
                 }`}
             >
-              <span>For Businesses</span>
+              <span>Salons</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isBusinessActive ? "w-full" : "w-0 group-hover:w-full"
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${pathname.includes("tab=salons") ? "w-full" : "w-0 group-hover:w-full"
                   }`}
               />
             </Link>
@@ -167,14 +186,12 @@ export default function Navbar() {
             {/* How it Works */}
             <Link
               href="/how-it-works"
-              className={`relative group py-2 transition-colors cursor-pointer ${isHowItWorksActive
-                  ? "text-primary font-semibold"
-                  : "text-foreground hover:text-primary"
+              className={`group relative py-2 transition-colors ${isHowItWorksActive ? "text-foreground font-semibold" : "hover:text-foreground"
                 }`}
             >
               <span>How it Works</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isHowItWorksActive ? "w-full" : "w-0 group-hover:w-full"
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isHowItWorksActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
               />
             </Link>
@@ -182,45 +199,41 @@ export default function Navbar() {
             {/* About Us */}
             <Link
               href="/about"
-              className={`relative group py-2 transition-colors cursor-pointer ${isAboutActive
-                  ? "text-primary font-semibold"
-                  : "text-foreground hover:text-primary"
+              className={`group relative py-2 transition-colors ${isAboutActive ? "text-foreground font-semibold" : "hover:text-foreground"
                 }`}
             >
               <span>About Us</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-primary transition-all duration-300 ease-out ${isAboutActive ? "w-full" : "w-0 group-hover:w-full"
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isAboutActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
               />
             </Link>
           </nav>
 
           {/* Action Buttons & Language Switcher */}
-          <div className="hidden md:flex items-center gap-3">
-            <ThemeToggle />
+          <div className="hidden md:flex items-center gap-2.5">
+            {/* Theme Toggle in Card Box */}
+            <div className="p-1 rounded-sm bg-card">
+              <ThemeToggle />
+            </div>
 
             {/* Language Selector Combobox */}
             <Combobox
               options={languageOptions}
               value={currentLangCode}
               onChange={changeLanguage}
-              prefix={<Globe className="w-3.5 h-3.5 text-primary shrink-0" />}
-              triggerClassName="h-9 px-3 rounded-lg border-border bg-card hover:bg-accent text-xs font-semibold text-foreground shadow-2xs"
+              triggerClassName="h-10 px-3 rounded-sm border-border bg-card hover:bg-accent text-xs font-semibold text-foreground shadow-2xs"
               align="end"
             />
 
-            <Button href="/login" variant="ghost" size="sm">
-              Log In
-            </Button>
-
-            {/* Sign Up Dropdown (Click Triggered) */}
+            {/* Get Started Gold Dropdown CTA */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setSignUpOpen(!signUpOpen)}
-                className="h-9 px-4 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold shadow-2xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50"
+                className="h-10 px-4 rounded-sm bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50"
               >
-                <span>Sign Up</span>
+                <span>Get Started</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${signUpOpen ? "rotate-180" : ""}`} />
               </button>
 
@@ -232,7 +245,7 @@ export default function Navbar() {
                     onClick={() => setSignUpOpen(false)}
                   />
 
-                  <div className="absolute top-full right-0 w-64 bg-popover rounded-2xl shadow-2xl border border-border p-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 mt-1.5">
+                  <div className="absolute top-full right-0 w-64 bg-popover rounded-lg shadow-2xl border border-border p-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 mt-1.5">
                     <div className="px-3 py-1.5 text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
                       Create an account as
                     </div>
@@ -327,8 +340,8 @@ export default function Navbar() {
               href="/discover"
               onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isDiscoverActive
-                  ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
-                  : "text-foreground hover:bg-accent/60"
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
                 }`}
             >
               <Compass className={`w-5 h-5 ${isDiscoverActive ? "text-primary" : "text-muted-foreground"}`} />
@@ -339,8 +352,8 @@ export default function Navbar() {
               href="/for-professionals"
               onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isProActive
-                  ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
-                  : "text-foreground hover:bg-accent/60"
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
                 }`}
             >
               <Briefcase className={`w-5 h-5 ${isProActive ? "text-primary" : "text-muted-foreground"}`} />
@@ -351,8 +364,8 @@ export default function Navbar() {
               href="/for-businesses"
               onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isBusinessActive
-                  ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
-                  : "text-foreground hover:bg-accent/60"
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
                 }`}
             >
               <Building2 className={`w-5 h-5 ${isBusinessActive ? "text-primary" : "text-muted-foreground"}`} />
@@ -363,8 +376,8 @@ export default function Navbar() {
               href="/how-it-works"
               onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isHowItWorksActive
-                  ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
-                  : "text-foreground hover:bg-accent/60"
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
                 }`}
             >
               <FileText className={`w-5 h-5 ${isHowItWorksActive ? "text-primary" : "text-muted-foreground"}`} />
@@ -375,8 +388,8 @@ export default function Navbar() {
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isAboutActive
-                  ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
-                  : "text-foreground hover:bg-accent/60"
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
                 }`}
             >
               <Info className={`w-5 h-5 ${isAboutActive ? "text-primary" : "text-muted-foreground"}`} />
@@ -387,8 +400,8 @@ export default function Navbar() {
               href="/faq"
               onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isFaqActive
-                  ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
-                  : "text-foreground hover:bg-accent/60"
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
                 }`}
             >
               <HelpCircle className={`w-5 h-5 ${isFaqActive ? "text-primary" : "text-muted-foreground"}`} />

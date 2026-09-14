@@ -211,7 +211,7 @@ export default function BusinessServicesPage() {
           <button
             type="button"
             onClick={handleOpenAdd}
-            className="px-4 py-2.5 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer flex items-center gap-2 shadow-xs active:scale-[0.98]"
+            className="px-4 py-2.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer flex items-center gap-2 shadow-xs active:scale-[0.98]"
           >
             <Plus className="w-4 h-4" />
             <span>Add Service</span>
@@ -226,7 +226,7 @@ export default function BusinessServicesPage() {
             key={service.id}
             className={`bg-card border border-border rounded-lg p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs transition-colors ${
               service.active
-                ? "hover:border-[#B78735]/40"
+                ? "hover:border-[#D99722]/40"
                 : "opacity-60 bg-muted/40"
             }`}
           >
@@ -376,13 +376,13 @@ export default function BusinessServicesPage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-28 border-2 border-dashed border-border hover:border-[#B78735] bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group"
+                  className="w-full h-28 border-2 border-dashed border-border hover:border-[#D99722] bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group"
                 >
-                  <div className="w-9 h-9 rounded-full bg-secondary text-muted-foreground group-hover:bg-[#B78735]/15 group-hover:text-[#B78735] flex items-center justify-center transition-colors">
+                  <div className="w-9 h-9 rounded-full bg-secondary text-muted-foreground group-hover:bg-[#D99722]/15 group-hover:text-[#D99722] flex items-center justify-center transition-colors">
                     <Upload className="w-4 h-4" />
                   </div>
                   <div className="text-center">
-                    <span className="text-xs font-semibold text-foreground group-hover:text-[#B78735] transition-colors">
+                    <span className="text-xs font-semibold text-foreground group-hover:text-[#D99722] transition-colors">
                       Click to upload service image
                     </span>
                     <span className="text-[11px] text-muted-foreground block">
@@ -427,7 +427,7 @@ export default function BusinessServicesPage() {
             <div className="pt-4 flex items-center gap-3 border-t border-border">
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center gap-2"
+                className="px-6 py-2.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center gap-2"
               >
                 {savedSuccess ? (
                   <>

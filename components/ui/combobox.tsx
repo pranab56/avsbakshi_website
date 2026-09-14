@@ -65,7 +65,7 @@ export function Combobox({
           'inline-flex items-center justify-between gap-3 outline-none transition-all duration-200 cursor-pointer border select-none',
           triggerClassName ||
           cn(
-            'h-14 w-full rounded-2xl px-3.5 py-2.5 text-sm font-medium',
+            'h-14 w-full rounded-lg px-3.5 py-2.5 text-sm font-medium',
             disabled
               ? 'bg-muted text-muted-foreground/50 cursor-not-allowed border-transparent opacity-60'
               : error
@@ -78,7 +78,7 @@ export function Combobox({
         <div className="flex items-center gap-3 truncate text-left">
           {prefix}
           {SelectedIcon && (
-            <div className="w-8 h-8 rounded-xl bg-primary/15 text-primary flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0 shadow-2xs">
               <SelectedIcon className="w-4 h-4" />
             </div>
           )}
@@ -105,12 +105,12 @@ export function Combobox({
         align={align}
         sideOffset={6}
         className={cn(
-          'w-[var(--anchor-width)] min-w-[200px] p-1.5 rounded-2xl border border-border/80 bg-card/95 backdrop-blur-xl text-popover-foreground shadow-2xl overflow-hidden z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200',
+          'w-[var(--anchor-width)] min-w-[200px] p-1.5 rounded-lg border border-border/80 bg-card/95 backdrop-blur-xl text-popover-foreground shadow-2xl overflow-hidden z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200',
           contentClassName
         )}
       >
         {searchable && (
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-border/60 bg-accent/40 rounded-xl mb-1">
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-border/60 bg-accent/40 rounded-lg mb-1">
             <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
             <input
               ref={(el) => {
@@ -137,7 +137,7 @@ export function Combobox({
                   setOpen(false);
                 }}
                 className={cn(
-                  'flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all duration-150 select-none gap-3 group',
+                  'flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-150 select-none gap-3 group',
                   isSelected
                     ? 'bg-primary/15 text-primary border border-primary/30 shadow-2xs font-bold'
                     : 'text-foreground hover:bg-accent/70'
@@ -147,7 +147,7 @@ export function Combobox({
                   {Icon && (
                     <div
                       className={cn(
-                        'w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors',
+                        'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors',
                         isSelected
                           ? 'bg-primary text-primary-foreground shadow-2xs'
                           : 'bg-accent text-muted-foreground group-hover:bg-primary/15 group-hover:text-primary'

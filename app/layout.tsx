@@ -38,7 +38,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${manrope.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-[#B78735]/20 selection:text-[#B78735] transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-[#D99722]/20 selection:text-[#D99722] transition-colors duration-200">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

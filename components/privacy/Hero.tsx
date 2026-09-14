@@ -1,7 +1,7 @@
 export default function Hero() {
   return (
     <section className="bg-[#181614] text-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none opacity-20 bg-gradient-to-l from-[#B78735]/30 to-transparent" />
+      <div className="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none opacity-20 bg-gradient-to-l from-[#D99722]/30 to-transparent" />
 
       <div className="max-w-5xl mx-auto space-y-6 relative z-10">
         <div className="flex items-center gap-2">

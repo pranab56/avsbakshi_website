@@ -90,7 +90,7 @@ export default function DiscoverMarketplace() {
     <section className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <span className="text-xs font-bold text-[#B78735] uppercase tracking-widest block mb-1">
+          <span className="text-xs font-bold text-[#D99722] uppercase tracking-widest block mb-1">
             DISCOVER
           </span>
           <h2 className="font-title text-2xl sm:text-4xl font-medium">

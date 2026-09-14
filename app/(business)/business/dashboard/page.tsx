@@ -90,29 +90,29 @@ export default function BusinessDashboardPage() {
 
       {/* Top 4 Stat Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#B78735]/40 transition-colors">
+        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
           <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             4
           </div>
           <p className="text-xs text-muted-foreground font-normal">Today&apos;s Bookings</p>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#B78735]/40 transition-colors">
+        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
           <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             £240
           </div>
           <p className="text-xs text-muted-foreground font-normal">Today&apos;s Revenue</p>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#B78735]/40 transition-colors">
+        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
           <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             2 / 6
           </div>
           <p className="text-xs text-muted-foreground font-normal">Available Chairs</p>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#B78735]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-[#B78735] mb-1">
+        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
+          <div className="font-serif italic text-3xl font-normal text-[#D99722] mb-1">
             4.8
           </div>
           <p className="text-xs text-muted-foreground font-normal">Average Rating</p>
@@ -163,7 +163,7 @@ export default function BusinessDashboardPage() {
                         x={x}
                         y={Number(y || 0) + 14}
                         textAnchor="middle"
-                        fill={payload?.value === "Mon" ? "#B78735" : "currentColor"}
+                        fill={payload?.value === "Mon" ? "#D99722" : "currentColor"}
                         className="text-muted-foreground"
                         fontSize={12}
                         fontWeight={payload?.value === "Mon" ? "bold" : "normal"}
@@ -180,7 +180,7 @@ export default function BusinessDashboardPage() {
                         return (
                           <div className="bg-popover text-popover-foreground text-xs px-3 py-1.5 rounded-md shadow-md border border-border">
                             <span className="font-semibold">{data.day}: </span>
-                            <span className="text-[#B78735] font-bold">
+                            <span className="text-[#D99722] font-bold">
                               {data.label}
                             </span>
                           </div>
@@ -203,7 +203,7 @@ export default function BusinessDashboardPage() {
                     {chartData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
-                        fill={entry.isCurrent ? "#B78735" : "rgba(183, 135, 53, 0.3)"}
+                        fill={entry.isCurrent ? "#D99722" : "rgba(183, 135, 53, 0.3)"}
                       />
                     ))}
                   </Bar>
@@ -222,7 +222,7 @@ export default function BusinessDashboardPage() {
               {recentBookings.map((b) => (
                 <div
                   key={b.id}
-                  className="bg-card border border-border rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs hover:border-[#B78735]/40 transition-colors"
+                  className="bg-card border border-border rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs hover:border-[#D99722]/40 transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <div className="relative w-14 h-14 rounded-md overflow-hidden bg-secondary shrink-0 border border-border">
@@ -239,12 +239,12 @@ export default function BusinessDashboardPage() {
                       <h3 className="font-serif font-bold text-lg text-foreground">
                         {b.stylistName}
                       </h3>
-                      <p className="text-xs font-semibold text-[#B78735]">
+                      <p className="text-xs font-semibold text-[#D99722]">
                         {b.service}
                       </p>
                       <p className="text-xs text-muted-foreground font-normal flex items-center gap-1.5 flex-wrap">
                         <span>{b.dateTime}</span>
-                        <span className="font-serif italic text-[#B78735] font-bold text-sm">
+                        <span className="font-serif italic text-[#D99722] font-bold text-sm">
                           {b.price}
                         </span>
                       </p>
@@ -254,7 +254,7 @@ export default function BusinessDashboardPage() {
                   <div className="shrink-0 pt-2 sm:pt-0">
                     <button
                       type="button"
-                      className="px-5 py-2.5 rounded-sm bg-[#B78735] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                      className="px-5 py-2.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
                     >
                       Reschedule
                     </button>

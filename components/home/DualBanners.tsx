@@ -7,7 +7,7 @@ export default function DualBanners() {
         {/* Left: Dark Professional Banner */}
         <div className="bg-[#1A1A1D] dark:bg-card text-white p-6 sm:p-10 lg:p-14 flex flex-col justify-between space-y-6 sm:space-y-8 border-b md:border-b-0 md:border-r border-border/20">
           <div>
-            <span className="text-xs font-semibold text-[#B78735] dark:text-primary-light uppercase tracking-[0.2em] block mb-2 sm:mb-3">
+            <span className="text-xs font-semibold text-[#D99722] dark:text-primary-light uppercase tracking-[0.2em] block mb-2 sm:mb-3">
               FOR PROFESSIONALS
             </span>
             <h3 className="font-title text-2xl sm:text-4xl lg:text-[40px] font-normal leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
@@ -21,7 +21,7 @@ export default function DualBanners() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
             <Link
               href="/for-professionals"
-              className="w-full sm:w-auto text-center px-5 sm:px-6 py-3 sm:py-3.5 bg-[#B78735] hover:bg-[#A37428] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors"
+              className="w-full sm:w-auto text-center px-5 sm:px-6 py-3 sm:py-3.5 bg-[#D99722] hover:bg-[#A37428] text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors"
             >
               Join as a Professional
             </Link>
@@ -35,7 +35,7 @@ export default function DualBanners() {
         </div>
 
         {/* Right: Gold Business Banner */}
-        <div className="bg-[#B78735] dark:bg-card text-white p-6 sm:p-10 lg:p-14 flex flex-col justify-between space-y-6 sm:space-y-8">
+        <div className="bg-[#D99722] dark:bg-card text-white p-6 sm:p-10 lg:p-14 flex flex-col justify-between space-y-6 sm:space-y-8">
           <div>
             <span className="text-xs font-semibold text-white/80 dark:text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
               FOR BUSINESSES

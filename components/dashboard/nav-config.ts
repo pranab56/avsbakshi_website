@@ -38,7 +38,7 @@ export const DASHBOARD_CONFIGS: Record<RoleType, DashboardConfig> = {
   customer: {
     role: "customer",
     roleName: "Customer Portal",
-    roleBadgeColor: "bg-[#B78735]/15 text-[#B78735] border-[#B78735]/30",
+    roleBadgeColor: "bg-[#D99722]/15 text-[#D99722] border-[#D99722]/30",
     actionButtonLabel: "+ Add New Booking",
     actionButtonHref: "/discover",
     navItems: [

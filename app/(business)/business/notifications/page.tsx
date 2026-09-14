@@ -102,7 +102,7 @@ export default function BusinessNotificationsPage() {
   const getIcon = (type: NotificationType) => {
     switch (type) {
       case "rental":
-        return <Building2 className="w-5 h-5 text-[#B78735]" />;
+        return <Building2 className="w-5 h-5 text-[#D99722]" />;
       case "booking":
         return <Calendar className="w-5 h-5 text-indigo-600" />;
       case "staff":
@@ -124,7 +124,7 @@ export default function BusinessNotificationsPage() {
               Salon Notifications
             </h1>
             {unreadCount > 0 && (
-              <span className="bg-[#B78735] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+              <span className="bg-[#D99722] text-white text-xs font-bold px-2.5 py-1 rounded-full">
                 {unreadCount} Unread
               </span>
             )}
@@ -140,7 +140,7 @@ export default function BusinessNotificationsPage() {
             onClick={markAllAsRead}
             className="bg-secondary hover:bg-secondary/80 text-foreground px-4 py-2 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs self-start sm:self-auto border border-border"
           >
-            <CheckCheck className="w-4 h-4 text-[#B78735]" />
+            <CheckCheck className="w-4 h-4 text-[#D99722]" />
             <span>Mark all as read</span>
           </button>
         )}
@@ -164,7 +164,7 @@ export default function BusinessNotificationsPage() {
             onClick={() => setFilter(tab.key as "all" | "unread" | NotificationType)}
             className={`px-3.5 py-1.5 text-xs font-medium rounded-full transition-all cursor-pointer shrink-0 ${
               filter === tab.key
-                ? "bg-[#B78735] text-white shadow-xs"
+                ? "bg-[#D99722] text-white shadow-xs"
                 : "bg-secondary border border-border text-foreground hover:bg-secondary/80"
             }`}
           >
@@ -181,7 +181,7 @@ export default function BusinessNotificationsPage() {
               key={n.id}
               onClick={() => markAsRead(n.id)}
               className={`p-4 sm:p-5 flex flex-col sm:flex-row items-start justify-between gap-4 transition-colors ${
-                !n.isRead ? "bg-[#B78735]/10" : "hover:bg-secondary/50"
+                !n.isRead ? "bg-[#D99722]/10" : "hover:bg-secondary/50"
               }`}
             >
               <div className="flex items-start gap-3.5 flex-1 min-w-0">
@@ -199,7 +199,7 @@ export default function BusinessNotificationsPage() {
                       {n.title}
                     </h3>
                     {!n.isRead && (
-                      <span className="w-2 h-2 rounded-full bg-[#B78735]" title="Unread" />
+                      <span className="w-2 h-2 rounded-full bg-[#D99722]" title="Unread" />
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -219,7 +219,7 @@ export default function BusinessNotificationsPage() {
                     className="bg-secondary border border-border hover:bg-secondary/80 text-foreground px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                   >
                     <span>{n.actionLabel || "View"}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#B78735]" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#D99722]" />
                   </Link>
                 )}
 

@@ -22,8 +22,8 @@ export default function Hero({
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="space-y-3 sm:space-y-4">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-[2px] bg-[#B78735]" />
-            <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em]">
+            <span className="w-8 h-[2px] bg-[#D99722]" />
+            <span className="text-xs font-semibold text-[#D99722] uppercase tracking-[0.2em]">
               DISCOVER
             </span>
           </div>
@@ -63,7 +63,7 @@ export default function Hero({
           >
             Services
             {activeTab === "services" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#B78735]" />
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D99722]" />
             )}
           </button>
 
@@ -78,7 +78,7 @@ export default function Hero({
           >
             Professionals
             {activeTab === "professionals" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#B78735]" />
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D99722]" />
             )}
           </button>
 
@@ -93,7 +93,7 @@ export default function Hero({
           >
             Salons
             {activeTab === "salons" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#B78735]" />
+              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D99722]" />
             )}
           </button>
         </div>

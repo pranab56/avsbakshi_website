@@ -73,7 +73,7 @@ function RegisterFormContent() {
     <div className="max-w-lg mx-auto w-full space-y-6">
       <Link
         href="/login"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#B78735] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-[#D99722] transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Login

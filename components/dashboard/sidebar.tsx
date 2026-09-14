@@ -93,7 +93,7 @@ export default function DashboardSidebar({
                 href={item.href}
                 onClick={onClose}
                 className={`flex items-center justify-between px-4 py-3 text-base font-medium  transition-all duration-200 ${isActive
-                  ? "bg-[#B78735] text-white  font-medium"
+                  ? "bg-[#D99722] text-white  font-medium"
                   : "text-gray-400 hover:text-white hover:bg-white/5"
                   }`}
               >
@@ -109,7 +109,7 @@ export default function DashboardSidebar({
                 {item.badge !== undefined && (
                   <span
                     className={`px-2 py-0.5 text-xs font-bold rounded-full ${isActive
-                      ? "bg-white text-[#B78735]"
+                      ? "bg-white text-[#D99722]"
                       : "bg-white/10 text-gray-300"
                       }`}
                   >

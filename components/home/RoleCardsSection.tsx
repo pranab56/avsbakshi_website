@@ -1,73 +1,71 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 
 export default function RoleCardsSection() {
   const cards = [
     {
       title: "For Customers",
-      badge: "Clients & Seekers",
-      desc: "Book your favorite services, anytime, anywhere.",
-      img: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+      desc: "Book your favorite services anytime, anywhere.",
+      img: "/images/cards/customers.jpg",
       link: "/discover",
     },
     {
       title: "For Professionals",
-      badge: "Stylists & Artists",
       desc: "Grow your business on your terms.",
-      img: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
+      img: "/images/cards/professionals.jpg",
       link: "/for-professionals",
     },
     {
       title: "For Businesses",
-      badge: "Salons & Owners",
       desc: "Join the marketplace and reach more clients.",
-      img: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=800&q=80",
+      img: "/images/cards/businesses.jpg",
       link: "/for-businesses",
     },
   ];
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-2">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {cards.map((card, idx) => (
-          <Link
-            key={idx}
-            href={card.link}
-            className="group relative h-56 sm:h-64 rounded-3xl overflow-hidden shadow-xl border border-border/80 transition-all duration-300 hover:shadow-2xl hover:border-[#B78735]/60 hover:-translate-y-1"
-          >
-            {/* Background Image */}
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-              style={{ backgroundImage: `url('${card.img}')` }}
-            />
-            {/* Dark Glass Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+    <section className="w-full bg-white dark:bg-[#121214] py-2 sm:py-3 transition-colors duration-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          {cards.map((card, idx) => (
+            <Link
+              key={idx}
+              href={card.link}
+              className="group relative h-36 sm:h-40 lg:h-44 rounded-lg overflow-hidden shadow-md border border-border/40 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]"
+            >
+              {/* Background Image */}
+              <Image
+                src={card.img}
+                alt={card.title}
+                fill
+                className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+              />
+              
+              {/* Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10" />
 
-            {/* Top Category Badge */}
-            <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-[10px] font-bold text-white uppercase tracking-wider">
-              <Sparkles className="w-3 h-3 text-[#E5C158]" />
-              <span>{card.badge}</span>
-            </div>
+              {/* Content & Gold Action Circle Button */}
+              <div className="absolute bottom-3.5 left-4 right-4 flex items-end justify-between gap-2 z-10">
+                <div className="space-y-0.5">
+                  <h3 className="font-title text-base sm:text-lg font-bold text-white leading-tight">
+                    {card.title}
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-zinc-300 font-normal leading-tight max-w-[200px]">
+                    {card.desc}
+                  </p>
+                </div>
 
-            {/* Content & Action Circle */}
-            <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-3">
-              <div className="space-y-1">
-                <h3 className="font-title text-xl sm:text-2xl font-bold text-white group-hover:text-[#E5C158] transition-colors leading-tight">
-                  {card.title}
-                </h3>
-                <p className="text-xs text-zinc-300 font-light max-w-[210px] leading-relaxed">
-                  {card.desc}
-                </p>
+                {/* Gold Circle Arrow Icon */}
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#D99722] hover:bg-[#C2841B] text-white flex items-center justify-center shrink-0 shadow-md transition-all group-hover:scale-110">
+                  <ArrowRight className="w-4 h-4" />
+                </div>
               </div>
-
-              {/* Gold Arrow Circle Button */}
-              <div className="w-11 h-11 rounded-full bg-[#B78735] text-white flex items-center justify-center shrink-0 shadow-lg group-hover:bg-[#D4AF37] group-hover:scale-110 transition-all">
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
+

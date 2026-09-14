@@ -67,9 +67,9 @@ export default function CustomerReviews() {
         
         {/* Header */}
         <div className="mb-10 space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B78735]/10 border border-[#B78735]/30">
-            <Sparkles className="w-3.5 h-3.5 text-[#B78735]" />
-            <span className="text-[11px] font-bold text-[#B78735] uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D99722]/10 border border-[#D99722]/30">
+            <Sparkles className="w-3.5 h-3.5 text-[#D99722]" />
+            <span className="text-[11px] font-bold text-[#D99722] uppercase tracking-[0.2em]">
               CLIENT TESTIMONIALS
             </span>
           </div>
@@ -99,15 +99,15 @@ export default function CustomerReviews() {
               <div className="bg-accent/40 rounded-[28px] p-6 sm:p-12 border border-border/80 shadow-2xl max-w-3xl mx-auto relative">
                 
                 {/* Verified Pill */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#B78735]/15 border border-[#B78735]/30 mb-6">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#B78735]" />
-                  <span className="text-[10px] font-bold text-[#B78735] uppercase tracking-wider">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D99722]/15 border border-[#D99722]/30 mb-6">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#D99722]" />
+                  <span className="text-[10px] font-bold text-[#D99722] uppercase tracking-wider">
                     Verified Customer
                   </span>
                 </div>
 
                 {/* Avatar */}
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#B78735] p-1 mx-auto mb-4 overflow-hidden shadow-xl">
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#D99722] p-1 mx-auto mb-4 overflow-hidden shadow-xl">
                   <img
                     src={review.avatar}
                     alt={review.name}
@@ -116,9 +116,9 @@ export default function CustomerReviews() {
                 </div>
 
                 {/* Star Rating */}
-                <div className="flex justify-center gap-1 mb-4 text-[#B78735]">
+                <div className="flex justify-center gap-1 mb-4 text-[#D99722]">
                   {[...Array(review.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-[#B78735] text-[#B78735]" />
+                    <Star key={i} className="w-4 h-4 fill-[#D99722] text-[#D99722]" />
                   ))}
                 </div>
 
@@ -130,7 +130,7 @@ export default function CustomerReviews() {
                 {/* Customer Details */}
                 <div>
                   <h4 className="font-bold text-base text-foreground">{review.name}</h4>
-                  <p className="text-xs text-[#B78735] font-semibold mt-0.5">{review.service}</p>
+                  <p className="text-xs text-[#D99722] font-semibold mt-0.5">{review.service}</p>
                 </div>
               </div>
             </SwiperSlide>

@@ -23,7 +23,7 @@ export default function BusinessCalendarPage() {
       time: "2:30 PM",
       fullTime: "2:30 PM – 5:00 PM",
       price: "£120",
-      color: "bg-[#B78735]",
+      color: "bg-[#D99722]",
     },
     {
       id: "2",

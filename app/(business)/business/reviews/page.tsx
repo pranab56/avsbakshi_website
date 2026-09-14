@@ -94,11 +94,11 @@ export default function BusinessReviewsPage() {
             <div className="font-serif italic font-normal text-5xl sm:text-6xl text-foreground leading-none">
               4.9
             </div>
-            <div className="flex items-center gap-1 text-[#B78735]">
+            <div className="flex items-center gap-1 text-[#D99722]">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className="w-5 h-5 fill-[#B78735] text-[#B78735]"
+                  className="w-5 h-5 fill-[#D99722] text-[#D99722]"
                 />
               ))}
             </div>
@@ -116,12 +116,12 @@ export default function BusinessReviewsPage() {
               >
                 <div className="flex items-center gap-1 w-8 shrink-0 font-medium">
                   <span>{item.stars}</span>
-                  <Star className="w-3.5 h-3.5 fill-[#B78735] text-[#B78735]" />
+                  <Star className="w-3.5 h-3.5 fill-[#D99722] text-[#D99722]" />
                 </div>
 
                 <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden relative border border-border/40">
                   <div
-                    className="h-full bg-[#B78735] rounded-full transition-all duration-500"
+                    className="h-full bg-[#D99722] rounded-full transition-all duration-500"
                     style={{ width: `${item.percentage}%` }}
                   />
                 </div>
@@ -137,21 +137,21 @@ export default function BusinessReviewsPage() {
 
       {/* 3 Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
+        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#D99722]/40 transition-colors">
           <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             4.9
           </div>
           <p className="text-xs text-muted-foreground font-normal">Communication</p>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
+        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#D99722]/40 transition-colors">
           <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             5.0
           </div>
           <p className="text-xs text-muted-foreground font-normal">Skill</p>
         </div>
 
-        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#B78735]/40 transition-colors">
+        <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#D99722]/40 transition-colors">
           <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             4.7
           </div>
@@ -164,7 +164,7 @@ export default function BusinessReviewsPage() {
         {REVIEWS_DATA.map((review) => (
           <div
             key={review.id}
-            className="bg-card border border-border rounded-lg p-6 space-y-3.5 shadow-xs hover:border-[#B78735]/40 transition-colors"
+            className="bg-card border border-border rounded-lg p-6 space-y-3.5 shadow-xs hover:border-[#D99722]/40 transition-colors"
           >
             {/* Header: User & Rating & Date */}
             <div className="flex items-start justify-between gap-4">
@@ -193,11 +193,11 @@ export default function BusinessReviewsPage() {
                   </div>
 
                   {/* Stars */}
-                  <div className="flex items-center gap-0.5 text-[#B78735]">
+                  <div className="flex items-center gap-0.5 text-[#D99722]">
                     {[...Array(review.rating)].map((_, i) => (
                       <Star
                         key={i}
-                        className="w-3.5 h-3.5 fill-[#B78735] text-[#B78735]"
+                        className="w-3.5 h-3.5 fill-[#D99722] text-[#D99722]"
                       />
                     ))}
                   </div>
@@ -209,7 +209,7 @@ export default function BusinessReviewsPage() {
                 <span className="text-xs text-muted-foreground block font-normal">
                   {review.date}
                 </span>
-                <span className="text-xs font-semibold text-[#B78735] block mt-0.5">
+                <span className="text-xs font-semibold text-[#D99722] block mt-0.5">
                   {review.service}
                 </span>
               </div>

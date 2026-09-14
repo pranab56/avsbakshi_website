@@ -31,15 +31,15 @@ export default function WhyCloudSalon() {
         {/* Left Column: Info & Glassmorphic Reasons List */}
         <div className="lg:col-span-6 space-y-6 sm:space-y-8">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#B78735]/10 border border-[#B78735]/30 mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-[#B78735]" />
-              <span className="text-[11px] font-bold text-[#B78735] uppercase tracking-[0.2em]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D99722]/10 border border-[#D99722]/30 mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-[#D99722]" />
+              <span className="text-[11px] font-bold text-[#D99722] uppercase tracking-[0.2em]">
                 WHY CLOUD SALON
               </span>
             </div>
             <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.12] mb-3">
               Beauty discovery, <br />
-              <span className="text-[#B78735]">built different.</span>
+              <span className="text-[#D99722]">built different.</span>
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
               We built Cloud Salon because finding and booking great beauty services should be as simple as ordering a coffee.
@@ -51,9 +51,9 @@ export default function WhyCloudSalon() {
             {reasons.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-4 p-3.5 sm:p-4 rounded-2xl bg-card border border-border/60 shadow-xs hover:border-[#B78735]/40 hover:shadow-md transition-all group"
+                className="flex items-start gap-4 p-3.5 sm:p-4 rounded-2xl bg-card border border-border/60 shadow-xs hover:border-[#D99722]/40 hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#B78735]/15 text-[#B78735] flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#B78735] group-hover:text-white transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-[#D99722]/15 text-[#D99722] flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#D99722] group-hover:text-white transition-colors">
                   <CheckCheck className="w-5 h-5" strokeWidth={2.5} />
                 </div>
                 <div>
@@ -86,7 +86,7 @@ export default function WhyCloudSalon() {
 
             {/* Floating Verified Guarantee Badge */}
             <div className="absolute bottom-6 left-6 bg-background/95 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-border shadow-xl flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#B78735]/15 text-[#B78735] flex items-center justify-center shrink-0 font-bold">
+              <div className="w-9 h-9 rounded-xl bg-[#D99722]/15 text-[#D99722] flex items-center justify-center shrink-0 font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>

@@ -9,8 +9,8 @@ export default function Hero() {
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         <div className="lg:col-span-6 space-y-6">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-[2px] bg-[#B78735]" />
-            <span className="text-xs font-semibold text-[#B78735] uppercase tracking-[0.2em]">
+            <span className="w-8 h-[2px] bg-[#D99722]" />
+            <span className="text-xs font-semibold text-[#D99722] uppercase tracking-[0.2em]">
               FOR PROFESSIONALS
             </span>
           </div>
@@ -28,7 +28,7 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
             <Link
               href="/register?role=professional"
-              className="w-full sm:w-auto text-center px-6 py-3.5 bg-[#B78735] hover:bg-[#A37428] text-white text-xs sm:text-sm font-semibold rounded-sm shadow-sm transition-colors"
+              className="w-full sm:w-auto text-center px-6 py-3.5 bg-[#D99722] hover:bg-[#A37428] text-white text-xs sm:text-sm font-semibold rounded-sm shadow-sm transition-colors"
             >
               Start Your Professional Profile
             </Link>
