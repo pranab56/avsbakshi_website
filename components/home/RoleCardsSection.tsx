@@ -10,19 +10,19 @@ export default function RoleCardsSection() {
     {
       title: "For Customers",
       desc: "Book your favorite services anytime, anywhere.",
-      img: "/images/cards/customers.jpg",
+      img: "/images/hero/role-1.png",
       link: "/discover",
     },
     {
       title: "For Professionals",
       desc: "Grow your business on your terms.",
-      img: "/images/cards/professionals.jpg",
+      img: "/images/hero/role-2.png",
       link: "/for-professionals",
     },
     {
       title: "For Businesses",
       desc: "Join the marketplace and reach more clients.",
-      img: "/images/cards/businesses.jpg",
+      img: "/images/hero/role-3.png",
       link: "/for-businesses",
     },
   ];
@@ -71,8 +71,9 @@ export default function RoleCardsSection() {
                 <Image
                   src={card.img}
                   alt={card.title}
-                  fill
-                  className="object-cover object-center transition-transform duration-500 group-hover:scale-108"
+                  width={1000}
+                  height={1000}
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-108"
                 />
 
                 {/* Dark Gradient Overlay */}

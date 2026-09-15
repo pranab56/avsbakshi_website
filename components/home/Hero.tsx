@@ -3,40 +3,40 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import { ArrowRight, Calendar, Users, Clock, MapPin, Laptop } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
   const horizontalFeatures = [
-    { icon: Calendar, label: "Book Anytime" },
-    { icon: Users, label: "Expert Specialists" },
-    { icon: Clock, label: "Flexible Scheduling" },
-    { icon: MapPin, label: "Services Wherever You Are" },
-    { icon: Laptop, label: "Work From Anywhere" },
+    { icon: "/icons/hero/calendar.png", label: "Book Anytime" },
+    { icon: "/icons/hero/user-1.png", label: "Expert Specialists" },
+    { icon: "/icons/hero/clock.png", label: "Flexible Scheduling" },
+    { icon: "/icons/hero/location-1.png", label: "Services Wherever You Are" },
+    { icon: "/icons/hero/computer.png", label: "Work From Anywhere" },
   ];
 
   const verticalFeatures = [
     {
-      icon: Calendar,
+      icon: "/icons/hero/calendar.png",
       title: "Book Anytime",
       desc: "Easy. Fast. On your schedule.",
     },
     {
-      icon: Users,
+      icon: "/icons/hero/user-1.png",
       title: "Expert Specialists",
       desc: "Verified pros. Top rated.",
     },
     {
-      icon: Clock,
+      icon: "/icons/hero/clock.png",
       title: "Flexible Scheduling",
       desc: "Choose what works best for you.",
     },
     {
-      icon: MapPin,
+      icon: "/icons/hero/location-1.png",
       title: "Services Wherever You Are",
       desc: "At home, on-site or in-salon.",
     },
     {
-      icon: Laptop,
+      icon: "/icons/hero/computer.png",
       title: "Work From Anywhere",
       desc: "Run your beauty business in the cloud.",
     },
@@ -86,7 +86,7 @@ export default function Hero() {
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
-        className="hidden lg:flex absolute top-0 bottom-0 h-[550px] -mt-2 right-0 w-[calc(52vw)] xl:w-[calc(55vw)] rounded-l-full border-l-[25px] border-t-[3.5px] border-b-[3.5px] border-[#D99722] shadow-2xl overflow-hidden bg-[#121110] items-stretch z-0"
+        className="hidden lg:flex absolute top-0 bottom-0 h-[535px] -mt-1 right-0 w-[calc(52vw)] xl:w-[calc(55vw)] rounded-l-full border-l-[25px] border-t-[3.5px] border-b-[3.5px] border-[#D99722] shadow-2xl overflow-hidden bg-[#121110] items-stretch z-0"
       >
         {/* Beauty Model Background Image with Smooth Subtle Float */}
         <div className="w-full relative overflow-hidden h-full">
@@ -105,7 +105,7 @@ export default function Hero() {
                 src="/images/hero/image.png"
                 alt="The Cloud Salon Beauty Model"
                 fill
-                className="object-cover"
+                className="object-contain ml-[-120px]"
                 priority
               />
             </motion.div>
@@ -117,7 +117,6 @@ export default function Hero() {
         {/* 5 Vertical Feature Items Absolutely Positioned over Red-Marked Area */}
         <div className="absolute top-1/2 -translate-y-1/2 right-8 sm:right-12 lg:right-16 xl:right-24 z-30 flex flex-col gap-6 sm:gap-7">
           {verticalFeatures.map((feat, i) => {
-            const Icon = feat.icon;
             return (
               <motion.div
                 key={i}
@@ -129,8 +128,14 @@ export default function Hero() {
                 transition={{ type: "spring", stiffness: 350, damping: 22 }}
                 className="flex items-start gap-3 group"
               >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-[#D99722] flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
-                  <Icon className="w-5 h-5 sm:w-7 sm:h-7 text-[#D99722]" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform relative">
+                  <Image
+                    src={feat.icon}
+                    alt={feat.title}
+                    width={28}
+                    height={28}
+                    className="w-5 h-5 sm:w-7 sm:h-7 object-contain"
+                  />
                 </div>
                 <div className="min-w-0">
                   <h4 className="font-normal text-xs sm:text-sm text-white leading-tight whitespace-nowrap group-hover:text-[#D99722] transition-colors">
@@ -184,7 +189,6 @@ export default function Hero() {
             {/* 5 Horizontal Feature Badges */}
             <motion.div variants={fadeInUp} className="grid grid-cols-5 gap-1 sm:gap-2 pt-1 max-w-lg">
               {horizontalFeatures.map((item, idx) => {
-                const Icon = item.icon;
                 return (
                   <motion.div
                     key={idx}
@@ -192,7 +196,13 @@ export default function Hero() {
                     transition={{ type: "spring", stiffness: 400, damping: 18 }}
                     className="flex flex-col items-center text-center p-1.5 rounded-xl bg-transparent transition-colors group"
                   >
-                    <Icon className="w-7 h-7 text-[#D99722] mb-1 shrink-0 group-hover:scale-110 transition-transform" />
+                    <Image
+                      src={item.icon}
+                      alt={item.label}
+                      width={28}
+                      height={28}
+                      className="w-6 h-6 sm:w-7 sm:h-7 object-contain mb-1 shrink-0 group-hover:scale-110 transition-transform"
+                    />
                     <span className="text-[10px] sm:text-[11px] font-medium text-[#444444] dark:text-zinc-300 leading-tight">
                       {item.label}
                     </span>

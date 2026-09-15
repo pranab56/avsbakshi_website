@@ -1,27 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import { Users, MapPin, Heart, Star } from "lucide-react";
 
 export default function StatsTicker() {
   const stats = [
     {
-      icon: Users,
+      icon: "/icons/hero/user-1.png",
       value: "10,000+",
       label: "Verified Professionals",
     },
     {
-      icon: MapPin,
+      icon: "/icons/hero/location-1.png",
       value: "5000+",
       label: "Salon Locations",
     },
     {
-      icon: Heart,
+      icon: "/icons/hero/love.png",
       value: "100,000+",
       label: "Happy Clients",
     },
     {
-      icon: Star,
+      icon: "/icons/hero/start.png",
       value: "4.9+",
       label: "Average Rating",
     },
@@ -58,23 +58,28 @@ export default function StatsTicker() {
           className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-border/60 rounded-sm"
         >
           {stats.map((item, idx) => {
-            const Icon = item.icon;
             return (
               <motion.div
                 key={idx}
                 variants={statItemVariant}
                 whileHover={{ scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 350, damping: 20 }}
-                className="flex items-center gap-3 px-3 py-2 sm:py-2.5 justify-center lg:justify-start cursor-pointer group"
+                className="flex items-center gap-3 px-3 py-2 sm:py-2.5 justify-center lg:justify-start group"
               >
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-[#D99722] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform relative">
+                  <Image
+                    src={item.icon}
+                    alt={item.label}
+                    width={32}
+                    height={32}
+                    className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+                  />
                 </div>
                 <div>
-                  <h4 className="font-title text-sm sm:text-base font-medium leading-none mb-0.5 group-hover:text-[#D99722] transition-colors">
+                  <h4 className=" text-sm sm:text-base font-bold leading-none mb-0.5 group-hover:text-[#D99722] transition-colors">
                     {item.value}
                   </h4>
-                  <p className="text-[10px] sm:text-[11px] text-muted-foreground font-medium truncate">
+                  <p className="text-[10px] sm:text-[11px] text-[#D99722] font-medium truncate">
                     {item.label}
                   </p>
                 </div>
@@ -97,7 +102,7 @@ export default function StatsTicker() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex items-center justify-center gap-3 sm:gap-6 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#D99722] shrink-0"
+            className="flex items-center justify-center gap-3 sm:gap-6 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-[#1C1C1E]/80 shrink-0"
           >
             <span>BEAUTY</span>
             <span className="text-[#D99722]/60 text-xs">★</span>
