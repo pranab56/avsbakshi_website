@@ -13,7 +13,7 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
   return (
     <section className="bg-[#181715] text-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 text-center relative overflow-hidden">
       <div className="max-w-4xl mx-auto space-y-6">
-        <span className="text-xs font-semibold text-[#D99722] uppercase tracking-[0.25em] block">
+        <span className="text-xs font-bold text-[#D99722] uppercase tracking-[0.25em] block">
           HOW IT WORKS
         </span>
 
@@ -33,8 +33,8 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
               type="button"
               onClick={() => setActiveRole("customers")}
               className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${activeRole === "customers"
-                  ? "bg-[#D99722] text-white shadow-md"
-                  : "text-zinc-400 hover:text-white"
+                ? "bg-[#D99722] text-white shadow-md"
+                : "text-zinc-400 hover:text-white"
                 }`}
             >
               <User className="w-4 h-4" />
@@ -45,8 +45,8 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
               type="button"
               onClick={() => setActiveRole("professionals")}
               className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${activeRole === "professionals"
-                  ? "bg-[#D99722] text-white shadow-md"
-                  : "text-zinc-400 hover:text-white"
+                ? "bg-[#D99722] text-white shadow-md"
+                : "text-zinc-400 hover:text-white"
                 }`}
             >
               <Scissors className="w-4 h-4" />
@@ -57,8 +57,8 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
               type="button"
               onClick={() => setActiveRole("businesses")}
               className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${activeRole === "businesses"
-                  ? "bg-[#D99722] text-white shadow-md"
-                  : "text-zinc-400 hover:text-white"
+                ? "bg-[#D99722] text-white shadow-md"
+                : "text-zinc-400 hover:text-white"
                 }`}
             >
               <Building2 className="w-4 h-4" />

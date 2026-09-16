@@ -59,7 +59,7 @@ export default function CategoriesSection() {
             <span className="text-[11px] sm:text-xs font-bold text-[#D99722] uppercase tracking-[0.2em] block mb-1">
               CATEGORIES
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1C1C1E] dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C1C1E] dark:text-white tracking-tight">
               What are you looking for?
             </h2>
           </div>
