@@ -13,7 +13,7 @@ export default function JourneyTimeline() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
             THE JOURNEY
           </span>
-          <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight text-foreground">
+          <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight text-foreground">
             From sign-up to your first booking.
           </h2>
         </div>
@@ -21,10 +21,10 @@ export default function JourneyTimeline() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 max-w-6xl mx-auto">
           {steps.map((step, idx) => (
             <div key={idx} className="flex flex-col items-center text-center">
-              <span className={`w-12 h-12 rounded-full ${step.bg} font-title font-light italic text-lg sm:text-xl flex items-center justify-center mx-auto mb-5 shadow-sm`}>
+              <span className={`w-12 h-12 rounded-full ${step.bg}   font-light italic text-lg sm:text-xl flex items-center justify-center mx-auto mb-5 shadow-sm`}>
                 {step.num}
               </span>
-              <h3 className="font-title text-lg sm:text-xl font-medium text-foreground mb-3">
+              <h3 className="  text-lg sm:text-xl font-medium text-foreground mb-3">
                 {step.title}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-[240px]">

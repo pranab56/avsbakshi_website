@@ -1,113 +1,90 @@
-import { Search, CalendarCheck, Sparkles } from "lucide-react";
+"use client";
+
+import { motion } from "framer-motion";
 
 export default function HowItWorks() {
   const steps = [
     {
       num: "01",
       title: "Discover",
-      desc: "Search by service, location, and availability. Browse verified professionals and top salons near you.",
-      icon: Search,
-      badge: "Step 1",
+      desc: "Search by service, location, and availability. Browse verified professionals and salons near you.",
+      active: false,
     },
     {
       num: "02",
-      title: "Book Seamlessly",
-      desc: "Choose your preferred specialist, pick a convenient date & time slot, and confirm instantly.",
-      icon: CalendarCheck,
-      badge: "Step 2",
+      title: "Book",
+      desc: "Choose your service, select a date and time, and confirm your appointment in seconds.",
       active: true,
     },
     {
       num: "03",
-      title: "Enjoy & Review",
-      desc: "Get your luxury beauty treatment, rate your experience, and earn reward points on every booking.",
-      icon: Sparkles,
-      badge: "Step 3",
+      title: "Enjoy",
+      desc: "Get your service and leave a review to help the community find great professionals.",
+      active: false,
     },
   ];
 
   return (
-    <section className="bg-accent/40 border-y border-border/70 py-12 sm:py-20 transition-colors duration-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        
+    <section className="w-full bg-[#F4EBE0] dark:bg-[#151413] py-14 sm:py-20 transition-colors duration-200 select-none">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-6xl">
         {/* Header */}
-        <div className="mb-12 max-w-xl mx-auto space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D99722]/10 border border-[#D99722]/30">
-            <Sparkles className="w-3.5 h-3.5 text-[#D99722]" />
-            <span className="text-[11px] font-bold text-[#D99722] uppercase tracking-[0.2em]">
-              THE PROCESS
-            </span>
-          </div>
-          <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
-            How Cloud Salon Works
+        <div className="mb-10 sm:mb-14">
+          <span className="text-[11px] sm:text-xs font-bold text-[#D99722] uppercase tracking-[0.2em] block mb-1">
+            THE PROCESS
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-medium text-[#1C1C1E] dark:text-white tracking-tight">
+            How it works
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Booking your next luxury beauty experience is as simple as 1-2-3.
-          </p>
         </div>
 
-        {/* 3 Step Connected Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto relative">
-          {steps.map((step, idx) => {
-            const Icon = step.icon;
-            return (
-              <div
-                key={idx}
-                className={`relative rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-between text-center transition-all duration-300 hover:-translate-y-1.5 shadow-lg border ${
+        {/* 3 Process Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3">
+          {steps.map((step, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              className={`rounded-2xl p-7 sm:p-9 lg:p-10 flex flex-col items-center justify-center text-center transition-transform duration-300 hover:-translate-y-1 ${
+                step.active
+                  ? "bg-[#B98C44] text-white shadow-lg"
+                  : "bg-white dark:bg-[#222120] text-[#1C1C1E] dark:text-white"
+              }`}
+            >
+              {/* Elegant Italic Serif Step Number */}
+              <span
+                className={`font-serif italic text-5xl sm:text-6xl font-light mb-3 select-none ${
                   step.active
-                    ? "bg-gradient-to-b from-[#D99722] to-[#8C621E] text-white border-[#D4AF37] shadow-2xl shadow-[#D99722]/25"
-                    : "bg-card border-border/70 text-foreground hover:border-[#D99722]/40"
+                    ? "text-white/65"
+                    : "text-[#C9BEAA] dark:text-zinc-600"
                 }`}
               >
-                {/* Top Badge & Number */}
-                <div className="w-full flex items-center justify-between mb-4">
-                  <span
-                    className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
-                      step.active
-                        ? "bg-white/20 text-white"
-                        : "bg-[#D99722]/10 text-[#D99722]"
-                    }`}
-                  >
-                    {step.badge}
-                  </span>
-                  <span
-                    className={`font-title font-bold italic text-3xl sm:text-4xl ${
-                      step.active ? "text-white/60" : "text-[#D99722]/40"
-                    }`}
-                  >
-                    {step.num}
-                  </span>
-                </div>
+                {step.num}
+              </span>
 
-                {/* Step Icon */}
-                <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 shrink-0 shadow-md ${
-                    step.active
-                      ? "bg-white text-[#D99722]"
-                      : "bg-[#D99722]/15 text-[#D99722]"
-                  }`}
-                >
-                  <Icon className="w-6 h-6" strokeWidth={2.2} />
-                </div>
+              {/* Title */}
+              <h3
+                className={`font-serif text-xl sm:text-2xl font-bold mb-2.5 leading-snug ${
+                  step.active ? "text-white" : "text-[#1C1C1E] dark:text-white"
+                }`}
+              >
+                {step.title}
+              </h3>
 
-                {/* Content */}
-                <div className="space-y-2">
-                  <h3 className="font-title text-xl sm:text-2xl font-bold leading-tight">
-                    {step.title}
-                  </h3>
-                  <p
-                    className={`text-xs sm:text-sm font-normal leading-relaxed max-w-[260px] mx-auto ${
-                      step.active ? "text-white/90" : "text-muted-foreground"
-                    }`}
-                  >
-                    {step.desc}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+              {/* Description */}
+              <p
+                className={`text-xs sm:text-sm font-light leading-relaxed max-w-[260px] ${
+                  step.active
+                    ? "text-white/90"
+                    : "text-[#66635D] dark:text-zinc-400"
+                }`}
+              >
+                {step.desc}
+              </p>
+            </motion.div>
+          ))}
         </div>
-
       </div>
     </section>
   );

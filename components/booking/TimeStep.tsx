@@ -14,7 +14,7 @@ export default function TimeStep({
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
       <div>
-        <h1 className="font-title text-3xl sm:text-4xl font-normal text-foreground mb-1">
+        <h1 className="  text-3xl sm:text-4xl font-normal text-foreground mb-1">
           Choose a time
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -34,11 +34,10 @@ export default function TimeStep({
                 key={idx}
                 type="button"
                 onClick={() => setSelectedTime(t)}
-                className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${
-                  selectedTime === t
+                className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
                     ? "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold border-primary shadow-xs"
                     : "bg-card hover:bg-accent text-foreground font-medium border-border"
-                }`}
+                  }`}
               >
                 {t}
               </button>
@@ -57,11 +56,10 @@ export default function TimeStep({
                 key={idx}
                 type="button"
                 onClick={() => setSelectedTime(t)}
-                className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${
-                  selectedTime === t
+                className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
                     ? "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold border-primary shadow-xs"
                     : "bg-card hover:bg-accent text-foreground font-medium border-border"
-                }`}
+                  }`}
               >
                 {t}
               </button>
@@ -80,11 +78,10 @@ export default function TimeStep({
                 key={idx}
                 type="button"
                 onClick={() => setSelectedTime(t)}
-                className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${
-                  selectedTime === t
+                className={`py-3 px-2 sm:py-3.5 sm:px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
                     ? "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold border-primary shadow-xs"
                     : "bg-card hover:bg-accent text-foreground font-medium border-border"
-                }`}
+                  }`}
               >
                 {t}
               </button>

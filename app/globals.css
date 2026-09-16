@@ -8,9 +8,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-title: var(--font-title);
+  --: var(--);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-heading: var(--font-title);
+  --font-heading: var(--);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -41,24 +41,26 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-.font-title {
-  font-family: var(--font-title), Georgia, serif;
+. {
+  font-family: var(--), Georgia, serif;
 }
 
 /* Hide Google Translate toolbar */
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
 .goog-te-ftab-float,
-.skiptranslate > iframe,
+.skiptranslate>iframe,
 #goog-gt-tt,
 .goog-tooltip,
 .goog-tooltip:hover {
   display: none !important;
   visibility: hidden !important;
 }
+
 body {
   top: 0px !important;
 }
+
 html body[style*="top"] {
   top: 0px !important;
 }
@@ -233,6 +235,7 @@ body {
   0% {
     transform: translateX(0%);
   }
+
   100% {
     transform: translateX(-50%);
   }

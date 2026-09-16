@@ -39,7 +39,7 @@ export default function PaymentStep({
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
       <div>
-        <h1 className="font-title text-3xl sm:text-4xl font-normal text-foreground mb-1">
+        <h1 className="  text-3xl sm:text-4xl font-normal text-foreground mb-1">
           Payment
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -51,33 +51,30 @@ export default function PaymentStep({
         <button
           type="button"
           onClick={() => setPaymentMethod("card")}
-          className={`py-3 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${
-            paymentMethod === "card"
+          className={`py-3 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${paymentMethod === "card"
               ? "bg-primary text-primary-foreground border-primary shadow-xs"
               : "bg-card border-border text-foreground hover:bg-accent"
-          }`}
+            }`}
         >
           Card
         </button>
         <button
           type="button"
           onClick={() => setPaymentMethod("apple")}
-          className={`py-3 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${
-            paymentMethod === "apple"
+          className={`py-3 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${paymentMethod === "apple"
               ? "bg-primary text-primary-foreground border-primary shadow-xs"
               : "bg-card border-border text-foreground hover:bg-accent"
-          }`}
+            }`}
         >
           Apple Pay
         </button>
         <button
           type="button"
           onClick={() => setPaymentMethod("google")}
-          className={`py-3 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${
-            paymentMethod === "google"
+          className={`py-3 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${paymentMethod === "google"
               ? "bg-primary text-primary-foreground border-primary shadow-xs"
               : "bg-card border-border text-foreground hover:bg-accent"
-          }`}
+            }`}
         >
           Google Pay
         </button>

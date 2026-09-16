@@ -15,7 +15,7 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-white">
+          <h1 className="  text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-white">
             Run Your Salon <br />
             <span className="font-light italic text-[#CAA054]">Smarter.</span>
           </h1>
@@ -36,15 +36,15 @@ export default function Hero() {
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-3 sm:gap-8 pt-6 sm:pt-8 border-t border-white/10">
             <div>
-              <h4 className="font-title text-xl sm:text-3xl font-bold text-white mb-0.5">3,400+</h4>
+              <h4 className="  text-xl sm:text-3xl font-bold text-white mb-0.5">3,400+</h4>
               <p className="text-[11px] sm:text-xs text-zinc-400 font-normal">Partner Salons</p>
             </div>
             <div>
-              <h4 className="font-title text-xl sm:text-3xl font-bold text-white mb-0.5">98%</h4>
+              <h4 className="  text-xl sm:text-3xl font-bold text-white mb-0.5">98%</h4>
               <p className="text-[11px] sm:text-xs text-zinc-400 font-normal">Satisfaction Rate</p>
             </div>
             <div>
-              <h4 className="font-title text-xl sm:text-3xl font-bold text-white mb-0.5">$3,800</h4>
+              <h4 className="  text-xl sm:text-3xl font-bold text-white mb-0.5">$3,800</h4>
               <p className="text-[11px] sm:text-xs text-zinc-400 font-normal">Avg Monthly Earnings</p>
             </div>
           </div>

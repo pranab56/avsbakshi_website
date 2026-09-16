@@ -20,7 +20,7 @@ export default function ServicesTab() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-primary" />
-              <h3 className="font-title text-base font-bold text-foreground">{item.title}</h3>
+              <h3 className="  text-base font-bold text-foreground">{item.title}</h3>
             </div>
             <p className="text-xs text-muted-foreground font-normal pl-6">{item.desc}</p>
             <span className="inline-block bg-accent text-foreground text-[10px] px-2.5 py-0.5 rounded ml-6 mt-1 font-medium border border-border/50">
@@ -29,7 +29,7 @@ export default function ServicesTab() {
           </div>
 
           <div className="flex items-center gap-4 self-end sm:self-center">
-            <span className="font-title text-xl font-bold text-primary">{item.price}</span>
+            <span className="  text-xl font-bold text-primary">{item.price}</span>
             <Link
               href="/book/1"
               className="px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-lg shadow-sm transition-colors"

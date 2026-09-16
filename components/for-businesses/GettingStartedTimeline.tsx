@@ -13,7 +13,7 @@ export default function GettingStartedTimeline() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
             GETTING STARTED
           </span>
-          <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight text-foreground">
+          <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-tight text-foreground">
             Up and running in days.
           </h2>
         </div>
@@ -21,10 +21,10 @@ export default function GettingStartedTimeline() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 max-w-6xl mx-auto">
           {steps.map((step, idx) => (
             <div key={idx} className="flex flex-col items-center text-center">
-              <span className="font-title font-light italic text-4xl sm:text-5xl lg:text-6xl text-primary mb-4 block">
+              <span className="  font-light italic text-4xl sm:text-5xl lg:text-6xl text-primary mb-4 block">
                 {step.num}
               </span>
-              <h3 className="font-title text-xl sm:text-2xl font-medium text-foreground mb-3">
+              <h3 className="  text-xl sm:text-2xl font-medium text-foreground mb-3">
                 {step.title}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-[240px]">

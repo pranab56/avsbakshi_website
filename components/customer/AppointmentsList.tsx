@@ -35,7 +35,7 @@ export default function AppointmentsList({ upcomingAppointments }: AppointmentsL
 
             {/* Info Text */}
             <div className="space-y-0.5 sm:space-y-1">
-              <h3 className="font-title font-bold text-base sm:text-xl text-foreground leading-tight">
+              <h3 className="  font-bold text-base sm:text-xl text-foreground leading-tight">
                 {appt.stylistName}
               </h3>
               <p className="text-primary font-medium text-xs sm:text-sm">
@@ -43,7 +43,7 @@ export default function AppointmentsList({ upcomingAppointments }: AppointmentsL
               </p>
               <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
                 <span>{appt.dateTime}</span>
-                <span className="font-title italic font-bold text-primary text-xs sm:text-sm ml-1">
+                <span className="  italic font-bold text-primary text-xs sm:text-sm ml-1">
                   {appt.price}
                 </span>
               </p>

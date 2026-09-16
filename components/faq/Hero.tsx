@@ -20,7 +20,7 @@ export default function Hero({ searchQuery, setSearchQuery }: HeroProps) {
           </span>
         </div>
 
-        <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+        <h1 className="  text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
           How can we <br />
           <span className="italic font-serif text-[#C48B36] font-normal">
             help you?

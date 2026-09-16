@@ -4,9 +4,9 @@ export default function GetStartedCta() {
   return (
     <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-accent/70 text-center border-t border-border">
       <div className="max-w-2xl mx-auto space-y-6">
-        <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-tight">
+        <h2 className="  text-3xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-tight">
           Ready to get{" "}
-          <span className="text-primary font-title italic">started?</span>
+          <span className="text-primary   italic">started?</span>
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
           Find your next appointment in under 2 minutes.

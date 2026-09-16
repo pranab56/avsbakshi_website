@@ -6,7 +6,7 @@ export default function AboutTab() {
 
   return (
     <div className="animate-in fade-in duration-150 space-y-8">
-      <blockquote className="font-title font-light italic text-lg sm:text-xl text-foreground border-l-2 border-primary pl-6 py-1 leading-relaxed">
+      <blockquote className="  font-light italic text-lg sm:text-xl text-foreground border-l-2 border-primary pl-6 py-1 leading-relaxed">
         &ldquo;My philosophy is simple &mdash; listen first, create second. Every client&apos;s hair has its own history, and I work with that history, not against it.&rdquo;
       </blockquote>
 
@@ -22,19 +22,19 @@ export default function AboutTab() {
       {/* 4 Stat Boxes */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-card p-4 sm:p-8 rounded-lg text-center border border-border space-y-1">
-          <h4 className="font-title text-xl sm:text-2xl font-normal text-foreground">10 years</h4>
+          <h4 className="  text-xl sm:text-2xl font-normal text-foreground">10 years</h4>
           <p className="text-[11px] sm:text-xs text-muted-foreground">Experience</p>
         </div>
         <div className="bg-card p-4 sm:p-8 rounded-lg text-center border border-border space-y-1">
-          <h4 className="font-title text-xl sm:text-2xl font-normal text-foreground">500+</h4>
+          <h4 className="  text-xl sm:text-2xl font-normal text-foreground">500+</h4>
           <p className="text-[11px] sm:text-xs text-muted-foreground">Happy clients</p>
         </div>
         <div className="bg-card p-4 sm:p-8 rounded-lg text-center border border-border space-y-1">
-          <h4 className="font-title text-xl sm:text-2xl font-normal text-foreground">312</h4>
+          <h4 className="  text-xl sm:text-2xl font-normal text-foreground">312</h4>
           <p className="text-[11px] sm:text-xs text-muted-foreground">Reviews</p>
         </div>
         <div className="bg-card p-4 sm:p-8 rounded-lg text-center border border-border space-y-1">
-          <h4 className="font-title text-xl sm:text-2xl font-normal text-foreground">4.9★</h4>
+          <h4 className="  text-xl sm:text-2xl font-normal text-foreground">4.9★</h4>
           <p className="text-[11px] sm:text-xs text-muted-foreground">Average rating</p>
         </div>
       </div>

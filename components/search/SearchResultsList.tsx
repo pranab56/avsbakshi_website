@@ -71,7 +71,7 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
               <div>
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="font-title text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    <h3 className="  text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                       {item.name}
                     </h3>
                     <p className="text-xs text-muted-foreground mb-1.5 sm:mb-2">{item.category}</p>
@@ -91,7 +91,7 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
                   </div>
 
                   <div className="text-right shrink-0">
-                    <span className="font-title text-lg sm:text-xl font-bold text-primary block">
+                    <span className="  text-lg sm:text-xl font-bold text-primary block">
                       {item.price}
                     </span>
                     <span className="text-[10px] text-muted-foreground block">per service</span>
@@ -149,11 +149,10 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
           <button
             key={num}
             onClick={() => setPage(num)}
-            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-              page === num
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full text-xs font-semibold transition-all cursor-pointer ${page === num
                 ? "bg-primary text-primary-foreground shadow-xs"
                 : "bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border"
-            }`}
+              }`}
           >
             0{num}
           </button>

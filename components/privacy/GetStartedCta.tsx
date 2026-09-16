@@ -8,9 +8,9 @@ export default function GetStartedCta() {
         <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
           CLOUD SALON LEGAL
         </span>
-        <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-tight">
+        <h2 className="  text-3xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-tight">
           Review our{" "}
-          <span className="text-primary font-title italic">Terms of Service</span>
+          <span className="text-primary   italic">Terms of Service</span>
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
           Understand your rights and obligations when using Cloud Salon.

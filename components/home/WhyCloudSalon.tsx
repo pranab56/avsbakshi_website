@@ -27,7 +27,7 @@ export default function WhyCloudSalon() {
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-        
+
         {/* Left Column: Info & Glassmorphic Reasons List */}
         <div className="lg:col-span-6 space-y-6 sm:space-y-8">
           <div>
@@ -37,7 +37,7 @@ export default function WhyCloudSalon() {
                 WHY CLOUD SALON
               </span>
             </div>
-            <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground leading-[1.12] mb-3">
+            <h2 className="  text-3xl sm:text-4xl lg:text-4xl font-bold text-foreground leading-[1.12] mb-3">
               Beauty discovery, <br />
               <span className="text-[#D99722]">built different.</span>
             </h2>

@@ -18,7 +18,7 @@ export default function AvailabilityTab() {
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <h3 className="font-title text-xl sm:text-2xl font-bold text-foreground">
+          <h3 className="  text-xl sm:text-2xl font-bold text-foreground">
             July 2025
           </h3>
           <button
@@ -52,13 +52,12 @@ export default function AvailabilityTab() {
                 key={idx}
                 disabled={item.disabled}
                 onClick={() => setSelectedDate(item.day)}
-                className={`py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-center ${
-                  item.disabled
+                className={`py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-center ${item.disabled
                     ? "text-muted-foreground/40 opacity-40 cursor-not-allowed font-light"
                     : selectedDate === item.day
-                    ? "text-primary font-bold bg-accent/60"
-                    : "text-foreground hover:text-primary cursor-pointer"
-                }`}
+                      ? "text-primary font-bold bg-accent/60"
+                      : "text-foreground hover:text-primary cursor-pointer"
+                  }`}
               >
                 {item.day}
               </button>
@@ -79,11 +78,10 @@ export default function AvailabilityTab() {
             key={idx}
             type="button"
             onClick={() => setSelectedTime(t)}
-            className={`py-3.5 px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${
-              selectedTime === t
+            className={`py-3.5 px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
                 ? "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold border-primary shadow-xs"
                 : "bg-card hover:bg-accent text-foreground font-medium border-border"
-            }`}
+              }`}
           >
             {t}
           </button>

@@ -90,7 +90,7 @@ function ResetPasswordContent() {
           className="h-10 w-auto object-contain hidden dark:block"
         />
         <div className="space-y-1.5">
-          <h1 className="font-title text-3xl font-bold text-foreground">
+          <h1 className="  text-3xl font-bold text-foreground">
             Set New Password
           </h1>
           <p className="text-xs text-muted-foreground">
@@ -110,11 +110,10 @@ function ResetPasswordContent() {
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               {...register("password")}
-              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
-                errors.password
+              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
                   ? "border-destructive bg-destructive/10 text-foreground placeholder:text-muted-foreground focus:ring-destructive/30"
                   : "border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
-              }`}
+                }`}
             />
             <button
               type="button"
@@ -141,11 +140,10 @@ function ResetPasswordContent() {
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
               {...register("confirmPassword")}
-              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
-                errors.confirmPassword
+              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.confirmPassword
                   ? "border-destructive bg-destructive/10 text-foreground placeholder:text-muted-foreground focus:ring-destructive/30"
                   : "border-border bg-card text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-primary/20"
-              }`}
+                }`}
             />
             <button
               type="button"

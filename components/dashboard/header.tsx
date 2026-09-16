@@ -43,7 +43,7 @@ export default function DashboardHeader({
         </button>
 
         <div className="flex items-center gap-2 min-w-0">
-          <h1 className="text-base sm:text-xl md:text-2xl font-bold font-title text-foreground truncate max-w-[130px] xs:max-w-[190px] sm:max-w-none">
+          <h1 className="text-base sm:text-xl md:text-2xl font-bold   text-foreground truncate max-w-[130px] xs:max-w-[190px] sm:max-w-none">
             {getPageTitle()}
           </h1>
           <span

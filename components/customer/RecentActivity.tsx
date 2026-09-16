@@ -13,7 +13,7 @@ interface RecentActivityProps {
 export default function RecentActivity({ recentActivities }: RecentActivityProps) {
   return (
     <div className="bg-card border border-border rounded-md p-5 sm:p-6 space-y-4 shadow-xs">
-      <h2 className="font-title italic font-normal text-lg sm:text-xl text-foreground">
+      <h2 className="  italic font-normal text-lg sm:text-xl text-foreground">
         Recent Activity
       </h2>
 

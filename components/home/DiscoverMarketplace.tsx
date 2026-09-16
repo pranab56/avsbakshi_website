@@ -93,7 +93,7 @@ export default function DiscoverMarketplace() {
           <span className="text-xs font-bold text-[#D99722] uppercase tracking-widest block mb-1">
             DISCOVER
           </span>
-          <h2 className="font-title text-2xl sm:text-4xl font-medium">
+          <h2 className="  text-2xl sm:text-4xl font-bold">
             Find your perfect beauty experience
           </h2>
           <p className="text-xs text-zinc-500 mt-1 font-light">
@@ -102,7 +102,7 @@ export default function DiscoverMarketplace() {
         </div>
         <Link
           href="/discover?tab=professionals"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-primary/30 bg-accent text-xs font-semibold text-foreground hover:bg-muted hover:border-primary transition-all w-full sm:w-auto"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-primary/30 bg-accent text-xs font-semibold text-foreground hover:bg-muted hover:border-primary transition-all w-full sm:w-auto"
         >
           Browse all services
           <ArrowRight className="w-3.5 h-3.5 text-primary" />
@@ -113,7 +113,7 @@ export default function DiscoverMarketplace() {
         {professionals.map((pro) => (
           <div
             key={pro.id}
-            className="bg-card rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
+            className="bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
           >
             {/* Card Image */}
             <div className="relative h-52 overflow-hidden">
@@ -123,7 +123,7 @@ export default function DiscoverMarketplace() {
               />
 
               {/* Badge */}
-              <span className="absolute top-3 left-3 bg-background/90 backdrop-blur-md text-[10px] font-semibold px-2.5 py-1 rounded-full text-foreground border border-border/50 shadow-sm">
+              <span className="absolute text-green-900 top-3 left-3 bg-background/90 backdrop-blur-md text-[10px] font-semibold px-2.5 py-1 rounded-full text-foreground border border-border/50 shadow-sm">
                 {pro.badge}
               </span>
 
@@ -142,12 +142,12 @@ export default function DiscoverMarketplace() {
               <div>
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-title text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                    <h3 className="  text-base font-bold text-foreground group-hover:text-primary transition-colors">
                       {pro.name}
                     </h3>
                     <p className="text-xs text-muted-foreground">{pro.category}</p>
                   </div>
-                  <span className="font-title text-xs font-bold text-primary">
+                  <span className="  text-xs font-bold text-primary">
                     {pro.price}
                   </span>
                 </div>
@@ -173,7 +173,7 @@ export default function DiscoverMarketplace() {
 
               <Link
                 href="/professionals/1"
-                className="w-full text-center py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow transition-colors block mt-2"
+                className="w-full text-center py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-md shadow transition-colors block mt-2"
               >
                 Book Appointment
               </Link>

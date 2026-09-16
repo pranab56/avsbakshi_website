@@ -21,7 +21,7 @@ export default function ServiceStep({
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
       <div>
-        <h1 className="font-title text-3xl sm:text-4xl font-normal text-foreground mb-1">
+        <h1 className="  text-3xl sm:text-4xl font-normal text-foreground mb-1">
           Choose your service
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -35,28 +35,26 @@ export default function ServiceStep({
             key={idx}
             type="button"
             onClick={() => setSelectedService(srv)}
-            className={`w-full p-6 rounded-lg border text-left transition-all cursor-pointer ${
-              selectedService.title === srv.title
+            className={`w-full p-6 rounded-lg border text-left transition-all cursor-pointer ${selectedService.title === srv.title
                 ? "bg-card border-primary ring-1 ring-primary/40 shadow-xs"
                 : "bg-card border-border hover:border-primary/40"
-            }`}
+              }`}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2.5">
                 <div
-                  className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${
-                    selectedService.title === srv.title
+                  className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium ${selectedService.title === srv.title
                       ? "bg-primary text-primary-foreground"
                       : "border-2 border-border bg-background"
-                  }`}
+                    }`}
                 >
                   {selectedService.title === srv.title && "✓"}
                 </div>
-                <h3 className="font-title text-lg font-medium text-foreground">
+                <h3 className="  text-lg font-medium text-foreground">
                   {srv.title}
                 </h3>
               </div>
-              <span className="font-title text-xl font-bold text-foreground">
+              <span className="  text-xl font-bold text-foreground">
                 £{srv.price}
               </span>
             </div>

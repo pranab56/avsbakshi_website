@@ -64,7 +64,7 @@ export default function CustomerReviews() {
   return (
     <section className="bg-card text-card-foreground border-y border-border/70 py-14 sm:py-24 transition-colors duration-200">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        
+
         {/* Header */}
         <div className="mb-10 space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D99722]/10 border border-[#D99722]/30">
@@ -73,7 +73,7 @@ export default function CustomerReviews() {
               CLIENT TESTIMONIALS
             </span>
           </div>
-          <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-foreground tracking-tight">
+          <h2 className="  text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
             What Our Clients Say
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground">
@@ -96,8 +96,8 @@ export default function CustomerReviews() {
         >
           {reviews.map((review) => (
             <SwiperSlide key={review.id}>
-              <div className="bg-accent/40 rounded-[28px] p-6 sm:p-12 border border-border/80 shadow-2xl max-w-3xl mx-auto relative">
-                
+              <div className="bg-accent/40 rounded-xl   p-6 sm:p-12 border border-border/80 shadow-xl max-w-6xl mx-auto relative">
+
                 {/* Verified Pill */}
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D99722]/15 border border-[#D99722]/30 mb-6">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#D99722]" />
@@ -123,7 +123,7 @@ export default function CustomerReviews() {
                 </div>
 
                 {/* Quote */}
-                <blockquote className="font-title font-light italic text-base sm:text-xl lg:text-2xl text-foreground leading-relaxed max-w-xl mx-auto text-center mb-6">
+                <blockquote className="  font-light italic text-base sm:text-xl lg:text-2xl text-foreground leading-relaxed max-w-xl mx-auto text-center mb-6">
                   {review.quote}
                 </blockquote>
 

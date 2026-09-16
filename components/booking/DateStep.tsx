@@ -14,7 +14,7 @@ export default function DateStep({
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
       <div>
-        <h1 className="font-title text-3xl sm:text-4xl font-normal text-foreground mb-1">
+        <h1 className="  text-3xl sm:text-4xl font-normal text-foreground mb-1">
           Choose a date
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -28,7 +28,7 @@ export default function DateStep({
           <button className="w-10 h-10 rounded-sm bg-accent hover:bg-accent/80 border border-border flex items-center justify-center text-foreground transition-colors cursor-pointer">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="font-title text-xl font-bold">July 2025</span>
+          <span className="  text-xl font-bold">July 2025</span>
           <button className="w-10 h-10 rounded-sm bg-accent hover:bg-accent/80 border border-border flex items-center justify-center text-foreground transition-colors cursor-pointer">
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -42,11 +42,10 @@ export default function DateStep({
             <button
               key={num}
               onClick={() => setSelectedDate(`Fri ${num} Jul`)}
-              className={`py-2 text-xs sm:text-sm font-bold h-14 rounded-sm transition-all text-center ${
-                selectedDate.includes(num)
+              className={`py-2 text-xs sm:text-sm font-bold h-14 rounded-sm transition-all text-center ${selectedDate.includes(num)
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-foreground hover:text-primary cursor-pointer"
-              }`}
+                }`}
             >
               {num}
             </button>

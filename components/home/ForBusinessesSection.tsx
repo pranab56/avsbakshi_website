@@ -75,7 +75,7 @@ export default function ForBusinessesSection() {
             <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
               FOR BUSINESSES
             </span>
-            <h2 className="font-title text-3xl sm:text-5xl font-normal text-foreground leading-[1.15] mb-4">
+            <h2 className="  text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] mb-4">
               Run your salon from one powerful platform.
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">
@@ -109,13 +109,13 @@ export default function ForBusinessesSection() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href="/for-businesses"
-              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-xl shadow-sm transition-colors"
+              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-lg transition-colors"
             >
               Join as a Business
             </Link>
             <Link
               href="/for-businesses"
-              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-semibold rounded-xl border border-border transition-colors"
+              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-semibold rounded-lg border border-border transition-colors"
             >
               Explore Business Tools
             </Link>

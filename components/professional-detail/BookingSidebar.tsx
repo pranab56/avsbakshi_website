@@ -15,7 +15,7 @@ export default function BookingSidebar() {
             <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider block mb-1">
               FROM
             </span>
-            <h3 className="font-title text-3xl sm:text-4xl font-normal text-foreground">
+            <h3 className="  text-3xl sm:text-4xl font-normal text-foreground">
               $45
             </h3>
           </div>
@@ -43,11 +43,10 @@ export default function BookingSidebar() {
                 key={idx}
                 type="button"
                 onClick={() => router.push('/book/1')}
-                className={`w-full p-3.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
-                  idx === 0
+                className={`w-full p-3.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${idx === 0
                     ? "bg-secondary border-primary/50 text-secondary-foreground font-semibold"
                     : "bg-accent/50 hover:bg-accent border-border text-foreground font-medium"
-                }`}
+                  }`}
               >
                 <Clock className="w-4 h-4 text-primary shrink-0" />
                 <span>{slot}</span>

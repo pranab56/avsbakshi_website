@@ -56,7 +56,7 @@ export default function Header({
 
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                  <h1 className="font-title text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-normal text-foreground">
+                  <h1 className="  text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-normal text-foreground">
                     Sofia Martinez
                   </h1>
                   <span className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider inline-flex items-center gap-1 border border-emerald-500/30">
@@ -118,11 +118,10 @@ export default function Header({
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id as DetailTabType)}
-                className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${
-                  activeTab === tab.id
+                className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === tab.id
                     ? "text-foreground font-semibold"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {tab.label}
                 {activeTab === tab.id && (

@@ -111,7 +111,7 @@ export default function VerifyEmailForm() {
             {/* <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <MailCheck className="w-5 h-5" />
             </div> */}
-            <h1 className="font-title text-3xl font-bold text-foreground">
+            <h1 className="  text-3xl font-bold text-foreground">
               Verify Your Email
             </h1>
           </div>
@@ -138,10 +138,10 @@ export default function VerifyEmailForm() {
               onChange={(e) => handleOtpChange(idx, e.target.value)}
               onKeyDown={(e) => handleKeyDown(idx, e)}
               className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${otpError
-                  ? 'border-destructive bg-destructive/10 focus:ring-destructive/30 text-destructive'
-                  : digit
-                    ? 'border-primary bg-primary/10 text-primary focus:ring-primary/20'
-                    : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
+                ? 'border-destructive bg-destructive/10 focus:ring-destructive/30 text-destructive'
+                : digit
+                  ? 'border-primary bg-primary/10 text-primary focus:ring-primary/20'
+                  : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
                 }`}
             />
           ))}

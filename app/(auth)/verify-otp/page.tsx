@@ -96,7 +96,7 @@ function VerifyOtpContent() {
             <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-5 h-5" />
             </div>
-            <h1 className="font-title text-3xl font-bold text-foreground">
+            <h1 className="  text-3xl font-bold text-foreground">
               Verify Phone Number
             </h1>
           </div>
@@ -121,13 +121,12 @@ function VerifyOtpContent() {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                error
+              className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${error
                   ? "border-destructive bg-destructive/10 focus:ring-destructive/30 text-destructive"
                   : digit
-                  ? "border-primary bg-primary/10 text-primary focus:ring-primary/20"
-                  : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
-              }`}
+                    ? "border-primary bg-primary/10 text-primary focus:ring-primary/20"
+                    : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
+                }`}
             />
           ))}
         </div>

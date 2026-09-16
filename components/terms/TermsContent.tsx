@@ -22,7 +22,7 @@ export default function TermsContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               1. Overview of the Platform
             </h2>
           </div>
@@ -40,7 +40,7 @@ export default function TermsContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               2. Acceptance of Terms
             </h2>
           </div>
@@ -58,7 +58,7 @@ export default function TermsContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               3. User Accounts &amp; Registration
             </h2>
           </div>
@@ -76,7 +76,7 @@ export default function TermsContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               4. Bookings, Payments &amp; Cancellations
             </h2>
           </div>
@@ -94,7 +94,7 @@ export default function TermsContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               5. Professional Responsibilities &amp; Insurance
             </h2>
           </div>
@@ -110,7 +110,7 @@ export default function TermsContent() {
 
         {/* Section 6: Contact */}
         <section className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-xs">
-          <h3 className="font-title text-xl font-bold text-foreground">
+          <h3 className="  text-xl font-bold text-foreground">
             Need clarification on our Terms?
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">

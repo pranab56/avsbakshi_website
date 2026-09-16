@@ -33,7 +33,7 @@ export default function FaqSection() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
             GOOD TO KNOW
           </span>
-          <h2 className="font-title text-3xl sm:text-4xl font-bold text-foreground">
+          <h2 className="  text-3xl sm:text-4xl font-bold text-foreground">
             Questions, answered.
           </h2>
         </div>
@@ -56,18 +56,16 @@ export default function FaqSection() {
                     {faq.q}
                   </span>
                   <ChevronDown
-                    className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${
-                      isOpen ? "rotate-180 text-primary" : ""
-                    }`}
+                    className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-primary" : ""
+                      }`}
                   />
                 </button>
 
                 <div
-                  className={`grid transition-all duration-300 ease-in-out ${
-                    isOpen
+                  className={`grid transition-all duration-300 ease-in-out ${isOpen
                       ? "grid-rows-[1fr] opacity-100 pb-3"
                       : "grid-rows-[0fr] opacity-0 pb-0"
-                  }`}
+                    }`}
                 >
                   <div className="overflow-hidden">
                     <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed pt-1.5 pr-6">

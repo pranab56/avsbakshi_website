@@ -28,7 +28,7 @@ export default function Hero({
             </span>
           </div>
 
-          <h1 className="font-title text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
+          <h1 className="  text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
             Every service. Every <br />
             <span className="font-light italic text-[#CAA054]">professional. Every salon</span>
           </h1>
@@ -55,11 +55,10 @@ export default function Hero({
           <button
             type="button"
             onClick={() => setActiveTab("services")}
-            className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${
-              activeTab === "services"
+            className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === "services"
                 ? "text-white font-semibold"
                 : "text-zinc-400 hover:text-white"
-            }`}
+              }`}
           >
             Services
             {activeTab === "services" && (
@@ -70,11 +69,10 @@ export default function Hero({
           <button
             type="button"
             onClick={() => setActiveTab("professionals")}
-            className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${
-              activeTab === "professionals"
+            className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === "professionals"
                 ? "text-white font-semibold"
                 : "text-zinc-400 hover:text-white"
-            }`}
+              }`}
           >
             Professionals
             {activeTab === "professionals" && (
@@ -85,11 +83,10 @@ export default function Hero({
           <button
             type="button"
             onClick={() => setActiveTab("salons")}
-            className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${
-              activeTab === "salons"
+            className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === "salons"
                 ? "text-white font-semibold"
                 : "text-zinc-400 hover:text-white"
-            }`}
+              }`}
           >
             Salons
             {activeTab === "salons" && (

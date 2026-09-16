@@ -7,7 +7,7 @@ export default function WhyCloudSalon() {
             WHY CLOUD SALON
           </span>
 
-          <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] text-foreground">
+          <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] text-foreground">
             Started behind the chair. <br />
             Built for everyone behind the chair.
           </h2>

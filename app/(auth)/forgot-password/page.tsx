@@ -177,7 +177,7 @@ export default function ForgotPasswordPage() {
               className="h-10 w-auto object-contain hidden dark:block"
             />
             <div className="space-y-1">
-              <h1 className="font-title text-3xl font-bold text-foreground">
+              <h1 className="  text-3xl font-bold text-foreground">
                 Reset Password
               </h1>
               <p className="text-xs text-muted-foreground">
@@ -195,11 +195,10 @@ export default function ForgotPasswordPage() {
                 type="email"
                 placeholder="you@example.com"
                 {...emailForm.register('email')}
-                className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
-                  emailForm.formState.errors.email
+                className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${emailForm.formState.errors.email
                     ? 'border-destructive bg-destructive/10 focus:ring-destructive/30'
                     : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
-                }`}
+                  }`}
               />
               {emailForm.formState.errors.email && (
                 <p className="text-destructive text-xs font-medium mt-1">
@@ -231,7 +230,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div className="space-y-1">
-            <h1 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h1 className="  text-2xl sm:text-3xl font-bold text-foreground">
               Enter Verification Code
             </h1>
             <p className="text-xs text-muted-foreground">
@@ -253,13 +252,12 @@ export default function ForgotPasswordPage() {
                   value={digit}
                   onChange={(e) => handleOtpChange(idx, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(idx, e)}
-                  className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${
-                    otpError
+                  className={`w-10 sm:w-12 h-12 sm:h-14 text-center font-bold text-xl rounded-xl border transition-all focus:outline-none focus:ring-2 ${otpError
                       ? 'border-destructive bg-destructive/10 focus:ring-destructive/30 text-destructive'
                       : digit
-                      ? 'border-primary bg-primary/10 text-primary focus:ring-primary/20'
-                      : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
-                  }`}
+                        ? 'border-primary bg-primary/10 text-primary focus:ring-primary/20'
+                        : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
+                    }`}
                 />
               ))}
             </div>
@@ -293,7 +291,7 @@ export default function ForgotPasswordPage() {
       {step === 3 && (
         <div className="space-y-6">
           <div className="space-y-1">
-            <h1 className="font-title text-3xl font-bold text-foreground">
+            <h1 className="  text-3xl font-bold text-foreground">
               Set New Password
             </h1>
             <p className="text-xs text-muted-foreground">
@@ -311,11 +309,10 @@ export default function ForgotPasswordPage() {
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   {...passwordForm.register('password')}
-                  className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
-                    passwordForm.formState.errors.password
+                  className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${passwordForm.formState.errors.password
                       ? 'border-destructive bg-destructive/10 focus:ring-destructive/30'
                       : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
-                  }`}
+                    }`}
                 />
                 <button
                   type="button"
@@ -341,11 +338,10 @@ export default function ForgotPasswordPage() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   {...passwordForm.register('confirmPassword')}
-                  className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
-                    passwordForm.formState.errors.confirmPassword
+                  className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${passwordForm.formState.errors.confirmPassword
                       ? 'border-destructive bg-destructive/10 focus:ring-destructive/30'
                       : 'border-border bg-card text-foreground focus:border-primary focus:ring-primary/20'
-                  }`}
+                    }`}
                 />
                 <button
                   type="button"

@@ -83,17 +83,17 @@ export default function Hero() {
 
       {/* Desktop Golden Arc Frame Pinned to Viewport Right-0 (Fills Red Box Completely to Right Edge) */}
       <motion.div
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
-        className="hidden lg:flex absolute top-0 bottom-0 h-[535px] -mt-1 right-0 w-[calc(52vw)] xl:w-[calc(55vw)] rounded-l-full border-l-[25px] border-t-[3.5px] border-b-[3.5px] border-[#D99722] shadow-2xl overflow-hidden bg-[#121110] items-stretch z-0"
+        // initial={{ opacity: 0, x: 50 }}
+        // animate={{ opacity: 1, x: 0 }}
+        // transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }}
+        className="hidden lg:flex absolute top-0 lg:h-[380px] 2xl:h-[542px] -mt-1 right-0 w-[calc(52vw)] xl:w-[calc(55vw)] rounded-l-full border-l-[25px] border-t-[3.5px] border-b-[3.5px] border-[#D99722] shadow-2xl overflow-hidden bg-[#121110] items-stretch z-0"
       >
         {/* Beauty Model Background Image with Smooth Subtle Float */}
         <div className="w-full relative overflow-hidden h-full">
           <motion.div
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const }}
+            // initial={{ scale: 1.1, opacity: 0 }}
+            // animate={{ scale: 1, opacity: 1 }}
+            // transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const }}
             className="w-full h-full relative"
           >
             <motion.div
@@ -115,7 +115,7 @@ export default function Hero() {
         </div>
 
         {/* 5 Vertical Feature Items Absolutely Positioned over Red-Marked Area */}
-        <div className="absolute top-1/2 -translate-y-1/2 right-8 sm:right-12 lg:right-16 xl:right-24 z-30 flex flex-col gap-6 sm:gap-7">
+        <div className="absolute top-1/2 -translate-y-1/2 right-8 sm:right-12 lg:right-16 xl:right-20 2xl:right-24 z-30 flex flex-col gap-3.5 lg:gap-3.5 xl:gap-4 2xl:gap-7">
           {verticalFeatures.map((feat, i) => {
             return (
               <motion.div
@@ -152,58 +152,58 @@ export default function Hero() {
       </motion.div>
 
       {/* Main Grid Container for Left Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5 lg:py-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center min-h-[380px] sm:min-h-[440px] lg:min-h-[480px]">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center min-h-[380px] sm:min-h-[440px] lg:min-h-[370px] 2xl:min-h-[535px]">
           {/* Left Column: Kept strictly inside standard centered container */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="lg:col-span-5 space-y-4 text-left"
+            className="lg:col-span-5 space-y-3 lg:space-y-2.5 2xl:space-y-4 text-left"
           >
             {/* Top Golden Subtitle */}
             <motion.div
               variants={fadeInUp}
-              className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[#D99722] uppercase tracking-[0.2em]"
+              className="flex items-center mt-2 sm:mt-4 lg:mt-6 gap-2 text-[10px] sm:text-xs lg:text-[10px] 2xl:text-xs font-bold text-[#D99722] uppercase tracking-[0.18em]"
             >
               <motion.span
                 initial={{ width: 0 }}
                 animate={{ width: 24 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="h-[2px] bg-[#D99722] inline-block"
+                className="h-[2px] bg-[#D99722]  inline-block"
               />
               <span>ALL YOUR SALON SERVICES. YOUR CHOICE.</span>
             </motion.div>
 
             {/* Main Editorial Headline */}
-            <motion.div variants={fadeInUp} className="space-y-2">
-              <h1 className="font-title text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.08] tracking-tight text-[#222222] dark:text-white">
+            <motion.div variants={fadeInUp} className="space-y-1.5 lg:space-y-1 2xl:space-y-2">
+              <h1 className="font-extrabold text-3xl sm:text-4xl lg:text-3xl xl:text-4xl 2xl:text-6xl leading-[1.1] tracking-tight text-[#222222] dark:text-white">
                 Salon Services, <br />
                 <span className="text-[#D99722]">Your Choice.</span>
               </h1>
-              <p className="text-xs sm:text-sm text-[#555555] dark:text-zinc-400 font-normal max-w-lg leading-relaxed">
+              <p className="text-xs sm:text-sm lg:text-[11px] xl:text-xs 2xl:text-sm text-[#555555] dark:text-zinc-400 font-normal max-w-lg leading-normal lg:leading-snug 2xl:leading-relaxed">
                 Discover trusted beauty professionals and salons, and book your next appointment with confidence. Find the right service, the right professional, and the right time — all in one place.
               </p>
             </motion.div>
 
             {/* 5 Horizontal Feature Badges */}
-            <motion.div variants={fadeInUp} className="grid grid-cols-5 gap-1 sm:gap-2 pt-1 max-w-lg">
+            <motion.div variants={fadeInUp} className="grid grid-cols-5 gap-1 sm:gap-2 pt-0.5 lg:pt-1 max-w-lg">
               {horizontalFeatures.map((item, idx) => {
                 return (
                   <motion.div
                     key={idx}
                     whileHover={{ y: -3, scale: 1.04 }}
                     transition={{ type: "spring", stiffness: 400, damping: 18 }}
-                    className="flex flex-col items-center text-center p-1.5 rounded-xl bg-transparent transition-colors group"
+                    className="flex flex-col items-center text-center p-1 sm:p-1.5 rounded-xl bg-transparent transition-colors group"
                   >
                     <Image
                       src={item.icon}
                       alt={item.label}
                       width={28}
                       height={28}
-                      className="w-6 h-6 sm:w-7 sm:h-7 object-contain mb-1 shrink-0 group-hover:scale-110 transition-transform"
+                      className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-7 2xl:h-7 object-contain mb-0.5 sm:mb-1 shrink-0 group-hover:scale-110 transition-transform"
                     />
-                    <span className="text-[10px] sm:text-[11px] font-medium text-[#444444] dark:text-zinc-300 leading-tight">
+                    <span className="text-[9px] sm:text-[10px] 2xl:text-[11px] font-medium text-[#444444] dark:text-zinc-300 leading-tight">
                       {item.label}
                     </span>
                   </motion.div>
@@ -212,20 +212,20 @@ export default function Hero() {
             </motion.div>
 
             {/* Twin Action Buttons */}
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-3 pt-2">
+            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1 lg:pt-1.5 2xl:pt-2">
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Link
                   href="/discover"
-                  className="px-6 py-3 rounded-sm bg-[#D99722] hover:bg-[#A0732A] text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 group cursor-pointer"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 2xl:px-6 2xl:py-3 rounded-sm bg-[#D99722] hover:bg-[#A0732A] text-white font-semibold text-xs 2xl:text-sm shadow-md transition-all flex items-center gap-1.5 sm:gap-2 group cursor-pointer"
                 >
                   <span>Book A service</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Link
                   href="/for-professionals"
-                  className="px-6 py-3 rounded-sm bg-[#EAE5D9] dark:bg-[#26282E] hover:bg-[#DDD8CD] border border-border/40 text-[#222222] dark:text-foreground font-semibold text-xs sm:text-sm transition-all shadow-2xs text-center cursor-pointer block"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 2xl:px-6 2xl:py-3 rounded-sm bg-[#EAE5D9] dark:bg-[#26282E] hover:bg-[#DDD8CD] border border-border/40 text-[#222222] dark:text-foreground font-semibold text-xs 2xl:text-sm transition-all shadow-2xs text-center cursor-pointer block"
                 >
                   Join The Cloud Salon
                 </Link>

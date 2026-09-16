@@ -11,7 +11,7 @@ export default function Hero() {
           </span>
         </div>
 
-        <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+        <h1 className="  text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
           Terms &amp;
           <span className="font-serif italic text-[#C48B36] font-normal">
             Conditions

@@ -57,7 +57,7 @@ export default function ForProfessionalsSection() {
             <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
               FOR PROFESSIONALS
             </span>
-            <h2 className="font-title text-3xl sm:text-5xl font-normal text-foreground leading-[1.15] mb-4">
+            <h2 className="  text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] mb-4">
               Turn your talent into a thriving beauty business.
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">
@@ -91,13 +91,13 @@ export default function ForProfessionalsSection() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               href="/for-professionals"
-              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-xl shadow-sm transition-colors"
+              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-lg transition-colors"
             >
               Join as a Professional
             </Link>
             <Link
               href="/for-professionals"
-              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-semibold rounded-xl border border-border transition-colors"
+              className="px-5 sm:px-6 py-3 sm:py-3.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-semibold rounded-lg  transition-colors"
             >
               Learn More
             </Link>

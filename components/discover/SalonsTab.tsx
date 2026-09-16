@@ -48,12 +48,12 @@ export default function SalonsTab() {
               <div>
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-title text-base font-bold text-foreground group-hover:text-primary transition-colors">
+                    <h3 className="  text-base font-bold text-foreground group-hover:text-primary transition-colors">
                       {salon.name}
                     </h3>
                     <p className="text-xs text-muted-foreground">{salon.category}</p>
                   </div>
-                  <span className="font-title text-xs font-bold text-primary">{salon.price}</span>
+                  <span className="  text-xs font-bold text-primary">{salon.price}</span>
                 </div>
 
                 <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">

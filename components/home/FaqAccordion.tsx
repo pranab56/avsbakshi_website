@@ -33,7 +33,7 @@ export default function FaqAccordion() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
             GOOD TO KNOW
           </span>
-          <h2 className="font-title text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-foreground">
+          <h2 className="  text-2xl sm:text-3xl lg:text-4xl font-bold leading-[1.1] text-foreground">
             Questions, answered.
           </h2>
         </div>
@@ -52,17 +52,15 @@ export default function FaqAccordion() {
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-5 h-5 text-foreground transition-transform duration-300 shrink-0 ml-4 ${
-                    openFaq === idx ? "rotate-180" : ""
-                  }`}
+                  className={`w-5 h-5 text-foreground transition-transform duration-300 shrink-0 ml-4 ${openFaq === idx ? "rotate-180" : ""
+                    }`}
                 />
               </button>
               <div
-                className={`grid transition-all duration-300 ease-in-out ${
-                  openFaq === idx
+                className={`grid transition-all duration-300 ease-in-out ${openFaq === idx
                     ? "grid-rows-[1fr] opacity-100 pt-3 pb-2"
                     : "grid-rows-[0fr] opacity-0 pt-0 pb-0"
-                }`}
+                  }`}
               >
                 <div className="overflow-hidden">
                   <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-xl">

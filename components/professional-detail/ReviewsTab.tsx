@@ -10,7 +10,7 @@ export default function ReviewsTab() {
       <div className="p-6 sm:p-8 rounded-xl bg-card border border-border space-y-6">
         <div className="flex flex-col sm:flex-row items-center gap-8 border-b border-border pb-6">
           <div className="text-center sm:text-left">
-            <h2 className="font-title text-5xl font-bold text-foreground">4.9</h2>
+            <h2 className="  text-5xl font-bold text-foreground">4.9</h2>
             <div className="flex items-center justify-center sm:justify-start gap-1 my-1 text-primary">
               ★★★★★
             </div>
@@ -38,15 +38,15 @@ export default function ReviewsTab() {
 
         <div className="grid grid-cols-3 gap-4 text-center">
           <div className="bg-accent/50 p-5 rounded-sm border border-border/50">
-            <h4 className="font-title text-lg font-bold text-foreground">4.9</h4>
+            <h4 className="  text-lg font-bold text-foreground">4.9</h4>
             <p className="text-[10px] text-muted-foreground">Communication</p>
           </div>
           <div className="bg-accent/50 p-5 rounded-sm border border-border/50">
-            <h4 className="font-title text-lg font-bold text-foreground">5.0</h4>
+            <h4 className="  text-lg font-bold text-foreground">5.0</h4>
             <p className="text-[10px] text-muted-foreground">Skill</p>
           </div>
           <div className="bg-accent/50 p-5 rounded-sm border border-border/50">
-            <h4 className="font-title text-lg font-bold text-foreground">4.7</h4>
+            <h4 className="  text-lg font-bold text-foreground">4.7</h4>
             <p className="text-[10px] text-muted-foreground">Value</p>
           </div>
         </div>

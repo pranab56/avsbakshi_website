@@ -14,7 +14,7 @@ export default function JourneyTimeline() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
             OUR JOURNEY
           </span>
-          <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-light italic text-foreground leading-tight">
+          <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-light italic text-foreground leading-tight">
             Four years of building in public.
           </h2>
         </div>
@@ -26,16 +26,14 @@ export default function JourneyTimeline() {
               className="flex items-center gap-8 sm:gap-16 py-6 sm:py-7 border-b border-border transition-colors"
             >
               <span
-                className={`font-title font-light italic text-xl sm:text-2xl w-20 shrink-0 ${
-                  item.highlight ? "text-primary font-normal" : "text-muted-foreground"
-                }`}
+                className={`  font-light italic text-xl sm:text-2xl w-20 shrink-0 ${item.highlight ? "text-primary font-normal" : "text-muted-foreground"
+                  }`}
               >
                 {item.year}
               </span>
               <span
-                className={`font-title text-base sm:text-lg sm:text-xl ${
-                  item.highlight ? "text-foreground font-bold" : "text-muted-foreground font-normal"
-                }`}
+                className={`  text-base sm:text-lg sm:text-xl ${item.highlight ? "text-foreground font-bold" : "text-muted-foreground font-normal"
+                  }`}
               >
                 {item.title}
               </span>

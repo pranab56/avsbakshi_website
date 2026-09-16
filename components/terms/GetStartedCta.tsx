@@ -8,9 +8,9 @@ export default function GetStartedCta() {
         <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
           GET STARTED
         </span>
-        <h2 className="font-title text-3xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-tight">
+        <h2 className="  text-3xl sm:text-4xl lg:text-5xl font-normal text-foreground leading-tight">
           Ready to get{" "}
-          <span className="text-primary font-title italic">started?</span>
+          <span className="text-primary   italic">started?</span>
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
           Find your next appointment in under 2 minutes.

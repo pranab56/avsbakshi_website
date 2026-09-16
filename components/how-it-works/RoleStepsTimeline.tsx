@@ -29,11 +29,10 @@ export default function RoleStepsTimeline({ steps }: RoleStepsTimelineProps) {
             >
               {/* Icon Circle */}
               <div
-                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 shadow-sm ${
-                  isFirst
+                className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 shadow-sm ${isFirst
                     ? "bg-primary text-primary-foreground"
                     : "bg-accent border border-border text-muted-foreground"
-                }`}
+                  }`}
               >
                 <StepIcon className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
@@ -41,10 +40,10 @@ export default function RoleStepsTimeline({ steps }: RoleStepsTimelineProps) {
               {/* Content */}
               <div className="pt-1 sm:pt-2 flex-1">
                 <div className="flex items-baseline gap-2">
-                  <span className="font-title font-semibold text-xs sm:text-sm text-primary">
+                  <span className="  font-semibold text-xs sm:text-sm text-primary">
                     {step.num}
                   </span>
-                  <h3 className="font-title text-lg sm:text-xl font-bold text-foreground">
+                  <h3 className="  text-lg sm:text-xl font-bold text-foreground">
                     {step.title}
                   </h3>
                 </div>

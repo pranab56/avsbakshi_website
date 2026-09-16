@@ -14,7 +14,7 @@ export default function Hero() {
                             </span>
                         </div>
 
-                        <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-white">
+                        <h1 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-white">
                             We built the <br />
                             platform we needed <br />
                             but <span className="font-light italic text-[#CAA054]">could never find.</span>
@@ -40,23 +40,23 @@ export default function Hero() {
             <section className="bg-primary dark:bg-card border-b border-border text-white dark:text-foreground py-12 sm:py-16">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                     <div>
-                        <h3 className="font-title text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">47,000+</h3>
+                        <h3 className="  text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">47,000+</h3>
                         <p className="text-xs sm:text-sm text-white/80 dark:text-muted-foreground font-normal">Independent professionals</p>
                     </div>
                     <div>
-                        <h3 className="font-title text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">320,000+</h3>
+                        <h3 className="  text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">320,000+</h3>
                         <p className="text-xs sm:text-sm text-white/80 dark:text-muted-foreground font-normal">Bookings this year</p>
                     </div>
                     <div>
-                        <h3 className="font-title text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">$35M+</h3>
+                        <h3 className="  text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">$35M+</h3>
                         <p className="text-xs sm:text-sm text-white/80 dark:text-muted-foreground font-normal">Paid out to professionals</p>
                     </div>
                     <div>
-                        <h3 className="font-title text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">4.9★</h3>
+                        <h3 className="  text-4xl sm:text-5xl font-normal text-white dark:text-foreground mb-2">4.9★</h3>
                         <p className="text-xs sm:text-sm text-white/80 dark:text-muted-foreground font-normal">Average platform rating</p>
                     </div>
                 </div>
             </section>
         </div>
     )
-}
+}

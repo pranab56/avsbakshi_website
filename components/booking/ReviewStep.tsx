@@ -20,7 +20,7 @@ export default function ReviewStep({
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
       <div>
-        <h1 className="font-title text-3xl sm:text-4xl font-normal text-foreground mb-1">
+        <h1 className="  text-3xl sm:text-4xl font-normal text-foreground mb-1">
           Review your booking
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -40,7 +40,7 @@ export default function ReviewStep({
             className="w-12 h-12 rounded-full object-cover border border-border shrink-0"
           />
           <div>
-            <h4 className="font-title font-bold text-base text-foreground">Sofia Martinez</h4>
+            <h4 className="  font-bold text-base text-foreground">Sofia Martinez</h4>
             <div className="flex items-center gap-1 text-primary text-xs">
               ★★★★★
             </div>
@@ -82,8 +82,8 @@ export default function ReviewStep({
         </div>
 
         <div className="pt-4 border-t border-border flex justify-between items-center text-foreground">
-          <span className="font-title text-xl font-bold">Total</span>
-          <span className="font-title text-2xl font-bold">£{totalPrice}</span>
+          <span className="  text-xl font-bold">Total</span>
+          <span className="  text-2xl font-bold">£{totalPrice}</span>
         </div>
       </div>
 

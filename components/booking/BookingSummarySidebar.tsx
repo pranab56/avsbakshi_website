@@ -18,7 +18,7 @@ export default function BookingSummarySidebar({
   return (
     <div className="lg:col-span-5 space-y-6">
       <div className="bg-card rounded-lg p-6 sm:p-7 border border-border space-y-6 sticky top-24 shadow-xs">
-        <h3 className="font-title font-bold text-base text-muted-foreground">
+        <h3 className="  font-bold text-base text-muted-foreground">
           Booking Summary
         </h3>
 
@@ -29,7 +29,7 @@ export default function BookingSummarySidebar({
             className="w-12 h-12 rounded-full object-cover border border-border shrink-0"
           />
           <div>
-            <h4 className="font-title font-bold text-base text-foreground">Sofia Martinez</h4>
+            <h4 className="  font-bold text-base text-foreground">Sofia Martinez</h4>
             <div className="flex items-center gap-1 text-primary text-lg">
               ★★★★★
             </div>
@@ -67,8 +67,8 @@ export default function BookingSummarySidebar({
         </div>
 
         <div className="pt-4 border-t border-border flex justify-between items-center text-foreground">
-          <span className="font-title text-xl font-bold">Total</span>
-          <span className="font-title text-2xl font-bold">£{totalPrice}</span>
+          <span className="  text-xl font-bold">Total</span>
+          <span className="  text-2xl font-bold">£{totalPrice}</span>
         </div>
       </div>
     </div>

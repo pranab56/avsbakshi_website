@@ -39,7 +39,7 @@ export default function ServicesTab() {
 
               <div className="relative z-10 flex items-end justify-between w-full">
                 <div>
-                  <h3 className="font-title text-xl sm:text-2xl font-bold text-white mb-1">
+                  <h3 className="  text-xl sm:text-2xl font-bold text-white mb-1">
                     {cat.title}
                   </h3>
                   <p className="text-xs text-white/80 font-normal leading-tight">

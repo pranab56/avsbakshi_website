@@ -65,7 +65,7 @@ export default function ServicesForAllAges() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
             EVERYONE IS WELCOME
           </span>
-          <h2 className="font-title text-2xl sm:text-4xl lg:text-5xl font-normal text-foreground mb-3 sm:mb-4">
+          <h2 className="  text-xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
             Services for all ages
           </h2>
           <p className="text-xs sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -80,7 +80,7 @@ export default function ServicesForAllAges() {
             <Link
               key={group.id}
               href={group.href}
-              className="group relative bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group relative bg-card border border-border rounded-xl overflow-hidden  hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               {/* Image */}
               <div className="relative h-56 sm:h-64 overflow-hidden">
@@ -103,7 +103,7 @@ export default function ServicesForAllAges() {
 
                 {/* Label on image bottom */}
                 <div className="absolute bottom-4 left-4">
-                  <h3 className="text-white font-title text-xl font-semibold">{group.label}</h3>
+                  <h3 className="text-white   text-xl font-semibold">{group.label}</h3>
                   <p className="text-white/70 text-xs">{group.ageRange}</p>
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default function ServicesForAllAges() {
         <div className="text-center mt-10 sm:mt-12">
           <Link
             href="/discover"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold text-sm hover:bg-primary/90 transition-colors shadow-sm"
           >
             Browse All Services
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

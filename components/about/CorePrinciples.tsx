@@ -29,7 +29,7 @@ export default function CorePrinciples() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
             WHAT WE STAND FOR
           </span>
-          <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] text-foreground">
+          <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] text-foreground">
             The principles that shape every decision we make.
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-sm">
@@ -44,11 +44,11 @@ export default function CorePrinciples() {
               className="border-b border-border pb-8 mb-8 last:border-b-0 last:pb-0 last:mb-0"
             >
               <div className="flex items-start gap-6 sm:gap-8">
-                <span className="font-title font-light italic text-2xl sm:text-3xl text-primary w-8 shrink-0 pt-0.5">
+                <span className="  font-light italic text-2xl sm:text-3xl text-primary w-8 shrink-0 pt-0.5">
                   {p.num}
                 </span>
                 <div className="space-y-2">
-                  <h3 className="font-title text-lg sm:text-xl font-bold text-foreground">
+                  <h3 className="  text-lg sm:text-xl font-bold text-foreground">
                     {p.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">

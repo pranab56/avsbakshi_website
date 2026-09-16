@@ -33,7 +33,7 @@ export default function AuthLayout({
         </div>
 
         <div className="relative z-10 space-y-2 sm:space-y-3 pt-4 lg:pt-0">
-          <blockquote className="font-title text-base sm:text-xl lg:text-2xl font-light italic leading-snug text-white/95">
+          <blockquote className="text-base sm:text-xl lg:text-2xl font-light italic leading-snug text-white/95">
             &ldquo;Discover beauty services you will love, from professionals you can trust.&rdquo;
           </blockquote>
           <div className="w-12 h-1 bg-primary rounded-full" />

@@ -17,7 +17,7 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
           HOW IT WORKS
         </span>
 
-        <h1 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] tracking-tight">
+        <h1 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] tracking-tight">
           <span className="italic block text-white font-serif">
             Simple for everyone.
           </span>
@@ -32,11 +32,10 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
             <button
               type="button"
               onClick={() => setActiveRole("customers")}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
-                activeRole === "customers"
+              className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${activeRole === "customers"
                   ? "bg-[#D99722] text-white shadow-md"
                   : "text-zinc-400 hover:text-white"
-              }`}
+                }`}
             >
               <User className="w-4 h-4" />
               For Customers
@@ -45,11 +44,10 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
             <button
               type="button"
               onClick={() => setActiveRole("professionals")}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
-                activeRole === "professionals"
+              className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${activeRole === "professionals"
                   ? "bg-[#D99722] text-white shadow-md"
                   : "text-zinc-400 hover:text-white"
-              }`}
+                }`}
             >
               <Scissors className="w-4 h-4" />
               For Professionals
@@ -58,11 +56,10 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
             <button
               type="button"
               onClick={() => setActiveRole("businesses")}
-              className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
-                activeRole === "businesses"
+              className={`px-4 sm:px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${activeRole === "businesses"
                   ? "bg-[#D99722] text-white shadow-md"
                   : "text-zinc-400 hover:text-white"
-              }`}
+                }`}
             >
               <Building2 className="w-4 h-4" />
               For Businesses

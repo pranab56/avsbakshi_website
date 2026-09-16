@@ -52,7 +52,7 @@ export default function FeaturesGrid() {
         <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
           PLATFORM FEATURES
         </span>
-        <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal text-foreground leading-tight mb-3">
+        <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal text-foreground leading-tight mb-3">
           Everything your salon needs.
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal max-w-md mx-auto">
@@ -71,7 +71,7 @@ export default function FeaturesGrid() {
               <div className={`w-9 h-9 rounded-lg ${item.bgColor} ${item.textColor} flex items-center justify-center mb-5 shrink-0`}>
                 <Icon className={`w-5 h-5 ${item.textColor}`} />
               </div>
-              <h3 className="font-title text-lg font-bold text-foreground mb-2.5">
+              <h3 className="  text-lg font-bold text-foreground mb-2.5">
                 {item.title}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">

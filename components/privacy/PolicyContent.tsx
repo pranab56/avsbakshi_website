@@ -22,7 +22,7 @@ export default function PolicyContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               1. Introduction
             </h2>
           </div>
@@ -40,7 +40,7 @@ export default function PolicyContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               2. Information We Collect
             </h2>
           </div>
@@ -89,7 +89,7 @@ export default function PolicyContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               3. How We Use Your Information
             </h2>
           </div>
@@ -109,7 +109,7 @@ export default function PolicyContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               4. Data Security &amp; Retention
             </h2>
           </div>
@@ -127,7 +127,7 @@ export default function PolicyContent() {
         <section className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-6 bg-primary rounded-full" />
-            <h2 className="font-title text-2xl sm:text-3xl font-bold text-foreground">
+            <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
               5. Your Privacy Rights
             </h2>
           </div>
@@ -143,7 +143,7 @@ export default function PolicyContent() {
 
         {/* Section 6: Contact Us */}
         <section className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-xs">
-          <h3 className="font-title text-xl font-bold text-foreground">
+          <h3 className="  text-xl font-bold text-foreground">
             Questions about our Privacy Policy?
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">

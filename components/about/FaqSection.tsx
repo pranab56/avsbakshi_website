@@ -32,7 +32,7 @@ export default function FaqSection() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
             GOOD TO KNOW
           </span>
-          <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-foreground">
+          <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-foreground">
             Questions, answered.
           </h2>
         </div>
@@ -50,9 +50,8 @@ export default function FaqSection() {
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-5 h-5 text-foreground transition-transform duration-300 shrink-0 ml-4 ${
-                    openFaq === idx ? "rotate-180" : ""
-                  }`}
+                  className={`w-5 h-5 text-foreground transition-transform duration-300 shrink-0 ml-4 ${openFaq === idx ? "rotate-180" : ""
+                    }`}
                 />
               </button>
               {openFaq === idx && (

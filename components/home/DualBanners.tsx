@@ -10,7 +10,7 @@ export default function DualBanners() {
             <span className="text-xs font-semibold text-[#D99722] dark:text-primary-light uppercase tracking-[0.2em] block mb-2 sm:mb-3">
               FOR PROFESSIONALS
             </span>
-            <h3 className="font-title text-2xl sm:text-4xl lg:text-[40px] font-normal leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
+            <h3 className="  text-2xl sm:text-4xl lg:text-[40px] font-bold leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
               Turn Your Talent Into Your Business.
             </h3>
             <p className="text-xs sm:text-sm text-zinc-400 dark:text-muted-foreground font-normal leading-relaxed max-w-md">
@@ -35,12 +35,12 @@ export default function DualBanners() {
         </div>
 
         {/* Right: Gold Business Banner */}
-        <div className="bg-[#D99722] dark:bg-card text-white p-6 sm:p-10 lg:p-14 flex flex-col justify-between space-y-6 sm:space-y-8">
+        <div className="bg-[#CAA054] dark:bg-card text-white p-6 sm:p-10 lg:p-14 flex flex-col justify-between space-y-6 sm:space-y-8">
           <div>
             <span className="text-xs font-semibold text-white/80 dark:text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
               FOR BUSINESSES
             </span>
-            <h3 className="font-title text-2xl sm:text-4xl lg:text-[40px] font-normal leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
+            <h3 className="  text-2xl sm:text-4xl lg:text-[40px] font-bold leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
               Run Your Salon From One Place.
             </h3>
             <p className="text-xs sm:text-sm text-white/95 dark:text-muted-foreground font-normal leading-relaxed max-w-md">
@@ -51,13 +51,13 @@ export default function DualBanners() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
             <Link
               href="/for-businesses"
-              className="w-full sm:w-auto text-center px-5 sm:px-6 py-3 sm:py-3.5 bg-[#1A1A1D] dark:bg-primary hover:bg-black text-white dark:text-primary-foreground text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors"
+              className="w-full sm:w-auto text-center px-5 sm:px-6 py-3 sm:py-3.5 bg-[#1A1A1D] dark:bg-primary hover:bg-black text-white dark:text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors"
             >
               Join as a Business
             </Link>
             <Link
               href="/for-businesses"
-              className="w-full sm:w-auto text-center px-5 sm:px-6 py-3 sm:py-3.5 bg-white/20 dark:bg-accent hover:bg-white/30 text-white dark:text-foreground text-xs sm:text-sm font-semibold rounded-lg transition-colors border border-white/20 dark:border-border/50"
+              className="w-full sm:w-auto text-center px-5 sm:px-6 py-3 sm:py-3.5 bg-white dark:bg-accent hover:bg-white text-black dark:text-white text-xs sm:text-sm font-semibold rounded-lg transition-colors border border-white/20 dark:border-border/50"
             >
               Learn More
             </Link>

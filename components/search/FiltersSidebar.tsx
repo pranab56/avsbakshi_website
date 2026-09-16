@@ -24,7 +24,7 @@ export default function FiltersSidebar({
   return (
     <div className={`lg:col-span-3 space-y-6 ${showMobileFilters ? "block mb-6 lg:mb-0" : "hidden lg:block"}`}>
       <div className="bg-card rounded-xl border border-border p-6 space-y-6 shadow-xs text-card-foreground">
-        <h3 className="font-title font-bold text-base text-foreground">
+        <h3 className="  font-bold text-base text-foreground">
           Filters
         </h3>
 

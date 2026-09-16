@@ -82,7 +82,7 @@ export default function RoleCardsSection() {
                 {/* Content & Gold Action Circle Button */}
                 <div className="absolute bottom-3.5 left-4 right-4 flex items-end justify-between gap-2 z-10">
                   <div className="space-y-0.5">
-                    <h3 className="font-title text-base sm:text-lg font-bold text-white leading-tight">
+                    <h3 className="  text-base sm:text-lg font-bold text-white leading-tight">
                       {card.title}
                     </h3>
                     <p className="text-[11px] sm:text-xs text-zinc-300 font-normal leading-tight max-w-[200px]">

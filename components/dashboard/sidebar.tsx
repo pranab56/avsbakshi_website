@@ -137,7 +137,7 @@ export default function DashboardSidebar({
       <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
         <DialogContent className="sm:max-w-md bg-popover border border-border text-popover-foreground p-6 rounded-xl">
           <DialogHeader className="space-y-2 text-left">
-            <DialogTitle className="font-title font-bold text-xl text-foreground">
+            <DialogTitle className="  font-bold text-xl text-foreground">
               Confirm Logout
             </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">

@@ -28,7 +28,7 @@ export default function Hero({ q, loc }: HeroProps) {
             </span>
           </div>
 
-          <h1 className="font-title text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
+          <h1 className="  text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
             Find your perfect <br />
             <span className="font-light italic text-[#CAA054]">beauty experience</span>
           </h1>

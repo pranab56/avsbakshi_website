@@ -7,7 +7,7 @@ export default function GetStartedCta() {
         <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-4">
           GET STARTED
         </span>
-        <h2 className="font-title text-4xl sm:text-5xl lg:text-6xl font-normal text-foreground leading-[1.15] mb-4">
+        <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal text-foreground leading-[1.15] mb-4">
           Ready for Your Next <br />
           <span className="font-light italic text-primary">Appointment?</span>
         </h2>
