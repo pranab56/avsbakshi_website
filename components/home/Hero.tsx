@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 export default function Hero() {
   const horizontalFeatures = [
@@ -229,6 +229,20 @@ export default function Hero() {
                 >
                   Join The Cloud Salon
                 </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== "undefined") {
+                      window.dispatchEvent(new CustomEvent("open-salon-bot"));
+                    }
+                  }}
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 2xl:px-6 2xl:py-3 rounded-sm bg-zinc-900 dark:bg-zinc-800 hover:bg-black text-white font-semibold text-xs 2xl:text-sm shadow-md transition-all flex items-center gap-1.5 border border-[#D99722]/50 cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-[#D99722] animate-pulse" />
+                  <span>Book with AI</span>
+                </button>
               </motion.div>
             </motion.div>
           </motion.div>

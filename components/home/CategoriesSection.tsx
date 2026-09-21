@@ -3,53 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { SERVICE_CATEGORIES } from "@/lib/data/marketplaceData";
 
 export default function CategoriesSection() {
-  const categories = [
-    {
-      title: "Hair",
-      count: "1,842 Services",
-      img: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
-      link: "/search?category=Hair",
-    },
-    {
-      title: "Nails",
-      count: "934 services",
-      img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80",
-      link: "/search?category=Nails",
-    },
-    {
-      title: "Makeup",
-      count: "672 services",
-      img: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80",
-      link: "/search?category=Makeup",
-    },
-    {
-      title: "Skincare",
-      count: "541 services",
-      img: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80",
-      link: "/search?category=Skincare",
-    },
-    {
-      title: "Barber",
-      count: "789 services",
-      img: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80",
-      link: "/search?category=Barber",
-    },
-    {
-      title: "Eyebrows",
-      count: "418 services",
-      img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80",
-      link: "/search?category=Eyebrows",
-    },
-    {
-      title: "Eyelashes",
-      count: "Extensions, lifts & tints",
-      img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
-      link: "/search?category=Eyelashes",
-    },
-  ];
-
   return (
     <section className="w-full py-6 sm:py-10 bg-white dark:bg-[#121214] transition-colors duration-200 select-none">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,11 +13,14 @@ export default function CategoriesSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 sm:mb-8">
           <div>
             <span className="text-[11px] sm:text-xs font-bold text-[#D99722] uppercase tracking-[0.2em] block mb-1">
-              CATEGORIES
+              SERVICES & SUBCATEGORIES
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C1C1E] dark:text-white tracking-tight">
               What are you looking for?
             </h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Explore professional beauty categories & subcategory services
+            </p>
           </div>
 
           <Link
@@ -72,42 +31,74 @@ export default function CategoriesSection() {
           </Link>
         </div>
 
-        {/* 5-Column Categories Grid */}
-        <div className="grid grid-cols-2 min-[480px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4 lg:gap-5">
-          {categories.map((cat, idx) => (
+        {/* Categories Grid with Subcategory Chips */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {SERVICE_CATEGORIES.filter((c) => c.subcategories.length > 0).map((cat, idx) => (
             <motion.div
-              key={idx}
+              key={cat.id}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.05 }}
+              className="bg-card rounded-xl overflow-hidden border border-border shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
             >
+              {/* Category Image Header */}
               <Link
-                href={cat.link}
-                className="group relative block h-40 sm:h-44 lg:h-48 rounded-lg overflow-hidden shadow-xs border border-black/5 dark:border-white/10 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                href={`/search?category=${encodeURIComponent(cat.title)}`}
+                className="relative block h-44 sm:h-48 overflow-hidden group/img"
               >
-                {/* Background Image */}
                 <Image
                   src={cat.img}
                   alt={cat.title}
                   fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-108"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-700 group-hover/img:scale-108"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                {/* Dark Gradient Overlay for legible crisp white text */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-
-                {/* Card Text Content */}
-                <div className="absolute bottom-3.5 left-4 right-4 text-left z-10">
-                  <h3 className="font-serif text-lg sm:text-xl font-medium text-white leading-tight">
-                    {cat.title}
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-white/80 font-sans font-normal mt-0.5 truncate">
-                    {cat.count}
+                <div className="absolute bottom-3 left-4 right-4 text-left z-10">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-white leading-tight">
+                      {cat.title}
+                    </h3>
+                    <span className="text-[10px] bg-white/20 backdrop-blur-md text-white font-semibold px-2 py-0.5 rounded-full border border-white/30">
+                      {cat.count}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-white/80 font-normal mt-0.5 truncate">
+                    {cat.desc}
                   </p>
                 </div>
               </Link>
+
+              {/* Subcategories List & Pills */}
+              <div className="p-3.5 space-y-2 flex-1 flex flex-col justify-between bg-card">
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
+                    Subcategories
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {cat.subcategories.map((sub) => (
+                      <Link
+                        key={sub.id}
+                        href={`/search?category=${encodeURIComponent(cat.title)}&subcategory=${encodeURIComponent(sub.name)}`}
+                        className="bg-accent/70 hover:bg-[#D99722]/15 hover:text-[#D99722] text-foreground text-[11px] font-medium px-2.5 py-1 rounded-md border border-border/50 transition-colors"
+                      >
+                        {sub.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-border/40 text-right">
+                  <Link
+                    href={`/search?category=${encodeURIComponent(cat.title)}`}
+                    className="text-[11px] font-semibold text-[#D99722] hover:underline"
+                  >
+                    Explore all {cat.title} &rarr;
+                  </Link>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>

@@ -3,11 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors, ChevronRight, Sparkles, Grid } from "lucide-react";
 import Button from "./Button";
 import ThemeToggle from "./theme-toggle";
 import { Combobox } from "@/components/ui/combobox";
+import { SERVICE_CATEGORIES } from "@/lib/data/marketplaceData";
+import { ServiceCategory } from "@/types";
 
 const languageOptions = [
   { value: "en", label: "English" },
@@ -17,9 +19,25 @@ const languageOptions = [
 export default function Navbar() {
   const pathname = usePathname();
   const [discoverOpen, setDiscoverOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<ServiceCategory | null>(SERVICE_CATEGORIES[0] || null);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleServicesMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setDiscoverOpen(true);
+  };
+
+  const handleServicesMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setDiscoverOpen(false);
+    }, 150);
+  };
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     if (typeof document !== "undefined") {
       const match = document.cookie.match(/googtrans=\/en\/([a-z]{2})/);
@@ -115,8 +133,8 @@ export default function Navbar() {
             {/* Services Dropdown */}
             <div
               className="relative group/dropdown py-2"
-              onMouseEnter={() => setDiscoverOpen(true)}
-              onMouseLeave={() => setDiscoverOpen(false)}
+              onMouseEnter={handleServicesMouseEnter}
+              onMouseLeave={handleServicesMouseLeave}
             >
               <button
                 className={`group relative flex items-center gap-1 transition-colors cursor-pointer ${isDiscoverActive ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
@@ -134,25 +152,126 @@ export default function Navbar() {
               </button>
 
               {discoverOpen && (
-                <div className="absolute top-full left-0 w-48 bg-popover rounded-sm border border-border animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50">
-                  <Link
-                    href="/discover?tab=services"
-                    className="block px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors"
-                  >
-                    All Services
-                  </Link>
-                  <Link
-                    href="/discover?tab=professionals"
-                    className="block px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors"
-                  >
-                    Top Professionals
-                  </Link>
-                  <Link
-                    href="/discover?tab=salons"
-                    className="block px-4 py-2 text-xs text-foreground hover:bg-accent transition-colors"
-                  >
-                    Featured Salons
-                  </Link>
+                <div
+                  onMouseEnter={handleServicesMouseEnter}
+                  onMouseLeave={handleServicesMouseLeave}
+                  className="absolute top-full left-0 pt-1.5 flex bg-popover rounded-xl border border-border shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 overflow-hidden divide-x divide-border/40 min-w-[280px] before:absolute before:-top-3 before:left-0 before:w-full before:h-4 before:content-['']"
+                >
+                  
+                  {/* Left Column: All Services Suggested First + Primary Categories */}
+                  <div className="w-64 p-3 space-y-2 shrink-0 bg-background/50">
+                    
+                    {/* All Services Suggested First */}
+                    <Link
+                      href="/discover?tab=services"
+                      onClick={() => setDiscoverOpen(false)}
+                      className="flex items-center justify-between p-2.5 rounded-lg bg-[#D99722]/10 hover:bg-[#D99722]/20 border border-[#D99722]/30 text-foreground transition-all group/all"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-md bg-[#D99722] text-white flex items-center justify-center font-bold shrink-0">
+                          <Grid className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-xs text-foreground">All Services</div>
+                          <div className="text-[10px] text-muted-foreground">Browse all categories & data</div>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-[#D99722] group-hover/all:translate-x-1 transition-transform" />
+                    </Link>
+
+                    <div className="px-2 pt-1 text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider">
+                      Categories
+                    </div>
+
+                    <div className="space-y-0.5 max-h-[320px] overflow-y-auto pr-1 scrollbar-thin">
+                      {SERVICE_CATEGORIES.map((cat) => {
+                        const isCatActive = activeCategory?.id === cat.id;
+                        const catHasSubs = cat.subcategories && cat.subcategories.length > 0;
+                        return (
+                          <div
+                            key={cat.id}
+                            onMouseEnter={() => setActiveCategory(cat)}
+                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors ${
+                              isCatActive
+                                ? "bg-accent text-foreground font-semibold"
+                                : "text-muted-foreground hover:text-foreground hover:bg-accent/60"
+                            }`}
+                          >
+                            <Link
+                              href={`/search?category=${encodeURIComponent(cat.title)}`}
+                              onClick={() => setDiscoverOpen(false)}
+                              className="flex-1 truncate mr-1"
+                            >
+                              {cat.title}
+                            </Link>
+                            
+                            {/* Check if subcategory data exists */}
+                            {catHasSubs ? (
+                              <ChevronRight className={`w-3.5 h-3.5 ${isCatActive ? "text-[#D99722]" : "text-muted-foreground/40"}`} />
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Right Column: Subcategories Flyout (ONLY shown if data exists!) */}
+                  {activeCategory && activeCategory.subcategories && activeCategory.subcategories.length > 0 ? (
+                    <div className="w-72 p-3.5 space-y-2 bg-card/70 animate-in fade-in duration-150 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between border-b border-border/50 pb-2 mb-2">
+                          <div>
+                            <h4 className="font-bold text-xs text-foreground flex items-center gap-1.5">
+                              <Sparkles className="w-3.5 h-3.5 text-[#D99722]" />
+                              {activeCategory.title}
+                            </h4>
+                            <p className="text-[10px] text-muted-foreground line-clamp-1">
+                              {activeCategory.desc}
+                            </p>
+                          </div>
+                          <span className="text-[10px] bg-[#D99722]/10 text-[#D99722] font-semibold px-2 py-0.5 rounded-full border border-[#D99722]/20 shrink-0">
+                            {activeCategory.count}
+                          </span>
+                        </div>
+
+                        <div className="space-y-1 max-h-[260px] overflow-y-auto pr-1">
+                          {activeCategory.subcategories.map((sub) => (
+                            <Link
+                              key={sub.id}
+                              href={`/search?category=${encodeURIComponent(activeCategory.title)}&subcategory=${encodeURIComponent(sub.name)}`}
+                              onClick={() => setDiscoverOpen(false)}
+                              className="block p-2 rounded-md hover:bg-accent transition-colors group/sub"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="font-semibold text-xs text-foreground group-hover/sub:text-[#D99722] transition-colors">
+                                  {sub.name}
+                                </div>
+                                {sub.count && (
+                                  <span className="text-[9px] text-muted-foreground bg-accent/80 px-1.5 py-0.5 rounded">{sub.count}</span>
+                                )}
+                              </div>
+                              {sub.description && (
+                                <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
+                                  {sub.description}
+                                </p>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Category Bottom Action */}
+                      <Link
+                        href={`/search?category=${encodeURIComponent(activeCategory.title)}`}
+                        onClick={() => setDiscoverOpen(false)}
+                        className="text-[11px] font-semibold text-[#D99722] hover:underline flex items-center justify-end gap-1 pt-2 border-t border-border/40"
+                      >
+                        <span>Explore all {activeCategory.title}</span>
+                        <ChevronRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  ) : null}
+
                 </div>
               )}
             </div>

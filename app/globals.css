@@ -250,3 +250,23 @@ body {
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+/* -- Chatbot typing indicator bounce -- */
+@keyframes typingBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+/* Hide scrollbar for suggestion chips row */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

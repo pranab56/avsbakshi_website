@@ -160,3 +160,55 @@ export interface RootState {
     } | null;
   };
 }
+
+// Marketplace Services & Salons Schemas (Prepared for backend integration)
+export interface ServiceItem {
+  id: string;
+  name: string;
+  description?: string;
+  price?: string;
+  duration?: string;
+}
+
+export interface ServiceSubcategory {
+  id: string;
+  name: string;
+  description?: string;
+  count?: string;
+  services?: ServiceItem[];
+  popularServices?: string[];
+  slug?: string;
+}
+
+export interface ServiceCategory {
+  id: string;
+  title: string;
+  slug: string;
+  desc: string;
+  count: string;
+  img: string;
+  subcategories: ServiceSubcategory[];
+}
+
+export interface SalonTypeCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface SalonItem {
+  id: number | string;
+  name: string;
+  salonType: string;
+  category: string;
+  rating: number;
+  reviews: number;
+  location: string;
+  city: string;
+  price: string;
+  badge: string;
+  tags: string[];
+  img: string;
+  featured?: boolean;
+}
+
