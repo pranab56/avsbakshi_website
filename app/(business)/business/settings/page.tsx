@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -10,8 +10,14 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, X, Eye, MapPin } from "lucide-react";
+import { Plus, X, Eye, MapPin, Loader2, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import {
+  useGetMyProfileQuery,
+  useUpdateMyProfileMutation,
+  useChangePasswordMutation,
+} from "@/features/profile/profileApi";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 type SettingsTab = "Profile" | "About Profile" | "Notifications" | "Privacy" | "Security";
 
@@ -22,6 +28,18 @@ export default function BusinessSettingsPage() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Password Visibility States
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // RTK Query Hooks
+  const { data: profileResponse, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined);
+  const [updateMyProfile, { isLoading: isUpdating }] = useUpdateMyProfileMutation();
+  const [changePassword, { isLoading: isChangingPassword }] = useChangePasswordMutation();
+
+  const profileData = profileResponse?.data;
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -29,9 +47,12 @@ export default function BusinessSettingsPage() {
         toast.error("Please select a valid image file");
         return;
       }
-      const imageUrl = URL.createObjectURL(file);
-      setAvatarPreview(imageUrl);
-      toast.success("Salon photo updated!");
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      toast.success("Salon photo preview updated!");
     }
   };
 
@@ -89,8 +110,56 @@ export default function BusinessSettingsPage() {
     setAmenities(amenities.filter((a) => a !== tag));
   };
 
-  const handleSaveProfile = () => {
-    toast.success("Business Profile & About Information updated successfully!");
+  // Sync profile data from API GET response
+  useEffect(() => {
+    if (profileData) {
+      setProfileForm((prev) => ({
+        ...prev,
+        ownerName: profileData.firstName
+          ? `${profileData.firstName} ${profileData.lastName || ''}`.trim()
+          : prev.ownerName,
+        email: profileData.email || prev.email,
+        phone: typeof profileData.phone === "object" ? profileData.phone?.number || "" : profileData.phone || prev.phone,
+      }));
+      if (profileData.image) {
+        setAvatarPreview(profileData.image);
+      }
+    }
+  }, [profileData]);
+
+  const handleSaveProfile = async () => {
+    try {
+      const nameParts = profileForm.ownerName.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      const payload = {
+        firstName,
+        lastName,
+        image: avatarPreview || profileData?.image || "",
+        phone: {
+          countryCode: profileData?.phone?.countryCode || "",
+          number: profileForm.phone || "",
+        },
+        address: {
+          line1: profileData?.address?.line1 || "",
+          line2: profileData?.address?.line2 || "",
+          city: profileData?.address?.city || "",
+          state: profileData?.address?.state || "",
+          country: profileData?.address?.country || "",
+          postalCode: profileData?.address?.postalCode || "",
+        },
+        location: {
+          type: profileData?.location?.type || "Point",
+          coordinates: profileData?.location?.coordinates || [0, 0],
+        },
+      };
+
+      const res = await updateMyProfile(payload).unwrap();
+      toast.success(res?.message || "Business profile updated successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || "Failed to update business profile");
+    }
   };
 
   // Notifications Toggle States
@@ -254,13 +323,12 @@ export default function BusinessSettingsPage() {
                   <label className="text-xs font-semibold text-foreground block">
                     Phone Number
                   </label>
-                  <input
-                    type="text"
+                  <PhoneInput
                     value={profileForm.phone}
-                    onChange={(e) =>
-                      setProfileForm({ ...profileForm, phone: e.target.value })
+                    onChange={(val) =>
+                      setProfileForm({ ...profileForm, phone: val || "" })
                     }
-                    className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
+                    placeholder="Enter phone number"
                   />
                 </div>
               </div>

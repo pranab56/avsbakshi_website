@@ -24,6 +24,7 @@ interface ComboboxProps {
   className?: string;
   triggerClassName?: string;
   contentClassName?: string;
+  labelClassName?: string;
   prefix?: React.ReactNode;
   align?: 'start' | 'center' | 'end';
 }
@@ -40,6 +41,7 @@ export function Combobox({
   className,
   triggerClassName,
   contentClassName,
+  labelClassName,
   prefix,
   align = 'start',
 }: ComboboxProps) {
@@ -62,7 +64,7 @@ export function Combobox({
       <PopoverTrigger
         disabled={disabled}
         className={cn(
-          'inline-flex items-center justify-between gap-3 outline-none transition-all duration-200 cursor-pointer border select-none',
+          'flex w-full items-center justify-between gap-3 outline-none transition-colors duration-150 cursor-pointer border select-none',
           triggerClassName ||
           cn(
             'h-14 w-full rounded-lg px-3.5 py-2.5 text-sm font-medium',
@@ -75,15 +77,15 @@ export function Combobox({
           className
         )}
       >
-        <div className="flex items-center gap-3 truncate text-left">
+        <div className="flex items-center gap-3 truncate text-left min-w-0 flex-1">
           {prefix}
           {SelectedIcon && (
             <div className="w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0 shadow-2xs">
               <SelectedIcon className="w-4 h-4" />
             </div>
           )}
-          <div className="flex flex-col text-left truncate">
-            <span className="font-bold text-xs sm:text-sm truncate leading-tight">
+          <div className="flex flex-col text-left truncate min-w-0">
+            <span className={cn(labelClassName || "font-bold text-xs sm:text-sm", "truncate leading-tight")}>
               {selected ? selected.label : placeholder}
             </span>
             {selected?.description && (

@@ -1,10 +1,8 @@
 import { baseApi } from '../../utils/apiBaseQuery';
 
-
-
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Login
+    // 1. Login
     login: builder.mutation({
       query: (credentials) => ({
         url: "/auth/login",
@@ -13,14 +11,16 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // 2. Signup
     signUp: builder.mutation({
       query: (data) => ({
-        url: "/users/create-user",
+        url: "/users/register",
         method: "POST",
         body: data,
       }),
     }),
 
+    // 3. Forgot Password Email (Generate OTP)
     forgotEmail: builder.mutation({
       query: (forgotEmail) => ({
         url: "/auth/generate-otp",
@@ -29,6 +29,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // 4. Verify Email / OTP
     verifyOtp: builder.mutation({
       query: (data) => ({
         url: "/auth/verify-email",
@@ -37,7 +38,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-
+    // 5. Resend OTP
     resendOtp: builder.mutation({
       query: (data) => ({
         url: "/auth/generate-otp",
@@ -46,6 +47,18 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
+    // 6. Reset Password
+    resetPassword: builder.mutation({
+      query: ({ token, data }) => ({
+        url: `/auth/reset-password`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: data,
+      }),
+    }),
 
     resendPassword: builder.mutation({
       query: ({ token, data }) => ({
@@ -57,6 +70,7 @@ export const authApi = baseApi.injectEndpoints({
         },
         body: data,
       }),
+      
     }),
 
   }),
@@ -69,5 +83,7 @@ export const {
   useForgotEmailMutation,
   useVerifyOtpMutation,
   useResendOtpMutation,
+  useResetPasswordMutation,
   useResendPasswordMutation,
 } = authApi;
+

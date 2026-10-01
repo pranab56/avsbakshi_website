@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'media.zilahomes.com',
+        hostname: 'media.rizipt.com',
       },
       {
         protocol: 'https',

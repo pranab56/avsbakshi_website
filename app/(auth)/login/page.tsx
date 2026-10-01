@@ -8,8 +8,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 
+import { useDispatch } from "react-redux";
+import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useLoginMutation } from "@/features/auth/authApi";
+import { setCredentials } from "@/features/auth/authSlice";
+import { useState } from "react";
+
 const loginSchema = z.object({
-  email: z.string().min(1, "Email or username is required").email("Please enter a valid email address"),
+  email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
   password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
 });
 
@@ -17,6 +23,9 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+  const [login, { isLoading }] = useLoginMutation();
 
   const {
     register,
@@ -30,9 +39,54 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = () => {
-    toast.success("Successfully logged in!");
-    router.push("/");
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const res = await login({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      const tokenData = res?.data?.accessToken || res?.accessToken || res?.token;
+      const refreshToken = res?.data?.refreshToken || res?.refreshToken;
+      const userData = res?.data || res?.user;
+      const role = res?.data?.role || res?.role || userData?.role || "customer";
+
+      if (tokenData) {
+        // Store token & role securely in httpOnly cookies via server handler
+        await fetch("/api/auth/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: tokenData,
+            refreshToken: refreshToken || null,
+            role: role,
+            user: userData || null,
+          }),
+        });
+
+        dispatch(
+          setCredentials({
+            token: tokenData,
+            refreshToken: refreshToken || null,
+            user: userData || null,
+          })
+        );
+      }
+
+      toast.success(res?.message || "User logged in successfully.");
+
+      // Redirect user according to authenticated role
+      let targetPath = "/customer/overview";
+      if (role === "professional") {
+        targetPath = "/professional/dashboard";
+      } else if (role === "business") {
+        targetPath = "/business/dashboard";
+      }
+      router.push(targetPath);
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || "Login failed. Please check your credentials.");
+    }
   };
 
   return (
@@ -131,15 +185,29 @@ export default function LoginPage() {
               Forgot password?
             </Link>
           </div>
-          <input
-            type="password"
-            placeholder="••••••••"
-            {...register("password")}
-            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
-              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
-              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
-              }`}
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              {...register("password")}
+              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
+                ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+                : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
+                }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg cursor-pointer flex items-center justify-center"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
+            </button>
+          </div>
           {/* Required error message displayed under input field */}
           {errors.password && (
             <p className="text-destructive text-xs font-medium mt-1">
@@ -150,10 +218,14 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer mt-2"
+          disabled={isSubmitting || isLoading}
+          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
         >
-          {isSubmitting ? "Logging in..." : "Log In"}
+          {isLoading || isSubmitting ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            "Log In"
+          )}
         </button>
       </form>
 

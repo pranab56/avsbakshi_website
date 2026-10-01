@@ -50,13 +50,11 @@ function ResetPasswordContent() {
 
   const onSubmit = async (data: ResetPasswordFormValues) => {
     try {
-      if (token) {
-        await resetPassword({
-          token,
-          data: { newPassword: data.password, confirmPassword: data.confirmPassword },
-        }).unwrap();
-      }
-      toast.success("Password reset successfully! Please log in.");
+      const res = await resetPassword({
+        token,
+        data: { newPassword: data.password, confirmPassword: data.confirmPassword },
+      }).unwrap();
+      toast.success(res?.message || "Your password has been successfully reset.");
       router.push("/login");
     } catch (err) {
       const error = err as { data?: { message?: string } };

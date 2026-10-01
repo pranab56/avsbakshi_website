@@ -6,15 +6,20 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
 import { useResendOtpMutation, useVerifyOtpMutation } from '@/features/auth/authApi';
+import { setCredentials } from '@/features/auth/authSlice';
+import OnboardingModal from '@/components/auth/OnboardingModal';
 
 export default function VerifyEmailForm() {
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || '';
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [otpError, setOtpError] = useState('');
+  const [showOnboardingModal, setShowOnboardingModal] = useState(false);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [verifyOtp, { isLoading: isVerifying }] = useVerifyOtpMutation();
@@ -55,9 +60,41 @@ export default function VerifyEmailForm() {
       return;
     }
     try {
-      await verifyOtp({ email, oneTimeCode: parseInt(otp.join(''), 10) }).unwrap();
-      toast.success('Email verified successfully!');
-      router.push('/login');
+      const res = await verifyOtp({ email, oneTimeCode: parseInt(otp.join(''), 10) }).unwrap();
+
+      const tokenData = res?.data?.accessToken || res?.accessToken || res?.token;
+      const refreshToken = res?.data?.refreshToken || res?.refreshToken;
+      const userData = res?.data || res?.user;
+      const role = res?.data?.role || res?.role || userData?.role || searchParams.get("role") || "customer";
+
+      if (tokenData) {
+        // Store token & role securely in httpOnly cookies via server handler
+        await fetch("/api/auth/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: tokenData,
+            refreshToken: refreshToken || null,
+            role: role,
+            user: userData || null,
+          }),
+        });
+
+        dispatch(
+          setCredentials({
+            token: tokenData,
+            refreshToken: refreshToken || null,
+            user: userData || null,
+          })
+        );
+      }
+
+      toast.success(res?.message || 'Verification Successful');
+      if (role === 'professional' || role === 'business') {
+        router.push('/onboarding');
+      } else {
+        router.push('/customer/overview');
+      }
     } catch (err) {
       const error = err as { data?: { message?: string } };
       const msg = error?.data?.message || 'Invalid code. Please try again.';
@@ -68,10 +105,10 @@ export default function VerifyEmailForm() {
 
   const handleResend = async () => {
     try {
-      await resendOtp({ email }).unwrap();
+      const res = await resendOtp({ email }).unwrap();
       setOtp(['', '', '', '', '', '']);
       setOtpError('');
-      toast.success('A new code has been sent to your email.');
+      toast.success(res?.message || 'Please check your email. We have sent you a one-time passcode (OTP).');
       otpRefs.current[0]?.focus();
     } catch (err) {
       const error = err as { data?: { message?: string } };
@@ -176,6 +213,12 @@ export default function VerifyEmailForm() {
           Log In
         </Link>
       </p>
+
+      {/* Onboarding Modal Popup for Professional Role */}
+      <OnboardingModal
+        open={showOnboardingModal}
+        onOpenChange={setShowOnboardingModal}
+      />
     </div>
   );
 }

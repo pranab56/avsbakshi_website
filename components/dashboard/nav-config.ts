@@ -61,6 +61,8 @@ export const DASHBOARD_CONFIGS: Record<RoleType, DashboardConfig> = {
       { title: "Dashboard", href: "/business/dashboard", icon: LayoutDashboard },
       { title: "Business Profile", href: "/business/business-profile", icon: Building2 },
       { title: "Chairs & Space", href: "/business/chairs-space", icon: Armchair },
+      { title: "My Chair Rentals", href: "/business/my-chair-rentals", icon: Armchair },
+      { title: "Business Rentals", href: "/business/business-rentals", icon: Armchair },
       { title: "Services", href: "/business/services", icon: Scissors },
       { title: "Calendar", href: "/business/calendar", icon: Calendar },
       { title: "Bookings", href: "/business/bookings", icon: CalendarCheck },
@@ -76,15 +78,46 @@ export const DASHBOARD_CONFIGS: Record<RoleType, DashboardConfig> = {
     actionButtonHref: "/professional/services/new",
     navItems: [
       { title: "Dashboard", href: "/professional/dashboard", icon: LayoutDashboard },
-      { title: "Bookings", href: "/professional/bookings", icon: CalendarCheck },
+      { title: "Booking", href: "/professional/bookings", icon: CalendarCheck },
       { title: "Services", href: "/professional/services", icon: Scissors },
       { title: "Availability", href: "/professional/availability", icon: Clock },
       { title: "Calendar", href: "/professional/calendar", icon: Calendar },
-      { title: "Chair Rental", href: "/professional/chair-rental", icon: Armchair },
+      { title: "Chair Rentals", href: "/professional/chair-rental", icon: Armchair },
       { title: "My Customers", href: "/professional/my-customers", icon: Users },
       { title: "Portfolio", href: "/professional/portfolio", icon: ImageIcon },
       { title: "Reviews", href: "/professional/reviews", icon: Star },
       { title: "Settings", href: "/professional/settings", icon: Settings },
     ],
   },
+};
+
+export const getProfessionalNavItems = (isSalonOwner?: boolean): NavItem[] => {
+  if (isSalonOwner) {
+    return [
+      { title: "Dashboard", href: "/professional/dashboard", icon: LayoutDashboard },
+      { title: "Business Profile", href: "/professional/business-profile", icon: Building2 },
+      { title: "Chairs & Space", href: "/professional/chairs-space", icon: Armchair },
+      { title: "My Chair Rentals", href: "/professional/my-chair-rentals", icon: Armchair },
+      { title: "Booking", href: "/professional/bookings", icon: CalendarCheck },
+      { title: "Services", href: "/professional/services", icon: Scissors },
+      // { title: "Availability", href: "/professional/availability", icon: Clock },
+      { title: "Calendar", href: "/professional/calendar", icon: Calendar },
+      { title: "My Customers", href: "/professional/my-customers", icon: Users },
+      { title: "Reviews", href: "/professional/reviews", icon: Star },
+      { title: "Settings", href: "/professional/settings", icon: Settings },
+    ];
+  }
+
+  return [
+    { title: "Dashboard", href: "/professional/dashboard", icon: LayoutDashboard },
+    { title: "Booking", href: "/professional/bookings", icon: CalendarCheck },
+    { title: "Services", href: "/professional/services", icon: Scissors },
+    { title: "Availability", href: "/professional/availability", icon: Clock },
+    { title: "Calendar", href: "/professional/calendar", icon: Calendar },
+    { title: "Chair Rentals", href: "/professional/chair-rental", icon: Armchair },
+    { title: "My Customers", href: "/professional/my-customers", icon: Users },
+    { title: "Portfolio", href: "/professional/portfolio", icon: ImageIcon },
+    { title: "Reviews", href: "/professional/reviews", icon: Star },
+    { title: "Settings", href: "/professional/settings", icon: Settings },
+  ];
 };

@@ -5,16 +5,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { useResendOtpMutation, useVerifyOtpMutation } from "@/features/auth/authApi";
+import { setCredentials } from "@/features/auth/authSlice";
+import OnboardingModal from "@/components/auth/OnboardingModal";
 
 function VerifyOtpContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const email = searchParams.get("email") || "";
   const phone = searchParams.get("phone") || "+44 7700 900077";
 
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [error, setError] = useState<string>("");
+  const [showOnboardingModal, setShowOnboardingModal] = useState<boolean>(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const [verifyOtp, { isLoading: isVerifying }] = useVerifyOtpMutation();
+  const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -47,21 +56,72 @@ function VerifyOtpContent() {
     inputRefs.current[Math.min(pasted.length, 5)]?.focus();
   };
 
-  const handleVerify = () => {
+  const dispatch = useDispatch();
+
+  const handleVerify = async () => {
     const fullOtp = otp.join("");
     if (fullOtp.length < 6) {
       setError("Please enter the complete 6-digit verification code");
       return;
     }
-    toast.success("Phone verified successfully! Welcome to Cloud Salon.");
-    router.push("/");
+    try {
+      const res = await verifyOtp({
+        email,
+        oneTimeCode: parseInt(fullOtp, 10),
+      }).unwrap();
+
+      const tokenData = res?.data?.accessToken || res?.accessToken || res?.token;
+      const refreshToken = res?.data?.refreshToken || res?.refreshToken;
+      const userData = res?.data || res?.user;
+      const role = res?.data?.role || res?.role || userData?.role || searchParams.get("role") || "customer";
+
+      if (tokenData) {
+        // Store token & role securely in httpOnly cookies via server handler
+        await fetch("/api/auth/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: tokenData,
+            refreshToken: refreshToken || null,
+            role: role,
+            user: userData || null,
+          }),
+        });
+
+        dispatch(
+          setCredentials({
+            token: tokenData,
+            refreshToken: refreshToken || null,
+            user: userData || null,
+          })
+        );
+      }
+
+      toast.success(res?.message || "Verification Successful");
+      if (role === "professional" || role === "business") {
+        router.push("/onboarding");
+      } else {
+        router.push("/customer/overview");
+      }
+    } catch (err: unknown) {
+      const errObj = err as { data?: { message?: string } };
+      const msg = errObj?.data?.message || "Invalid OTP. Please try again.";
+      setError(msg);
+      toast.error(msg);
+    }
   };
 
-  const handleResend = () => {
-    setOtp(["", "", "", "", "", ""]);
-    setError("");
-    toast.info("A new verification code has been sent to " + phone);
-    inputRefs.current[0]?.focus();
+  const handleResend = async () => {
+    try {
+      const res = await resendOtp({ email }).unwrap();
+      setOtp(["", "", "", "", "", ""]);
+      setError("");
+      toast.success(res?.message || "Please check your email. We have sent you a one-time passcode (OTP).");
+      inputRefs.current[0]?.focus();
+    } catch (err: unknown) {
+      const errObj = err as { data?: { message?: string } };
+      toast.error(errObj?.data?.message || "Failed to resend code.");
+    }
   };
 
   return (
@@ -135,9 +195,10 @@ function VerifyOtpContent() {
 
       <button
         onClick={handleVerify}
-        className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer"
+        disabled={isVerifying}
+        className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 disabled:opacity-70"
       >
-        Verify Phone Number
+        {isVerifying ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify Code"}
       </button>
 
       <div className="flex items-center justify-between text-xs pt-2">
@@ -145,8 +206,10 @@ function VerifyOtpContent() {
         <button
           type="button"
           onClick={handleResend}
-          className="text-primary font-semibold hover:underline cursor-pointer"
+          disabled={isResending}
+          className="text-primary font-semibold hover:underline cursor-pointer disabled:opacity-50 flex items-center gap-1"
         >
+          {isResending && <Loader2 className="w-3 h-3 animate-spin" />}
           Resend code
         </button>
       </div>
@@ -157,6 +220,12 @@ function VerifyOtpContent() {
           Log In
         </Link>
       </p>
+
+      {/* Onboarding Modal Popup for Professional Role */}
+      <OnboardingModal
+        open={showOnboardingModal}
+        onOpenChange={setShowOnboardingModal}
+      />
     </div>
   );
 }

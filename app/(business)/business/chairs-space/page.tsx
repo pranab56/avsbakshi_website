@@ -2,140 +2,119 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Plus, Check, Edit2, Upload } from "lucide-react";
+import { Plus, Check, Edit2, Trash2, Upload, Loader2, AlertCircle, Armchair } from "lucide-react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  useGetMyChairsQuery,
+  useCreateChairMutation,
+  useUpdateChairMutation,
+  useDeleteChairMutation,
+} from "@/features/chair/chairApi";
+import { useUploadMutation } from "@/features/upload/uploadApi";
 
 interface Chair {
-  id: string;
+  _id: string;
   name: string;
-  location: string;
-  status: "Available" | "Occupied" | "Maintenance";
-  until: string;
-  price: string;
   description?: string;
-  amenities: string[];
-  image?: string;
+  photo?: string;
+  location?: string;
+  pricePerDayInUSD: number;
+  status?: string;
+  salon?: string;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  uid?: string;
 }
 
-const INITIAL_CHAIRS: Chair[] = [
-  {
-    id: "1",
-    name: "Chair A",
-    location: "Main Floor",
-    status: "Occupied",
-    until: "Until 6:00 PM",
-    price: "$45/day",
-    description: "Spacious main floor styling chair with hydraulic lift.",
-    amenities: ["WiFi", "Backwash", "Towels"],
-    image: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: "2",
-    name: "Chair B",
-    location: "Main Floor",
-    status: "Occupied",
-    until: "Until 6:00 PM",
-    price: "$45/day",
-    description: "Premium leather chair adjacent to shampoo stations.",
-    amenities: ["WiFi", "Backwash"],
-    image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: "3",
-    name: "Chair C",
-    location: "VIP Suite",
-    status: "Available",
-    until: "Available Now",
-    price: "$60/day",
-    description: "Private booth chair with direct ring light setup.",
-    amenities: ["WiFi", "Storage", "Tea & Coffee", "Reception"],
-    image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: "4",
-    name: "Chair D",
-    location: "Main Floor",
-    status: "Occupied",
-    until: "Until 5:30 PM",
-    price: "$45/day",
-    description: "Central floor station with wide wall mirror.",
-    amenities: ["WiFi", "Backwash"],
-  },
-  {
-    id: "5",
-    name: "Chair E",
-    location: "Color Station",
-    status: "Available",
-    until: "Available Now",
-    price: "$50/day",
-    description: "Specialized coloring desk space with sink access.",
-    amenities: ["WiFi", "Storage", "Towels"],
-  },
-  {
-    id: "6",
-    name: "Chair F",
-    location: "Main Floor",
-    status: "Maintenance",
-    until: "In Maintenance",
-    price: "$45/day",
-    description: "Currently under maintenance.",
-    amenities: ["WiFi"],
-  },
-];
-
-const AMENITY_OPTIONS = [
-  "WiFi",
-  "Backwash",
-  "Parking",
-  "Reception",
-  "Storage",
-  "Towels",
-  "Tea & Coffee",
-];
-
 export default function ChairsSpacePage() {
-  const [chairs, setChairs] = useState<Chair[]>(INITIAL_CHAIRS);
+  // API Queries & Mutations
+  const { data: chairsResponse, isLoading, isError, error, refetch } = useGetMyChairsQuery({});
+  const [createChair, { isLoading: isCreating }] = useCreateChairMutation();
+  const [updateChair, { isLoading: isUpdating }] = useUpdateChairMutation();
+  const [deleteChair, { isLoading: isDeleting }] = useDeleteChairMutation();
+  const [uploadMedia, { isLoading: isUploadingImage }] = useUploadMutation();
+
+  // Extract chairs array from API response
+  const chairsList: Chair[] = Array.isArray(chairsResponse?.data)
+    ? chairsResponse.data
+    : Array.isArray(chairsResponse)
+    ? chairsResponse
+    : [];
+
+  // Modal & Form State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "edit">("add");
   const [editingChairId, setEditingChairId] = useState<string | null>(null);
+  const [deletingChair, setDeletingChair] = useState<Chair | null>(null);
 
-  // Form State
   const [form, setForm] = useState({
     name: "",
     location: "",
-    price: "45",
+    pricePerDayInUSD: "45",
     description: "",
-    amenities: ["WiFi", "Backwash"],
-    image: "",
+    photo: "",
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [savedSuccess, setSavedSuccess] = useState(false);
 
-  // Calculate dynamic stats
-  const totalChairs = chairs.length;
-  const availableChairs = chairs.filter((c) => c.status === "Available").length;
-  const occupiedChairs = chairs.filter((c) => c.status === "Occupied").length;
-  const maintenanceChairs = chairs.filter((c) => c.status === "Maintenance").length;
+  // Calculate dynamic stats from API response
+  const totalChairs = chairsResponse?.pagination?.total ?? chairsList.length;
+  const availableChairs = chairsList.filter((c) => {
+    const st = (c.status || "").toLowerCase();
+    return st === "active" || st === "available" || st === "";
+  }).length;
+  const occupiedChairs = chairsList.filter(
+    (c) => (c.status || "").toLowerCase() === "occupied"
+  ).length;
+  const maintenanceChairs = chairsList.filter(
+    (c) => (c.status || "").toLowerCase() === "maintenance"
+  ).length;
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Helper to safely extract image URL string from backend response
+  const extractImageUrl = (res: any): string => {
+    if (!res) return "";
+    if (typeof res === "string") return res;
+    if (res?.data?.images?.[0] && typeof res.data.images[0] === "string") return res.data.images[0];
+    if (res?.data?.url && typeof res.data.url === "string") return res.data.url;
+    if (res?.data && typeof res.data === "string") return res.data;
+    if (res?.url && typeof res.url === "string") return res.url;
+    if (res?.images?.[0] && typeof res.images[0] === "string") return res.images[0];
+    return "";
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImagePreview(url);
-      setForm((prev) => ({ ...prev, image: url }));
+    if (!file) return;
+
+    const localPreview = URL.createObjectURL(file);
+    setImagePreview(localPreview);
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await uploadMedia(formData).unwrap();
+      const uploadedUrl = extractImageUrl(res) || localPreview;
+      setForm((prev) => ({ ...prev, photo: uploadedUrl }));
+      toast.success("Photo uploaded successfully!");
+    } catch (err: any) {
+      console.error("Failed to upload image:", err);
+      toast.error("Failed to upload photo. Using local preview.");
+      setForm((prev) => ({ ...prev, photo: localPreview }));
     }
   };
 
   const handleRemoveImage = () => {
     setImagePreview(null);
-    setForm((prev) => ({ ...prev, image: "" }));
+    setForm((prev) => ({ ...prev, photo: "" }));
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -143,10 +122,9 @@ export default function ChairsSpacePage() {
     setForm({
       name: "",
       location: "",
-      price: "45",
+      pricePerDayInUSD: "45",
       description: "",
-      amenities: ["WiFi", "Backwash"],
-      image: "",
+      photo: "",
     });
     setImagePreview(null);
     setEditingChairId(null);
@@ -155,72 +133,62 @@ export default function ChairsSpacePage() {
   };
 
   const handleOpenEdit = (chair: Chair) => {
+    const photoUrl = typeof chair.photo === "string" ? chair.photo : extractImageUrl(chair.photo);
     setForm({
-      name: chair.name,
-      location: chair.location,
-      price: chair.price.replace("$", "").replace("/day", ""),
+      name: chair.name || "",
+      location: chair.location || "",
+      pricePerDayInUSD: chair.pricePerDayInUSD !== undefined ? String(chair.pricePerDayInUSD) : "45",
       description: chair.description || "",
-      amenities: chair.amenities,
-      image: chair.image || "",
+      photo: photoUrl,
     });
-    setImagePreview(chair.image || null);
-    setEditingChairId(chair.id);
+    setImagePreview(photoUrl || null);
+    setEditingChairId(chair._id);
     setModalMode("edit");
     setIsModalOpen(true);
   };
 
-  const toggleAmenity = (amenity: string) => {
-    setForm((prev) => {
-      const exists = prev.amenities.includes(amenity);
-      return {
-        ...prev,
-        amenities: exists
-          ? prev.amenities.filter((a) => a !== amenity)
-          : [...prev.amenities, amenity],
-      };
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim()) return;
-
-    if (modalMode === "add") {
-      const newChair: Chair = {
-        id: Date.now().toString(),
-        name: form.name,
-        location: form.location || "Main Floor",
-        status: "Available",
-        until: "Available Now",
-        price: `$${form.price || "45"}/day`,
-        description: form.description,
-        amenities: form.amenities,
-        image: form.image,
-      };
-      setChairs((prev) => [newChair, ...prev]);
-    } else if (modalMode === "edit" && editingChairId) {
-      setChairs((prev) =>
-        prev.map((c) =>
-          c.id === editingChairId
-            ? {
-                ...c,
-                name: form.name,
-                location: form.location || "Main Floor",
-                price: `$${form.price || "45"}/day`,
-                description: form.description,
-                amenities: form.amenities,
-                image: form.image,
-              }
-            : c
-        )
-      );
+    if (!form.name.trim()) {
+      toast.error("Please enter a chair name.");
+      return;
     }
 
-    setSavedSuccess(true);
-    setTimeout(() => {
-      setSavedSuccess(false);
+    const photoUrl = typeof form.photo === "string" ? form.photo : extractImageUrl(form.photo);
+
+    const payload = {
+      name: form.name.trim(),
+      description: form.description.trim(),
+      photo: photoUrl,
+      location: form.location.trim(),
+      pricePerDayInUSD: Number(form.pricePerDayInUSD) || 0,
+    };
+
+    try {
+      if (modalMode === "add") {
+        const res = await createChair(payload).unwrap();
+        toast.success(res?.message || "Chair created successfully!");
+      } else if (modalMode === "edit" && editingChairId) {
+        const res = await updateChair({ chairId: editingChairId, data: payload }).unwrap();
+        toast.success(res?.message || "Chair updated successfully!");
+      }
       setIsModalOpen(false);
-    }, 1000);
+    } catch (err: any) {
+      console.error("Failed to save chair:", err);
+      toast.error(err?.data?.message || err?.message || "Operation failed. Please try again.");
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingChair) return;
+    try {
+      const res = await deleteChair(deletingChair._id).unwrap();
+      toast.success(res?.message || "Chair deleted successfully!");
+      setDeletingChair(null);
+    } catch (err: any) {
+      console.error("Failed to delete chair:", err);
+      toast.error(err?.data?.message || err?.message || "Failed to delete chair.");
+    }
   };
 
   return (
@@ -229,7 +197,7 @@ export default function ChairsSpacePage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
-            {totalChairs} chairs total · {availableChairs} available today
+            {totalChairs} {totalChairs === 1 ? "chair" : "chairs"} total · {availableChairs} available today
           </p>
           <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
             Chairs &amp; Space
@@ -261,7 +229,7 @@ export default function ChairsSpacePage() {
           <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
             {availableChairs}
           </div>
-          <p className="text-xs text-muted-foreground font-normal">Available</p>
+          <p className="text-xs text-muted-foreground font-normal">Available / Active</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs">
@@ -279,73 +247,144 @@ export default function ChairsSpacePage() {
         </div>
       </div>
 
-      {/* Chairs Stacked Card List */}
-      <div className="space-y-4 pt-2">
-        {chairs.map((chair) => (
-          <div
-            key={chair.id}
-            className="bg-card border border-border rounded-lg p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs hover:border-[#D99722]/40 transition-colors"
+      {/* Chairs Cards / Loading / Error State */}
+      {isLoading ? (
+        <div className="p-12 text-center bg-card border border-border rounded-lg flex flex-col items-center justify-center space-y-3">
+          <Loader2 className="w-8 h-8 animate-spin text-[#D99722]" />
+          <p className="text-sm text-muted-foreground">Loading chairs...</p>
+        </div>
+      ) : isError ? (
+        <div className="p-8 text-center bg-destructive/10 border border-destructive/20 rounded-lg flex flex-col items-center justify-center space-y-3">
+          <AlertCircle className="w-8 h-8 text-destructive" />
+          <p className="text-sm font-medium text-destructive">
+            {(error as any)?.data?.message || "Failed to load chairs."}
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="px-4 py-2 bg-secondary text-foreground text-xs font-medium rounded-md hover:bg-secondary/80 transition-colors"
           >
-            {/* Left Chair Info + Thumbnail */}
-            <div className="flex items-start gap-4 max-w-xl">
-              {chair.image && (
-                <div className="relative w-20 h-20 rounded-md overflow-hidden bg-secondary border border-border shrink-0">
-                  <Image
-                    src={chair.image}
-                    alt={chair.name}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
-              )}
-              <div className="space-y-1">
-                <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground">
-                  {chair.name}
-                </h3>
-                <p className="text-xs text-muted-foreground font-normal">
-                  {chair.until}
-                </p>
-                <div className="pt-1.5 flex items-center gap-2 flex-wrap">
-                  <span className="px-3 py-1 bg-secondary border border-border text-muted-foreground text-xs font-medium rounded-full">
-                    {chair.location}
-                  </span>
-                  {chair.amenities.map((amenity) => (
-                    <span
-                      key={amenity}
-                      className="px-2.5 py-0.5 bg-secondary text-muted-foreground text-[11px] rounded-md"
-                    >
-                      {amenity}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Price & Actions */}
-            <div className="flex items-center gap-5 sm:gap-8 justify-between sm:justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
-              <div className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
-                {chair.price}
-              </div>
-
-              <button
-                type="button"
-                onClick={() => handleOpenEdit(chair)}
-                className="px-4 py-2 rounded-sm bg-secondary hover:bg-secondary/80 text-foreground text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5"
-              >
-                <Edit2 className="w-3.5 h-3.5 text-foreground" />
-                <span>Edit</span>
-              </button>
-            </div>
+            Retry
+          </button>
+        </div>
+      ) : chairsList.length === 0 ? (
+        <div className="p-12 text-center bg-card border border-border rounded-lg flex flex-col items-center justify-center space-y-4">
+          <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
+            <Armchair className="w-6 h-6" />
           </div>
-        ))}
-      </div>
+          <div className="space-y-1">
+            <h3 className="font-serif text-lg font-semibold text-foreground">No chairs found</h3>
+            <p className="text-xs text-muted-foreground max-w-sm">
+              You haven&apos;t added any chairs yet. Click the button below to add your first chair.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleOpenAdd}
+            className="px-4 py-2 bg-[#D99722] hover:bg-[#8F6929] text-white text-xs font-medium rounded-sm transition-colors flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add First Chair</span>
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-4 pt-2">
+          {chairsList.map((chair) => (
+            <div
+              key={chair._id}
+              className="bg-card border border-border rounded-lg p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs hover:border-[#D99722]/40 transition-colors"
+            >
+              {/* Left Chair Info + Photo */}
+              <div className="flex items-start gap-4 max-w-xl">
+                {chair.photo ? (
+                  <div className="relative w-20 h-20 rounded-md overflow-hidden bg-secondary border border-border shrink-0">
+                    <Image
+                      src={chair.photo}
+                      alt={chair.name}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-md bg-secondary border border-border shrink-0 flex items-center justify-center text-muted-foreground">
+                    <Armchair className="w-8 h-8" />
+                  </div>
+                )}
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground">
+                      {chair.name}
+                    </h3>
+                    {chair.uid && (
+                      <span className="px-2 py-0.5 bg-muted text-muted-foreground text-[10px] font-mono rounded">
+                        {chair.uid}
+                      </span>
+                    )}
+                  </div>
+                  {chair.description && (
+                    <p className="text-xs text-muted-foreground font-normal line-clamp-2">
+                      {chair.description}
+                    </p>
+                  )}
+                  <div className="pt-1.5 flex items-center gap-2 flex-wrap">
+                    {chair.location && (
+                      <span className="px-3 py-1 bg-secondary border border-border text-muted-foreground text-xs font-medium rounded-full">
+                        {chair.location}
+                      </span>
+                    )}
+                    <span
+                      className={`px-2.5 py-0.5 text-[11px] rounded-md font-medium capitalize ${
+                        (chair.status || "").toLowerCase() === "active" ||
+                        (chair.status || "").toLowerCase() === "available"
+                          ? "bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20"
+                          : (chair.status || "").toLowerCase() === "occupied"
+                          ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                          : "bg-muted text-muted-foreground border border-border"
+                      }`}
+                    >
+                      {chair.status || "Active"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Price & Actions */}
+              <div className="flex items-center gap-4 sm:gap-6 justify-between sm:justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
+                <div className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
+                  ${chair.pricePerDayInUSD}
+                  <span className="text-xs text-muted-foreground not-italic font-sans">/day</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEdit(chair)}
+                    className="px-3 py-2 rounded-sm bg-secondary hover:bg-secondary/80 text-foreground text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Edit2 className="w-3.5 h-3.5 text-foreground" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeletingChair(chair)}
+                    className="px-3 py-2 rounded-sm bg-destructive/10 hover:bg-destructive/20 text-destructive text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ----------------------------------------------------------------- */}
       {/* SHADCN DIALOG MODAL FOR ADD / EDIT CHAIR                          */}
       {/* ----------------------------------------------------------------- */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-xl bg-card border border-border p-6 sm:p-8 rounded-lg shadow-lg text-card-foreground">
+        <DialogContent className="sm:max-w-xl bg-card border border-border p-6 sm:p-8 rounded-lg shadow-lg text-card-foreground max-h-[90vh] overflow-y-auto">
           <DialogHeader className="text-left space-y-1 pb-2">
             <DialogTitle className="font-serif font-bold text-xl sm:text-2xl text-foreground">
               {modalMode === "add" ? "Add New Chair" : "Edit Chair Details"}
@@ -356,14 +395,14 @@ export default function ChairsSpacePage() {
             {/* Field 1: Chair Name */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-foreground block">
-                Chair Name / Number
+                Chair Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="e.g. Chair F"
+                placeholder="e.g. Belmont Classic Barber Chair"
                 className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
               />
             </div>
@@ -377,21 +416,23 @@ export default function ChairsSpacePage() {
                 type="text"
                 value={form.location}
                 onChange={(e) => setForm({ ...form, location: e.target.value })}
-                placeholder="e.g. Main Floor"
+                placeholder="e.g. Station A - Ground Floor Main Hall"
                 className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
               />
             </div>
 
-            {/* Field 3: Daily Rate */}
+            {/* Field 3: Daily Rate ($ USD) */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-foreground block">
-                Daily Rate (£/day)
+                Daily Rate ($ USD/day) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
-                value={form.price}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
-                placeholder="e.g. 45"
+                step="0.01"
+                required
+                value={form.pricePerDayInUSD}
+                onChange={(e) => setForm({ ...form, pricePerDayInUSD: e.target.value })}
+                placeholder="e.g. 45.00"
                 className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
               />
             </div>
@@ -405,12 +446,12 @@ export default function ChairsSpacePage() {
                 rows={3}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                placeholder="Describe the space..."
+                placeholder="Ergonomic leather hydraulic reclining chair suitable for barbers and stylists..."
                 className="w-full bg-background border border-input rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground resize-none"
               />
             </div>
 
-            {/* Field 5: Chair Image Upload */}
+            {/* Field 5: Chair Image Upload / URL */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-foreground block">
                 Chair Image <span className="text-muted-foreground font-normal">(Optional)</span>
@@ -424,11 +465,11 @@ export default function ChairsSpacePage() {
                 className="hidden"
               />
 
-              {imagePreview ? (
+              {imagePreview || form.photo ? (
                 <div className="relative w-full h-36 rounded-lg overflow-hidden border border-border bg-muted group">
                   <Image
-                    src={imagePreview}
-                    alt="Chair Space Preview"
+                    src={imagePreview || form.photo}
+                    alt="Chair Preview"
                     fill
                     className="object-cover"
                     unoptimized
@@ -437,9 +478,10 @@ export default function ChairsSpacePage() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="px-3 py-1.5 bg-background/90 hover:bg-background text-foreground text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
+                      disabled={isUploadingImage}
+                      className="px-3 py-1.5 bg-background/90 hover:bg-background text-foreground text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer disabled:opacity-50"
                     >
-                      Change
+                      {isUploadingImage ? "Uploading..." : "Change"}
                     </button>
                     <button
                       type="button"
@@ -454,14 +496,19 @@ export default function ChairsSpacePage() {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full h-28 border-2 border-dashed border-border hover:border-[#D99722] bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group"
+                  disabled={isUploadingImage}
+                  className="w-full h-28 border-2 border-dashed border-border hover:border-[#D99722] bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group disabled:opacity-50"
                 >
                   <div className="w-9 h-9 rounded-full bg-secondary text-muted-foreground group-hover:bg-[#D99722]/15 group-hover:text-[#D99722] flex items-center justify-center transition-colors">
-                    <Upload className="w-4 h-4" />
+                    {isUploadingImage ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-[#D99722]" />
+                    ) : (
+                      <Upload className="w-4 h-4" />
+                    )}
                   </div>
                   <div className="text-center">
                     <span className="text-xs font-semibold text-foreground group-hover:text-[#D99722] transition-colors">
-                      Click to upload chair space photo
+                      {isUploadingImage ? "Uploading image..." : "Click to upload chair space photo"}
                     </span>
                     <span className="text-[11px] text-muted-foreground block">
                       PNG, JPG or WEBP (Max 5MB)
@@ -471,50 +518,26 @@ export default function ChairsSpacePage() {
               )}
             </div>
 
-            {/* Field 6: Amenities Selection */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-foreground block">
-                Amenities
-              </label>
-              <div className="flex flex-wrap gap-2 pt-1">
-                {AMENITY_OPTIONS.map((amenity) => {
-                  const isSelected = form.amenities.includes(amenity);
-                  return (
-                    <button
-                      key={amenity}
-                      type="button"
-                      onClick={() => toggleAmenity(amenity)}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                        isSelected
-                          ? "bg-[#D99722] text-white border border-[#D99722] shadow-2xs"
-                          : "bg-secondary border border-border text-muted-foreground hover:border-[#D99722]"
-                      }`}
-                    >
-                      {amenity}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
             {/* Submit & Cancel Actions */}
             <div className="pt-4 flex items-center gap-3 justify-end border-t border-border">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2.5 rounded-sm bg-secondary border border-border text-muted-foreground hover:text-foreground text-sm font-medium transition-colors cursor-pointer"
+                disabled={isCreating || isUpdating}
+                className="px-5 py-2.5 rounded-sm bg-secondary border border-border text-muted-foreground hover:text-foreground text-sm font-medium transition-colors cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
 
               <button
                 type="submit"
-                className="px-6 py-2.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center gap-2"
+                disabled={isCreating || isUpdating || isUploadingImage}
+                className="px-6 py-2.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center gap-2 disabled:opacity-50"
               >
-                {savedSuccess ? (
+                {isCreating || isUpdating ? (
                   <>
-                    <Check className="w-4 h-4" />
-                    <span>{modalMode === "add" ? "Chair Created!" : "Saved!"}</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>{modalMode === "add" ? "Creating..." : "Saving..."}</span>
                   </>
                 ) : (
                   <span>{modalMode === "add" ? "Create Chair" : "Save Changes"}</span>
@@ -524,6 +547,50 @@ export default function ChairsSpacePage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* ----------------------------------------------------------------- */}
+      {/* SHADCN DIALOG MODAL FOR DELETE CONFIRMATION                       */}
+      {/* ----------------------------------------------------------------- */}
+      <Dialog open={!!deletingChair} onOpenChange={(open) => !open && setDeletingChair(null)}>
+        <DialogContent className="sm:max-w-md bg-card border border-border p-6 rounded-lg shadow-lg text-card-foreground">
+          <DialogHeader className="text-left space-y-2">
+            <DialogTitle className="font-serif font-bold text-xl text-foreground">
+              Delete Chair
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Are you sure you want to delete &quot;{deletingChair?.name}&quot;? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="pt-4 flex items-center gap-3 justify-end border-t border-border">
+            <button
+              type="button"
+              onClick={() => setDeletingChair(null)}
+              disabled={isDeleting}
+              className="px-4 py-2 rounded-sm bg-secondary border border-border text-muted-foreground hover:text-foreground text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="px-5 py-2 rounded-sm bg-destructive hover:bg-destructive/90 text-destructive-foreground text-xs font-medium transition-colors cursor-pointer shadow-xs flex items-center gap-2 disabled:opacity-50"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Deleting...</span>
+                </>
+              ) : (
+                <span>Delete Chair</span>
+              )}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+

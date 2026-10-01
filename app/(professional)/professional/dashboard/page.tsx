@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { TrendingUp, Star, Armchair, CreditCard } from "lucide-react";
+import Link from "next/link";
+import { TrendingUp, Star, Armchair, CreditCard, Building2, Sparkles } from "lucide-react";
 import { Combobox } from "@/components/ui/combobox";
 import {
   BarChart,
@@ -86,6 +87,26 @@ export default function ProfessionalDashboardPage() {
         <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
           Good morning, James.
         </h1>
+      </div>
+
+      {/* Create Business Banner CTA */}
+      <div className="bg-gradient-to-r from-primary/15 via-primary/5 to-card border border-primary/30 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-primary" />
+            <h3 className="font-serif font-bold text-lg text-foreground">Create &amp; Manage Your Salon Business</h3>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Setup your salon page, list services, configure chair spaces, and start accepting client bookings directly.
+          </p>
+        </div>
+        <Link
+          href="/professional/business"
+          className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 active:scale-95"
+        >
+          <Sparkles className="w-4 h-4" />
+          <span>Create Business</span>
+        </Link>
       </div>
 
       {/* Top 4 Stat Cards Grid */}

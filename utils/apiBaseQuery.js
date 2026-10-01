@@ -40,11 +40,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         try {
           window.location.href = "/login";
         } catch (e) {
-          // ignore navigation errors in non-browser environments
+
         }
       }
     } else {
-      // Not an auth-related 401 (likely a backend using 401 for validation); let caller handle it.
+
     }
   }
 
@@ -55,5 +55,5 @@ export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
-  tagTypes: ["Transportation", "Poa", "Listing", "Wishlists", "Inquiry", "Reservation", "Review", "Newsletter", "Settings", "Transaction", "Profile", "Property", "hotelPartner", "Notification", "Wallet"],
+  tagTypes: ["faq", "disclaimer", "profile", "chair", "chairRental", "services", "category"],
 });

@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { ArrowLeft, User, Scissors, Building2 } from "lucide-react";
-import { Suspense, useState } from "react";
+import { ArrowLeft, User, Scissors, Building2, Loader2, Eye, EyeOff } from "lucide-react";
+import { Suspense, useState, useEffect } from "react";
 import { Combobox } from "@/components/ui/combobox";
+import { PhoneInput } from "@/components/ui/phone-input";
+import { useSignUpMutation } from "@/features/auth/authApi";
 
 const roles = [
   {
@@ -21,22 +23,16 @@ const roles = [
   {
     value: "professional",
     label: "Professional",
-    description: "Offer your skills & services",
+    description: "Offer your skills & create your business",
     icon: Scissors,
-  },
-  {
-    value: "business",
-    label: "Business / Salon Owner",
-    description: "Manage your salon",
-    icon: Building2,
-  },
+  }
 ];
 
 const registerSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
-  phone: z.string().min(1, "Phone number is required").min(10, "Please enter a valid phone number"),
+  phone: z.string().optional(),
   role: z.string().min(1, "Please select a role"),
   password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
 });
@@ -45,12 +41,20 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 function RegisterFormContent() {
   const router = useRouter();
-  const [selectedRole, setSelectedRole] = useState(roles[0]);
+  const searchParams = useSearchParams();
+  const roleParam = searchParams.get("role");
+
+  const initialRole = roles.find((r) => r.value === roleParam?.toLowerCase()) || roles[0];
+
+  const [selectedRole, setSelectedRole] = useState(initialRole);
+  const [showPassword, setShowPassword] = useState(false);
+  const [signUp, { isLoading }] = useSignUpMutation();
 
   const {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -59,14 +63,37 @@ function RegisterFormContent() {
       lastName: "",
       email: "",
       phone: "",
-      role: "customer",
+      role: initialRole.value,
       password: "",
     },
   });
 
-  const onSubmit = (data: RegisterFormValues) => {
-    toast.success("Account details saved! Please verify your phone number.");
-    router.push(`/verify-otp?email=${encodeURIComponent(data.email)}&phone=${encodeURIComponent(data.phone)}&role=${encodeURIComponent(data.role)}`);
+  useEffect(() => {
+    if (roleParam) {
+      const matchedRole = roles.find((r) => r.value === roleParam.toLowerCase());
+      if (matchedRole) {
+        setSelectedRole(matchedRole);
+        setValue("role", matchedRole.value, { shouldValidate: true });
+      }
+    }
+  }, [roleParam, setValue]);
+
+  const onSubmit = async (data: RegisterFormValues) => {
+    try {
+      const payload = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        role: data.role,
+        email: data.email,
+        password: data.password,
+      };
+      const res = await signUp(payload).unwrap();
+      toast.success(res?.message || "Account created successfully. Please verify your email.");
+      router.push(`/verify-email?email=${encodeURIComponent(data.email)}&role=${encodeURIComponent(data.role)}`);
+    } catch (err: unknown) {
+      const error = err as { data?: { message?: string } };
+      toast.error(error?.data?.message || "Failed to create account. Please try again.");
+    }
   };
 
   return (
@@ -200,14 +227,17 @@ function RegisterFormContent() {
         {/* Phone Field */}
         <div className="space-y-1 text-left">
           <label className="text-xs font-semibold text-foreground block">Phone number</label>
-          <input
-            type="tel"
-            placeholder="+1 234 567 8900"
-            {...register("phone")}
-            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.phone
-              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
-              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
-              }`}
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <PhoneInput
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Enter phone number"
+                error={!!errors.phone}
+              />
+            )}
           />
           {errors.phone && (
             <p className="text-destructive text-[11px] font-medium mt-1">
@@ -217,7 +247,7 @@ function RegisterFormContent() {
         </div>
 
         {/* Role Dropdown — after phone number */}
-        <div className="space-y-1 text-left">
+        <div className="space-y-1 text-left relative">
           <label className="text-xs font-semibold text-foreground block">I am joining as</label>
           <input type="hidden" {...register("role")} value={selectedRole.value} />
           <Combobox
@@ -229,7 +259,7 @@ function RegisterFormContent() {
               setValue("role", r.value, { shouldValidate: true });
             }}
             error={!!errors.role}
-            triggerClassName="w-full px-4 py-3 rounded-2xl border border-border/80 bg-card hover:bg-accent/40 text-foreground text-sm font-medium transition-all shadow-2xs"
+            triggerClassName="w-full h-14 px-4 py-2.5 rounded-xl border border-border/80 bg-card hover:bg-accent/40 text-foreground text-sm font-medium transition-colors duration-150 shadow-2xs"
             align="start"
           />
           {errors.role && (
@@ -242,15 +272,29 @@ function RegisterFormContent() {
         {/* Password Field */}
         <div className="space-y-1 text-left">
           <label className="text-xs font-semibold text-foreground block">Password</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            {...register("password")}
-            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
-              ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
-              : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
-              }`}
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              {...register("password")}
+              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${errors.password
+                ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+                : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
+                }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-lg cursor-pointer flex items-center justify-center"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
+            </button>
+          </div>
           {errors.password && (
             <p className="text-destructive text-[11px] font-medium mt-1">
               {errors.password.message}
@@ -260,10 +304,14 @@ function RegisterFormContent() {
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer mt-2"
+          disabled={isSubmitting || isLoading}
+          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
         >
-          {isSubmitting ? "Creating account..." : "Create Account"}
+          {isLoading || isSubmitting ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            "Create Account"
+          )}
         </button>
       </form>
 

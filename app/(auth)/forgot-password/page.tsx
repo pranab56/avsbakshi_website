@@ -90,9 +90,9 @@ export default function ForgotPasswordPage() {
 
   const onEmailSubmit = async (data: EmailFormValues) => {
     try {
-      await forgotEmail({ email: data.email }).unwrap();
+      const res = await forgotEmail({ email: data.email }).unwrap();
       setSubmittedEmail(data.email);
-      toast.success('OTP sent! Please check your email.');
+      toast.success(res?.message || 'Please check your email. We have sent you a one-time passcode (OTP).');
       setStep(2);
     } catch (err) {
       const error = err as { data?: { message?: string } };
@@ -110,8 +110,9 @@ export default function ForgotPasswordPage() {
         email: submittedEmail,
         oneTimeCode: parseInt(otp.join(''), 10),
       }).unwrap();
-      setResetToken(result.data);
-      toast.success('OTP verified!');
+      const extractedToken = result?.data?.resetToken || (typeof result?.data === 'string' ? result.data : '');
+      setResetToken(extractedToken);
+      toast.success(result?.message || 'Verification Successful');
       setStep(3);
     } catch (err) {
       const error = err as { data?: { message?: string } };
@@ -123,10 +124,10 @@ export default function ForgotPasswordPage() {
 
   const handleResend = async () => {
     try {
-      await resendOtp({ email: submittedEmail }).unwrap();
+      const res = await resendOtp({ email: submittedEmail }).unwrap();
       setOtp(['', '', '', '', '', '']);
       setOtpError('');
-      toast.success('A new code has been sent to your email.');
+      toast.success(res?.message || 'Please check your email. We have sent you a one-time passcode (OTP).');
       otpRefs.current[0]?.focus();
     } catch (err) {
       const error = err as { data?: { message?: string } };
@@ -136,11 +137,11 @@ export default function ForgotPasswordPage() {
 
   const onPasswordSubmit = async (data: PasswordFormValues) => {
     try {
-      await resetPassword({
+      const res = await resetPassword({
         token: resetToken,
         data: { newPassword: data.password, confirmPassword: data.confirmPassword },
       }).unwrap();
-      toast.success('Password reset successfully!');
+      toast.success(res?.message || 'Your password has been successfully reset.');
       router.push('/login');
     } catch (err) {
       const error = err as { data?: { message?: string } };

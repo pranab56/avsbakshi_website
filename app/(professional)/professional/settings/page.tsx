@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -10,8 +10,14 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Plus, X, Eye, CheckCircle2, MapPin } from "lucide-react";
+import { Plus, X, Eye, CheckCircle2, MapPin, Loader2, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+import {
+  useGetMyProfileQuery,
+  useUpdateMyProfileMutation,
+  useChangePasswordMutation,
+} from "@/features/profile/profileApi";
+import { PhoneInput } from "@/components/ui/phone-input";
 
 type SettingsTab = "Profile" | "About Profile" | "Notifications" | "Privacy" | "Security";
 
@@ -22,6 +28,18 @@ export default function ProfessionalSettingsPage() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Password Visibility States
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // RTK Query Hooks
+  const { data: profileResponse, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined);
+  const [updateMyProfile, { isLoading: isUpdating }] = useUpdateMyProfileMutation();
+  const [changePassword, { isLoading: isChangingPassword }] = useChangePasswordMutation();
+
+  const profileData = profileResponse?.data;
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -29,9 +47,12 @@ export default function ProfessionalSettingsPage() {
         toast.error("Please select a valid image file");
         return;
       }
-      const imageUrl = URL.createObjectURL(file);
-      setAvatarPreview(imageUrl);
-      toast.success("Profile photo updated!");
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      toast.success("Profile photo preview updated!");
     }
   };
 
@@ -89,8 +110,56 @@ export default function ProfessionalSettingsPage() {
     setSpecialities(specialities.filter((s) => s !== tag));
   };
 
-  const handleSaveProfile = () => {
-    toast.success("Profile & About Information updated successfully!");
+  // Sync profile data from API GET response
+  useEffect(() => {
+    if (profileData) {
+      setProfileForm((prev) => ({
+        ...prev,
+        fullName: profileData.firstName
+          ? `${profileData.firstName} ${profileData.lastName || ''}`.trim()
+          : prev.fullName,
+        email: profileData.email || prev.email,
+        phone: typeof profileData.phone === "object" ? profileData.phone?.number || "" : profileData.phone || prev.phone,
+      }));
+      if (profileData.image) {
+        setAvatarPreview(profileData.image);
+      }
+    }
+  }, [profileData]);
+
+  const handleSaveProfile = async () => {
+    try {
+      const nameParts = profileForm.fullName.trim().split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      const payload = {
+        firstName,
+        lastName,
+        image: avatarPreview || profileData?.image || "",
+        phone: {
+          countryCode: profileData?.phone?.countryCode || "",
+          number: profileForm.phone || "",
+        },
+        address: {
+          line1: profileData?.address?.line1 || "",
+          line2: profileData?.address?.line2 || "",
+          city: profileData?.address?.city || "",
+          state: profileData?.address?.state || "",
+          country: profileData?.address?.country || "",
+          postalCode: profileData?.address?.postalCode || "",
+        },
+        location: {
+          type: profileData?.location?.type || "Point",
+          coordinates: profileData?.location?.coordinates || [0, 0],
+        },
+      };
+
+      const res = await updateMyProfile(payload).unwrap();
+      toast.success(res?.message || "Profile updated successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || err?.message || "Failed to update profile");
+    }
   };
 
   // Notifications Toggle States
@@ -170,122 +239,130 @@ export default function ProfessionalSettingsPage() {
                 </p>
               </div>
 
-              {/* Avatar Photo Section */}
-              <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-md bg-muted text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
-                  {avatarPreview ? (
-                    <Image
-                      src={avatarPreview}
-                      alt="Profile Avatar"
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <span>S</span>
-                  )}
+              {isProfileLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
                 </div>
-                <div className="space-y-1">
-                  <h3 className="font-serif font-bold text-lg text-foreground">
-                    {profileForm.fullName}
-                  </h3>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageChange}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="px-4 py-1.5 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer"
-                  >
-                    Change photo
-                  </button>
-                </div>
-              </div>
+              ) : (
+                <>
+                  {/* Avatar Photo Section */}
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-16 h-16 rounded-md bg-muted text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
+                      {avatarPreview ? (
+                        <Image
+                          src={avatarPreview}
+                          alt="Profile Avatar"
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        <span>{profileForm.fullName ? profileForm.fullName[0].toUpperCase() : "P"}</span>
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-serif font-bold text-lg text-foreground">
+                        {profileForm.fullName}
+                      </h3>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleImageChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-4 py-1.5 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                      >
+                        Change photo
+                      </button>
+                    </div>
+                  </div>
 
-              {/* Form Input Fields Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground block">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={profileForm.fullName}
-                    onChange={(e) =>
-                      setProfileForm({ ...profileForm, fullName: e.target.value })
-                    }
-                    className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
+                  {/* Form Input Fields Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground block">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.fullName}
+                        onChange={(e) =>
+                          setProfileForm({ ...profileForm, fullName: e.target.value })
+                        }
+                        className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground block">
-                    Professional Title / Specialty
-                  </label>
-                  <input
-                    type="text"
-                    value={profileForm.professionalTitle}
-                    onChange={(e) =>
-                      setProfileForm({
-                        ...profileForm,
-                        professionalTitle: e.target.value,
-                      })
-                    }
-                    className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground block">
+                        Professional Title / Specialty
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.professionalTitle}
+                        onChange={(e) =>
+                          setProfileForm({
+                            ...profileForm,
+                            professionalTitle: e.target.value,
+                          })
+                        }
+                        className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground block">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    value={profileForm.email}
-                    onChange={(e) =>
-                      setProfileForm({ ...profileForm, email: e.target.value })
-                    }
-                    className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground block">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={profileForm.email}
+                        readOnly
+                        disabled
+                        className="w-full bg-accent/60 border border-border rounded-sm px-4 py-3 text-sm text-muted-foreground outline-none cursor-not-allowed"
+                      />
+                    </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-foreground block">
-                    Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    value={profileForm.phone}
-                    onChange={(e) =>
-                      setProfileForm({ ...profileForm, phone: e.target.value })
-                    }
-                    className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-              </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground block">
+                        Phone Number
+                      </label>
+                      <PhoneInput
+                        value={profileForm.phone}
+                        onChange={(val) =>
+                          setProfileForm({ ...profileForm, phone: val || "" })
+                        }
+                        placeholder="Enter phone number"
+                      />
+                    </div>
+                  </div>
 
-              {/* Save Action */}
-              <div className="pt-2 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={handleSaveProfile}
-                  className="px-6 py-3 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
-                >
-                  Save Changes
-                </button>
+                  {/* Save Action */}
+                  <div className="pt-2 flex items-center justify-between">
+                    <button
+                      type="button"
+                      onClick={handleSaveProfile}
+                      disabled={isUpdating}
+                      className="px-6 py-3 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {isUpdating && <Loader2 className="w-4 h-4 animate-spin" />}
+                      {isUpdating ? "Saving..." : "Save Changes"}
+                    </button>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("About Profile")}
-                  className="text-xs text-primary font-semibold underline hover:opacity-80"
-                >
-                  Configure Customer &quot;About&quot; Profile &rarr;
-                </button>
-              </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("About Profile")}
+                      className="text-xs text-primary font-semibold underline hover:opacity-80"
+                    >
+                      Configure Customer &quot;About&quot; Profile &rarr;
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
@@ -858,7 +935,7 @@ export default function ProfessionalSettingsPage() {
           </DialogHeader>
 
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const errors = { oldPassword: "", newPassword: "", confirmPassword: "" };
               let isValid = true;
@@ -885,10 +962,20 @@ export default function ProfessionalSettingsPage() {
               setPasswordErrors(errors);
               if (!isValid) return;
 
-              setShowPasswordModal(false);
-              setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
-              setPasswordErrors({ oldPassword: "", newPassword: "", confirmPassword: "" });
-              toast.success("Password updated successfully!");
+              try {
+                const payload = {
+                  currentPassword: passwordForm.oldPassword,
+                  newPassword: passwordForm.newPassword,
+                  confirmPassword: passwordForm.confirmPassword,
+                };
+                const res = await changePassword(payload).unwrap();
+                toast.success(res?.message || "Password changed successfully!");
+                setShowPasswordModal(false);
+                setPasswordForm({ oldPassword: "", newPassword: "", confirmPassword: "" });
+                setPasswordErrors({ oldPassword: "", newPassword: "", confirmPassword: "" });
+              } catch (err: any) {
+                toast.error(err?.data?.message || err?.message || "Failed to change password");
+              }
             }}
             className="space-y-4 pt-2"
           >
@@ -897,20 +984,29 @@ export default function ProfessionalSettingsPage() {
               <label className="text-xs font-semibold text-foreground block">
                 Old password
               </label>
-              <input
-                type="password"
-                value={passwordForm.oldPassword}
-                onChange={(e) => {
-                  setPasswordForm({ ...passwordForm, oldPassword: e.target.value });
-                  if (passwordErrors.oldPassword)
-                    setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
-                }}
-                placeholder="Enter current password"
-                className={`w-full bg-accent/50 border ${passwordErrors.oldPassword ? "border-red-500" : "border-border"
-                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
-              />
+              <div className="relative">
+                <input
+                  type={showOldPassword ? "text" : "password"}
+                  value={passwordForm.oldPassword}
+                  onChange={(e) => {
+                    setPasswordForm({ ...passwordForm, oldPassword: e.target.value });
+                    if (passwordErrors.oldPassword)
+                      setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
+                  }}
+                  placeholder="Enter current password"
+                  className={`w-full bg-accent/50 border ${passwordErrors.oldPassword ? "border-destructive" : "border-border"
+                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowOldPassword(!showOldPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                >
+                  {showOldPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {passwordErrors.oldPassword && (
-                <p className="text-[11px] text-red-500 font-medium mt-1">
+                <p className="text-[11px] text-destructive font-medium mt-1">
                   {passwordErrors.oldPassword}
                 </p>
               )}
@@ -921,20 +1017,29 @@ export default function ProfessionalSettingsPage() {
               <label className="text-xs font-semibold text-foreground block">
                 New password
               </label>
-              <input
-                type="password"
-                value={passwordForm.newPassword}
-                onChange={(e) => {
-                  setPasswordForm({ ...passwordForm, newPassword: e.target.value });
-                  if (passwordErrors.newPassword)
-                    setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
-                }}
-                placeholder="Enter new password"
-                className={`w-full bg-accent/50 border ${passwordErrors.newPassword ? "border-red-500" : "border-border"
-                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
-              />
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  value={passwordForm.newPassword}
+                  onChange={(e) => {
+                    setPasswordForm({ ...passwordForm, newPassword: e.target.value });
+                    if (passwordErrors.newPassword)
+                      setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
+                  }}
+                  placeholder="Enter new password"
+                  className={`w-full bg-accent/50 border ${passwordErrors.newPassword ? "border-destructive" : "border-border"
+                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                >
+                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {passwordErrors.newPassword && (
-                <p className="text-[11px] text-red-500 font-medium mt-1">
+                <p className="text-[11px] text-destructive font-medium mt-1">
                   {passwordErrors.newPassword}
                 </p>
               )}
@@ -945,20 +1050,29 @@ export default function ProfessionalSettingsPage() {
               <label className="text-xs font-semibold text-foreground block">
                 Confirm password
               </label>
-              <input
-                type="password"
-                value={passwordForm.confirmPassword}
-                onChange={(e) => {
-                  setPasswordForm({ ...passwordForm, confirmPassword: e.target.value });
-                  if (passwordErrors.confirmPassword)
-                    setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
-                }}
-                placeholder="Confirm new password"
-                className={`w-full bg-accent/50 border ${passwordErrors.confirmPassword ? "border-red-500" : "border-border"
-                  } rounded-sm px-4 py-2.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) => {
+                    setPasswordForm({ ...passwordForm, confirmPassword: e.target.value });
+                    if (passwordErrors.confirmPassword)
+                      setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
+                  }}
+                  placeholder="Confirm new password"
+                  className={`w-full bg-accent/50 border ${passwordErrors.confirmPassword ? "border-destructive" : "border-border"
+                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {passwordErrors.confirmPassword && (
-                <p className="text-[11px] text-red-500 font-medium mt-1">
+                <p className="text-[11px] text-destructive font-medium mt-1">
                   {passwordErrors.confirmPassword}
                 </p>
               )}
@@ -977,9 +1091,11 @@ export default function ProfessionalSettingsPage() {
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
+                disabled={isChangingPassword}
+                className="px-5 py-2 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] disabled:opacity-50 flex items-center gap-2"
               >
-                Update Password
+                {isChangingPassword && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                {isChangingPassword ? "Updating..." : "Update Password"}
               </button>
             </div>
           </form>

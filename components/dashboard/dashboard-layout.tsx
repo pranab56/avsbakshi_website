@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import DashboardSidebar from "./sidebar";
 import DashboardHeader from "./header";
-import { DASHBOARD_CONFIGS, RoleType } from "./nav-config";
+import { DASHBOARD_CONFIGS, RoleType, getProfessionalNavItems } from "./nav-config";
+import { useGetMyProfileQuery } from "@/features/profile/profileApi";
 
 interface DashboardLayoutProps {
   role: RoleType;
@@ -15,14 +18,34 @@ export default function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
+  const { data: profileResponse } = useGetMyProfileQuery(undefined, { skip: !user });
+
+  const profileData = profileResponse?.data;
+  const isSalonOwner = Boolean(profileData?.isSalonOwner ?? user?.isSalonOwner);
+
+  useEffect(() => {
+    if (user?.role && user.role !== role && !(role === "professional" && user.role === "business")) {
+      const targetDashboard =
+        user.role === "professional" || user.role === "business"
+          ? "/professional/dashboard"
+          : "/customer/overview";
+      router.replace(targetDashboard);
+    }
+  }, [user, role, router]);
+
   const config = DASHBOARD_CONFIGS[role] || DASHBOARD_CONFIGS.customer;
+  const navItems = role === "professional"
+    ? getProfessionalNavItems(isSalonOwner)
+    : config.navItems;
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-200">
       {/* Sidebar Navigation */}
       <DashboardSidebar
         role={role}
-        navItems={config.navItems}
+        navItems={navItems}
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />

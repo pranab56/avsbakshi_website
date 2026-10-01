@@ -270,3 +270,53 @@ body {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* Custom react-phone-number-input styling */
+.PhoneInput {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--foreground);
+  height: 3rem;
+}
+
+.PhoneInputCountrySelect {
+  cursor: pointer;
+  background-color: var(--card);
+  color: var(--foreground);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: none;
+  outline: none;
+}
+
+.PhoneInputCountrySelect option {
+  background-color: var(--card);
+  color: var(--foreground);
+  padding: 8px;
+}
+
+.PhoneInputCountryIcon {
+  width: 1.5rem;
+  height: 1rem;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.PhoneInputCountrySelectArrow {
+  opacity: 0.7;
+  color: var(--foreground);
+  border-color: var(--foreground);
+}

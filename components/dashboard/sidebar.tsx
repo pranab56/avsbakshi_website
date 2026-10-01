@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import { logout } from "@/features/auth/authSlice";
 import { LogOut, X } from "lucide-react";
 import { NavItem, RoleType } from "./nav-config";
 import Image from "next/image";
@@ -27,7 +30,21 @@ export default function DashboardSidebar({
   onClose,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogout = async () => {
+    setShowLogoutConfirm(false);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore
+    }
+    dispatch(logout());
+    toast.success("Successfully logged out.");
+    router.push("/login");
+  };
 
   return (
     <>
@@ -155,10 +172,7 @@ export default function DashboardSidebar({
             </button>
             <button
               type="button"
-              onClick={() => {
-                setShowLogoutConfirm(false);
-                window.location.href = "/";
-              }}
+              onClick={handleLogout}
               className="px-4 py-2.5 rounded-lg bg-[#E54D42] hover:bg-[#D43B30] text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
             >
               Log out

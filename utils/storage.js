@@ -22,40 +22,49 @@ export const isTokenExpired = (token) => {
 
 export const saveToken = (token) => {
   if (typeof window !== "undefined") {
+    localStorage.setItem("salon-token", token);
     localStorage.setItem("realState-token", token);
+    document.cookie = `salon-token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
     document.cookie = `realState-token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
   }
 };
 
 export const saveRefreshToken = (token) => {
   if (typeof window !== "undefined") {
+    localStorage.setItem("salon-refresh-token", token);
     localStorage.setItem("realState-refresh-token", token);
   }
 };
 
 export const saveUser = (user) => {
   if (typeof window !== "undefined") {
+    localStorage.setItem("salon-user", JSON.stringify(user));
     localStorage.setItem("realState-user", JSON.stringify(user));
   }
 };
 
 export const getToken = () => {
   if (typeof window !== "undefined") {
-    return localStorage.getItem("realState-token") || getCookie("realState-token");
+    return (
+      localStorage.getItem("salon-token") ||
+      localStorage.getItem("realState-token") ||
+      getCookie("salon-token") ||
+      getCookie("realState-token")
+    );
   }
   return null;
 };
 
 export const getRefreshToken = () => {
   if (typeof window !== "undefined") {
-    return localStorage.getItem("realState-refresh-token");
+    return localStorage.getItem("salon-refresh-token") || localStorage.getItem("realState-refresh-token");
   }
   return null;
 };
 
 export const getUser = () => {
   if (typeof window !== "undefined") {
-    const user = localStorage.getItem("realState-user");
+    const user = localStorage.getItem("salon-user") || localStorage.getItem("realState-user");
     try {
       return user ? JSON.parse(user) : null;
     } catch (e) {
@@ -67,9 +76,16 @@ export const getUser = () => {
 
 export const removeStorage = () => {
   if (typeof window !== "undefined") {
+    localStorage.removeItem("salon-token");
     localStorage.removeItem("realState-token");
+    localStorage.removeItem("salon-refresh-token");
     localStorage.removeItem("realState-refresh-token");
+    localStorage.removeItem("salon-user");
     localStorage.removeItem("realState-user");
+    document.cookie = "salon-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "salon-role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     document.cookie = "realState-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+    fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
   }
 };

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
 import { Menu, Bell } from "lucide-react";
 import { DashboardConfig } from "./nav-config";
 import ThemeToggle from "@/components/shared/theme-toggle";
@@ -16,6 +17,7 @@ export default function DashboardHeader({
   onOpenMobileMenu,
 }: DashboardHeaderProps) {
   const pathname = usePathname();
+  const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
 
   // Derive section title from pathname
   const getPageTitle = () => {
@@ -29,6 +31,14 @@ export default function DashboardHeader({
       lastSegment.slice(1).replace(/-/g, " ")
     );
   };
+
+  const displayName = user?.firstName
+    ? `${user.firstName} ${user.lastName || ''}`.trim()
+    : (user?.email?.split('@')[0] || "User");
+
+  const initial = user?.firstName
+    ? user.firstName[0].toUpperCase()
+    : (displayName[0] ? displayName[0].toUpperCase() : "U");
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-16 sm:h-20 px-3 sm:px-6 lg:px-8 bg-background/95 backdrop-blur-md border-b border-border transition-colors duration-200">
@@ -71,14 +81,14 @@ export default function DashboardHeader({
         {/* User Profile Avatar */}
         <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l border-border shrink-0">
           <div
-            className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 text-primary font-bold text-xs sm:text-sm border border-primary/30 notranslate shrink-0 select-none"
+            className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 text-primary font-bold text-xs sm:text-sm border border-primary/30 notranslate shrink-0 select-none uppercase"
             translate="no"
           >
-            RA
+            {initial}
           </div>
           <div className="hidden md:flex flex-col text-left">
             <span className="text-sm font-semibold text-foreground notranslate" translate="no">
-              Rasel
+              {displayName}
             </span>
             <span className="text-xs text-muted-foreground capitalize">{config.role}</span>
           </div>

@@ -10,45 +10,75 @@ const decodeJwt = (token: string) => {
   }
 };
 
-const CUSTOMER_ROUTES = ['/partner-dashboard'];
-const HOST_ROUTES = ['/hotels-partner-dashboard'];
+// Map each role to its default home dashboard path
+const ROLE_DASHBOARDS: Record<string, string> = {
+  customer: '/customer/overview',
+  professional: '/professional/dashboard',
+  business: '/professional/dashboard',
+};
+
+const getDashboardByRole = (role?: string) => {
+  if (!role) return '/customer/overview';
+  return ROLE_DASHBOARDS[role] || '/customer/overview';
+};
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isCustomerRoute = CUSTOMER_ROUTES.some(r => pathname.startsWith(r));
-  const isHostRoute = HOST_ROUTES.some(r => pathname.startsWith(r));
+  const tokenCookie = request.cookies.get('salon-token')?.value;
+  let roleCookie = request.cookies.get('salon-role')?.value;
 
-  if (!isCustomerRoute && !isHostRoute) return NextResponse.next();
-
-  const token = request.cookies.get('realState-token')?.value;
-
-  // Not logged in → redirect to login
-  if (!token) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+  // Verify token validity
+  let isValidSession = false;
+  if (tokenCookie) {
+    const payload = decodeJwt(tokenCookie);
+    if (payload && (!payload.exp || payload.exp * 1000 > Date.now())) {
+      isValidSession = true;
+      if (!roleCookie && payload.role) {
+        roleCookie = payload.role;
+      }
+    }
   }
 
-  const payload = decodeJwt(token);
+  const userRole = roleCookie || 'customer';
+  const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register');
+  const isCustomerRoute = pathname.startsWith('/customer');
+  const isProfessionalRoute = pathname.startsWith('/professional');
+  const isBusinessRoute = pathname.startsWith('/business');
+  const isProtectedRoute = isCustomerRoute || isProfessionalRoute || isBusinessRoute;
 
-  // Invalid or expired token → redirect to login
-  if (!payload || (payload.exp && payload.exp * 1000 < Date.now())) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+  // 1. If user is already logged in and tries to access /login or /register -> Redirect to their dashboard
+  if (isAuthRoute && isValidSession) {
+    const targetDashboard = getDashboardByRole(userRole);
+    return NextResponse.redirect(new URL(targetDashboard, request.url));
   }
 
-  const role = payload.role;
-
-  // customer only — block host from /partner-dashboard
-  if (isCustomerRoute && role !== 'customer') {
-    return NextResponse.rewrite(new URL('/not-found', request.url));
+  // 2. If user is NOT logged in and tries to access any protected route -> Redirect to /login
+  if (isProtectedRoute && !isValidSession) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // host only — block customer from /hotels-partner-dashboard
-  if (isHostRoute && role !== 'host') {
-    return NextResponse.rewrite(new URL('/not-found', request.url));
+  // 3. Role-based access control (RBAC) enforcement for authenticated users
+  if (isValidSession && isProtectedRoute) {
+    // Customer route attempt
+    if (isCustomerRoute && userRole !== 'customer') {
+      const userDashboard = getDashboardByRole(userRole);
+      return NextResponse.redirect(new URL(userDashboard, request.url));
+    }
+
+    // Professional route attempt
+    if (isProfessionalRoute && userRole !== 'professional' && userRole !== 'business') {
+      const userDashboard = getDashboardByRole(userRole);
+      return NextResponse.redirect(new URL(userDashboard, request.url));
+    }
+
+    // Business route attempt
+    if (isBusinessRoute && userRole !== 'business' && userRole !== 'professional') {
+      const userDashboard = getDashboardByRole(userRole);
+      return NextResponse.redirect(new URL(userDashboard, request.url));
+    }
   }
 
   return NextResponse.next();
@@ -56,7 +86,11 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/partner-dashboard/:path*',
-    '/hotels-partner-dashboard/:path*',
+    '/customer/:path*',
+    '/professional/:path*',
+    '/business/:path*',
+    '/login',
+    '/register',
   ],
 };
+

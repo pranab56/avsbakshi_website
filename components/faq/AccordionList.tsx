@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 export interface QuestionItem {
   category: string;
@@ -13,6 +13,7 @@ interface AccordionListProps {
   openIndex: number | null;
   setOpenIndex: (index: number | null) => void;
   searchQuery: string;
+  isLoading?: boolean;
 }
 
 export default function AccordionList({
@@ -20,10 +21,16 @@ export default function AccordionList({
   openIndex,
   setOpenIndex,
   searchQuery,
+  isLoading,
 }: AccordionListProps) {
   return (
     <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-3 shadow-xs">
-      {filteredQuestions.length > 0 ? (
+      {isLoading ? (
+        <div className="flex items-center justify-center py-10 text-muted-foreground">
+          <Loader2 className="w-5 h-5 animate-spin mr-2" />
+          <span className="text-xs font-medium">Loading FAQs...</span>
+        </div>
+      ) : filteredQuestions.length > 0 ? (
         filteredQuestions.map((item, idx) => {
           const isOpen = openIndex === idx;
           return (

@@ -4,12 +4,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors, ChevronRight, Sparkles, Grid } from "lucide-react";
+import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors, ChevronRight, Sparkles, Grid, LayoutDashboard, Calendar, Settings, Heart, LogOut } from "lucide-react";
 import Button from "./Button";
 import ThemeToggle from "./theme-toggle";
 import { Combobox } from "@/components/ui/combobox";
 import { SERVICE_CATEGORIES } from "@/lib/data/marketplaceData";
 import { ServiceCategory } from "@/types";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { logout } from "@/features/auth/authSlice";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const languageOptions = [
   { value: "en", label: "English" },
@@ -18,12 +29,40 @@ const languageOptions = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const token = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.token);
+  const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
+
+  const [mounted, setMounted] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [discoverOpen, setDiscoverOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<ServiceCategory | null>(SERVICE_CATEGORIES[0] || null);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isLoggedIn = mounted && Boolean(token);
+
+  const handleLogout = async () => {
+    setProfileOpen(false);
+    setMobileMenuOpen(false);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore network errors
+    }
+    dispatch(logout());
+    toast.success("Successfully logged out.");
+    router.push("/login");
+  };
 
   const handleServicesMouseEnter = () => {
     if (hoverTimeoutRef.current) {
@@ -119,8 +158,8 @@ export default function Navbar() {
             <Link
               href="/"
               className={`group relative py-2 transition-colors ${pathname === "/"
-                  ? "text-foreground font-semibold"
-                  : "hover:text-foreground"
+                ? "text-foreground font-semibold"
+                : "hover:text-foreground"
                 }`}
             >
               <span>Home</span>
@@ -157,10 +196,10 @@ export default function Navbar() {
                   onMouseLeave={handleServicesMouseLeave}
                   className="absolute top-full left-0 pt-1.5 flex bg-popover rounded-xl border border-border shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 overflow-hidden divide-x divide-border/40 min-w-[280px] before:absolute before:-top-3 before:left-0 before:w-full before:h-4 before:content-['']"
                 >
-                  
+
                   {/* Left Column: All Services Suggested First + Primary Categories */}
                   <div className="w-64 p-3 space-y-2 shrink-0 bg-background/50">
-                    
+
                     {/* All Services Suggested First */}
                     <Link
                       href="/discover?tab=services"
@@ -191,11 +230,10 @@ export default function Navbar() {
                           <div
                             key={cat.id}
                             onMouseEnter={() => setActiveCategory(cat)}
-                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors ${
-                              isCatActive
-                                ? "bg-accent text-foreground font-semibold"
-                                : "text-muted-foreground hover:text-foreground hover:bg-accent/60"
-                            }`}
+                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors ${isCatActive
+                              ? "bg-accent text-foreground font-semibold"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/60"
+                              }`}
                           >
                             <Link
                               href={`/search?category=${encodeURIComponent(cat.title)}`}
@@ -204,7 +242,7 @@ export default function Navbar() {
                             >
                               {cat.title}
                             </Link>
-                            
+
                             {/* Check if subcategory data exists */}
                             {catHasSubs ? (
                               <ChevronRight className={`w-3.5 h-3.5 ${isCatActive ? "text-[#D99722]" : "text-muted-foreground/40"}`} />
@@ -342,78 +380,228 @@ export default function Navbar() {
               value={currentLangCode}
               onChange={changeLanguage}
               triggerClassName="h-10 px-3 rounded-sm border-border bg-card hover:bg-accent text-xs font-semibold text-foreground shadow-2xs"
+              labelClassName="text-xs font-semibold"
               align="end"
             />
 
-            {/* Get Started Gold Dropdown CTA */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setSignUpOpen(!signUpOpen)}
-                className="h-10 px-4 rounded-sm bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50"
-              >
-                <span>Get Started</span>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${signUpOpen ? "rotate-180" : ""}`} />
-              </button>
-
-              {signUpOpen && (
-                <>
-                  {/* Click outside backdrop */}
-                  <div
-                    className="fixed inset-0 z-40 bg-transparent"
-                    onClick={() => setSignUpOpen(false)}
-                  />
-
-                  <div className="absolute top-full right-0 w-64 bg-popover rounded-lg shadow-2xl border border-border p-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 mt-1.5">
-                    <div className="px-3 py-1.5 text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
-                      Create an account as
-                    </div>
-
-                    <Link
-                      href="/register?role=customer"
-                      onClick={() => setSignUpOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
-                        <User className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-xs">Customer</div>
-                        <div className="text-[11px] text-muted-foreground">Book services & appointments</div>
-                      </div>
-                    </Link>
-
-                    <Link
-                      href="/register?role=professional"
-                      onClick={() => setSignUpOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
-                        <Scissors className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-xs">Professional</div>
-                        <div className="text-[11px] text-muted-foreground">Offer skills & gain clients</div>
-                      </div>
-                    </Link>
-
-                    <Link
-                      href="/register?role=business"
-                      onClick={() => setSignUpOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
-                        <Building2 className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-xs">Business / Salon Owner</div>
-                        <div className="text-[11px] text-muted-foreground">Manage your salon business</div>
-                      </div>
-                    </Link>
+            {/* Desktop Actions */}
+            {isLoggedIn ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="h-10 px-3 rounded-sm bg-card border border-border hover:bg-accent hover:border-primary/40 text-foreground text-xs font-semibold shadow-2xs flex items-center gap-2 cursor-pointer transition-all active:scale-95 relative z-50"
+                >
+                  <div className="w-6 h-6 rounded-md bg-[#D99722] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                    {user?.firstName ? user.firstName[0].toUpperCase() : <User className="w-3.5 h-3.5" />}
                   </div>
-                </>
-              )}
-            </div>
+                  <span className="max-w-[120px] truncate font-bold text-xs">
+                    {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user?.email?.split('@')[0] || "Profile")}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${profileOpen ? "rotate-180 text-primary" : ""}`} />
+                </button>
+
+                {profileOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40 bg-transparent"
+                      onClick={() => setProfileOpen(false)}
+                    />
+
+                    <div className="absolute top-full right-0 w-64 bg-popover rounded-xl shadow-2xl border border-border p-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 mt-1.5 divide-y divide-border/60">
+                      {/* User Header */}
+                      <div className="px-3 py-2.5 space-y-1">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-[#D99722] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
+                            {user?.firstName ? user.firstName[0].toUpperCase() : <User className="w-4.5 h-4.5" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-xs text-foreground truncate">
+                              {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user?.email?.split('@')[0] || "User Account")}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground truncate">
+                              {user?.email || ''}
+                            </p>
+                          </div>
+                        </div>
+                        {user?.role && (
+                          <div className="pt-1">
+                            <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D99722]/15 text-[#D99722] capitalize border border-[#D99722]/20">
+                              {user.role}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Navigation Links */}
+                      <div className="py-1.5 space-y-0.5">
+                        {user?.role === 'professional' ? (
+                          <>
+                            <Link
+                              href="/professional/dashboard"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <LayoutDashboard className="w-4 h-4 text-muted-foreground" />
+                              <span>Professional Dashboard</span>
+                            </Link>
+                            <Link
+                              href="/professional/appointments"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <Calendar className="w-4 h-4 text-muted-foreground" />
+                              <span>Appointments</span>
+                            </Link>
+                            <Link
+                              href="/professional/settings"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <Settings className="w-4 h-4 text-muted-foreground" />
+                              <span>Settings</span>
+                            </Link>
+                          </>
+                        ) : user?.role === 'business' ? (
+                          <>
+                            <Link
+                              href="/business/dashboard"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <LayoutDashboard className="w-4 h-4 text-muted-foreground" />
+                              <span>Business Dashboard</span>
+                            </Link>
+                            <Link
+                              href="/business/business-profile"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <Building2 className="w-4 h-4 text-muted-foreground" />
+                              <span>Salon Profile</span>
+                            </Link>
+                            <Link
+                              href="/business/settings"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <Settings className="w-4 h-4 text-muted-foreground" />
+                              <span>Settings</span>
+                            </Link>
+                          </>
+                        ) : (
+                          <>
+                            <Link
+                              href="/customer/overview"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <LayoutDashboard className="w-4 h-4 text-muted-foreground" />
+                              <span>My Account</span>
+                            </Link>
+                            <Link
+                              href="/customer/bookings"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <Calendar className="w-4 h-4 text-muted-foreground" />
+                              <span>My Bookings</span>
+                            </Link>
+                            <Link
+                              href="/customer/favorites"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <Heart className="w-4 h-4 text-muted-foreground" />
+                              <span>Favorites</span>
+                            </Link>
+                            <Link
+                              href="/customer/settings"
+                              onClick={() => setProfileOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
+                            >
+                              <Settings className="w-4 h-4 text-muted-foreground" />
+                              <span>Settings</span>
+                            </Link>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Log Out */}
+                      <div className="pt-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setProfileOpen(false);
+                            setShowLogoutConfirm(true);
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span>Log Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              /* Get Started Gold Dropdown CTA */
+              <div className="relative shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setSignUpOpen(!signUpOpen)}
+                  className="h-10 px-4 rounded-sm bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50 whitespace-nowrap shrink-0"
+                >
+                  <span className="whitespace-nowrap">Get Started</span>
+                  <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${signUpOpen ? "rotate-180" : ""}`} />
+                </button>
+
+                {signUpOpen && (
+                  <>
+                    {/* Click outside backdrop */}
+                    <div
+                      className="fixed inset-0 z-40 bg-transparent"
+                      onClick={() => setSignUpOpen(false)}
+                    />
+
+                    <div className="absolute top-full right-0 w-64 bg-popover rounded-lg shadow-2xl border border-border p-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 mt-1.5">
+                      <div className="px-3 py-1.5 text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
+                        Create an account as
+                      </div>
+
+                      <Link
+                        href="/register?role=customer"
+                        onClick={() => setSignUpOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
+                          <User className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs">Customer</div>
+                          <div className="text-[11px] text-muted-foreground">Book services & appointments</div>
+                        </div>
+                      </Link>
+
+                      <Link
+                        href="/register?role=professional"
+                        onClick={() => setSignUpOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
+                          <Scissors className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs">Professional</div>
+                          <div className="text-[11px] text-muted-foreground">Offer skills & manage business</div>
+                        </div>
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button & Mobile Language Toggle */}
@@ -527,53 +715,130 @@ export default function Navbar() {
               <span>FAQs</span>
             </Link>
 
-            {/* Mobile Sign Up As Options */}
+            {/* Mobile Sign Up / Account Options */}
             <div className="pt-3 border-t border-border space-y-2">
-              <div className="px-1 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-                Sign Up As
-              </div>
-              <div className="grid grid-cols-1 gap-2">
-                <Link
-                  href="/register?role=customer"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
-                >
-                  <User className="w-4 h-4 text-primary" />
-                  <span>Customer (Book Services)</span>
-                </Link>
-                <Link
-                  href="/register?role=professional"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
-                >
-                  <Scissors className="w-4 h-4 text-primary" />
-                  <span>Professional (Offer Services)</span>
-                </Link>
-                <Link
-                  href="/register?role=business"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
-                >
-                  <Building2 className="w-4 h-4 text-primary" />
-                  <span>Business / Salon Owner</span>
-                </Link>
-              </div>
+              {isLoggedIn ? (
+                <>
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/40 border border-border/60">
+                    <div className="w-10 h-10 rounded-xl bg-[#D99722] text-white flex items-center justify-center font-bold text-base shrink-0">
+                      {user?.firstName ? user.firstName[0].toUpperCase() : <User className="w-5 h-5" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm text-foreground truncate">
+                        {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user?.email?.split('@')[0] || "User Account")}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {user?.email || ''}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="pt-2">
-                <Button
-                  href="/login"
-                  variant="outline"
-                  fullWidth
-                  size="md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Log In
-                </Button>
-              </div>
+                  <div className="space-y-1 pt-1">
+                    <Link
+                      href={user?.role === 'professional' ? '/professional/dashboard' : user?.role === 'business' ? '/business/dashboard' : '/customer/overview'}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
+                    >
+                      <LayoutDashboard className="w-4 h-4 text-primary" />
+                      <span>Dashboard & Account</span>
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setShowLogoutConfirm(true);
+                      }}
+                      className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-destructive/10 text-destructive text-xs font-semibold hover:bg-destructive/20 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="px-1 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+                    Sign Up As
+                  </div>
+                  <div className="grid grid-cols-1 gap-2">
+                    <Link
+                      href="/register?role=customer"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
+                    >
+                      <User className="w-4 h-4 text-primary" />
+                      <span>Customer (Book Services)</span>
+                    </Link>
+                    <Link
+                      href="/register?role=professional"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
+                    >
+                      <Scissors className="w-4 h-4 text-primary" />
+                      <span>Professional (Offer Services)</span>
+                    </Link>
+                    <Link
+                      href="/register?role=business"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-accent/50 text-foreground text-xs font-semibold hover:bg-accent"
+                    >
+                      <Building2 className="w-4 h-4 text-primary" />
+                      <span>Business / Salon Owner</span>
+                    </Link>
+                  </div>
+
+                  <div className="pt-2">
+                    <Button
+                      href="/login"
+                      variant="outline"
+                      fullWidth
+                      size="md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Log In
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </>
       )}
+
+      {/* Logout Confirmation Modal */}
+      <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+        <DialogContent className="sm:max-w-md bg-popover border border-border text-popover-foreground p-6 rounded-xl">
+          <DialogHeader className="space-y-2 text-left">
+            <DialogTitle className="font-bold text-xl text-foreground">
+              Confirm Logout
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Are you sure you want to log out of your account? You will need to log in again to access your dashboard.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-center justify-end gap-3 pt-4">
+            <button
+              type="button"
+              onClick={() => setShowLogoutConfirm(false)}
+              className="px-4 py-2.5 rounded-lg border border-border text-foreground hover:bg-accent text-sm font-medium transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowLogoutConfirm(false);
+                handleLogout();
+              }}
+              className="px-4 py-2.5 rounded-lg bg-[#E54D42] hover:bg-[#D43B30] text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
+            >
+              Log out
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }
