@@ -170,16 +170,6 @@ export interface ServiceItem {
   duration?: string;
 }
 
-export interface ServiceSubcategory {
-  id: string;
-  name: string;
-  description?: string;
-  count?: string;
-  services?: ServiceItem[];
-  popularServices?: string[];
-  slug?: string;
-}
-
 export interface ServiceCategory {
   id: string;
   title: string;
@@ -187,7 +177,6 @@ export interface ServiceCategory {
   desc: string;
   count: string;
   img: string;
-  subcategories: ServiceSubcategory[];
 }
 
 export interface SalonTypeCategory {
@@ -210,5 +199,47 @@ export interface SalonItem {
   tags: string[];
   img: string;
   featured?: boolean;
+  address?: string;
+  phone?: string;
+  description?: string;
+  hours?: string;
+  amenities?: string[];
+  photos?: string[];
+}
+
+export interface ReviewItem {
+  id: string;
+  author: string;
+  rating: number;
+  date: string;
+  comment: string;
+  serviceName?: string;
+}
+
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  likes?: number;
+}
+
+export interface ProfessionalItem {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  rating: number;
+  reviewsCount: number;
+  location: string;
+  city: string;
+  bio: string;
+  salonId?: number | string;
+  salonName?: string;
+  badge?: string;
+  services: ServiceItem[];
+  portfolio?: PortfolioItem[];
+  reviews?: ReviewItem[];
+  workingHours?: { day: string; hours: string }[];
 }
 

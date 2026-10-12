@@ -1,14 +1,49 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { Search, MapPin } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 import Input from "../shared/Input";
 import Button from "../shared/Button";
+import { GooglePlacesInput, GooglePlaceResult } from "../ui/google-places-input";
 
 interface HeroProps {
   q: string;
   loc: string;
+  latitude?: string;
+  longitude?: string;
 }
 
-export default function Hero({ q, loc }: HeroProps) {
+export default function Hero({ q, loc, latitude: initialLat = "", longitude: initialLng = "" }: HeroProps) {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState(q);
+  const [locationText, setLocationText] = useState(loc);
+  const [latitude, setLatitude] = useState<number | string | null>(initialLat || null);
+  const [longitude, setLongitude] = useState<number | string | null>(initialLng || null);
+
+  const handlePlaceSelect = (place: GooglePlaceResult) => {
+    setLocationText(place.address);
+    setLatitude(place.lat);
+    setLongitude(place.lng);
+  };
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (searchTerm.trim()) params.set("searchTerm", searchTerm.trim());
+    if (locationText.trim()) params.set("loc", locationText.trim());
+    if (latitude) params.set("latitude", String(latitude));
+    if (longitude) params.set("longitude", String(longitude));
+
+    router.push(`/search?${params.toString()}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <section className="bg-[#1E1C1A] text-white py-12 sm:py-20 relative overflow-hidden">
       {/* Bottom-right warm amber color gradient overlay */}
@@ -28,7 +63,7 @@ export default function Hero({ q, loc }: HeroProps) {
             </span>
           </div>
 
-          <h1 className="  text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
+          <h1 className="text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
             Find your perfect <br />
             <span className="font-light italic text-[#CAA054]">beauty experience</span>
           </h1>
@@ -44,23 +79,31 @@ export default function Hero({ q, loc }: HeroProps) {
             variant="dark"
             inputSize="md"
             leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
-            defaultValue={q}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Try 'balayage', 'facial'..."
+            className="!h-11"
           />
 
-          <Input
-            variant="dark"
-            inputSize="md"
-            leftIcon={<MapPin className="w-4 h-4 text-zinc-400" />}
-            defaultValue={loc}
-            placeholder="City, ZIP code, or location"
-          />
+          <div className="w-full sm:w-1/2 relative">
+            <GooglePlacesInput
+              variant="dark"
+              placeholder="City, ZIP code, or location"
+              value={locationText}
+              onPlaceSelectAction={handlePlaceSelect}
+              onTextChange={(val) => setLocationText(val)}
+              onKeyDown={handleKeyDown}
+              className="!h-11"
+            />
+          </div>
 
           <Button
             type="button"
             variant="primary"
             size="md"
-            className="w-full sm:w-auto shrink-0"
+            onClick={handleSearch}
+            className="w-full sm:w-auto shrink-0 !h-11 px-6 font-bold"
           >
             Find a Service
           </Button>
@@ -72,7 +115,7 @@ export default function Hero({ q, loc }: HeroProps) {
           {["Haircut", "Highlights", "Nail Art", "Facial", "Barber"].map((tag, idx) => (
             <Link
               key={idx}
-              href={`/search?q=${encodeURIComponent(tag)}`}
+              href={`/search?searchTerm=${encodeURIComponent(tag)}`}
               className="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-1 rounded-md border border-white/15 transition-colors"
             >
               {tag}

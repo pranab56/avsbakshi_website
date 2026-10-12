@@ -32,7 +32,6 @@ const registerSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
-  phone: z.string().optional(),
   role: z.string().min(1, "Please select a role"),
   password: z.string().min(1, "Password is required").min(6, "Password must be at least 6 characters"),
 });
@@ -62,7 +61,6 @@ function RegisterFormContent() {
       firstName: "",
       lastName: "",
       email: "",
-      phone: "",
       role: initialRole.value,
       password: "",
     },
@@ -220,28 +218,6 @@ function RegisterFormContent() {
           {errors.email && (
             <p className="text-destructive text-[11px] font-medium mt-1">
               {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        {/* Phone Field */}
-        <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-foreground block">Phone number</label>
-          <Controller
-            name="phone"
-            control={control}
-            render={({ field }) => (
-              <PhoneInput
-                value={field.value}
-                onChange={field.onChange}
-                placeholder="Enter phone number"
-                error={!!errors.phone}
-              />
-            )}
-          />
-          {errors.phone && (
-            <p className="text-destructive text-[11px] font-medium mt-1">
-              {errors.phone.message}
             </p>
           )}
         </div>

@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, Search, Heart } from "lucide-react";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 import { Combobox } from "@/components/ui/combobox";
+import { useAddAndRemoveWishListMutation } from "@/features/wishlist/wishlistApi";
 
 export interface SearchResultItem {
-  id: number;
+  id: string | number;
   name: string;
   category: string;
   rating: number;
@@ -16,15 +19,38 @@ export interface SearchResultItem {
   nextSlot: string;
   tags: string[];
   img: string;
+  description?: string;
+  type?: "professional" | "salon";
 }
 
 interface SearchResultsListProps {
   results: SearchResultItem[];
   loc: string;
+  isLoading?: boolean;
 }
 
-export default function SearchResultsList({ results, loc }: SearchResultsListProps) {
+export default function SearchResultsList({ results, loc, isLoading }: SearchResultsListProps) {
   const [page, setPage] = useState(1);
+  const [likedCards, setLikedCards] = useState<Record<string | number, boolean>>({});
+  const token = useSelector((state: { auth?: { token?: string | null } }) => state.auth?.token);
+  const [addAndRemoveWishList] = useAddAndRemoveWishListMutation();
+
+  const toggleWishlist = async (id: string | number, type: "professional" | "salon" = "professional") => {
+    if (!token) {
+      toast.error("Please log in to add to wishlist");
+      return;
+    }
+    try {
+      const res = await addAndRemoveWishList({
+        entityType: type,
+        entity: String(id),
+      }).unwrap();
+      setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+      toast.success(res?.message || "Wishlist updated");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update wishlist");
+    }
+  };
   const [sortOption, setSortOption] = useState("Highest Rated");
   const sortOptions = [
     { value: "Recommended", label: "Recommended" },
@@ -33,11 +59,33 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
     { value: "Price: Low to High", label: "Price: Low to High" },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="lg:col-span-9 space-y-4">
+        {[1, 2, 3].map((n) => (
+          <div key={n} className="bg-card rounded-xl h-52 border border-border animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (results.length === 0) {
+    return (
+      <div className="lg:col-span-9 bg-card p-12 text-center rounded-xl border border-border space-y-3">
+        <Search className="w-10 h-10 text-muted-foreground mx-auto" />
+        <h4 className="text-base font-bold text-foreground">No Search Results Found</h4>
+        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+          No services or professionals were found matching your query in {loc}. Try searching for a different keyword.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="lg:col-span-9 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <p className="text-xs sm:text-sm font-medium text-foreground">
-          <span className="font-bold">124</span> professionals found near <span className="font-bold">{loc}</span>
+          <span className="font-bold">{results.length}</span> professionals found near <span className="font-bold">{loc}</span>
         </p>
 
         <div className="flex items-center gap-2 text-xs self-start sm:self-auto">
@@ -64,6 +112,13 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
                 className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700"
                 style={{ backgroundImage: `url('${item.img}')` }}
               />
+              <button
+                type="button"
+                onClick={() => toggleWishlist(item.id, item.type || "professional")}
+                className="absolute top-3 left-3 w-8 h-8 rounded-lg bg-background/90 backdrop-blur-md text-foreground flex items-center justify-center border border-border/50 shadow hover:scale-110 transition-transform cursor-pointer z-10"
+              >
+                <Heart className={`w-4 h-4 ${likedCards[item.id] ? "fill-red-500 text-red-500" : ""}`} />
+              </button>
             </div>
 
             {/* Right Content */}
@@ -71,7 +126,7 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
               <div>
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="  text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                    <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">
                       {item.name}
                     </h3>
                     <p className="text-xs text-muted-foreground mb-1.5 sm:mb-2">{item.category}</p>
@@ -91,7 +146,7 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
                   </div>
 
                   <div className="text-right shrink-0">
-                    <span className="  text-lg sm:text-xl font-bold text-primary block">
+                    <span className="text-lg sm:text-xl font-bold text-primary block">
                       {item.price}
                     </span>
                     <span className="text-[10px] text-muted-foreground block">per service</span>
@@ -117,16 +172,16 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
 
                 <div className="flex flex-row items-center gap-2.5 w-full sm:w-auto">
                   <Link
-                    href="/professionals/1"
+                    href={item.type === "salon" ? `/salons/${item.id}` : `/professionals/${item.id}`}
                     className="flex-1 sm:flex-none text-center px-4 py-2.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border text-xs font-semibold rounded-xl transition-colors"
                   >
-                    View profile
+                    {item.type === "salon" ? "Salon Details" : "View Profile"}
                   </Link>
                   <Link
-                    href="/book/1"
-                    className="flex-1 sm:flex-none text-center px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-xs transition-colors whitespace-nowrap"
+                    href={item.type === "salon" ? `/salons/${item.id}` : `/book/1?proId=${item.id}`}
+                    className="flex-1 sm:flex-none text-center px-4 py-2.5 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-bold rounded-xl shadow-xs transition-colors whitespace-nowrap"
                   >
-                    Book Appointment
+                    {item.type === "salon" ? "Explore Salon" : "Book Appointment"}
                   </Link>
                 </div>
               </div>
@@ -150,8 +205,8 @@ export default function SearchResultsList({ results, loc }: SearchResultsListPro
             key={num}
             onClick={() => setPage(num)}
             className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full text-xs font-semibold transition-all cursor-pointer ${page === num
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border"
+              ? "bg-primary text-primary-foreground shadow-xs"
+              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border"
               }`}
           >
             0{num}

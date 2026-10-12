@@ -12,14 +12,14 @@ export default function GetStartedCta() {
           <span className="font-light italic text-primary">Appointment?</span>
         </h2>
         <div className="flex justify-center gap-3 pt-4">
-          <Link
+          {/* <Link
             href="/search"
             className="px-7 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-sm shadow-sm transition-all hover:scale-[1.02] inline-block"
           >
             Find a Service
-          </Link>
+          </Link> */}
           <Link
-            href="/discover?tab=professionals"
+            href="/professionals"
             className="px-7 py-3.5 bg-card hover:bg-accent text-foreground text-xs sm:text-sm font-semibold rounded-sm transition-all inline-block border border-border"
           >
             Explore Professionals

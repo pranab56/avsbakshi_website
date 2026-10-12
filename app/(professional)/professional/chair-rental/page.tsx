@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import ChairImage from "@/components/shared/ChairImage";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { Heart, Star, MapPin, X, Calendar, CheckCircle2, Loader2, AlertCircle, Armchair, Building2 } from "lucide-react";
@@ -77,7 +78,8 @@ export default function ProfessionalChairRentalPage() {
   const user = useSelector((state: { auth?: { user?: any } }) => state.auth?.user);
   const { data: profileResponse, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined, { skip: !user });
   const profileData = profileResponse?.data;
-  const isSalonOwner = Boolean(profileData?.isSalonOwner ?? user?.isSalonOwner);
+  const storedIsSalonOwner = typeof window !== "undefined" ? localStorage.getItem("isSalonOwner") === "true" : false;
+  const isSalonOwner = Boolean(profileData?.isSalonOwner ?? user?.isSalonOwner ?? (storedIsSalonOwner && (user?.role === "professional" || user?.role === "business")));
 
   useEffect(() => {
     if (!isProfileLoading && isSalonOwner) {
@@ -151,24 +153,58 @@ export default function ProfessionalChairRentalPage() {
   const rentalDays = calculateDays(startDate, endDate);
   const estimatedTotal = (selectedChair?.pricePerDayInUSD || 0) * rentalDays;
 
+  const formatStartDateISO = (dateStr: string) => {
+    try {
+      if (dateStr.includes("T")) return new Date(dateStr).toISOString();
+      return new Date(`${dateStr}T09:00:00.000Z`).toISOString();
+    } catch (e) {
+      return new Date(dateStr).toISOString();
+    }
+  };
+
+  const formatEndDateISO = (dateStr: string) => {
+    try {
+      if (dateStr.includes("T")) return new Date(dateStr).toISOString();
+      return new Date(`${dateStr}T18:00:00.000Z`).toISOString();
+    } catch (e) {
+      return new Date(dateStr).toISOString();
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isSuccess =
+        urlParams.get("status") === "success" ||
+        urlParams.get("payment") === "success" ||
+        urlParams.has("session_id");
+      if (isSuccess) {
+        setActiveTab("bookings");
+        toast.success("Payment completed successfully! Your chair rental booking is confirmed.");
+      }
+    }
+  }, []);
+
   const handleBookChairSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedChair) return;
 
-    const salonId =
-      typeof selectedChair.salon === "object"
-        ? selectedChair.salon?._id
-        : selectedChair.salon;
-
     const payload = {
       chair: selectedChair._id,
-      salon: salonId,
-      startDate,
-      endDate,
+      startDate: formatStartDateISO(startDate),
+      endDate: formatEndDateISO(endDate),
     };
 
     try {
       const res = await createChairRental(payload).unwrap();
+      const checkoutUrl = res?.data?.checkoutUrl || res?.checkoutUrl;
+
+      if (checkoutUrl) {
+        toast.success(res?.message || "Redirecting to payment checkout...");
+        window.location.href = checkoutUrl;
+        return;
+      }
+
       toast.success(res?.message || "Chair booking request sent successfully!");
       setBookingSuccess(true);
       refetchMyRentals();
@@ -282,7 +318,7 @@ export default function ProfessionalChairRentalPage() {
                   item.photo ||
                   salonObj?.photos?.[0] ||
                   salonObj?.logo ||
-                  "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80";
+                  "";
 
                 const salonName = salonObj?.name || "Salon Space";
                 const category = salonObj?.businessType || "Hair & Beauty";
@@ -303,12 +339,12 @@ export default function ProfessionalChairRentalPage() {
                   >
                     {/* Image Container */}
                     <div className="relative w-full h-56 bg-accent">
-                      <Image
+                      <ChairImage
                         src={imageSrc}
                         alt={item.name}
                         fill
                         className="object-cover"
-                        unoptimized
+                        showLabel
                       />
 
                       {/* Open / Status Badge */}
@@ -425,7 +461,7 @@ export default function ProfessionalChairRentalPage() {
                 chairObj?.photo ||
                 salonObj?.photos?.[0] ||
                 salonObj?.logo ||
-                "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=400&q=80";
+                "";
 
               const formattedStart = booking.startDate
                 ? new Date(booking.startDate).toLocaleDateString("en-US", {
@@ -462,12 +498,11 @@ export default function ProfessionalChairRentalPage() {
                   {/* Left Side: Thumbnail & Title */}
                   <div className="flex items-center gap-4 sm:gap-5">
                     <div className="relative w-20 h-14 sm:w-24 sm:h-16 rounded-xl overflow-hidden bg-accent shrink-0 border border-border">
-                      <Image
+                      <ChairImage
                         src={img}
                         alt={title}
                         fill
                         className="object-cover"
-                        unoptimized
                       />
                     </div>
 

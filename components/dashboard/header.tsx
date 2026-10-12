@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { Menu, Bell } from "lucide-react";
 import { DashboardConfig } from "./nav-config";
 import ThemeToggle from "@/components/shared/theme-toggle";
+import { useGetMyProfileQuery } from "@/features/profile/profileApi";
 
 interface DashboardHeaderProps {
   config: DashboardConfig;
@@ -17,7 +19,14 @@ export default function DashboardHeader({
   onOpenMobileMenu,
 }: DashboardHeaderProps) {
   const pathname = usePathname();
+  const token = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.token);
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
+
+  const { data: profileResponse } = useGetMyProfileQuery(undefined, { skip: !token });
+  const profileData = profileResponse?.data;
+  const currentUser = profileData || user;
+
+  const userImage = typeof currentUser?.image === "string" && currentUser.image.trim().length > 0 ? currentUser.image : null;
 
   // Derive section title from pathname
   const getPageTitle = () => {
@@ -32,12 +41,12 @@ export default function DashboardHeader({
     );
   };
 
-  const displayName = user?.firstName
-    ? `${user.firstName} ${user.lastName || ''}`.trim()
-    : (user?.email?.split('@')[0] || "User");
+  const displayName = currentUser?.firstName
+    ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim()
+    : (currentUser?.email?.split('@')[0] || "User");
 
-  const initial = user?.firstName
-    ? user.firstName[0].toUpperCase()
+  const initial = currentUser?.firstName
+    ? currentUser.firstName[0].toUpperCase()
     : (displayName[0] ? displayName[0].toUpperCase() : "U");
 
   return (
@@ -53,7 +62,7 @@ export default function DashboardHeader({
         </button>
 
         <div className="flex items-center gap-2 min-w-0">
-          <h1 className="text-base sm:text-xl md:text-2xl font-bold   text-foreground truncate max-w-[130px] xs:max-w-[190px] sm:max-w-none">
+          <h1 className="text-base sm:text-xl md:text-2xl font-bold text-foreground truncate max-w-[130px] xs:max-w-[190px] sm:max-w-none">
             {getPageTitle()}
           </h1>
           <span
@@ -81,16 +90,20 @@ export default function DashboardHeader({
         {/* User Profile Avatar */}
         <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-3 border-l border-border shrink-0">
           <div
-            className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 text-primary font-bold text-xs sm:text-sm border border-primary/30 notranslate shrink-0 select-none uppercase"
+            className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary/15 text-primary font-bold text-xs sm:text-sm border border-primary/30 notranslate shrink-0 select-none uppercase overflow-hidden"
             translate="no"
           >
-            {initial}
+            {userImage ? (
+              <Image src={userImage} alt={displayName} fill className="object-cover" unoptimized />
+            ) : (
+              initial
+            )}
           </div>
           <div className="hidden md:flex flex-col text-left">
             <span className="text-sm font-semibold text-foreground notranslate" translate="no">
               {displayName}
             </span>
-            <span className="text-xs text-muted-foreground capitalize">{config.role}</span>
+            <span className="text-xs text-muted-foreground capitalize">{currentUser?.role || config.role}</span>
           </div>
         </div>
       </div>

@@ -43,10 +43,9 @@ export const DASHBOARD_CONFIGS: Record<RoleType, DashboardConfig> = {
     actionButtonHref: "/discover",
     navItems: [
       { title: "Dashboard", href: "/customer/overview", icon: LayoutDashboard },
-      { title: "Discovery", href: "/customer/discover", icon: Compass },
-      { title: "My Bookings", href: "/customer/bookings", icon: CalendarCheck, badge: 2 },
+      { title: "My Bookings", href: "/customer/bookings", icon: CalendarCheck },
       { title: "Calendar", href: "/customer/calendar", icon: Calendar },
-      { title: "Messages", href: "/customer/messages", icon: MessageSquare, badge: 3 },
+      { title: "Messages", href: "/customer/messages", icon: MessageSquare },
       { title: "Favorites", href: "/customer/favorites", icon: Heart },
       { title: "Settings", href: "/customer/settings", icon: Settings },
     ],
@@ -102,7 +101,7 @@ export const getProfessionalNavItems = (isSalonOwner?: boolean): NavItem[] => {
       { title: "Services", href: "/professional/services", icon: Scissors },
       // { title: "Availability", href: "/professional/availability", icon: Clock },
       { title: "Calendar", href: "/professional/calendar", icon: Calendar },
-      { title: "My Customers", href: "/professional/my-customers", icon: Users },
+      // { title: "My Customers", href: "/professional/my-customers", icon: Users },
       { title: "Reviews", href: "/professional/reviews", icon: Star },
       { title: "Settings", href: "/professional/settings", icon: Settings },
     ];

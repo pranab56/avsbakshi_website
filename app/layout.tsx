@@ -15,7 +15,7 @@ const manrope = Manrope({
 });
 
 const fraunces = Fraunces({
-  variable: "-- ",
+  variable: "--font-serif",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
@@ -38,12 +38,12 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${manrope.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-[#D99722]/20 selection:text-[#D99722] transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-[#D99722]/20 selection:text-[#D99722]">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange={false}
+          disableTransitionOnChange={true}
         >
           <I18nProvider>
             <ReduxProvider>

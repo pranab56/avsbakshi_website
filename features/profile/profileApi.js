@@ -28,6 +28,15 @@ export const profileApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["profile"]
         }),
+
+        getMySingleProfile: builder.query({
+            query: ({ userId }) => ({
+                url: `/users/single/${userId}`,
+                method: "GET",
+            }),
+            providesTags: ["profile"]
+        }),
+
     }),
 });
 
@@ -35,5 +44,6 @@ export const profileApi = baseApi.injectEndpoints({
 export const {
     useGetMyProfileQuery,
     useUpdateMyProfileMutation,
-    useChangePasswordMutation
+    useChangePasswordMutation,
+    useGetMySingleProfileQuery
 } = profileApi;

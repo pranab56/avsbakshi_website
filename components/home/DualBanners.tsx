@@ -50,7 +50,7 @@ export default function DualBanners() {
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
             <Link
-              href="/for-businesses"
+              href="/register"
               className="w-full sm:w-auto text-center px-5 sm:px-6 py-3 sm:py-3.5 bg-[#1A1A1D] dark:bg-primary hover:bg-black text-white dark:text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm transition-colors"
             >
               Join as a Business

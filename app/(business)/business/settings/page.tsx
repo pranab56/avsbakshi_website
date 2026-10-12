@@ -72,7 +72,7 @@ export default function BusinessSettingsPage() {
     businessName: "Noir Studio",
     ownerName: "James Chen",
     email: "hello@noirstudio.com",
-    phone: "+1 (212) 555-0188",
+    phone: "+12125550188",
     tagline: "Luxury Hair Salon & Beauty Studio",
     location: "Soho, New York",
     establishedYear: "2015",

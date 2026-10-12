@@ -35,12 +35,12 @@ export default function GetStartedCta() {
           {/* Dual Action CTAs */}
           <div className="max-w-4xl mx-auto ">
             <div className="flex items-center justify-center gap-3 sm:gap-4 pt-1">
-            <Link
+            {/* <Link
               href="/discover"
               className=" px-7 sm:px-9 py-3.5 rounded-lg bg-[#D99722] hover:bg-[#A37937] text-white text-xs sm:text-sm font-medium transition-colors shadow-xs text-center shrink-0"
             >
               Find a Service
-            </Link>
+            </Link> */}
 
             <Link
               href="/discover?tab=professionals"

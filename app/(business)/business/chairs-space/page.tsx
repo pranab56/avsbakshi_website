@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
+import ChairImage from "@/components/shared/ChairImage";
 import { Plus, Check, Edit2, Trash2, Upload, Loader2, AlertCircle, Armchair } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -296,21 +297,14 @@ export default function ChairsSpacePage() {
             >
               {/* Left Chair Info + Photo */}
               <div className="flex items-start gap-4 max-w-xl">
-                {chair.photo ? (
-                  <div className="relative w-20 h-20 rounded-md overflow-hidden bg-secondary border border-border shrink-0">
-                    <Image
-                      src={chair.photo}
-                      alt={chair.name}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                ) : (
-                  <div className="w-20 h-20 rounded-md bg-secondary border border-border shrink-0 flex items-center justify-center text-muted-foreground">
-                    <Armchair className="w-8 h-8" />
-                  </div>
-                )}
+                <div className="relative w-20 h-20 rounded-md overflow-hidden bg-secondary border border-border shrink-0">
+                  <ChairImage
+                    src={chair.photo}
+                    alt={chair.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground">

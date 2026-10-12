@@ -41,8 +41,8 @@ export const chairRentalApi = baseApi.injectEndpoints({
         }),
 
         getAllChairRentals: builder.query({
-            query: () => ({
-                url: `/chairs`,
+            query: ({ page = 1 } = {}) => ({
+                url: `/chairs?page=${page}`,
                 method: "GET",
             }),
             providesTags: ["chairRental"]

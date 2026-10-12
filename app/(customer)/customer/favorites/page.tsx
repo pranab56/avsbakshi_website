@@ -3,88 +3,89 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Star, MapPin } from "lucide-react";
-
-interface FavoriteItem {
-  id: string;
-  name: string;
-  category: string;
-  price: string;
-  rating: number;
-  reviewCount: number;
-  location: string;
-  tags: string[];
-  image: string;
-  openBadge?: string;
-  type: "professional" | "salon";
-}
+import { Heart, Star, MapPin, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import {
+  useGetMyWishListQuery,
+  useAddAndRemoveWishListMutation,
+} from "@/features/wishlist/wishlistApi";
 
 export default function CustomerFavoritesPage() {
-  const [activeTab, setActiveTab] = useState<"professionals" | "salons">(
-    "professionals"
-  );
-  const [favoritesList, setFavoritesList] = useState<FavoriteItem[]>([
-    {
-      id: "1",
-      name: "Emma Studio",
-      category: "Hair & Beauty",
-      price: "from $40",
-      rating: 4.8,
-      reviewCount: 89,
-      location: "Soho, New York",
-      tags: ["Haircut", "Colour", "Blowout"],
-      openBadge: "Open until 9:00 PM",
-      image:
-        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=80",
-      type: "professional",
-    },
-    {
-      id: "2",
-      name: "Maya Chen",
-      category: "Colorist",
-      price: "from $40",
-      rating: 4.8,
-      reviewCount: 89,
-      location: "Beverly Hills, Los Angeles",
-      tags: ["Haircut", "Colour", "Blowout"],
-      image:
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80",
-      type: "professional",
-    },
-    {
-      id: "3",
-      name: "Amara Studio",
-      category: "Nails",
-      price: "from $40",
-      rating: 4.8,
-      reviewCount: 89,
-      location: "West Village, New York",
-      tags: ["Haircut", "Colour", "Blowout"],
-      image:
-        "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600&q=80",
-      type: "professional",
-    },
-    {
-      id: "4",
-      name: "Lune Nail Studio",
-      category: "Hair & Beauty",
-      price: "from $40",
-      rating: 4.8,
-      reviewCount: 89,
-      location: "Tribeca, New York",
-      tags: ["Haircut", "Colour", "Blowout"],
-      openBadge: "Open until 9:00 PM",
-      image:
-        "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=600&q=80",
-      type: "salon",
-    },
-  ]);
+  const [activeTab, setActiveTab] = useState<"professionals" | "salons">("professionals");
 
-  const toggleFavorite = (id: string) => {
-    setFavoritesList((prev) => prev.filter((item) => item.id !== id));
+  const { data: wishlistRes, isLoading } = useGetMyWishListQuery({});
+  const [addAndRemoveWishList] = useAddAndRemoveWishListMutation();
+
+  const rawList = Array.isArray(wishlistRes?.data) ? wishlistRes.data : [];
+
+  const wishlistItems = rawList.map((wItem: any) => {
+    const entity = wItem.entity || {};
+    const roleRef = entity.roleRef || {};
+    const firstName = entity.firstName || "";
+    const lastName = entity.lastName || "";
+    const name = `${firstName} ${lastName}`.trim() || entity.name || "Specialist";
+
+    const isSalon = wItem.entityType === "salon" || entity.role === "business";
+    const itemType: "professional" | "salon" = isSalon ? "salon" : "professional";
+
+    const image =
+      typeof entity.image === "string" && entity.image.trim().length > 0
+        ? entity.image
+        : Array.isArray(roleRef.photos) && roleRef.photos.length > 0 && roleRef.photos[0]
+        ? roleRef.photos[0]
+        : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80";
+
+    const category =
+      roleRef.title ||
+      entity.businessType ||
+      entity.role ||
+      (isSalon ? "Beauty Salon" : "Beauty Specialist");
+
+    const price = roleRef.startingPriceInUSD
+      ? `from $${roleRef.startingPriceInUSD}`
+      : "Verified";
+
+    const rating = roleRef.avgRating !== undefined ? roleRef.avgRating : (entity.avgRating || 5.0);
+    const reviewCount = roleRef.totalReviews !== undefined ? roleRef.totalReviews : (entity.totalReviews || 0);
+
+    const location = entity.address?.city
+      ? `${entity.address.city}${entity.address.state ? ", " + entity.address.state : ""}`
+      : "Location N/A";
+
+    const tags = Array.isArray(roleRef.specialties) && roleRef.specialties.length > 0
+      ? roleRef.specialties
+      : [isSalon ? "Salon" : "Specialist"];
+
+    return {
+      raw: wItem,
+      id: wItem._id,
+      entityId: entity._id || entity.id,
+      entityType: wItem.entityType || "user",
+      name,
+      category,
+      price,
+      rating,
+      reviewCount,
+      location,
+      tags,
+      image,
+      type: itemType,
+    };
+  });
+
+  const toggleFavorite = async (item: any) => {
+    try {
+      const res = await addAndRemoveWishList({
+        entityType: item.entityType,
+        entity: item.entityId,
+      }).unwrap();
+      toast.success(res?.message || "Removed from favorites");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update favorites");
+    }
   };
 
-  const displayedItems = favoritesList.filter((item) =>
+  const displayedItems = wishlistItems.filter((item: any) =>
     activeTab === "professionals" ? item.type === "professional" : item.type === "salon"
   );
 
@@ -111,7 +112,7 @@ export default function CustomerFavoritesPage() {
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          Professionals
+          Professionals ({wishlistItems.filter((i: any) => i.type === "professional").length})
           {activeTab === "professionals" && (
             <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
           )}
@@ -126,7 +127,7 @@ export default function CustomerFavoritesPage() {
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
-          Salons
+          Salons ({wishlistItems.filter((i: any) => i.type === "salon").length})
           {activeTab === "salons" && (
             <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
           )}
@@ -134,9 +135,15 @@ export default function CustomerFavoritesPage() {
       </div>
 
       {/* Favorites Grid */}
-      {displayedItems.length > 0 ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-          {displayedItems.map((item) => (
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="bg-card border border-border rounded-2xl h-80 animate-pulse" />
+          ))}
+        </div>
+      ) : displayedItems.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+          {displayedItems.map((item: any) => (
             <div
               key={item.id}
               className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between transition-all hover:border-primary/50"
@@ -151,17 +158,10 @@ export default function CustomerFavoritesPage() {
                   unoptimized
                 />
 
-                {/* Open Status Badge */}
-                {item.openBadge && (
-                  <span className="absolute top-3 left-3 bg-background/80 backdrop-blur-xs text-foreground text-[11px] font-medium px-3 py-1 rounded-full shadow-xs border border-border">
-                    {item.openBadge}
-                  </span>
-                )}
-
                 {/* Heart Favorite Button */}
                 <button
                   type="button"
-                  onClick={() => toggleFavorite(item.id)}
+                  onClick={() => toggleFavorite(item)}
                   aria-label="Remove from favorites"
                   className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-xs flex items-center justify-center text-primary hover:bg-background transition-all cursor-pointer shadow-xs border border-border"
                 >
@@ -210,7 +210,7 @@ export default function CustomerFavoritesPage() {
 
                   {/* Tag Badges */}
                   <div className="flex flex-wrap items-center gap-2 pt-1">
-                    {item.tags.map((tag, tIdx) => (
+                    {item.tags.map((tag: string, tIdx: number) => (
                       <span
                         key={tIdx}
                         className="bg-accent text-muted-foreground px-3 py-1 border border-border rounded-sm text-xs font-medium"
@@ -224,10 +224,10 @@ export default function CustomerFavoritesPage() {
                 {/* Book Appointment Action */}
                 <div className="pt-2">
                   <Link
-                    href={`/book/${item.id}`}
+                    href={item.type === "salon" ? `/salons/${item.entityId}` : `/professionals/${item.entityId}`}
                     className="w-full block text-center bg-primary hover:bg-primary/90 text-primary-foreground py-2.5 rounded-sm font-medium text-xs sm:text-sm transition-colors cursor-pointer"
                   >
-                    Book Appointment
+                    View & Book
                   </Link>
                 </div>
               </div>

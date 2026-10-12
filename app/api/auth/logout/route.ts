@@ -1,42 +1,46 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
+function clearAllAuthCookies(response: NextResponse) {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // Expire all cookies across path="/"
+  const cookieNames = [
+    "salon-token",
+    "salon-role",
+    "salon-refresh-token",
+    "realState-token",
+    "realState-role",
+  ];
+
+  cookieNames.forEach((name) => {
+    response.cookies.set(name, "", {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 0,
+      expires: new Date(0),
+    });
+    response.cookies.delete(name);
+  });
+}
+
+// GET: Direct browser navigation endpoint for instant logout
+export async function GET(request: NextRequest) {
+  const loginUrl = new URL("/login", request.url);
+  const response = NextResponse.redirect(loginUrl);
+  clearAllAuthCookies(response);
+  return response;
+}
+
+// POST: API request endpoint
 export async function POST() {
   try {
     const response = NextResponse.json({
       success: true,
       message: "Logged out successfully.",
     });
-
-    const isProduction = process.env.NODE_ENV === "production";
-
-    // Clear all httpOnly cookies
-    response.cookies.set("salon-token", "", {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0,
-      expires: new Date(0),
-    });
-
-    response.cookies.set("salon-role", "", {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0,
-      expires: new Date(0),
-    });
-
-    response.cookies.set("salon-refresh-token", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0,
-      expires: new Date(0),
-    });
-
+    clearAllAuthCookies(response);
     return response;
   } catch (error) {
     return NextResponse.json(

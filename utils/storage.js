@@ -82,6 +82,7 @@ export const removeStorage = () => {
     localStorage.removeItem("realState-refresh-token");
     localStorage.removeItem("salon-user");
     localStorage.removeItem("realState-user");
+    localStorage.removeItem("isSalonOwner");
     document.cookie = "salon-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     document.cookie = "salon-role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     document.cookie = "realState-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";

@@ -18,11 +18,11 @@ export default function Footer() {
               <Link href="/discover" className="text-zinc-400 hover:text-white transition-colors">
                 Discover
               </Link>
-              <Link href="/search" className="text-zinc-400 hover:text-white transition-colors">
-                Search
+              <Link href="/salons" className="text-zinc-400 hover:text-white transition-colors">
+                Salons
               </Link>
-              <Link href="/book/1" className="text-zinc-400 hover:text-white transition-colors">
-                Bookings
+              <Link href="/professionals" className="text-zinc-400 hover:text-white transition-colors">
+                Professionals
               </Link>
             </div>
           </div>
@@ -34,7 +34,7 @@ export default function Footer() {
             </h4>
             <div className="flex flex-col gap-2.5 text-xs sm:text-sm">
               <Link href="/for-professionals" className="text-zinc-400 hover:text-white transition-colors">
-                Join as Professional
+                For Professionals & Join
               </Link>
               <Link href="/for-professionals#features" className="text-zinc-400 hover:text-white transition-colors">
                 Professional Features
@@ -72,8 +72,8 @@ export default function Footer() {
               <Link href="/about" className="text-zinc-400 hover:text-white transition-colors">
                 About
               </Link>
-              <Link href="/search" className="text-zinc-400 hover:text-white transition-colors">
-                Search
+              <Link href="/how-it-works" className="text-zinc-400 hover:text-white transition-colors">
+                How It Works
               </Link>
               <Link href="/faq" className="text-zinc-400 hover:text-white transition-colors">
                 FAQ

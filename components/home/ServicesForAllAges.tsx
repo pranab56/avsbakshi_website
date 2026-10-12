@@ -8,7 +8,7 @@ const ageGroups = [
     ageRange: "Kids & Tweens",
     description: "Fun, gentle cuts and styles tailored for little ones in a welcoming, kid-friendly environment.",
     cta: "Kids' Services",
-    href: "/discover?tab=services&category=kids",
+    href: "/professionals",
     // Happy American child getting a haircut
     img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=800&q=80",
     badge: "Ages 3–12",
@@ -21,7 +21,7 @@ const ageGroups = [
     ageRange: "Young Adults",
     description: "Trendy styles, bold colors, and on-trend looks for teens who want to express themselves.",
     cta: "Teen Services",
-    href: "/discover?tab=services&category=teens",
+    href: "/professionals",
     // American teenage girl, modern look
     img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80",
     badge: "Ages 13–19",
@@ -34,7 +34,7 @@ const ageGroups = [
     ageRange: "Men & Women",
     description: "Premium cuts, color, and beauty treatments for busy professionals and everyday lifestyles.",
     cta: "Adult Services",
-    href: "/discover?tab=services",
+    href: "/professionals",
     // American adult professional woman
     img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80",
     badge: "Ages 20–55",
@@ -47,7 +47,7 @@ const ageGroups = [
     ageRange: "Golden Years",
     description: "Compassionate, expert care with gentle techniques and styles designed for mature elegance.",
     cta: "Senior Services",
-    href: "/discover?tab=services&category=seniors",
+    href: "/professionals",
     // American senior woman, dignified
     img: "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?auto=format&fit=crop&w=800&q=80",
     badge: "Ages 55+",
@@ -127,7 +127,7 @@ export default function ServicesForAllAges() {
         {/* Bottom CTA */}
         <div className="text-center mt-10 sm:mt-12">
           <Link
-            href="/discover"
+            href="/professionals"
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold text-sm hover:bg-primary/90 transition-colors shadow-sm"
           >
             Browse All Services

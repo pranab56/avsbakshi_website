@@ -2,12 +2,20 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import ChairImage from "@/components/shared/ChairImage";
 import { Loader2, AlertCircle, Armchair, Building2, Calendar, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import {
   useGetMyRentalsQuery,
   useUpdateChairRentalMutation,
 } from "@/features/chairRental/chairRentalApi";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface SalonInfo {
   _id?: string;
@@ -57,11 +65,33 @@ export default function MyChairRentalsPage() {
 
   const [updateChairRental, { isLoading: isUpdating }] = useUpdateChairRentalMutation();
 
+  // Confirmation Modal State
+  const [modalState, setModalState] = useState<{
+    open: boolean;
+    rentalId: string;
+    chairName: string;
+    action: "confirmed" | "cancelled" | null;
+  }>({
+    open: false,
+    rentalId: "",
+    chairName: "",
+    action: null,
+  });
+
   const rentalsList: MyRentalItem[] = Array.isArray(rentalsRes?.data)
     ? rentalsRes.data
     : Array.isArray(rentalsRes)
     ? rentalsRes
     : [];
+
+  const handleOpenConfirm = (rentalId: string, chairName: string, action: "confirmed" | "cancelled") => {
+    setModalState({
+      open: true,
+      rentalId,
+      chairName,
+      action,
+    });
+  };
 
   const handleStatusUpdate = async (rentalId: string, newStatus: string) => {
     try {
@@ -69,12 +99,18 @@ export default function MyChairRentalsPage() {
         chairRentalId: rentalId,
         data: { status: newStatus },
       }).unwrap();
-      const actionText = newStatus === "confirmed" ? "approved" : "cancelled";
+      const actionText = newStatus === "confirmed" ? "approved" : "rejected";
       toast.success(res?.message || `Rental request ${actionText} successfully!`);
     } catch (err: any) {
       console.error("Failed to update status:", err);
       toast.error(err?.data?.message || err?.message || "Failed to update rental status.");
     }
+  };
+
+  const handleConfirmAction = async () => {
+    if (!modalState.rentalId || !modalState.action) return;
+    await handleStatusUpdate(modalState.rentalId, modalState.action);
+    setModalState((prev) => ({ ...prev, open: false }));
   };
 
   return (
@@ -134,7 +170,7 @@ export default function MyChairRentalsPage() {
             const img =
               chairObj?.photo ||
               salonObj?.logo ||
-              "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=400&q=80";
+              "";
 
             const startStr = rental.startDate
               ? new Date(rental.startDate).toLocaleDateString("en-US", {
@@ -162,12 +198,11 @@ export default function MyChairRentalsPage() {
                 {/* Left: Chair & Salon Info */}
                 <div className="flex items-start gap-4 max-w-xl">
                   <div className="relative w-20 h-20 rounded-md overflow-hidden bg-secondary border border-border shrink-0">
-                    <Image
+                    <ChairImage
                       src={img}
                       alt={chairName}
                       fill
                       className="object-cover"
-                      unoptimized
                     />
                   </div>
 
@@ -230,7 +265,7 @@ export default function MyChairRentalsPage() {
                       <button
                         type="button"
                         disabled={isUpdating}
-                        onClick={() => handleStatusUpdate(rental._id, "confirmed")}
+                        onClick={() => handleOpenConfirm(rental._id, chairName, "confirmed")}
                         className="px-3 py-1.5 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
                       >
                         <CheckCircle className="w-3.5 h-3.5" />
@@ -240,11 +275,11 @@ export default function MyChairRentalsPage() {
                       <button
                         type="button"
                         disabled={isUpdating}
-                        onClick={() => handleStatusUpdate(rental._id, "cancelled")}
+                        onClick={() => handleOpenConfirm(rental._id, chairName, "cancelled")}
                         className="px-3 py-1.5 rounded bg-destructive/10 hover:bg-destructive/20 text-destructive text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer disabled:opacity-50"
                       >
                         <XCircle className="w-3.5 h-3.5" />
-                        <span>Cancel Request</span>
+                        <span>Reject Request</span>
                       </button>
                     </div>
                   )}
@@ -254,6 +289,59 @@ export default function MyChairRentalsPage() {
           })}
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      <Dialog open={modalState.open} onOpenChange={(open) => setModalState((prev) => ({ ...prev, open }))}>
+        <DialogContent className="sm:max-w-md bg-card border border-border text-foreground p-6 rounded-2xl shadow-xl">
+          <DialogHeader className="space-y-2">
+            <DialogTitle className="font-serif font-bold text-xl text-foreground flex items-center gap-2">
+              {modalState.action === "confirmed" ? (
+                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <XCircle className="w-5 h-5 text-destructive" />
+              )}
+              <span>
+                {modalState.action === "confirmed"
+                  ? "Approve Chair Rental Request"
+                  : "Reject Chair Rental Request"}
+              </span>
+            </DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm text-muted-foreground">
+              {modalState.action === "confirmed"
+                ? `Are you sure you want to approve the rental request for "${modalState.chairName}"?`
+                : `Are you sure you want to reject the rental request for "${modalState.chairName}"?`}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border mt-4">
+            <button
+              type="button"
+              disabled={isUpdating}
+              onClick={() => setModalState((prev) => ({ ...prev, open: false }))}
+              className="px-4 py-2 rounded-lg border border-border text-foreground hover:bg-accent text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={isUpdating}
+              onClick={handleConfirmAction}
+              className={`px-5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-2 ${
+                modalState.action === "confirmed"
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  : "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              }`}
+            >
+              {isUpdating && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {isUpdating
+                ? "Processing..."
+                : modalState.action === "confirmed"
+                ? "Confirm Approval"
+                : "Confirm Rejection"}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

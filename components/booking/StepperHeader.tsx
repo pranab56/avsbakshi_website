@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface StepperHeaderProps {
   step: number;
@@ -9,6 +10,7 @@ interface StepperHeaderProps {
 }
 
 export default function StepperHeader({ step, handlePrevStep }: StepperHeaderProps) {
+  const router = useRouter()
   const activeStepRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function StepperHeader({ step, handlePrevStep }: StepperHeaderPro
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-6 min-w-0">
         <button
           type="button"
-          onClick={handlePrevStep}
+          onClick={() => { router.back() }}
           className="inline-flex items-center gap-1.5 px-3 sm:px-5 py-2 bg-card hover:bg-accent border border-border rounded-sm text-xs font-semibold text-foreground transition-colors cursor-pointer shrink-0"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
@@ -52,22 +54,20 @@ export default function StepperHeader({ step, handlePrevStep }: StepperHeaderPro
                 >
                   <div className="flex items-center gap-1.5 sm:gap-2">
                     <span
-                      className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center transition-all ${
-                        isActive
-                          ? "bg-primary text-primary-foreground shadow-xs ring-2 ring-primary/30"
-                          : step > s.num
+                      className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center transition-all ${isActive
+                        ? "bg-primary text-primary-foreground shadow-xs ring-2 ring-primary/30"
+                        : step > s.num
                           ? "bg-emerald-600 text-white"
                           : "bg-secondary text-muted-foreground"
-                      }`}
+                        }`}
                     >
                       {step > s.num ? "✓" : s.num}
                     </span>
                     <span
-                      className={`text-xs whitespace-nowrap ${
-                        isActive
-                          ? "text-foreground font-bold"
-                          : "text-muted-foreground font-medium"
-                      }`}
+                      className={`text-xs whitespace-nowrap ${isActive
+                        ? "text-foreground font-bold"
+                        : "text-muted-foreground font-medium"
+                        }`}
                     >
                       {s.label}
                     </span>

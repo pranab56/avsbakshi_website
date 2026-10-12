@@ -1,87 +1,99 @@
 "use client";
 
-import OverviewStatsGrid, { StatItem } from "@/components/customer/OverviewStatsGrid";
-import AppointmentsList, { AppointmentItem } from "@/components/customer/AppointmentsList";
-import RecentActivity, { ActivityItem } from "@/components/customer/RecentActivity";
-import UnreviewedCallout from "@/components/customer/UnreviewedCallout";
+import { useGetCustomerOverviewQuery } from "@/features/analytics/analyticsApi";
+import { Calendar, CheckCircle2, Star, Heart, Clock, Loader2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function CustomerOverviewPage() {
-  const stats: StatItem[] = [
-    { label: "Upcoming appointments", value: "2", isHighlighted: false },
-    { label: "Completed this year", value: "18", isHighlighted: false },
-    { label: "Reviews given", value: "14", isHighlighted: false },
-    { label: "Saved professionals", value: "7", isHighlighted: true },
-  ];
+  const user = useSelector((state: { auth?: { user?: any } }) => state.auth?.user);
+  const { data: overviewRes, isLoading } = useGetCustomerOverviewQuery(undefined);
+  const overview = overviewRes?.data || {};
 
-  const upcomingAppointments: AppointmentItem[] = [
-    {
-      id: "1",
-      stylistName: "James Chen",
-      service: "Balayage & Toner",
-      dateTime: "Mon 19 Aug · 2:30 PM",
-      price: "from £40",
-      image:
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      id: "2",
-      stylistName: "James Chen",
-      service: "Balayage & Toner",
-      dateTime: "Mon 19 Aug · 2:30 PM",
-      price: "from $74",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
-    },
-  ];
+  const customerName = user?.firstName || user?.name || "Customer";
 
-  const recentActivities: ActivityItem[] = [
+  const stats = [
     {
-      id: "1",
-      title: "Appointment confirmed with Sofia Martinez",
-      subtitle: "19 Aug · Balayage & Toner",
+      label: "Total Appointments",
+      value: overview.totalAppointments ?? 0,
+      icon: Calendar,
+      color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
     },
     {
-      id: "2",
-      title: "Payment of $55 processed",
-      subtitle: "Classic Cut & Beard · James Chen",
+      label: "Upcoming Appointments",
+      value: overview.totalUpcomingAppointments ?? 0,
+      icon: Clock,
+      color: "text-[#D99722] bg-[#D99722]/10 border-[#D99722]/20",
     },
     {
-      id: "3",
-      title: "You left a review for Aisha Williams",
-      subtitle: "5 stars · Bridal Makeup",
+      label: "Completed Appointments",
+      value: overview.totalCompletedAppointments ?? 0,
+      icon: CheckCircle2,
+      color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
     },
     {
-      id: "4",
-      title: "Saved Priya Sharma to favourites",
-      subtitle: "Nail Artist · Notting Hill",
+      label: "Total Reviews",
+      value: overview.totalReviews ?? 0,
+      icon: Star,
+      color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+    },
+    {
+      label: "Saved Wishlists",
+      value: overview.totalWishlists ?? 0,
+      icon: Heart,
+      color: "text-rose-500 bg-rose-500/10 border-rose-500/20",
     },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-12">
       {/* Header Section */}
       <div className="space-y-1">
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
-          Monday, 19 August 2026
+          {new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
         </p>
         <h1 className="font-serif italic font-normal text-2xl sm:text-4xl text-foreground">
-          Good morning, <span className="notranslate" translate="no">Rasel</span>.
+          Welcome back, <span className="notranslate" translate="no">{customerName}</span>.
         </h1>
       </div>
 
-      <OverviewStatsGrid stats={stats} />
-
-      {/* Main Grid: Left Column (Appointments) & Right Column (Activity & Callout) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-8">
-          <AppointmentsList upcomingAppointments={upcomingAppointments} />
+      {isLoading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <div key={n} className="h-32 bg-card border border-border/60 rounded-2xl animate-pulse" />
+          ))}
         </div>
-
-        <div className="lg:col-span-4 space-y-5">
-          <RecentActivity recentActivities={recentActivities} />
-          <UnreviewedCallout />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {stats.map((stat, idx) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={idx}
+                className="bg-card border border-border/70 rounded-2xl p-5 transition-all shadow-2xs hover:border-[#D99722]/50 flex flex-col justify-between space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className={`p-2.5 rounded-xl border ${stat.color}`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
+                    {stat.value}
+                  </div>
+                  <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">
+                    {stat.label}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      )}
     </div>
   );
 }

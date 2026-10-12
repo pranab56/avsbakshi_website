@@ -1,9 +1,16 @@
 import { Search } from "lucide-react";
 import Input from "../shared/Input";
+import { GooglePlacesInput, GooglePlaceResult } from "../ui/google-places-input";
 
 interface HeroProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  locationAddress: string;
+  setLocationAddress: (address: string) => void;
+  latitude: number | string | null;
+  longitude: number | string | null;
+  onPlaceSelect: (place: GooglePlaceResult) => void;
+  onSearch: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
@@ -11,9 +18,21 @@ interface HeroProps {
 export default function Hero({
   searchQuery,
   setSearchQuery,
+  locationAddress,
+  setLocationAddress,
+  latitude,
+  longitude,
+  onPlaceSelect,
+  onSearch,
   activeTab,
   setActiveTab,
 }: HeroProps) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      onSearch();
+    }
+  };
+
   return (
     <section className="bg-[#1E1C1A] text-white pt-12 sm:pt-20 pb-0 relative overflow-hidden">
       {/* Bottom-right warm amber color gradient overlay */}
@@ -28,7 +47,7 @@ export default function Hero({
             </span>
           </div>
 
-          <h1 className="  text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
+          <h1 className="text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
             Every service. Every <br />
             <span className="font-light italic text-[#CAA054]">professional. Every salon</span>
           </h1>
@@ -38,40 +57,58 @@ export default function Hero({
           </p>
         </div>
 
-        {/* Search Box */}
-        <div className="max-w-md relative pt-2">
-          <Input
-            variant="dark"
-            inputSize="md"
-            leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
-            placeholder="Search services..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+        {/* Dual Search Box: Location (Google Places Autocomplete) + Service Term + Search Button */}
+        <div className="max-w-3xl relative pt-2">
+          <div className="bg-white/5 p-2 rounded-2xl border border-white/15 backdrop-blur-md flex flex-col sm:flex-row items-center gap-2.5 shadow-xl">
+            {/* Location Autocomplete Search */}
+            <div className="w-full sm:w-1/2 relative">
+              <GooglePlacesInput
+                variant="dark"
+                placeholder="City, area or address..."
+                value={locationAddress}
+                onPlaceSelectAction={onPlaceSelect}
+                onTextChange={(val) => {
+                  setLocationAddress(val);
+                }}
+                onKeyDown={handleKeyDown}
+                className="!h-11 !rounded-xl"
+              />
+            </div>
+
+            {/* Service / Specialist Search Term */}
+            <div className="w-full sm:w-1/2 relative">
+              <Input
+                variant="dark"
+                inputSize="md"
+                leftIcon={<Search className="w-4 h-4 text-zinc-400" />}
+                placeholder="Search services or specialists..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="!h-11 !rounded-xl"
+              />
+            </div>
+
+            {/* Search Action Button */}
+            <button
+              type="button"
+              onClick={onSearch}
+              className="w-full sm:w-auto px-6 h-11 bg-[#D99722] hover:bg-[#C2841B] active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shrink-0 cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Search className="w-4 h-4" />
+              <span>Search</span>
+            </button>
+          </div>
         </div>
 
         {/* Tabs Navigation */}
         <div className="flex items-center gap-4 sm:gap-8 border-b border-white/10 pt-6 text-sm font-medium overflow-x-auto no-scrollbar whitespace-nowrap">
           <button
             type="button"
-            onClick={() => setActiveTab("services")}
-            className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === "services"
-                ? "text-white font-semibold"
-                : "text-zinc-400 hover:text-white"
-              }`}
-          >
-            Services
-            {activeTab === "services" && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D99722]" />
-            )}
-          </button>
-
-          <button
-            type="button"
             onClick={() => setActiveTab("professionals")}
             className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === "professionals"
-                ? "text-white font-semibold"
-                : "text-zinc-400 hover:text-white"
+              ? "text-white font-semibold"
+              : "text-zinc-400 hover:text-white"
               }`}
           >
             Professionals
@@ -84,8 +121,8 @@ export default function Hero({
             type="button"
             onClick={() => setActiveTab("salons")}
             className={`pb-3.5 transition-colors cursor-pointer relative shrink-0 ${activeTab === "salons"
-                ? "text-white font-semibold"
-                : "text-zinc-400 hover:text-white"
+              ? "text-white font-semibold"
+              : "text-zinc-400 hover:text-white"
               }`}
           >
             Salons

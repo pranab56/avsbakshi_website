@@ -4,8 +4,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { SERVICE_CATEGORIES } from "@/lib/data/marketplaceData";
+import { useGetAllCategoryQuery } from "@/features/category/category";
 
 export default function CategoriesSection() {
+  const { data: categoriesRes } = useGetAllCategoryQuery({});
+
+  const apiCategories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
+  const categoriesList = apiCategories.length > 0
+    ? apiCategories.map((cat: any, idx: number) => ({
+        id: cat._id || cat.id || `cat-${idx}`,
+        title: cat.name || cat.title,
+        count: cat.totalServices !== undefined ? `${cat.totalServices} Services` : cat.count || "0 Services",
+        img: cat.image || cat.img || SERVICE_CATEGORIES[idx % SERVICE_CATEGORIES.length]?.img || "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
+        desc: cat.name ? `${cat.name} professional beauty services` : cat.desc || "",
+      }))
+    : SERVICE_CATEGORIES;
+
   return (
     <section className="w-full py-6 sm:py-10 bg-white dark:bg-[#121214] transition-colors duration-200 select-none">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,27 +27,27 @@ export default function CategoriesSection() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 sm:mb-8">
           <div>
             <span className="text-[11px] sm:text-xs font-bold text-[#D99722] uppercase tracking-[0.2em] block mb-1">
-              SERVICES & SUBCATEGORIES
+              SERVICE CATEGORIES
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#1C1C1E] dark:text-white tracking-tight">
               What are you looking for?
             </h2>
             <p className="text-xs text-muted-foreground mt-1">
-              Explore professional beauty categories & subcategory services
+              Explore professional beauty categories
             </p>
           </div>
 
           <Link
-            href="/discover?tab=services"
+            href="/professionals"
             className="self-start sm:self-auto px-5 py-2.5 rounded-md bg-[#E6E3DC] dark:bg-[#252529] hover:bg-[#DDD9D0] dark:hover:bg-[#303036] text-[#2A2A2D] dark:text-zinc-200 text-xs sm:text-sm font-medium transition-colors shadow-2xs shrink-0"
           >
             Browse all services
           </Link>
         </div>
 
-        {/* Categories Grid with Subcategory Chips */}
+        {/* Categories Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {SERVICE_CATEGORIES.filter((c) => c.subcategories.length > 0).map((cat, idx) => (
+          {categoriesList.map((cat: any, idx: number) => (
             <motion.div
               key={cat.id}
               initial={{ opacity: 0, y: 15 }}
@@ -44,8 +58,8 @@ export default function CategoriesSection() {
             >
               {/* Category Image Header */}
               <Link
-                href={`/search?category=${encodeURIComponent(cat.title)}`}
-                className="relative block h-44 sm:h-48 overflow-hidden group/img"
+                href={`/professionals?serviceCategory=${encodeURIComponent(cat.id)}`}
+                className="relative block h-48 sm:h-52 overflow-hidden group/img"
               >
                 <Image
                   src={cat.img}
@@ -71,28 +85,15 @@ export default function CategoriesSection() {
                 </div>
               </Link>
 
-              {/* Subcategories List & Pills */}
+              {/* Category Footer */}
               <div className="p-3.5 space-y-2 flex-1 flex flex-col justify-between bg-card">
-                <div className="space-y-1.5">
-                  <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider block">
-                    Subcategories
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {cat.subcategories.map((sub) => (
-                      <Link
-                        key={sub.id}
-                        href={`/search?category=${encodeURIComponent(cat.title)}&subcategory=${encodeURIComponent(sub.name)}`}
-                        className="bg-accent/70 hover:bg-[#D99722]/15 hover:text-[#D99722] text-foreground text-[11px] font-medium px-2.5 py-1 rounded-md border border-border/50 transition-colors"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+                <p className="text-xs text-muted-foreground line-clamp-2">
+                  {cat.desc}
+                </p>
 
                 <div className="pt-2 border-t border-border/40 text-right">
                   <Link
-                    href={`/search?category=${encodeURIComponent(cat.title)}`}
+                    href={`/professionals?serviceCategory=${encodeURIComponent(cat.id)}`}
                     className="text-[11px] font-semibold text-[#D99722] hover:underline"
                   >
                     Explore all {cat.title} &rarr;

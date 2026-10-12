@@ -1,46 +1,79 @@
+import { Star, Check } from "lucide-react";
+import ChairImage from "@/components/shared/ChairImage";
 import { ServiceItem } from "./ServiceStep";
 
 interface BookingSummarySidebarProps {
-  selectedService: ServiceItem;
+  selectedServices: ServiceItem[];
   selectedDate: string;
   selectedTime: string;
-  platformFee: number;
-  totalPrice: number;
+  proData?: any;
+  subtotal: number;
+  discount: number;
+  total: number;
 }
 
 export default function BookingSummarySidebar({
-  selectedService,
+  selectedServices,
   selectedDate,
   selectedTime,
-  platformFee,
-  totalPrice,
+  proData,
+  subtotal,
+  discount,
+  total,
 }: BookingSummarySidebarProps) {
+  const proName = proData?.name || "Professional Specialist";
+  const proTitle = proData?.title || "Master Barber & Grooming Specialist";
+  const proAvatar =
+    proData?.avatar ||
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80";
+
   return (
     <div className="lg:col-span-5 space-y-6">
-      <div className="bg-card rounded-lg p-6 sm:p-7 border border-border space-y-6 sticky top-24 shadow-xs">
-        <h3 className="  font-bold text-base text-muted-foreground">
+      <div className="bg-card rounded-2xl p-6 sm:p-7 border border-border space-y-6 sticky top-24 shadow-xs">
+        <h3 className="font-extrabold text-base text-foreground border-b border-border/50 pb-3">
           Booking Summary
         </h3>
 
-        <div className="flex items-center gap-3">
-          <img
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
-            alt="Sofia Martinez"
-            className="w-12 h-12 rounded-full object-cover border border-border shrink-0"
-          />
+        <div className="flex items-center gap-3.5">
+          <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-border shrink-0 bg-muted">
+            <ChairImage
+              src={proAvatar}
+              alt={proName}
+              size="sm"
+              className="w-full h-full object-cover"
+            />
+          </div>
           <div>
-            <h4 className="  font-bold text-base text-foreground">Sofia Martinez</h4>
-            <div className="flex items-center gap-1 text-primary text-lg">
-              ★★★★★
-            </div>
+            <h4 className="font-extrabold text-sm text-foreground">{proName}</h4>
+            <p className="text-xs text-muted-foreground">{proTitle}</p>
           </div>
         </div>
 
-        <div className="space-y-2 text-xs text-muted-foreground">
-          <div className="flex justify-between py-1">
-            <span>Service</span>
-            <span className="font-bold text-foreground">{selectedService.title}</span>
-          </div>
+        {/* Selected Services Breakdown */}
+        <div className="space-y-2">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">
+            SERVICES ({selectedServices.length})
+          </span>
+
+          {selectedServices.length > 0 ? (
+            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+              {selectedServices.map((svc) => (
+                <div key={svc._id} className="flex justify-between items-center text-xs py-1">
+                  <span className="font-semibold text-foreground flex items-center gap-1.5 truncate">
+                    <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                    <span className="truncate">{svc.name}</span>
+                  </span>
+                  <span className="font-bold text-[#D99722] shrink-0 ml-2">${svc.priceInUSD}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground italic">No services selected</p>
+          )}
+        </div>
+
+        {/* Date & Time Summary */}
+        <div className="space-y-2 text-xs text-muted-foreground pt-2 border-t border-border/50">
           <div className="flex justify-between py-1">
             <span>Date</span>
             <span className={selectedDate ? "font-bold text-foreground" : "text-muted-foreground/60"}>
@@ -55,20 +88,24 @@ export default function BookingSummarySidebar({
           </div>
         </div>
 
-        <div className="pt-4 border-t border-border space-y-2 text-xs">
+        {/* Subtotal, Discount & Total */}
+        <div className="pt-4 border-t border-border/60 space-y-2 text-xs">
           <div className="flex justify-between text-muted-foreground">
-            <span>Service</span>
-            <span>£{selectedService.price}</span>
+            <span>Subtotal</span>
+            <span className="font-bold text-foreground">${subtotal} USD</span>
           </div>
-          <div className="flex justify-between text-muted-foreground">
-            <span>Platform fee</span>
-            <span>£{platformFee}</span>
-          </div>
+
+          {discount > 0 && (
+            <div className="flex justify-between text-emerald-500 font-semibold">
+              <span>Discount</span>
+              <span>-${discount} USD</span>
+            </div>
+          )}
         </div>
 
         <div className="pt-4 border-t border-border flex justify-between items-center text-foreground">
-          <span className="  text-xl font-bold">Total</span>
-          <span className="  text-2xl font-bold">£{totalPrice}</span>
+          <span className="text-base font-extrabold">Total</span>
+          <span className="text-2xl font-extrabold text-[#D99722]">${total} <span className="text-xs font-normal text-muted-foreground">USD</span></span>
         </div>
       </div>
     </div>

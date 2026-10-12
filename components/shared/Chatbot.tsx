@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import {
-  MessageSquare,
+  Bot,
+  X,
   Send,
   User,
   ChevronRight,
@@ -88,6 +89,59 @@ interface RootAuthState {
       name?: string;
     };
   };
+}
+
+function PremiumChatbotIcon({ className = "w-7 h-7 sm:w-8 sm:h-8" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 36 36"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      {/* Headband / Audio Arc */}
+      <path
+        d="M5 14C5 7.5 10.5 4.5 18 4.5C25.5 4.5 31 7.5 31 14"
+        stroke="white"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+
+      {/* Antenna */}
+      <path d="M18 5.5V2" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+      <circle cx="18" cy="2" r="2.2" fill="#FFE082" />
+
+      {/* Ear Headset Cushions */}
+      <rect x="2" y="11.5" width="3.5" height="8.5" rx="1.75" fill="white" />
+      <rect x="30.5" y="11.5" width="3.5" height="8.5" rx="1.75" fill="white" />
+
+      {/* Robot Head Body */}
+      <rect x="5.5" y="8" width="25" height="19.5" rx="7.5" fill="white" />
+
+      {/* Visor Screen */}
+      <rect x="8.5" y="11" width="19" height="13.5" rx="5" fill="#1C1A17" />
+
+      {/* Glowing Happy Eyes */}
+      <ellipse cx="14" cy="16.5" rx="2" ry="2.6" fill="#F5C042" />
+      <circle cx="14.6" cy="15.7" r="0.8" fill="white" />
+      <ellipse cx="22" cy="16.5" rx="2" ry="2.6" fill="#F5C042" />
+      <circle cx="22.6" cy="15.7" r="0.8" fill="white" />
+
+      {/* Friendly Smile */}
+      <path
+        d="M15.8 20.8C16.8 22 19.2 22 20.2 20.8"
+        stroke="#F5C042"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+
+      {/* Base Collar */}
+      <path
+        d="M13.5 28.5C13.5 28 15 27.5 18 27.5C21 27.5 22.5 28 22.5 28.5L24 32H12L13.5 28.5Z"
+        fill="white"
+      />
+    </svg>
+  );
 }
 
 export default function Chatbot() {
@@ -855,12 +909,28 @@ export default function Chatbot() {
             return !prev;
           });
         }}
-        aria-label="Open Salon AI Chat"
-        className="fixed bottom-6 right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#D99722] hover:bg-[#B87D1B] active:scale-95 transition-all shadow-2xl flex items-center justify-center cursor-pointer group"
+        aria-label={isOpen ? "Close Salon AI Chat" : "Open Salon AI Chat"}
+        title={isOpen ? "Close AI Chatbot" : "Chat with Salon AI Assistant"}
+        className="fixed bottom-6 right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-[#B87D1B] via-[#D99722] to-[#F1B638] hover:brightness-105 active:scale-95 transition-all shadow-[0_8px_25px_-4px_rgba(217,151,34,0.55)] flex items-center justify-center cursor-pointer group"
       >
-        <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7 text-white fill-white group-hover:scale-110 transition-transform" />
+        {/* Soft Ambient Pulse Ring when closed */}
+        {!isOpen && (
+          <span className="absolute inset-0 rounded-full bg-[#D99722]/35 animate-ping pointer-events-none -z-10 [animation-duration:3s]" />
+        )}
 
-        {unread && (
+        {isOpen ? (
+          <X className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:scale-110 transition-transform stroke-[2.5]" />
+        ) : (
+          <div className="relative flex items-center justify-center">
+            <PremiumChatbotIcon className="w-7 h-7 sm:w-8 sm:h-8 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
+            {/* <span className="absolute -top-2.5 -right-2.5 px-1.5 py-0.5 rounded-full bg-[#18181B] text-white text-[9px] font-extrabold border border-[#D99722]/70 shadow-md uppercase tracking-wider flex items-center gap-0.5 pointer-events-none">
+              <Sparkles className="w-2.5 h-2.5 text-[#D99722]" />
+              <span>AI</span>
+            </span> */}
+          </div>
+        )}
+
+        {unread && !isOpen && (
           <span className="absolute top-0 right-0 w-3.5 h-3.5 bg-[#E53E3E] rounded-full border-2 border-white dark:border-[#121214] shadow-xs animate-pulse" />
         )}
       </button>

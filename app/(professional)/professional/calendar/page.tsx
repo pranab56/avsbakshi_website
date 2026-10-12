@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,12 +12,20 @@ import {
   Send,
   X,
   ExternalLink,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  RefreshCw,
+  User,
+  Phone,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useGetMyAppointmentQuery, useUpdateStatusMutation } from "@/features/appointment/appointmentApi";
 
 type CalendarView = "Month" | "Week" | "Day";
-type MainTab = "calendar" | "messages";
 
 interface Message {
   id: string;
@@ -38,17 +48,28 @@ interface Conversation {
 }
 
 export default function ProfessionalCalendarPage() {
-  const [mainTab, setMainTab] = useState<MainTab>("calendar");
+  const router = useRouter();
   const [view, setView] = useState<CalendarView>("Month");
+
+  // Selected date for calendar view navigation
+  const [currentDateState, setCurrentDateState] = useState<Date>(new Date());
+  const [selectedAppointment, setSelectedAppointment] = useState<any | null>(null);
+
+  // Chat states
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>("1");
   const [newMessageText, setNewMessageText] = useState("");
   const [quickChatConvId, setQuickChatConvId] = useState<string | null>(null);
   const [quickChatMessageText, setQuickChatMessageText] = useState("");
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const quickChatEndRef = useRef<HTMLDivElement>(null);
 
-  const currentMonth = "August 2026";
+  // RTK Query API Hooks
+  const { data: response, isLoading: isAppointmentsLoading, isFetching, refetch } = useGetMyAppointmentQuery(undefined);
+  const [updateStatus] = useUpdateStatusMutation();
+
+  const appointmentsList = response?.data || [];
 
   // Conversations data representing direct messages from customers
   const [conversations, setConversations] = useState<Conversation[]>([
@@ -131,109 +152,120 @@ export default function ProfessionalCalendarPage() {
     },
   ]);
 
-  // Appointments for Calendar Grid
-  const appointments = [
-    {
-      id: "1",
-      client: "Sarah Jenkins",
-      shortName: "Sarah J.",
-      service: "Hair Coloring & Cut",
-      date: "2026-08-19",
-      dayNumber: 19,
-      time: "2:30 PM",
-      fullTime: "2:30 PM – 5:00 PM",
-      price: "£120",
-      color: "bg-[#D99722]",
-      conversationId: "1",
-    },
-    {
-      id: "2",
-      client: "Michael Vance",
-      shortName: "Michael V.",
-      service: "Beard Trim & Styling",
-      date: "2026-08-24",
-      dayNumber: 24,
-      time: "11:00 AM",
-      fullTime: "11:00 AM – 12:30 PM",
-      price: "£45",
-      color: "bg-[#2C2E33]",
-      conversationId: "2",
-    },
-    {
-      id: "3",
-      client: "Emma Watson",
-      shortName: "Emma W.",
-      service: "Manicure & Pedicure",
-      date: "2026-08-19",
-      dayNumber: 19,
-      time: "3:30 PM",
-      fullTime: "3:30 PM – 4:30 PM",
-      price: "£75",
-      color: "bg-[#787570]",
-      conversationId: "3",
-    },
-  ];
+  const handleStatusChange = async (id: string, newStatus: "confirmed" | "cancelled") => {
+    try {
+      setUpdatingId(id);
+      await updateStatus({
+        id,
+        data: { status: newStatus },
+      }).unwrap();
+      toast.success(`Appointment status updated to ${newStatus}!`);
+      if (selectedAppointment && selectedAppointment._id === id) {
+        setSelectedAppointment((prev: any) => prev ? { ...prev, status: newStatus } : null);
+      }
+    } catch (err: any) {
+      console.error("Failed to update status:", err);
+      const errMsg = err?.data?.message || err?.message || "Failed to update appointment status.";
+      toast.error(errMsg);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
 
-  const monthDays = [
-    { day: null, isCurrentMonth: false },
-    { day: null, isCurrentMonth: false },
-    { day: null, isCurrentMonth: false },
-    { day: 1, isCurrentMonth: true },
-    { day: 2, isCurrentMonth: true },
-    { day: 3, isCurrentMonth: true },
-    { day: 4, isCurrentMonth: true },
-    { day: 5, isCurrentMonth: true },
-    { day: 6, isCurrentMonth: true },
-    { day: 7, isCurrentMonth: true },
-    { day: 8, isCurrentMonth: true },
-    { day: 9, isCurrentMonth: true },
-    { day: 10, isCurrentMonth: true },
-    { day: 11, isCurrentMonth: true },
-    { day: 12, isCurrentMonth: true },
-    { day: 13, isCurrentMonth: true },
-    { day: 14, isCurrentMonth: true },
-    { day: 15, isCurrentMonth: true },
-    { day: 16, isCurrentMonth: true },
-    { day: 17, isCurrentMonth: true },
-    { day: 18, isCurrentMonth: true },
-    { day: 19, isCurrentMonth: true, isHighlight: true },
-    { day: 20, isCurrentMonth: true },
-    { day: 21, isCurrentMonth: true },
-    { day: 22, isCurrentMonth: true },
-    { day: 23, isCurrentMonth: true },
-    { day: 24, isCurrentMonth: true },
-    { day: 25, isCurrentMonth: true },
-    { day: 26, isCurrentMonth: true },
-    { day: 27, isCurrentMonth: true },
-    { day: 28, isCurrentMonth: true },
-    { day: 29, isCurrentMonth: true },
-    { day: 30, isCurrentMonth: true },
-    { day: 31, isCurrentMonth: true },
-  ];
+  const getStatusBadgeStyle = (status: string) => {
+    const s = (status || "pending").toLowerCase();
+    if (s === "confirmed") {
+      return "bg-emerald-600 text-white dark:bg-emerald-500/25 dark:text-emerald-300 border border-emerald-500/40";
+    }
+    if (s === "cancelled") {
+      return "bg-rose-600 text-white dark:bg-rose-500/25 dark:text-rose-300 border border-rose-500/40 line-through opacity-75";
+    }
+    // pending
+    return "bg-amber-500 text-white dark:bg-amber-500/25 dark:text-amber-300 border border-amber-500/40";
+  };
 
-  const weekDays = [
-    { dayName: "Mon", dateNum: 19, isHighlighted: true },
-    { dayName: "Tue", dateNum: 20, isHighlighted: false },
-    { dayName: "Wed", dateNum: 21, isHighlighted: false },
-    { dayName: "Thu", dateNum: 22, isHighlighted: false },
-    { dayName: "Fri", dateNum: 23, isHighlighted: false },
-    { dayName: "Sat", dateNum: 24, isHighlighted: false },
-    { dayName: "Sun", dateNum: 25, isHighlighted: false },
-  ];
+  const formatTime = (dateStr: string) => {
+    if (!dateStr) return "";
+    try {
+      return new Date(dateStr).toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+      });
+    } catch {
+      return "";
+    }
+  };
 
-  const timeSlots = [
-    "8 AM",
-    "9 AM",
-    "10 AM",
-    "11 AM",
-    "12 PM",
-    "1 PM",
-    "2 PM",
-    "3 PM",
-    "4 PM",
-    "5 PM",
-    "6 PM",
-  ];
+  const formatDateFull = (dateStr: string) => {
+    if (!dateStr) return "N/A";
+    try {
+      return new Date(dateStr).toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  // Month navigation
+  const handlePrevPeriod = () => {
+    setCurrentDateState((prev) => {
+      const next = new Date(prev);
+      if (view === "Month") next.setMonth(prev.getMonth() - 1);
+      else if (view === "Week") next.setDate(prev.getDate() - 7);
+      else next.setDate(prev.getDate() - 1);
+      return next;
+    });
+  };
+
+  const handleNextPeriod = () => {
+    setCurrentDateState((prev) => {
+      const next = new Date(prev);
+      if (view === "Month") next.setMonth(prev.getMonth() + 1);
+      else if (view === "Week") next.setDate(prev.getDate() + 7);
+      else next.setDate(prev.getDate() + 1);
+      return next;
+    });
+  };
+
+  // Month cells calculation
+  const getMonthGrid = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const startingDay = (firstDayIndex + 6) % 7; // Monday = 0
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const cells: { day: number | null; isCurrentMonth: boolean; dateObj?: Date }[] = [];
+
+    for (let i = 0; i < startingDay; i++) {
+      cells.push({ day: null, isCurrentMonth: false });
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      cells.push({
+        day: d,
+        isCurrentMonth: true,
+        dateObj: new Date(year, month, d),
+      });
+    }
+
+    return cells;
+  };
+
+  const monthCells = getMonthGrid(currentDateState);
+
+  const formattedHeaderMonth = currentDateState.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
 
   const activeConversation = conversations.find(
     (c) => c.id === selectedConversationId
@@ -250,37 +282,6 @@ export default function ProfessionalCalendarPage() {
   useEffect(() => {
     quickChatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [quickChatConvId, activeQuickChatConv?.messages]);
-
-  const handleSendMessage = () => {
-    if (!newMessageText.trim() || !selectedConversationId) return;
-
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      sender: "pro",
-      text: newMessageText,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    setConversations((prev) =>
-      prev.map((c) => {
-        if (c.id === selectedConversationId) {
-          return {
-            ...c,
-            lastMessage: newMessageText,
-            timestamp: "Just now",
-            messages: [...c.messages, newMsg],
-          };
-        }
-        return c;
-      })
-    );
-
-    setNewMessageText("");
-    toast.success("Message sent to customer!");
-  };
 
   const handleSendQuickMessage = () => {
     if (!quickChatMessageText.trim() || !quickChatConvId) return;
@@ -318,25 +319,13 @@ export default function ProfessionalCalendarPage() {
     0
   );
 
-  const openCustomerQuickChat = (convId: string) => {
-    setQuickChatConvId(convId);
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, unreadCount: 0 } : c))
-    );
-  };
-
   const openFullInboxChat = (convId: string) => {
-    setSelectedConversationId(convId);
-    setQuickChatConvId(null);
-    setMainTab("messages");
-    setConversations((prev) =>
-      prev.map((c) => (c.id === convId ? { ...c, unreadCount: 0 } : c))
-    );
+    router.push("/professional/messages");
   };
 
   return (
     <div className="space-y-6 pb-16 font-sans text-foreground">
-      {/* Top Header Row with Title & Main Tabs (Calendar vs Direct Messages) */}
+      {/* Top Header Row with Title & Main Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
           <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
@@ -349,27 +338,17 @@ export default function ProfessionalCalendarPage() {
 
         {/* Main Tab Switcher */}
         <div className="flex items-center gap-2 bg-accent p-1.5 rounded-lg border border-border w-full sm:w-auto">
-          <button
-            type="button"
-            onClick={() => setMainTab("calendar")}
-            className={`flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer ${
-              mainTab === "calendar"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+          <Link
+            href="/professional/calendar"
+            className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer bg-primary text-primary-foreground shadow-sm"
           >
             <CalendarIcon className="w-4 h-4" />
             <span>Calendar</span>
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => setMainTab("messages")}
-            className={`flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer relative ${
-              mainTab === "messages"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+          <Link
+            href="/professional/messages"
+            className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer relative text-muted-foreground hover:text-foreground"
           >
             <MessageSquare className="w-4 h-4" />
             <span>Messages</span>
@@ -378,505 +357,562 @@ export default function ProfessionalCalendarPage() {
                 {totalUnread}
               </span>
             )}
-          </button>
+          </Link>
         </div>
       </div>
 
       {/* ============================================================= */}
-      {/* TAB 1: CALENDAR VIEW */}
+      {/* CALENDAR VIEW */}
       {/* ============================================================= */}
-      {mainTab === "calendar" && (
-        <div className="space-y-6 relative">
-          {/* Sub Header for Calendar Controls */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="space-y-6 relative">
+        {/* Sub Header for Calendar Controls & Status Legend */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             <h2 className="font-serif italic font-normal text-2xl text-foreground">
-              {currentMonth}
+              {formattedHeaderMonth}
             </h2>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="p-2 rounded-lg border border-border bg-card hover:bg-accent text-xs font-semibold text-foreground flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
+              title="Refresh calendar data"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? "animate-spin" : ""}`} />
+            </button>
+          </div>
 
-            {/* View Switcher (Month / Week / Day) */}
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="bg-accent hover:bg-accent/80 text-foreground text-xs font-medium px-3 py-2 rounded-sm flex items-center gap-1 cursor-pointer border border-border"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Prev</span>
-              </Button>
-
-              <div className="bg-accent p-1.5 rounded-sm flex items-center gap-1 border border-border">
-                {(["Month", "Week", "Day"] as CalendarView[]).map((v) => (
-                  <button
-                    key={v}
-                    type="button"
-                    onClick={() => setView(v)}
-                    className={`px-3 py-1 text-xs font-medium rounded-sm transition-all cursor-pointer ${
-                      view === v
-                        ? "bg-card text-foreground shadow-xs"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {v}
-                  </button>
-                ))}
-              </div>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                className="bg-accent hover:bg-accent/80 text-foreground text-xs font-medium px-3 py-2 rounded-sm flex items-center gap-1 cursor-pointer border border-border"
-              >
-                <span>Next</span>
-                <ChevronRight className="w-4 h-4" />
-              </Button>
+          {/* Status Color Legend */}
+          <div className="flex flex-wrap items-center gap-3 text-xs bg-accent/50 p-2 rounded-lg border border-border">
+            <span className="text-muted-foreground font-semibold text-[11px] uppercase tracking-wider">Status Colors:</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-amber-500" />
+              <span className="font-medium text-foreground">Pending</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-emerald-500" />
+              <span className="font-medium text-foreground">Confirmed</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-rose-500" />
+              <span className="font-medium text-foreground">Cancelled</span>
             </div>
           </div>
 
-          {/* Month View Grid */}
-          {view === "Month" && (
-            <div className="overflow-x-auto rounded-lg border border-border shadow-xs">
-              <div className="bg-card min-w-[640px] overflow-hidden">
-                <div className="grid grid-cols-7 bg-accent/60 border-b border-border text-center text-xs font-semibold text-muted-foreground py-3">
-                  <div>Mon</div>
-                  <div>Tue</div>
-                  <div>Wed</div>
-                  <div>Thu</div>
-                  <div>Fri</div>
-                  <div>Sat</div>
-                  <div>Sun</div>
-                </div>
+          {/* View Switcher & Prev/Next */}
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handlePrevPeriod}
+              className="bg-accent hover:bg-accent/80 text-foreground text-xs font-medium px-3 py-2 rounded-md flex items-center gap-1 cursor-pointer border border-border"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Prev</span>
+            </Button>
 
+            <div className="bg-accent p-1.5 rounded-md flex items-center gap-1 border border-border">
+              {(["Month", "Week", "Day"] as CalendarView[]).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setView(v)}
+                  className={`px-3 py-1 text-xs font-medium rounded-md transition-all cursor-pointer ${
+                    view === v
+                      ? "bg-card text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleNextPeriod}
+              className="bg-accent hover:bg-accent/80 text-foreground text-xs font-medium px-3 py-2 rounded-md flex items-center gap-1 cursor-pointer border border-border"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Month View Grid */}
+        {view === "Month" && (
+          <div className="overflow-x-auto rounded-xl border border-border shadow-xs">
+            <div className="bg-card min-w-[680px] overflow-hidden">
+              <div className="grid grid-cols-7 bg-accent/60 border-b border-border text-center text-xs font-semibold text-muted-foreground py-3">
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+                <div>Sun</div>
+              </div>
+
+              {isAppointmentsLoading ? (
+                <div className="p-20 text-center flex flex-col items-center justify-center gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                  <p className="text-xs text-muted-foreground">Loading calendar appointments...</p>
+                </div>
+              ) : (
                 <div className="grid grid-cols-7 divide-x divide-y divide-border bg-card">
-                  {monthDays.map((item, index) => {
-                    const dayAppts = appointments.filter(
-                      (a) => a.dayNumber === item.day
-                    );
+                  {monthCells.map((item, index) => {
+                    // Filter appointments that land on this cell's day
+                    const dayAppts = appointmentsList.filter((a: any) => {
+                      const dateStr = a.startsAt || a.scheduledAt;
+                      if (!dateStr || !item.day || !item.isCurrentMonth) return false;
+                      const d = new Date(dateStr);
+                      return (
+                        d.getFullYear() === currentDateState.getFullYear() &&
+                        d.getMonth() === currentDateState.getMonth() &&
+                        d.getDate() === item.day
+                      );
+                    });
+
+                    const isToday =
+                      item.isCurrentMonth &&
+                      item.day === new Date().getDate() &&
+                      currentDateState.getMonth() === new Date().getMonth() &&
+                      currentDateState.getFullYear() === new Date().getFullYear();
+
                     return (
                       <div
                         key={index}
-                        className={`min-h-[100px] sm:min-h-[120px] p-2 flex flex-col justify-between transition-colors ${
-                          item.isHighlight ? "bg-primary/10" : "hover:bg-accent/40"
+                        className={`min-h-[110px] sm:min-h-[130px] p-2 flex flex-col justify-between transition-colors ${
+                          isToday ? "bg-primary/10 ring-1 ring-primary/30" : "hover:bg-accent/40"
                         }`}
                       >
-                        <span className="text-xs font-semibold text-primary">
-                          {item.day || ""}
-                        </span>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className={`text-xs font-bold ${isToday ? "text-primary bg-primary/20 px-1.5 py-0.5 rounded-full" : "text-muted-foreground"}`}>
+                            {item.day || ""}
+                          </span>
+                          {dayAppts.length > 0 && (
+                            <span className="text-[10px] font-bold text-muted-foreground bg-accent px-1.5 py-0.5 rounded-full">
+                              {dayAppts.length}
+                            </span>
+                          )}
+                        </div>
 
                         {/* Appointment Event Cards */}
-                        <div className="space-y-1.5 w-full">
-                          {dayAppts.map((appt) => (
-                            <div
-                              key={appt.id}
-                              onClick={() => openCustomerQuickChat(appt.conversationId)}
-                              className={`w-full text-white text-[11px] font-medium p-1.5 rounded-md shadow-xs leading-tight flex items-center justify-between cursor-pointer hover:opacity-90 transition-opacity ${
-                                appt.color === "bg-[#2C2E33]" ? "bg-foreground text-background" : "bg-primary text-primary-foreground"
-                              }`}
-                              title="Click to chat with client"
-                            >
-                              <span className="truncate">
-                                {appt.shortName} · {appt.time}
-                              </span>
-                              <MessageSquare className="w-3 h-3 shrink-0 ml-1 opacity-80" />
-                            </div>
-                          ))}
+                        <div className="space-y-1.5 w-full overflow-y-auto max-h-[85px] pr-0.5">
+                          {dayAppts.map((appt: any) => {
+                            const clientName = appt.customer
+                              ? `${appt.customer.firstName || ""} ${appt.customer.lastName || ""}`.trim() || appt.customer.email?.split("@")[0]
+                              : "Customer";
+                            const statusStyle = getStatusBadgeStyle(appt.status);
+
+                            return (
+                              <div
+                                key={appt._id}
+                                onClick={() => setSelectedAppointment(appt)}
+                                className={`w-full text-[11px] font-semibold p-1.5 rounded-md shadow-xs leading-tight flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-all ${statusStyle}`}
+                                title={`Click for appointment details (${appt.status})`}
+                              >
+                                <span className="truncate">
+                                  {clientName} · {formatTime(appt.startsAt || appt.scheduledAt)}
+                                </span>
+                                <span className="text-[9px] uppercase px-1 py-0.2 rounded bg-black/20 font-bold ml-1 shrink-0">
+                                  {appt.status || "pending"}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     );
                   })}
                 </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Week View Grid */}
-          {view === "Week" && (
-            <div className="overflow-x-auto rounded-lg border border-border shadow-xs">
-              <div className="bg-card min-w-[640px] overflow-hidden">
-                <div className="grid grid-cols-8 border-b border-border bg-accent/60 text-center py-3">
-                  <div className="text-xs text-muted-foreground font-medium self-center"></div>
-                  {weekDays.map((wd, i) => (
-                    <div key={i} className="space-y-0.5">
-                      <span className="text-xs text-muted-foreground font-medium block">
-                        {wd.dayName}
-                      </span>
-                      <span
-                        className={`font-serif text-lg font-bold block ${
-                          wd.isHighlighted ? "text-primary" : "text-foreground"
-                        }`}
-                      >
-                        {wd.dateNum}
-                      </span>
-                    </div>
-                  ))}
+        {/* Week View Grid */}
+        {view === "Week" && (
+          <div className="overflow-x-auto rounded-xl border border-border shadow-xs">
+            <div className="bg-card min-w-[720px] overflow-hidden">
+              <div className="divide-y divide-border bg-card">
+                <div className="p-4 bg-accent/40 text-xs text-muted-foreground font-semibold flex items-center justify-between">
+                  <span>Appointments for week of {formattedHeaderMonth}</span>
+                  <span>Total: {appointmentsList.length} Bookings</span>
                 </div>
 
-                <div className="divide-y divide-border bg-card">
-                  {timeSlots.slice(1, 10).map((time, rowIdx) => (
-                    <div key={rowIdx} className="grid grid-cols-8 min-h-[90px] divide-x divide-border">
-                      <div className="p-2 text-[11px] text-muted-foreground font-medium text-right pr-3 flex items-center justify-end">
-                        {time}
+                {appointmentsList.length > 0 ? (
+                  <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {appointmentsList.map((appt: any) => {
+                      const clientName = appt.customer
+                        ? `${appt.customer.firstName || ""} ${appt.customer.lastName || ""}`.trim() || appt.customer.email
+                        : "Customer";
+                      const serviceName = Array.isArray(appt.services) && appt.services.length > 0
+                        ? appt.services.map((s: any) => s.name).join(", ")
+                        : "Service";
+                      const statusStyle = getStatusBadgeStyle(appt.status);
+
+                      return (
+                        <div
+                          key={appt._id}
+                          onClick={() => setSelectedAppointment(appt)}
+                          className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-3 hover:shadow-md ${statusStyle}`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold font-mono">
+                              {appt.uid || appt._id?.slice(-6)}
+                            </span>
+                            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-black/20">
+                              {appt.status || "pending"}
+                            </span>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-sm truncate">{clientName}</h4>
+                            <p className="text-xs opacity-90 line-clamp-1">{serviceName}</p>
+                            <p className="text-[11px] opacity-80 mt-1 flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {formatDateFull(appt.startsAt || appt.scheduledAt)}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="p-16 text-center text-muted-foreground text-sm italic">
+                    No appointments scheduled for this week.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Day View Timeline */}
+        {view === "Day" && (
+          <div className="bg-card border border-border rounded-xl p-6 shadow-xs space-y-6">
+            <h3 className="font-serif font-bold text-xl sm:text-2xl text-foreground flex items-center gap-2">
+              <span>{currentDateState.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</span>
+            </h3>
+
+            {appointmentsList.length > 0 ? (
+              <div className="space-y-4 pt-2">
+                {appointmentsList.map((appt: any) => {
+                  const clientName = appt.customer
+                    ? `${appt.customer.firstName || ""} ${appt.customer.lastName || ""}`.trim() || appt.customer.email
+                    : "Customer";
+                  const serviceName = Array.isArray(appt.services) && appt.services.length > 0
+                    ? appt.services.map((s: any) => s.name).join(", ")
+                    : "Service";
+                  const statusNormalized = (appt.status || "pending").toLowerCase();
+                  const statusStyle = getStatusBadgeStyle(appt.status);
+
+                  return (
+                    <div
+                      key={appt._id}
+                      className={`rounded-xl p-5 shadow-sm border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all ${statusStyle}`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-base">{clientName}</span>
+                          <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-black/20">
+                            {statusNormalized}
+                          </span>
+                        </div>
+                        <p className="text-xs opacity-90">{serviceName}</p>
+                        <p className="text-xs opacity-80 flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>{formatDateFull(appt.startsAt || appt.scheduledAt)} ({appt.totalDurationInMinutes || 30} min)</span>
+                        </p>
+                        <p className="text-xs font-serif italic font-bold">
+                          Total: ${appt.pricing?.total ?? appt.pricing?.subtotal ?? 0}
+                        </p>
                       </div>
 
-                      {weekDays.map((wd, colIdx) => {
-                        const apptSarah = wd.dateNum === 19 && time === "2 PM";
-                        const apptMichael = wd.dateNum === 24 && time === "11 AM";
-
-                        return (
-                          <div
-                            key={colIdx}
-                            className="p-1 relative hover:bg-accent/40 transition-colors flex items-center"
-                          >
-                            {apptSarah && (
-                              <button
-                                type="button"
-                                onClick={() => openCustomerQuickChat("1")}
-                                className="w-full bg-primary text-primary-foreground h-[64px] flex flex-col justify-center items-center p-1.5 rounded-md text-xs font-medium shadow-xs leading-tight text-center hover:bg-primary/90 transition-colors cursor-pointer"
-                              >
-                                <span>Sarah J.</span>
-                                <span className="text-[10px] opacity-90">2:30 PM</span>
-                                <span className="text-[9px] underline mt-0.5 flex items-center gap-1">
-                                  <MessageSquare className="w-2.5 h-2.5" /> Chat
-                                </span>
-                              </button>
-                            )}
-                            {apptMichael && (
-                              <button
-                                type="button"
-                                onClick={() => openCustomerQuickChat("2")}
-                                className="w-full bg-foreground text-background h-[64px] flex flex-col justify-center items-center p-1.5 rounded-md text-xs font-medium shadow-xs leading-tight text-center hover:bg-foreground/90 transition-colors cursor-pointer"
-                              >
-                                <span>Michael V.</span>
-                                <span className="text-[10px] opacity-90">11:00 AM</span>
-                                <span className="text-[9px] underline mt-0.5 flex items-center gap-1">
-                                  <MessageSquare className="w-2.5 h-2.5" /> Chat
-                                </span>
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Day View Timeline */}
-          {view === "Day" && (
-            <div className="bg-card border border-border rounded-lg p-6 shadow-xs space-y-6">
-              <h3 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
-                Monday 19 August
-              </h3>
-
-              <div className="space-y-4 pt-2">
-                {timeSlots.map((time, idx) => {
-                  const appt = appointments.find((a) =>
-                    a.time.startsWith(time.split(" ")[0])
-                  );
-                  return (
-                    <div key={idx} className="relative flex items-start gap-4">
-                      <span className="w-14 text-xs font-medium text-muted-foreground text-right pt-0.5 shrink-0">
-                        {time}
-                      </span>
-                      <div className="flex-1 border-t border-dashed border-border pt-2 min-h-[50px]">
-                        {appt && (
-                          <div className="bg-primary text-primary-foreground rounded-lg p-4 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div>
-                              <div className="font-bold text-sm sm:text-base">
-                                {appt.client}
-                              </div>
-                              <div className="text-xs text-primary-foreground/90">
-                                {appt.service} · {appt.fullTime} · {appt.price}
-                              </div>
-                            </div>
-
+                      {/* Actions */}
+                      <div className="flex items-center gap-2">
+                        {statusNormalized === "pending" && (
+                          <>
                             <button
                               type="button"
-                              onClick={() => openCustomerQuickChat(appt.conversationId)}
-                              className="bg-card text-foreground hover:bg-accent px-4 py-2 rounded-md font-semibold text-xs flex items-center gap-1.5 transition-all cursor-pointer self-start sm:self-auto shadow-xs border border-border"
+                              onClick={() => handleStatusChange(appt._id, "confirmed")}
+                              disabled={updatingId === appt._id}
+                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1 transition-colors shadow-xs cursor-pointer disabled:opacity-50"
                             >
-                              <MessageSquare className="w-3.5 h-3.5 text-primary" />
-                              <span>Message {appt.shortName}</span>
+                              {updatingId === appt._id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                              <span>Confirm</span>
                             </button>
-                          </div>
+                            <button
+                              type="button"
+                              onClick={() => handleStatusChange(appt._id, "cancelled")}
+                              disabled={updatingId === appt._id}
+                              className="px-3 py-1.5 rounded-lg border border-white/40 hover:bg-black/20 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
+                            >
+                              <XCircle className="w-3.5 h-3.5" />
+                              <span>Cancel</span>
+                            </button>
+                          </>
+                        )}
+
+                        {statusNormalized === "confirmed" && (
+                          <button
+                            type="button"
+                            onClick={() => handleStatusChange(appt._id, "cancelled")}
+                            disabled={updatingId === appt._id}
+                            className="px-3 py-1.5 rounded-lg border border-white/40 hover:bg-black/20 text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-50"
+                          >
+                            {updatingId === appt._id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
+                            <span>Cancel</span>
+                          </button>
                         )}
                       </div>
                     </div>
                   );
                 })}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="p-12 text-center text-muted-foreground text-sm italic">
+                No appointments scheduled.
+              </div>
+            )}
+          </div>
+        )}
 
-          {/* QUICK CHAT MODAL OVERLAY ON CALENDAR */}
-          {quickChatConvId && activeQuickChatConv && (
-            <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-              <div className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                {/* Modal Header */}
-                <div className="bg-accent p-4 border-b border-border flex items-center justify-between">
+        {/* APPOINTMENT DETAIL MODAL */}
+        {selectedAppointment && (
+          <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+            <div className="bg-card border border-border rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              {/* Modal Header */}
+              <div className="bg-accent p-4 border-b border-border flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="w-4 h-4 text-primary" />
+                  <h3 className="font-serif font-bold text-base text-foreground">
+                    Appointment Details
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedAppointment(null)}
+                  className="p-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-6 space-y-4">
+                {/* Status Banner */}
+                <div className={`p-3 rounded-xl flex items-center justify-between text-xs font-semibold ${getStatusBadgeStyle(selectedAppointment.status)}`}>
+                  <span>Status: {selectedAppointment.status?.toUpperCase() || "PENDING"}</span>
+                  <span className="font-mono">{selectedAppointment.uid || selectedAppointment._id?.slice(-6)}</span>
+                </div>
+
+                {/* Customer Info */}
+                <div className="space-y-2 border-b border-border pb-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Customer</p>
                   <div className="flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent shrink-0">
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent border border-border">
                       <Image
-                        src={activeQuickChatConv.avatar}
-                        alt={activeQuickChatConv.customerName}
+                        src={selectedAppointment.customer?.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"}
+                        alt="Customer"
                         fill
                         className="object-cover"
                         unoptimized
                       />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-serif font-bold text-base text-foreground">
-                          {activeQuickChatConv.customerName}
-                        </h3>
-                        {activeQuickChatConv.isOnline && (
-                          <span className="w-2 h-2 rounded-full bg-emerald-500" title="Online" />
-                        )}
-                      </div>
-                      <p className="text-[11px] text-primary font-medium">
-                        {activeQuickChatConv.appointmentInfo}
+                      <p className="font-bold text-sm text-foreground">
+                        {selectedAppointment.customer
+                          ? `${selectedAppointment.customer.firstName || ""} ${selectedAppointment.customer.lastName || ""}`.trim() || selectedAppointment.customer.email
+                          : "Customer"}
                       </p>
+                      {selectedAppointment.customer?.email && (
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Mail className="w-3 h-3" /> {selectedAppointment.customer.email}
+                        </p>
+                      )}
+                      {selectedAppointment.customer?.phone?.number && (
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Phone className="w-3 h-3" /> {selectedAppointment.customer.phone.number}
+                        </p>
+                      )}
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-1">
+                {/* Booking Info */}
+                <div className="space-y-2 border-b border-border pb-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Schedule & Services</p>
+                  <p className="text-xs text-foreground font-medium flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-primary" />
+                    {formatDateFull(selectedAppointment.startsAt || selectedAppointment.scheduledAt)} ({selectedAppointment.totalDurationInMinutes || 30} min)
+                  </p>
+                  {Array.isArray(selectedAppointment.services) && selectedAppointment.services.length > 0 && (
+                    <div className="space-y-1 pt-1">
+                      {selectedAppointment.services.map((s: any) => (
+                        <div key={s._id} className="text-xs flex items-center justify-between text-muted-foreground">
+                          <span>• {s.name}</span>
+                          <span className="font-semibold text-foreground">${s.priceInUSD || 0}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Pricing Total */}
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-xs font-semibold text-muted-foreground">Total Price:</span>
+                  <span className="font-serif italic font-bold text-lg text-primary">
+                    ${selectedAppointment.pricing?.total ?? selectedAppointment.pricing?.subtotal ?? 0}
+                  </span>
+                </div>
+
+                {/* Actions inside Modal */}
+                <div className="pt-3 border-t border-border flex items-center justify-end gap-2">
+                  {(selectedAppointment.status || "pending").toLowerCase() === "pending" && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => handleStatusChange(selectedAppointment._id, "confirmed")}
+                        disabled={updatingId === selectedAppointment._id}
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        {updatingId === selectedAppointment._id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                        <span>Confirm</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleStatusChange(selectedAppointment._id, "cancelled")}
+                        disabled={updatingId === selectedAppointment._id}
+                        className="px-4 py-2 rounded-xl border border-destructive/30 text-destructive hover:bg-destructive/10 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                      >
+                        <XCircle className="w-4 h-4" />
+                        <span>Cancel</span>
+                      </button>
+                    </>
+                  )}
+
+                  {(selectedAppointment.status || "").toLowerCase() === "confirmed" && (
                     <button
                       type="button"
-                      onClick={() => openFullInboxChat(quickChatConvId)}
-                      className="p-2 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-                      title="Open in full inbox"
+                      onClick={() => handleStatusChange(selectedAppointment._id, "cancelled")}
+                      disabled={updatingId === selectedAppointment._id}
+                      className="px-4 py-2 rounded-xl border border-destructive/30 text-destructive hover:bg-destructive/10 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
                     >
-                      <ExternalLink className="w-4 h-4" />
+                      {updatingId === selectedAppointment._id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                      <span>Cancel Booking</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setQuickChatConvId(null)}
-                      className="p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* QUICK CHAT MODAL OVERLAY ON CALENDAR */}
+        {quickChatConvId && activeQuickChatConv && (
+          <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+            <div className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+              {/* Modal Header */}
+              <div className="bg-accent p-4 border-b border-border flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent shrink-0">
+                    <Image
+                      src={activeQuickChatConv.avatar}
+                      alt={activeQuickChatConv.customerName}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-serif font-bold text-base text-foreground">
+                        {activeQuickChatConv.customerName}
+                      </h3>
+                      {activeQuickChatConv.isOnline && (
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" title="Online" />
+                      )}
+                    </div>
+                    <p className="text-[11px] text-primary font-medium">
+                      {activeQuickChatConv.appointmentInfo}
+                    </p>
                   </div>
                 </div>
 
-                {/* Modal Chat Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[250px] max-h-[360px] bg-accent/40">
-                  {activeQuickChatConv.messages.map((msg) => {
-                    const isPro = msg.sender === "pro";
-                    return (
-                      <div
-                        key={msg.id}
-                        className={`flex flex-col ${
-                          isPro ? "items-end" : "items-start"
-                        }`}
-                      >
-                        <div
-                          className={`max-w-[80%] p-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${
-                            isPro
-                              ? "bg-primary text-primary-foreground rounded-br-xs shadow-xs"
-                              : "bg-card text-foreground rounded-bl-xs border border-border"
-                          }`}
-                        >
-                          {msg.text}
-                        </div>
-                        <span className="text-[10px] text-muted-foreground mt-1 px-1">
-                          {msg.time}
-                        </span>
-                      </div>
-                    );
-                  })}
-                  <div ref={quickChatEndRef} />
-                </div>
-
-                {/* Modal Footer / Input */}
-                <div className="p-3 bg-card border-t border-border flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={quickChatMessageText}
-                    onChange={(e) => setQuickChatMessageText(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSendQuickMessage()}
-                    placeholder={`Direct message ${activeQuickChatConv.customerName}...`}
-                    className="flex-1 bg-accent border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
-                  />
+                <div className="flex items-center gap-1">
                   <button
                     type="button"
-                    onClick={handleSendQuickMessage}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                    onClick={() => openFullInboxChat(quickChatConvId)}
+                    className="p-2 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                    title="Open in full inbox"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Send</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQuickChatConvId(null)}
+                    className="p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
 
-      {/* ============================================================= */}
-      {/* TAB 2: DIRECT CLIENT CHAT SYSTEM */}
-      {/* ============================================================= */}
-      {mainTab === "messages" && (
-        <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 shadow-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[550px]">
-            {/* Left Column: Customer Conversations List */}
-            <div className="lg:col-span-4 border-r border-border pr-0 lg:pr-6 space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-border">
-                <h3 className="font-serif font-bold text-lg text-foreground">
-                  Client Inquiries
-                </h3>
-                <span className="text-xs text-muted-foreground font-medium">
-                  {conversations.length} Active
-                </span>
-              </div>
-
-              <div className="space-y-2 overflow-y-auto max-h-[480px] pr-1">
-                {conversations.map((conv) => {
-                  const isSelected = selectedConversationId === conv.id;
+              {/* Modal Chat Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[250px] max-h-[360px] bg-accent/40">
+                {activeQuickChatConv.messages.map((msg) => {
+                  const isPro = msg.sender === "pro";
                   return (
                     <div
-                      key={conv.id}
-                      onClick={() => openFullInboxChat(conv.id)}
-                      className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center gap-3 ${
-                        isSelected
-                          ? "bg-primary/15 border-primary shadow-xs"
-                          : "bg-accent border-border hover:bg-accent/80"
+                      key={msg.id}
+                      className={`flex flex-col ${
+                        isPro ? "items-end" : "items-start"
                       }`}
                     >
-                      {/* Avatar */}
-                      <div className="relative shrink-0">
-                        <div className="w-11 h-11 rounded-full overflow-hidden relative bg-accent">
-                          <Image
-                            src={conv.avatar}
-                            alt={conv.customerName}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
-                        </div>
-                        {conv.unreadCount && conv.unreadCount > 0 ? (
-                          <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-background">
-                            {conv.unreadCount}
-                          </span>
-                        ) : null}
+                      <div
+                        className={`max-w-[80%] p-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                          isPro
+                            ? "bg-primary text-primary-foreground rounded-br-xs shadow-xs"
+                            : "bg-card text-foreground rounded-bl-xs border border-border"
+                        }`}
+                      >
+                        {msg.text}
                       </div>
-
-                      {/* Content Preview */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-1">
-                          <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">
-                            {conv.customerName}
-                          </h4>
-                          <span className="text-[10px] text-muted-foreground shrink-0">
-                            {conv.timestamp}
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground truncate leading-tight mt-0.5">
-                          {conv.lastMessage}
-                        </p>
-                      </div>
+                      <span className="text-[10px] text-muted-foreground mt-1 px-1">
+                        {msg.time}
+                      </span>
                     </div>
                   );
                 })}
+                <div ref={quickChatEndRef} />
+              </div>
+
+              {/* Modal Footer / Input */}
+              <div className="p-3 bg-card border-t border-border flex items-center gap-2">
+                <input
+                  type="text"
+                  value={quickChatMessageText}
+                  onChange={(e) => setQuickChatMessageText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendQuickMessage()}
+                  placeholder={`Direct message ${activeQuickChatConv.customerName}...`}
+                  className="flex-1 bg-accent border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
+                />
+                <button
+                  type="button"
+                  onClick={handleSendQuickMessage}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Send</span>
+                </button>
               </div>
             </div>
-
-            {/* Right Column: Direct Chat Thread Box */}
-            <div className="lg:col-span-8 flex flex-col justify-between pl-0 lg:pl-2">
-              {activeConversation ? (
-                <>
-                  {/* Chat Box Header */}
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div className="flex items-center gap-3">
-                      <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent shrink-0">
-                        <Image
-                          src={activeConversation.avatar}
-                          alt={activeConversation.customerName}
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-sm sm:text-base text-foreground">
-                          {activeConversation.customerName}
-                        </h3>
-                        {activeConversation.appointmentInfo && (
-                          <p className="text-[11px] text-primary font-medium">
-                            {activeConversation.appointmentInfo}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    {activeConversation.isOnline && (
-                      <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse" />
-                        Online
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Messages Scroll Area */}
-                  <div className="flex-1 overflow-y-auto space-y-4 py-4 pr-2 max-h-[380px]">
-                    {activeConversation.messages.map((msg) => {
-                      const isPro = msg.sender === "pro";
-                      return (
-                        <div
-                          key={msg.id}
-                          className={`flex flex-col ${
-                            isPro ? "items-end" : "items-start"
-                          }`}
-                        >
-                          <div
-                            className={`max-w-md p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
-                              isPro
-                                ? "bg-primary text-primary-foreground rounded-br-xs shadow-xs"
-                                : "bg-accent text-foreground rounded-bl-xs border border-border"
-                            }`}
-                          >
-                            {msg.text}
-                          </div>
-                          <span className="text-[10px] text-muted-foreground mt-1 px-1">
-                            {msg.time}
-                          </span>
-                        </div>
-                      );
-                    })}
-                    <div ref={messagesEndRef} />
-                  </div>
-
-                  {/* Message Input Bar */}
-                  <div className="pt-3 border-t border-border flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={newMessageText}
-                      onChange={(e) => setNewMessageText(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                      placeholder={`Reply to ${activeConversation.customerName}...`}
-                      className="flex-1 bg-accent border border-border rounded-xl px-4 py-3 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-all"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={handleSendMessage}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm shrink-0"
-                    >
-                      <Send className="w-4 h-4" />
-                      <span>Send</span>
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground p-8">
-                  <MessageSquare className="w-12 h-12 mb-3 text-muted-foreground/60" />
-                  <p className="text-sm font-medium">Select a client conversation to start chatting.</p>
-                </div>
-              )}
-            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

@@ -47,10 +47,23 @@ export function middleware(request: NextRequest) {
   const isBusinessRoute = pathname.startsWith('/business');
   const isProtectedRoute = isCustomerRoute || isProfessionalRoute || isBusinessRoute;
 
-  // 1. If user is already logged in and tries to access /login or /register -> Redirect to their dashboard
-  if (isAuthRoute && isValidSession) {
-    const targetDashboard = getDashboardByRole(userRole);
-    return NextResponse.redirect(new URL(targetDashboard, request.url));
+  // 1. If user is accessing auth routes (login / register)
+  if (isAuthRoute) {
+    if (request.nextUrl.searchParams.get('logout') === 'true') {
+      const response = NextResponse.next();
+      response.cookies.delete('salon-token');
+      response.cookies.delete('salon-role');
+      response.cookies.delete('salon-refresh-token');
+      response.cookies.set('salon-token', '', { maxAge: 0, path: '/' });
+      response.cookies.set('salon-role', '', { maxAge: 0, path: '/' });
+      response.cookies.set('salon-refresh-token', '', { maxAge: 0, path: '/' });
+      return response;
+    }
+
+    if (isValidSession) {
+      const targetDashboard = getDashboardByRole(userRole);
+      return NextResponse.redirect(new URL(targetDashboard, request.url));
+    }
   }
 
   // 2. If user is NOT logged in and tries to access any protected route -> Redirect to /login

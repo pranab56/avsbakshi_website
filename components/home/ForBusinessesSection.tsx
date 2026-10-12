@@ -108,7 +108,7 @@ export default function ForBusinessesSection() {
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
-              href="/for-businesses"
+              href="/register"
               className="px-5 sm:px-6 py-3 sm:py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-lg transition-colors"
             >
               Join as a Business

@@ -2,6 +2,15 @@ import { baseApi } from '../../utils/apiBaseQuery';
 
 export const servicesApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
+
+        getAllServices: builder.query({
+            query: ({ searchTerm, page, category }) => ({
+                url: `/services/all?searchTerm=${searchTerm}&page=${page}&category=${category}`,
+                method: "GET",
+            }),
+            providesTags: ["services"]
+        }),
+
         createServices: builder.mutation({
             query: (data) => ({
                 url: "/services/create",
@@ -44,13 +53,27 @@ export const servicesApi = baseApi.injectEndpoints({
             providesTags: ["services"]
         }),
 
-        getAllCategories: builder.query({
-            query: () => ({
-                url: "/category",
+        getAllServices: builder.query({
+            query: ({ page = 1, searchTerm = "", categoryId = "", latitude = "", longitude = "" } = {}) => {
+                let url = `/services/all?searchTerm=${encodeURIComponent(searchTerm)}&page=${page}&category=${encodeURIComponent(categoryId)}`;
+                if (latitude) url += `&latitude=${encodeURIComponent(latitude)}`;
+                if (longitude) url += `&longitude=${encodeURIComponent(longitude)}`;
+                return {
+                    url,
+                    method: "GET",
+                };
+            },
+            providesTags: ["services"]
+        }),
+
+        getAllServiceByProfessionalId: builder.query({
+            query: ({ professionalId, page = 1, }) => ({
+                url: `/services/all?professionalId=${professionalId}&page=${page}`,
                 method: "GET",
             }),
-            providesTags: ["category"]
+            providesTags: ["services"]
         }),
+
     }),
 });
 
@@ -61,5 +84,5 @@ export const {
     useDeleteServicesMutation,
     useGetSingleServiceQuery,
     useGetMyServicesQuery,
-    useGetAllCategoriesQuery,
+    useGetAllServicesQuery
 } = servicesApi;

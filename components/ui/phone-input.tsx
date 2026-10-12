@@ -32,7 +32,7 @@ export function PhoneInput({
         international
         defaultCountry={defaultCountry}
         name={name}
-        value={value}
+        value={value || undefined}
         onChange={onChange}
         disabled={disabled}
         placeholder={placeholder}

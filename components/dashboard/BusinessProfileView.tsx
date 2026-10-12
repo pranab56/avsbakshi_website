@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { toast } from "sonner";
+
 import {
   Building2,
   MapPin,
@@ -15,21 +16,19 @@ import {
   Phone,
   Mail,
   Star,
-  Check,
   Upload,
   Trash2,
   Loader2,
   Eye,
   CalendarCheck,
   DollarSign,
-  Award,
-  Sparkles,
   Save,
-  CheckCircle2,
 } from "lucide-react";
 import { useGetMySalonQuery, useUpdateSalonMutation } from "@/features/salon/salonApi";
 import { useUploadMutation } from "@/features/upload/uploadApi";
+import { useGetAllCategoryQuery } from "@/features/category/category";
 import { PhoneInput } from "@/components/ui/phone-input";
+import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
 
 const GoogleMapPicker = dynamic(() => import("@/components/shared/GoogleMapPicker"), {
   ssr: false,
@@ -41,24 +40,21 @@ const GoogleMapPicker = dynamic(() => import("@/components/shared/GoogleMapPicke
   ),
 });
 
-const CATEGORIES = [
-  "Hair & Beauty Salon",
-  "Barbershop",
-  "Nail Studio",
-  "Spa & Wellness",
-  "Beauty Clinic",
-  "Makeup Studio",
-];
-
 export default function BusinessProfileView() {
   const [activeTab, setActiveTab] = useState<"overview" | "edit" | "location" | "hours" | "photos">("overview");
 
   // RTK Query Hooks
   const { data: salonResponse, isLoading: isSalonLoading } = useGetMySalonQuery(undefined);
+  const { data: categoryResponse, isLoading: isCategoriesLoading } = useGetAllCategoryQuery({});
   const [updateSalon, { isLoading: isUpdating }] = useUpdateSalonMutation();
   const [uploadMedia, { isLoading: isUploading }] = useUploadMutation();
 
   const salonData = salonResponse?.data;
+  const categoriesList = Array.isArray(categoryResponse?.data)
+    ? categoryResponse.data
+    : Array.isArray(categoryResponse)
+      ? categoryResponse
+      : [];
 
   // Business Form State
   const [formData, setFormData] = useState({
@@ -97,9 +93,15 @@ export default function BusinessProfileView() {
   // Populate form data when salonData is fetched
   useEffect(() => {
     if (salonData) {
+      const initialBusinessType =
+        (typeof salonData.category === "object" ? salonData.category?.name : null) ||
+        salonData.category ||
+        salonData.businessType ||
+        "Hair & Beauty Salon";
+
       setFormData({
         name: salonData.name || "",
-        businessType: salonData.businessType || "Hair & Beauty Salon",
+        businessType: initialBusinessType,
         description: salonData.description || "",
         logo: salonData.logo || "",
         photos: Array.isArray(salonData.photos) ? salonData.photos : [],
@@ -110,14 +112,14 @@ export default function BusinessProfileView() {
         availability: Array.isArray(salonData.availability) && salonData.availability.length > 0
           ? salonData.availability
           : [
-              { day: "Monday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
-              { day: "Tuesday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
-              { day: "Wednesday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
-              { day: "Thursday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
-              { day: "Friday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
-              { day: "Saturday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
-              { day: "Sunday", openTime: "00:00", closeTime: "00:00", isAvailable: false },
-            ],
+            { day: "Monday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+            { day: "Tuesday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+            { day: "Wednesday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+            { day: "Thursday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+            { day: "Friday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+            { day: "Saturday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+            { day: "Sunday", openTime: "00:00", closeTime: "00:00", isAvailable: false },
+          ],
         address: {
           line1: salonData.address?.line1 || "",
           line2: salonData.address?.line2 || "",
@@ -135,6 +137,41 @@ export default function BusinessProfileView() {
       });
     }
   }, [salonData]);
+
+  // When categories load, if current businessType is an _id, resolve to category name
+  useEffect(() => {
+    if (formData.businessType && categoriesList.length > 0) {
+      const matchedById = categoriesList.find((c: any) => c._id === formData.businessType);
+      if (matchedById?.name) {
+        setFormData((prev) => ({ ...prev, businessType: matchedById.name }));
+      }
+    }
+  }, [categoriesList, formData.businessType]);
+
+  // Prepared category options for Combobox
+  const categoryOptions: ComboboxOption[] = categoriesList.map((cat: any) => ({
+    value: cat.name || cat._id,
+    label: cat.name || "Category",
+    description: cat.totalServices !== undefined ? `${cat.totalServices} service(s) available` : undefined,
+  }));
+
+  const displayCategoryOptions = [...categoryOptions];
+  if (
+    formData.businessType &&
+    !displayCategoryOptions.some((opt) => opt.value === formData.businessType)
+  ) {
+    displayCategoryOptions.unshift({
+      value: formData.businessType,
+      label: formData.businessType,
+    });
+  }
+
+  const activeCategoryName =
+    categoriesList.find(
+      (c: any) => c._id === formData.businessType || c.name === formData.businessType
+    )?.name ||
+    formData.businessType ||
+    "Hair & Beauty Salon";
 
   // Single Logo Upload
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -262,9 +299,13 @@ export default function BusinessProfileView() {
       const extractedPostalCode = formData.address.postalCode.trim() || "1219";
       const extractedCountry = formData.address.country.trim() || "Bangladesh";
 
-      const payload = {
+      const matchedCat = categoriesList.find(
+        (c: any) => c.name === formData.businessType || c._id === formData.businessType
+      );
+
+      const payload: any = {
         name: formData.name.trim() || "Luxe Glow Studio & Spa",
-        businessType: formData.businessType || "Hair & Beauty Salon",
+        businessType: matchedCat?.name || formData.businessType || "Hair & Beauty Salon",
         description: formData.description.trim() || "Full-service boutique salon specializing in modern hair styling and beauty treatments.",
         logo: formData.logo || formData.photos[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
         photos: formData.photos.length > 0 ? formData.photos : ["https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80"],
@@ -289,6 +330,10 @@ export default function BusinessProfileView() {
           ],
         },
       };
+
+      if (matchedCat?._id) {
+        payload.category = matchedCat._id;
+      }
 
       const res = await updateSalon({ salonId: salonData._id, data: payload }).unwrap();
       toast.success(res?.message || `${sectionName} updated successfully!`);
@@ -361,11 +406,10 @@ export default function BusinessProfileView() {
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key as any)}
-              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
-                isActive
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
-              }`}
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${isActive
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                }`}
             >
               <Icon className="w-4 h-4" />
               <span>{tab.label}</span>
@@ -408,7 +452,7 @@ export default function BusinessProfileView() {
                       {formData.name || "Salon Business"}
                     </h2>
                     <span className="bg-primary/15 text-primary text-[11px] font-bold px-3 py-1 rounded-full border border-primary/20">
-                      {formData.businessType}
+                      {activeCategoryName}
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xl">
@@ -592,18 +636,26 @@ export default function BusinessProfileView() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground block">Business Category</label>
-              <select
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-foreground block">Business Category</label>
+                {isCategoriesLoading && (
+                  <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                    <Loader2 className="w-3 h-3 animate-spin text-primary" />
+                    <span>Loading categories...</span>
+                  </span>
+                )}
+              </div>
+              <Combobox
+                options={displayCategoryOptions}
                 value={formData.businessType}
-                onChange={(e) => setFormData({ ...formData, businessType: e.target.value })}
-                className="w-full bg-accent/50 border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              >
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setFormData({ ...formData, businessType: val })}
+                placeholder={isCategoriesLoading ? "Loading categories..." : "Select business category..."}
+                searchable
+                searchPlaceholder="Search category..."
+                triggerClassName="w-full bg-accent/50 border border-border rounded-xl px-4 py-2.5 text-sm text-foreground outline-none hover:border-primary/50 focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-2xs h-12"
+                labelClassName="font-normal text-sm text-foreground"
+                align="start"
+              />
             </div>
 
             <div className="space-y-1.5">

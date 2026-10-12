@@ -35,10 +35,10 @@ export default function HomePage() {
       {/* Rest of Landing Page Sections */}
       <div className="space-y-12 sm:space-y-16 pt-8">
         <CategoriesSection />
+        <SalonsNearYou />
         <DiscoverMarketplace />
         <HowItWorks />
         <WhyCloudSalon />
-        <SalonsNearYou />
         <ServicesForAllAges />
         <CustomerReviews />
         <ForProfessionalsSection />

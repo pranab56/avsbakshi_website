@@ -1,14 +1,45 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Star, MapPin, Building2 } from "lucide-react";
-import { SALON_TYPES, getSalonsData } from "@/lib/data/marketplaceData";
+import { useGetAllSalonsQuery } from "@/features/salon/salonApi";
+import ChairImage from "@/components/shared/ChairImage";
 
 export default function SalonsNearYou() {
-  const [selectedTypeSlug, setSelectedTypeSlug] = useState<string>("all");
+  const { data: salonsRes, isLoading } = useGetAllSalonsQuery({});
 
-  const filteredSalons = getSalonsData(selectedTypeSlug);
+  const isValidImage = (url: any) =>
+    typeof url === "string" &&
+    url.trim().length > 0 &&
+    !url.includes("example.com");
+
+  const rawApiSalons = Array.isArray(salonsRes?.data) ? salonsRes.data : [];
+  const mappedSalons = rawApiSalons.map((item: any) => {
+    const coverImg =
+      [item.photos?.[0], item.photos?.[1], item.logo].find(isValidImage) || "";
+
+    const logoImg =
+      [item.logo, item.createdBy?.image].find(isValidImage) || "";
+
+    const locationStr = item.address
+      ? `${item.address.city || ""}${item.address.state ? ", " + item.address.state : ""}`.trim() || item.address.line1 || "Dhaka, Bangladesh"
+      : "Dhaka, Bangladesh";
+
+    return {
+      id: item._id,
+      name: item.name || "Beauty Salon",
+      salonType: item.businessType || "Hair & Beauty Salon",
+      category: item.businessType || "Beauty & Spa",
+      rating: item.avgRating || 5.0,
+      reviews: item.totalReviews || 0,
+      location: locationStr,
+      badge: item.status === "active" ? "Open Today" : "Verified",
+      coverImg,
+      logoImg,
+    };
+  });
+
+  const displaySalons = mappedSalons.slice(0, 6);
 
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -16,17 +47,17 @@ export default function SalonsNearYou() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
           <span className="text-xs font-bold text-[#D99722] uppercase tracking-widest block mb-1">
-            DISCOVER SALONS BY TYPE
+            DISCOVER SALONS
           </span>
           <h2 className="text-2xl sm:text-4xl font-bold text-foreground">
             Discover Great Salons Near You
           </h2>
           <p className="text-xs text-muted-foreground mt-1">
-            Explore salons by specialty: Hair Salons, Nail Salons, Barber Shops, Spa & MedSpa studios
+            Explore top rated salons, boutique studios, and beauty centers.
           </p>
         </div>
         <Link
-          href="/discover?tab=salons"
+          href="/salons"
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:py-3 rounded-md border border-border bg-card text-xs font-semibold text-foreground hover:bg-accent hover:border-[#D99722] transition-all w-full sm:w-auto"
         >
           <span>Browse all salons</span>
@@ -34,105 +65,105 @@ export default function SalonsNearYou() {
         </Link>
       </div>
 
-      {/* Salon Categories / Types Filter Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 max-w-full scrollbar-none">
-        {SALON_TYPES.map((typeObj) => (
-          <button
-            key={typeObj.id}
-            type="button"
-            onClick={() => setSelectedTypeSlug(typeObj.slug)}
-            className={`px-4 py-2 text-xs rounded-lg font-semibold transition-all cursor-pointer border shrink-0 ${
-              selectedTypeSlug === typeObj.slug
-                ? "bg-[#D99722] text-white border-[#D99722] shadow-sm"
-                : "bg-accent/60 text-foreground hover:bg-muted border-border/60"
-            }`}
-          >
-            {typeObj.name}
-          </button>
-        ))}
-      </div>
-
       {/* Salons Grid */}
-      {filteredSalons.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-5">
-          {filteredSalons.map((salon) => (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {[1, 2, 3,4].map((n) => (
+            <div key={n} className="bg-card rounded-2xl h-80 border border-border animate-pulse" />
+          ))}
+        </div>
+      ) : displaySalons.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {displaySalons.map((salon: any) => (
             <div
               key={salon.id}
-              className="bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
+              className="bg-card rounded-2xl overflow-hidden border border-border/70 shadow-xs hover:shadow-xl transition-all duration-300 group flex flex-col justify-between text-card-foreground hover:-translate-y-1"
             >
-              <div className="relative h-56 overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                  style={{ backgroundImage: `url('${salon.img}')` }}
-                />
-                
-                {/* Salon Category/Type Badge */}
-                <span className="absolute top-3 left-3 bg-background/90 backdrop-blur-md text-[10px] font-bold px-2.5 py-1 rounded-md text-foreground border border-border/50 shadow-sm flex items-center gap-1">
-                  <Building2 className="w-3 h-3 text-[#D99722]" />
-                  <span>{salon.salonType}</span>
-                </span>
+              {/* Salon Cover Header */}
+              <div className="relative h-44 sm:h-48 overflow-hidden bg-muted">
+                <Link href={`/salons/${salon.id}`} className="block w-full h-full relative">
+                  <ChairImage
+                    src={salon.coverImg}
+                    alt={salon.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    size="lg"
+                    showLabel
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/30 pointer-events-none" />
+                </Link>
 
-                <span className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-[10px] font-medium px-2.5 py-1 rounded-full text-white border border-white/20">
-                  {salon.badge}
-                </span>
+                {/* Top Badges */}
+                <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
+                  <span className="bg-black/60 backdrop-blur-md text-white border border-white/20 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+                    <Building2 className="w-3 h-3 text-[#D99722]" />
+                    <span>{salon.salonType}</span>
+                  </span>
+
+                  <span className="bg-[#D99722] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-xs">
+                    {salon.badge}
+                  </span>
+                </div>
               </div>
 
-              <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-base font-bold text-foreground group-hover:text-[#D99722] transition-colors">
-                        {salon.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">{salon.category}</p>
-                    </div>
-                    <span className="text-xs font-bold text-[#D99722] shrink-0 ml-2">{salon.price}</span>
-                  </div>
+              {/* Card Content Body */}
+              <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
+                <div className="space-y-3">
+                  {/* Salon Logo + Info Column (Name -> Location -> Rating) */}
+                  <div className="flex items-start gap-3">
+                    <Link href={`/salons/${salon.id}`} className="shrink-0 block mt-0.5">
+                      <div className="w-12 h-12 rounded-xl border-2 border-[#D99722]/60 overflow-hidden bg-muted shadow-sm">
+                        <ChairImage
+                          src={salon.logoImg}
+                          alt={salon.name}
+                          className="w-full h-full object-cover"
+                          size="sm"
+                        />
+                      </div>
+                    </Link>
 
-                  <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                    <Star className="w-3.5 h-3.5 fill-[#D99722] text-[#D99722]" />
-                    <span className="font-bold text-foreground">{salon.rating}</span>
-                    <span className="text-muted-foreground">({salon.reviews})</span>
-                    <span className="mx-1">•</span>
-                    <MapPin className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-muted-foreground truncate">{salon.location}</span>
-                  </div>
-
-                  {/* Salon Tags */}
-                  <div className="flex flex-wrap gap-1.5 mt-3">
-                    {salon.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-accent/80 text-foreground text-[10px] px-2 py-0.5 rounded-md border border-border/40 font-medium"
+                    <div className="flex-1 min-w-0 space-y-1">
+                      {/* 1. Name */}
+                      <Link
+                        href={`/salons/${salon.id}`}
+                        className="text-sm sm:text-base font-bold text-foreground hover:text-[#D99722] transition-colors block truncate"
                       >
-                        {tag}
-                      </span>
-                    ))}
+                        {salon.name}
+                      </Link>
+                      {/* 2. Location */}
+                      <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <MapPin className="w-3.5 h-3.5 text-[#D99722] shrink-0" />
+                        <span className="truncate">{salon.location}</span>
+                      </div>
+
+                      {/* 3. Rating (after location) */}
+                      <div className="flex items-center gap-1 text-xs pt-0.5">
+                        <Star className="w-3.5 h-3.5 fill-[#D99722] text-[#D99722] shrink-0" />
+                        <span className="font-bold text-foreground">{salon.rating}</span>
+                        <span className="text-muted-foreground text-[11px]">({salon.reviews})</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <Link
-                  href="/professionals/1"
-                  className="w-full text-center py-2.5 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors block mt-2"
-                >
-                  Book Appointment
-                </Link>
+                {/* Action Button */}
+                <div className="pt-3 border-t border-border/50">
+                  <Link
+                    href={`/salons/${salon.id}`}
+                    className="w-full text-center py-2.5 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-bold rounded-xl shadow-xs transition-transform active:scale-95 block"
+                  >
+                    Explore Salon & Book
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-card rounded-xl border border-border">
-          <p className="text-sm font-medium text-muted-foreground">
-            No salons found under this type filter. Showing all available salons soon.
+        <div className="text-center py-12 bg-card rounded-2xl border border-border space-y-2">
+          <p className="text-sm font-bold text-foreground">
+            No Salons Available
           </p>
-          <button
-            type="button"
-            onClick={() => setSelectedTypeSlug("all")}
-            className="mt-3 px-4 py-2 bg-[#D99722] text-white text-xs font-semibold rounded-md"
-          >
-            View All Salons
-          </button>
+          <p className="text-xs text-muted-foreground">No active salons were found at the moment.</p>
         </div>
       )}
     </section>

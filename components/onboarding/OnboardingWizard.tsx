@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Sparkles } from "lucide-react";
 import { useCreateBusinessMutation } from "@/features/business/businessApi";
 import { useCreateSalonMutation } from "@/features/salon/salonApi";
 import { useUploadMutation } from "@/features/upload/uploadApi";
@@ -77,6 +77,10 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
     initialRouteState.isBusinessMode ? "business_flow" : "choose"
   );
   const [currentStep, setCurrentStep] = useState<number>(initialRouteState.step);
+
+  // Step Transition Loading State
+  const [isStepLoading, setIsStepLoading] = useState<boolean>(false);
+  const [loadingDirection, setLoadingDirection] = useState<"next" | "prev" | "navigate">("next");
 
   const [createBusiness] = useCreateBusinessMutation();
   const [createSalon, { isLoading: isSubmitting }] = useCreateSalonMutation();
@@ -271,30 +275,48 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
   };
 
   const handleNextStep = () => {
+    if (isStepLoading) return;
     if (validateStep(currentStep)) {
       const nextStepNum = Math.min(currentStep + 1, 6);
-      setCurrentStep(nextStepNum);
-      router.push(getStepUrl(nextStepNum));
+      setIsStepLoading(true);
+      setLoadingDirection("next");
+      setTimeout(() => {
+        setCurrentStep(nextStepNum);
+        router.push(getStepUrl(nextStepNum));
+        setTimeout(() => setIsStepLoading(false), 250);
+      }, 400);
     } else {
       toast.error("Please fill in all required fields for this step");
     }
   };
 
   const handlePrevStep = () => {
+    if (isStepLoading) return;
     if (currentStep === 1) {
       setOnboardingMode("choose");
       router.push("/onboarding");
     } else {
       const prevStepNum = Math.max(currentStep - 1, 1);
-      setCurrentStep(prevStepNum);
-      router.push(getStepUrl(prevStepNum));
+      setIsStepLoading(true);
+      setLoadingDirection("prev");
+      setTimeout(() => {
+        setCurrentStep(prevStepNum);
+        router.push(getStepUrl(prevStepNum));
+        setTimeout(() => setIsStepLoading(false), 250);
+      }, 400);
     }
   };
 
   const navigateToStep = (targetStep: number) => {
-    if (targetStep <= currentStep) {
-      setCurrentStep(targetStep);
-      router.push(getStepUrl(targetStep));
+    if (isStepLoading) return;
+    if (targetStep <= currentStep && targetStep !== currentStep) {
+      setIsStepLoading(true);
+      setLoadingDirection(targetStep > currentStep ? "next" : "prev");
+      setTimeout(() => {
+        setCurrentStep(targetStep);
+        router.push(getStepUrl(targetStep));
+        setTimeout(() => setIsStepLoading(false), 250);
+      }, 400);
     }
   };
 
@@ -427,57 +449,94 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
                 onNavigateToStep={navigateToStep}
               />
 
-              {/* STEP 1: SALON INFO */}
-              {currentStep === 1 && (
-                <StepSalonInfo formData={formData} setFormData={setFormData} errors={errors} />
-              )}
+              {/* STEP FORM CONTENT WRAPPER WITH OVERLAY LOADING */}
+              <div className="relative min-h-[360px] rounded-2xl transition-all duration-300">
+                {/* Section Loading Overlay */}
+                {isStepLoading && (
+                  <div className="absolute inset-0 z-30 rounded-2xl bg-background/85 backdrop-blur-md flex flex-col items-center justify-center p-6 border border-primary/20 shadow-2xl animate-in fade-in duration-200">
+                    {/* Glowing Accent Top Bar */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse rounded-t-2xl" />
 
-              {/* STEP 2: BUSINESS CATEGORY */}
-              {currentStep === 2 && (
-                <StepCategory formData={formData} setFormData={setFormData} />
-              )}
+                    {/* Loader Ring */}
+                    <div className="relative flex items-center justify-center mb-4">
+                      <div className="w-14 h-14 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+                      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center absolute">
+                        <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                      </div>
+                    </div>
 
-              {/* STEP 3: CONTACT & LINKS */}
-              {currentStep === 3 && (
-                <StepContact formData={formData} setFormData={setFormData} errors={errors} />
-              )}
+                    {/* Text */}
+                    <div className="text-center space-y-1">
+                      <p className="text-sm font-semibold text-foreground tracking-wide flex items-center justify-center gap-2">
+                        {loadingDirection === "next"
+                          ? "Loading Next Step..."
+                          : loadingDirection === "prev"
+                          ? "Loading Previous Step..."
+                          : "Switching Section..."}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Please wait a moment while we update your view
+                      </p>
+                    </div>
+                  </div>
+                )}
 
-              {/* STEP 4: ADDRESS */}
-              {currentStep === 4 && (
-                <StepAddress
-                  formData={formData}
-                  setFormData={setFormData}
-                  errors={errors}
-                  onLocationSelect={handleLocationSelect}
-                />
-              )}
+                {/* STEP 1: SALON INFO */}
+                {currentStep === 1 && (
+                  <StepSalonInfo formData={formData} setFormData={setFormData} errors={errors} />
+                )}
 
-              {/* STEP 5: SCHEDULE */}
-              {currentStep === 5 && (
-                <StepSchedule
-                  formData={formData}
-                  handleAvailabilityToggle={handleAvailabilityToggle}
-                  handleAvailabilityTimeChange={handleAvailabilityTimeChange}
-                />
-              )}
+                {/* STEP 2: BUSINESS CATEGORY */}
+                {currentStep === 2 && (
+                  <StepCategory formData={formData} setFormData={setFormData} />
+                )}
 
-              {/* STEP 6: MEDIA */}
-              {currentStep === 6 && (
-                <StepMedia
-                  formData={formData}
-                  handleMultiplePhotosUpload={handleMultiplePhotosUpload}
-                  handleRemovePhoto={handleRemovePhoto}
-                  isUploading={isUploading}
-                />
-              )}
+                {/* STEP 3: CONTACT & LINKS */}
+                {currentStep === 3 && (
+                  <StepContact formData={formData} setFormData={setFormData} errors={errors} />
+                )}
+
+                {/* STEP 4: ADDRESS */}
+                {currentStep === 4 && (
+                  <StepAddress
+                    formData={formData}
+                    setFormData={setFormData}
+                    errors={errors}
+                    onLocationSelect={handleLocationSelect}
+                  />
+                )}
+
+                {/* STEP 5: SCHEDULE */}
+                {currentStep === 5 && (
+                  <StepSchedule
+                    formData={formData}
+                    handleAvailabilityToggle={handleAvailabilityToggle}
+                    handleAvailabilityTimeChange={handleAvailabilityTimeChange}
+                  />
+                )}
+
+                {/* STEP 6: MEDIA */}
+                {currentStep === 6 && (
+                  <StepMedia
+                    formData={formData}
+                    handleMultiplePhotosUpload={handleMultiplePhotosUpload}
+                    handleRemovePhoto={handleRemovePhoto}
+                    isUploading={isUploading}
+                  />
+                )}
+              </div>
 
               {/* Navigation Buttons Footer */}
               <div className="flex items-center justify-between pt-6 border-t border-border mt-6">
                 <button
                   type="button"
                   onClick={handlePrevStep}
-                  className="px-5 py-2.5 rounded-xl border border-border bg-card hover:bg-accent text-foreground text-xs font-semibold transition-colors flex items-center gap-2 cursor-pointer"
+                  disabled={isStepLoading}
+                  className="px-5 py-2.5 rounded-xl border border-border bg-card hover:bg-accent text-foreground text-xs font-semibold transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
+                  {isStepLoading && loadingDirection === "prev" && (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                  )}
                   Previous
                 </button>
 
@@ -485,17 +544,27 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
                   <button
                     type="button"
                     onClick={handleNextStep}
-                    className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer shadow-md"
+                    disabled={isStepLoading}
+                    className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <span>Next Step</span>
-                    <ArrowRight className="w-4 h-4" />
+                    {isStepLoading && loadingDirection === "next" ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Loading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Next Step</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={handleSubmitBusiness}
-                    disabled={isSubmitting}
-                    className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
+                    disabled={isSubmitting || isStepLoading}
+                    className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <>

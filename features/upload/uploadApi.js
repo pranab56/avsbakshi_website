@@ -13,6 +13,7 @@ export const uploadApi = baseApi.injectEndpoints({
 });
 
 // Export hooks
+
 export const {
     useUploadMutation
 } = uploadApi;

@@ -8,12 +8,13 @@ import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, 
 import Button from "./Button";
 import ThemeToggle from "./theme-toggle";
 import { Combobox } from "@/components/ui/combobox";
-import { SERVICE_CATEGORIES } from "@/lib/data/marketplaceData";
-import { ServiceCategory } from "@/types";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { logout } from "@/features/auth/authSlice";
+import { Loader2 } from "lucide-react";
+import { useGetAllCategoryQuery } from "@/features/category/category";
+import { useGetMyProfileQuery } from "@/features/profile/profileApi";
 import {
   Dialog,
   DialogContent,
@@ -35,10 +36,33 @@ export default function Navbar() {
   const token = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.token);
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
 
+  const { data: profileResponse, isLoading: isProfileLoading, isFetching: isProfileFetching } = useGetMyProfileQuery(undefined, { skip: !token });
+  const profileData = profileResponse?.data;
+  const currentUser = profileData;
+  const userRole = currentUser?.role || user?.role;
+
+  const userImage = typeof currentUser?.image === "string" && currentUser.image.trim().length > 0 ? currentUser.image : null;
+  const displayName =
+    `${currentUser?.firstName || ''} ${currentUser?.lastName || ''}`.trim() ||
+    currentUser?.name ||
+    currentUser?.email ||
+    "";
+  const userInitial = displayName ? displayName[0].toUpperCase() : "";
+
+  const { data: categoriesRes, isLoading: isCategoriesLoading } = useGetAllCategoryQuery({});
+
+  const apiCategories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
+  const categoriesList = apiCategories.map((cat: any) => ({
+    id: cat._id || cat.id,
+    title: cat.name || cat.title,
+    count: cat.totalServices !== undefined ? String(cat.totalServices) : "0",
+    img: cat.image || cat.img || "",
+    desc: cat.name ? `${cat.name} professional beauty services` : "",
+  }));
+
   const [mounted, setMounted] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [discoverOpen, setDiscoverOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<ServiceCategory | null>(SERVICE_CATEGORIES[0] || null);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -51,17 +75,13 @@ export default function Navbar() {
 
   const isLoggedIn = mounted && Boolean(token);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     setProfileOpen(false);
     setMobileMenuOpen(false);
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch {
-      // ignore network errors
-    }
+    setShowLogoutConfirm(false);
     dispatch(logout());
     toast.success("Successfully logged out.");
-    router.push("/login");
+    window.location.href = "/api/auth/logout";
   };
 
   const handleServicesMouseEnter = () => {
@@ -73,9 +93,12 @@ export default function Navbar() {
   };
 
   const handleServicesMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
     hoverTimeoutRef.current = setTimeout(() => {
       setDiscoverOpen(false);
-    }, 150);
+    }, 250);
   };
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     if (typeof document !== "undefined") {
@@ -111,15 +134,22 @@ export default function Navbar() {
   const isHome = pathname === "/";
   const isExpandedLogo = isHome && !isScrolled;
 
+  const isProfessionalsActive =
+    pathname === "/professionals" ||
+    pathname.startsWith("/professionals/") ||
+    pathname.startsWith("/book/");
+  const isSalonsActive =
+    pathname === "/salons" ||
+    pathname.startsWith("/salons/");
   const isDiscoverActive =
     pathname === "/discover" ||
-    pathname.startsWith("/discover") ||
+    pathname.startsWith("/discover/") ||
     pathname.startsWith("/search");
-  const isProActive = pathname === "/for-professionals";
-  const isBusinessActive = pathname === "/for-businesses";
-  const isHowItWorksActive = pathname === "/how-it-works";
-  const isAboutActive = pathname === "/about";
-  const isFaqActive = pathname === "/faq";
+  const isProActive = pathname === "/for-professionals" || pathname.startsWith("/for-professionals/");
+  const isBusinessActive = pathname === "/for-businesses" || pathname.startsWith("/for-businesses/");
+  const isHowItWorksActive = pathname === "/how-it-works" || pathname.startsWith("/how-it-works/");
+  const isAboutActive = pathname === "/about" || pathname.startsWith("/about/");
+  const isFaqActive = pathname === "/faq" || pathname.startsWith("/faq/");
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-[#121214] border-b border-border/20 transition-colors duration-200">
@@ -176,6 +206,8 @@ export default function Navbar() {
               onMouseLeave={handleServicesMouseLeave}
             >
               <button
+                type="button"
+                onClick={() => setDiscoverOpen((prev) => !prev)}
                 className={`group relative flex items-center gap-1 transition-colors cursor-pointer ${isDiscoverActive ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
                   }`}
               >
@@ -194,148 +226,84 @@ export default function Navbar() {
                 <div
                   onMouseEnter={handleServicesMouseEnter}
                   onMouseLeave={handleServicesMouseLeave}
-                  className="absolute top-full left-0 pt-1.5 flex bg-popover rounded-xl border border-border shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 overflow-hidden divide-x divide-border/40 min-w-[280px] before:absolute before:-top-3 before:left-0 before:w-full before:h-4 before:content-['']"
+                  className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 w-[640px] sm:w-[720px] max-w-[90vw] animate-in fade-in slide-in-from-top-1 duration-150"
                 >
-
-                  {/* Left Column: All Services Suggested First + Primary Categories */}
-                  <div className="w-64 p-3 space-y-2 shrink-0 bg-background/50">
-
-                    {/* All Services Suggested First */}
-                    <Link
-                      href="/discover?tab=services"
-                      onClick={() => setDiscoverOpen(false)}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-[#D99722]/10 hover:bg-[#D99722]/20 border border-[#D99722]/30 text-foreground transition-all group/all"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-md bg-[#D99722] text-white flex items-center justify-center font-bold shrink-0">
-                          <Grid className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-xs text-foreground">All Services</div>
-                          <div className="text-[10px] text-muted-foreground">Browse all categories & data</div>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-[#D99722] group-hover/all:translate-x-1 transition-transform" />
-                    </Link>
-
-                    <div className="px-2 pt-1 text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider">
-                      Categories
+                  <div className="bg-popover/98 rounded-2xl border border-border shadow-2xl backdrop-blur-xl text-popover-foreground overflow-hidden p-4 sm:p-5 space-y-4">
+                    <div className="flex items-center justify-between px-1 pt-1">
+                      <span className="text-[11px] font-extrabold text-muted-foreground uppercase tracking-wider">
+                        POPULAR SERVICE CATEGORIES
+                      </span>
                     </div>
 
-                    <div className="space-y-0.5 max-h-[320px] overflow-y-auto pr-1 scrollbar-thin">
-                      {SERVICE_CATEGORIES.map((cat) => {
-                        const isCatActive = activeCategory?.id === cat.id;
-                        const catHasSubs = cat.subcategories && cat.subcategories.length > 0;
-                        return (
-                          <div
-                            key={cat.id}
-                            onMouseEnter={() => setActiveCategory(cat)}
-                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors ${isCatActive
-                              ? "bg-accent text-foreground font-semibold"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/60"
-                              }`}
-                          >
-                            <Link
-                              href={`/search?category=${encodeURIComponent(cat.title)}`}
-                              onClick={() => setDiscoverOpen(false)}
-                              className="flex-1 truncate mr-1"
-                            >
-                              {cat.title}
-                            </Link>
-
-                            {/* Check if subcategory data exists */}
-                            {catHasSubs ? (
-                              <ChevronRight className={`w-3.5 h-3.5 ${isCatActive ? "text-[#D99722]" : "text-muted-foreground/40"}`} />
-                            ) : null}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Right Column: Subcategories Flyout (ONLY shown if data exists!) */}
-                  {activeCategory && activeCategory.subcategories && activeCategory.subcategories.length > 0 ? (
-                    <div className="w-72 p-3.5 space-y-2 bg-card/70 animate-in fade-in duration-150 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between border-b border-border/50 pb-2 mb-2">
-                          <div>
-                            <h4 className="font-bold text-xs text-foreground flex items-center gap-1.5">
-                              <Sparkles className="w-3.5 h-3.5 text-[#D99722]" />
-                              {activeCategory.title}
-                            </h4>
-                            <p className="text-[10px] text-muted-foreground line-clamp-1">
-                              {activeCategory.desc}
-                            </p>
-                          </div>
-                          <span className="text-[10px] bg-[#D99722]/10 text-[#D99722] font-semibold px-2 py-0.5 rounded-full border border-[#D99722]/20 shrink-0">
-                            {activeCategory.count}
-                          </span>
+                    {/* Categories Grid (2 Columns) */}
+                    <div className="max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
+                      {isCategoriesLoading ? (
+                        <div className="p-8 text-center space-y-2">
+                          <Loader2 className="w-5 h-5 animate-spin text-[#D99722] mx-auto" />
+                          <p className="text-xs text-muted-foreground">Loading categories...</p>
                         </div>
-
-                        <div className="space-y-1 max-h-[260px] overflow-y-auto pr-1">
-                          {activeCategory.subcategories.map((sub) => (
+                      ) : categoriesList.length === 0 ? (
+                        <div className="p-6 text-center text-xs text-muted-foreground font-medium">
+                          No categories available
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                          {categoriesList.map((cat: any) => (
                             <Link
-                              key={sub.id}
-                              href={`/search?category=${encodeURIComponent(activeCategory.title)}&subcategory=${encodeURIComponent(sub.name)}`}
+                              key={cat.id}
+                              href={`/professionals?serviceCategory=${encodeURIComponent(cat.id)}`}
                               onClick={() => setDiscoverOpen(false)}
-                              className="block p-2 rounded-md hover:bg-accent transition-colors group/sub"
+                              className="flex items-center justify-between p-2.5 rounded-xl border border-[#D99722]/30 hover:border-[#D99722]/60 bg-[#D99722]/10 hover:bg-[#D99722]/20 text-foreground transition-all cursor-pointer group shadow-2xs"
                             >
-                              <div className="flex items-center justify-between">
-                                <div className="font-semibold text-xs text-foreground group-hover/sub:text-[#D99722] transition-colors">
-                                  {sub.name}
-                                </div>
-                                {sub.count && (
-                                  <span className="text-[9px] text-muted-foreground bg-accent/80 px-1.5 py-0.5 rounded">{sub.count}</span>
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                {cat.img ? (
+                                  <div className="w-8 h-8 rounded-lg overflow-hidden relative shrink-0 border border-[#D99722]/40 shadow-xs">
+                                    <Image src={cat.img} alt={cat.title} fill className="object-cover group-hover:scale-110 transition-transform duration-300" />
+                                  </div>
+                                ) : (
+                                  <div className="w-8 h-8 rounded-lg bg-[#D99722]/20 text-[#D99722] flex items-center justify-center font-bold shrink-0 text-xs">
+                                    <Sparkles className="w-4 h-4" />
+                                  </div>
                                 )}
+                                <span className="font-semibold text-xs text-foreground group-hover:text-[#D99722] transition-colors truncate">
+                                  {cat.title}
+                                </span>
                               </div>
-                              {sub.description && (
-                                <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
-                                  {sub.description}
-                                </p>
-                              )}
+                              <span className="text-[10px] bg-[#D99722]/20 text-[#D99722] border border-[#D99722]/30 px-2.5 py-0.5 rounded-full font-bold shrink-0 ml-1">
+                                {cat.count}
+                              </span>
                             </Link>
                           ))}
                         </div>
-                      </div>
-
-                      {/* Category Bottom Action */}
-                      <Link
-                        href={`/search?category=${encodeURIComponent(activeCategory.title)}`}
-                        onClick={() => setDiscoverOpen(false)}
-                        className="text-[11px] font-semibold text-[#D99722] hover:underline flex items-center justify-end gap-1 pt-2 border-t border-border/40"
-                      >
-                        <span>Explore all {activeCategory.title}</span>
-                        <ChevronRight className="w-3 h-3" />
-                      </Link>
+                      )}
                     </div>
-                  ) : null}
-
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Professionals */}
             <Link
-              href="/for-professionals"
-              className={`group relative py-2 transition-colors ${isProActive ? "text-foreground font-semibold" : "hover:text-foreground"
+              href="/professionals"
+              className={`group relative py-2 transition-colors ${isProfessionalsActive ? "text-foreground font-semibold" : "hover:text-foreground"
                 }`}
             >
               <span>Professionals</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isProActive ? "w-full" : "w-0 group-hover:w-full"
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isProfessionalsActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
               />
             </Link>
 
             {/* Salons */}
             <Link
-              href="/discover?tab=salons"
-              className={`group relative py-2 transition-colors ${pathname.includes("tab=salons") ? "text-foreground font-semibold" : "hover:text-foreground"
+              href="/salons"
+              className={`group relative py-2 transition-colors ${isSalonsActive ? "text-foreground font-semibold" : "hover:text-foreground"
                 }`}
             >
               <span>Salons</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${pathname.includes("tab=salons") ? "w-full" : "w-0 group-hover:w-full"
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isSalonsActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
               />
             </Link>
@@ -369,10 +337,8 @@ export default function Navbar() {
 
           {/* Action Buttons & Language Switcher */}
           <div className="hidden md:flex items-center gap-2.5">
-            {/* Theme Toggle in Card Box */}
-            <div className="p-1 rounded-sm bg-card">
-              <ThemeToggle />
-            </div>
+            {/* Theme Toggle */}
+            <ThemeToggle className="h-10 w-10 rounded-sm border-border bg-card hover:bg-accent shadow-2xs shrink-0" />
 
             {/* Language Selector Combobox */}
             <Combobox
@@ -385,18 +351,29 @@ export default function Navbar() {
             />
 
             {/* Desktop Actions */}
-            {isLoggedIn ? (
+            {!mounted || (token && (isProfileLoading || isProfileFetching || !profileData)) ? (
+              <div className="h-10 px-3 rounded-sm bg-card border border-border/80 shadow-2xs flex items-center gap-2 animate-pulse w-32 shrink-0">
+                <div className="w-6 h-6 rounded-md bg-muted/80 shrink-0" />
+                <div className="h-3.5 w-16 bg-muted/80 rounded-sm flex-1" />
+              </div>
+            ) : isLoggedIn ? (
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="h-10 px-3 rounded-sm bg-card border border-border hover:bg-accent hover:border-primary/40 text-foreground text-xs font-semibold shadow-2xs flex items-center gap-2 cursor-pointer transition-all active:scale-95 relative z-50"
                 >
-                  <div className="w-6 h-6 rounded-md bg-[#D99722] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
-                    {user?.firstName ? user.firstName[0].toUpperCase() : <User className="w-3.5 h-3.5" />}
+                  <div className="w-6 h-6 rounded-md bg-[#D99722] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs overflow-hidden relative">
+                    {userImage ? (
+                      <Image src={userImage} alt={displayName} fill className="object-cover" unoptimized />
+                    ) : userInitial ? (
+                      userInitial
+                    ) : (
+                      <User className="w-3.5 h-3.5 text-white" />
+                    )}
                   </div>
                   <span className="max-w-[120px] truncate font-bold text-xs">
-                    {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user?.email?.split('@')[0] || "Profile")}
+                    {displayName}
                   </span>
                   <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${profileOpen ? "rotate-180 text-primary" : ""}`} />
                 </button>
@@ -412,22 +389,28 @@ export default function Navbar() {
                       {/* User Header */}
                       <div className="px-3 py-2.5 space-y-1">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-xl bg-[#D99722] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs">
-                            {user?.firstName ? user.firstName[0].toUpperCase() : <User className="w-4.5 h-4.5" />}
+                          <div className="w-9 h-9 rounded-xl bg-[#D99722] text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-xs overflow-hidden relative">
+                            {userImage ? (
+                              <Image src={userImage} alt={displayName} fill className="object-cover" unoptimized />
+                            ) : userInitial ? (
+                              userInitial
+                            ) : (
+                              <User className="w-4 h-4 text-white" />
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-xs text-foreground truncate">
-                              {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user?.email?.split('@')[0] || "User Account")}
+                              {displayName}
                             </p>
                             <p className="text-[11px] text-muted-foreground truncate">
-                              {user?.email || ''}
+                              {currentUser?.email || ''}
                             </p>
                           </div>
                         </div>
-                        {user?.role && (
+                        {currentUser?.role && (
                           <div className="pt-1">
                             <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D99722]/15 text-[#D99722] capitalize border border-[#D99722]/20">
-                              {user.role}
+                              {currentUser.role}
                             </span>
                           </div>
                         )}
@@ -435,7 +418,7 @@ export default function Navbar() {
 
                       {/* Navigation Links */}
                       <div className="py-1.5 space-y-0.5">
-                        {user?.role === 'professional' ? (
+                        {userRole === 'professional' ? (
                           <>
                             <Link
                               href="/professional/dashboard"
@@ -443,7 +426,7 @@ export default function Navbar() {
                               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
                             >
                               <LayoutDashboard className="w-4 h-4 text-muted-foreground" />
-                              <span>Professional Dashboard</span>
+                              <span>My Dashboard</span>
                             </Link>
                             <Link
                               href="/professional/appointments"
@@ -462,7 +445,7 @@ export default function Navbar() {
                               <span>Settings</span>
                             </Link>
                           </>
-                        ) : user?.role === 'business' ? (
+                        ) : userRole === 'business' ? (
                           <>
                             <Link
                               href="/business/dashboard"
@@ -546,16 +529,25 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              /* Get Started Gold Dropdown CTA */
-              <div className="relative shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setSignUpOpen(!signUpOpen)}
-                  className="h-10 px-4 rounded-sm bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50 whitespace-nowrap shrink-0"
+              <>
+                {/* Login Button */}
+                <Link
+                  href="/login"
+                  className="h-10 px-4 rounded-sm border border-border bg-card hover:bg-accent hover:text-[#D99722] text-foreground text-xs font-semibold shadow-2xs flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0 whitespace-nowrap"
                 >
-                  <span className="whitespace-nowrap">Get Started</span>
-                  <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${signUpOpen ? "rotate-180" : ""}`} />
-                </button>
+                  Login
+                </Link>
+
+                {/* Get Started Gold Dropdown CTA */}
+                <div className="relative shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setSignUpOpen(!signUpOpen)}
+                    className="h-10 px-4 rounded-sm bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50 whitespace-nowrap shrink-0"
+                  >
+                    <span className="whitespace-nowrap">Get Started</span>
+                    <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${signUpOpen ? "rotate-180" : ""}`} />
+                  </button>
 
                 {signUpOpen && (
                   <>
@@ -601,7 +593,8 @@ export default function Navbar() {
                   </>
                 )}
               </div>
-            )}
+            </>
+          )}
           </div>
 
           {/* Mobile Menu Button & Mobile Language Toggle */}
@@ -653,6 +646,30 @@ export default function Navbar() {
             >
               <Compass className={`w-5 h-5 ${isDiscoverActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>Discover Services & Salons</span>
+            </Link>
+
+            <Link
+              href="/professionals"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isProfessionalsActive
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
+                }`}
+            >
+              <Scissors className={`w-5 h-5 ${isProfessionalsActive ? "text-primary" : "text-muted-foreground"}`} />
+              <span>Professionals</span>
+            </Link>
+
+            <Link
+              href="/salons"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isSalonsActive
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
+                }`}
+            >
+              <Building2 className={`w-5 h-5 ${isSalonsActive ? "text-primary" : "text-muted-foreground"}`} />
+              <span>Salons</span>
             </Link>
 
             <Link
@@ -717,18 +734,32 @@ export default function Navbar() {
 
             {/* Mobile Sign Up / Account Options */}
             <div className="pt-3 border-t border-border space-y-2">
-              {isLoggedIn ? (
+              {!mounted || (token && (isProfileLoading || isProfileFetching || !profileData)) ? (
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/40 border border-border/60 animate-pulse">
+                  <div className="w-10 h-10 rounded-xl bg-muted shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3.5 w-24 bg-muted rounded" />
+                    <div className="h-3 w-32 bg-muted rounded" />
+                  </div>
+                </div>
+              ) : isLoggedIn ? (
                 <>
                   <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/40 border border-border/60">
-                    <div className="w-10 h-10 rounded-xl bg-[#D99722] text-white flex items-center justify-center font-bold text-base shrink-0">
-                      {user?.firstName ? user.firstName[0].toUpperCase() : <User className="w-5 h-5" />}
+                    <div className="w-10 h-10 rounded-xl bg-[#D99722] text-white flex items-center justify-center font-bold text-base shrink-0 overflow-hidden relative">
+                      {userImage ? (
+                        <Image src={userImage} alt={displayName} fill className="object-cover" unoptimized />
+                      ) : userInitial ? (
+                        userInitial
+                      ) : (
+                        <User className="w-5 h-5 text-white" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-sm text-foreground truncate">
-                        {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user?.email?.split('@')[0] || "User Account")}
+                        {displayName}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
-                        {user?.email || ''}
+                        {currentUser?.email || ''}
                       </p>
                     </div>
                   </div>
@@ -758,6 +789,18 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
+                  <div className="pb-1">
+                    <Button
+                      href="/login"
+                      variant="outline"
+                      fullWidth
+                      size="md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Login
+                    </Button>
+                  </div>
+
                   <div className="px-1 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                     Sign Up As
                   </div>
@@ -786,18 +829,6 @@ export default function Navbar() {
                       <Building2 className="w-4 h-4 text-primary" />
                       <span>Business / Salon Owner</span>
                     </Link>
-                  </div>
-
-                  <div className="pt-2">
-                    <Button
-                      href="/login"
-                      variant="outline"
-                      fullWidth
-                      size="md"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Log In
-                    </Button>
                   </div>
                 </>
               )}

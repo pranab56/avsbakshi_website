@@ -60,7 +60,7 @@ export default function CustomerNotificationsPage() {
       description: "Enjoy 20% off all Keratin & Hair Spa treatments at top Soho salons this weekend.",
       timestamp: "1 day ago",
       isRead: true,
-      actionUrl: "/customer/discover",
+      actionUrl: "/discover",
       actionLabel: "Claim Offer",
     },
     {

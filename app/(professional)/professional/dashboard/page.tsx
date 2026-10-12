@@ -1,14 +1,24 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { TrendingUp, Star, Armchair, CreditCard, Building2, Sparkles } from "lucide-react";
-import { Combobox } from "@/components/ui/combobox";
+import { useSelector } from "react-redux";
+import {
+  Calendar,
+  Clock,
+  CheckCircle2,
+  Star,
+  Building2,
+  Sparkles,
+  BarChart2,
+} from "lucide-react";
+import { useGetMyProfileQuery } from "@/features/profile/profileApi";
+import { useGetProfessionalOverviewQuery } from "@/features/analytics/analyticsApi";
 import {
   BarChart,
   Bar,
   XAxis,
+  YAxis,
   Tooltip,
   ResponsiveContainer,
   Cell,
@@ -16,307 +26,210 @@ import {
 } from "recharts";
 
 export default function ProfessionalDashboardPage() {
-  const [revenueFilter, setRevenueFilter] = useState("This Week");
+  const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
+  const { data: profileResponse, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined);
+  const { data: overviewRes, isLoading: isOverviewLoading } = useGetProfessionalOverviewQuery(undefined);
 
-  const recentBookings = [
-    {
-      id: "1",
-      stylistName: "Sofia Martinez",
-      service: "Balayage & Toner",
-      dateTime: "Mon 19 Aug · 2:30 PM",
-      price: "from $145",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
-    },
-    {
-      id: "2",
-      stylistName: "James Chen",
-      service: "Classic Haircut & Blowout",
-      dateTime: "Mon 19 Aug · 4:15 PM",
-      price: "from $65",
-      image:
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=400&q=80",
-    },
-  ];
+  const profileData = profileResponse?.data || profileResponse;
+  const storedIsSalonOwner = typeof window !== "undefined" ? localStorage.getItem("isSalonOwner") === "true" : false;
+  const isSalonOwner = Boolean(
+    profileData?.isSalonOwner ?? user?.isSalonOwner ?? (storedIsSalonOwner && (user?.role === "professional" || user?.role === "business"))
+  );
 
-  const recentActivities = [
+  const overview = overviewRes?.data || {};
+
+  const proName = user?.firstName || user?.name || "Professional";
+
+  const statCards = [
     {
-      id: "a1",
-      title: "Jade Wilson booked Full Colour",
-      time: "5 min ago",
-      icon: TrendingUp,
+      label: "Total Appointments",
+      value: overview.totalAppointments ?? 0,
+      icon: Calendar,
+      color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
     },
     {
-      id: "a2",
-      title: "New 5★ review from Rachel Thompson",
-      time: "2h ago",
+      label: "Upcoming Appointments",
+      value: overview.totalUpcomingAppointments ?? 0,
+      icon: Clock,
+      color: "text-[#D99722] bg-[#D99722]/10 border-[#D99722]/20",
+    },
+    {
+      label: "Completed Appointments",
+      value: overview.totalCompletedAppointments ?? 0,
+      icon: CheckCircle2,
+      color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+    },
+    {
+      label: "Total Reviews",
+      value: overview.totalReviews ?? 0,
       icon: Star,
-    },
-    {
-      id: "a3",
-      title: "Chair A reserved for 11 days",
-      time: "3h ago",
-      icon: Armchair,
-    },
-    {
-      id: "a4",
-      title: "Payout $1,840 to Chase Bank • • 8822",
-      time: "Yesterday",
-      icon: CreditCard,
+      color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
     },
   ];
 
-  // Recharts Data Setup
-  const chartData = [
-    { day: "Mon", revenue: 280, label: "$280", isCurrent: true },
-    { day: "Tue", revenue: 350, label: "$350", isCurrent: false },
-    { day: "Wed", revenue: 190, label: "$190", isCurrent: false },
-    { day: "Thu", revenue: 420, label: "$420", isCurrent: false },
-    { day: "Fri", revenue: 310, label: "$310", isCurrent: false },
-    { day: "Sat", revenue: 500, label: "$500", isCurrent: false },
-    { day: "Sun", revenue: 0, label: "$0", isCurrent: false },
-  ];
+  const chartData = Array.isArray(overview.monthlyAppointmentsGrowth)
+    ? overview.monthlyAppointmentsGrowth.map((item: any) => ({
+        month: item.month,
+        count: item.count || 0,
+      }))
+    : [];
 
   return (
     <div className="space-y-6 pb-16">
       {/* Header Section */}
       <div className="space-y-1">
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
-          Monday, 19 August 2026
+          {new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
         </p>
         <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
-          Good morning, James.
+          Good day, <span className="notranslate" translate="no">{proName}</span>.
         </h1>
       </div>
 
-      {/* Create Business Banner CTA */}
-      <div className="bg-gradient-to-r from-primary/15 via-primary/5 to-card border border-primary/30 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-primary" />
-            <h3 className="font-serif font-bold text-lg text-foreground">Create &amp; Manage Your Salon Business</h3>
-          </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Setup your salon page, list services, configure chair spaces, and start accepting client bookings directly.
-          </p>
-        </div>
-        <Link
-          href="/professional/business"
-          className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 active:scale-95"
-        >
-          <Sparkles className="w-4 h-4" />
-          <span>Create Business</span>
-        </Link>
-      </div>
-
-      {/* Top 4 Stat Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-primary/50 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
-            4
-          </div>
-          <p className="text-xs text-muted-foreground font-normal">Today&apos;s Bookings</p>
-        </div>
-
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-primary/50 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
-            $280
-          </div>
-          <p className="text-xs text-muted-foreground font-normal">Today&apos;s Revenue</p>
-        </div>
-
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-primary/50 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
-            6.5 hrs
-          </div>
-          <p className="text-xs text-muted-foreground font-normal">Hours Worked</p>
-        </div>
-
-        <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-primary/50 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-primary mb-1">
-            4.9
-          </div>
-          <p className="text-xs text-muted-foreground font-normal">Average Rating</p>
-        </div>
-      </div>
-
-      {/* Two Column Layout (Left: Chart & Bookings, Right: Recent Activity) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column (8 cols) */}
-        <div className="lg:col-span-8 space-y-6">
-          {/* Revenue Overview Card with Recharts */}
-          <div className="bg-card border border-border rounded-lg p-6 sm:p-8 space-y-4 shadow-xs">
-            <div className="flex items-center justify-between gap-4">
-              <div className="space-y-0.5">
-                <h2 className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
-                  Earnings Overview
-                </h2>
-                <p className="text-xs text-muted-foreground font-normal">
-                  Week of 19–25 Aug · $2,050 total
-                </p>
-              </div>
-
-              <Combobox
-                options={[
-                  { value: "This Week", label: "This Week" },
-                  { value: "Last Week", label: "Last Week" },
-                  { value: "This Month", label: "This Month" },
-                ]}
-                value={revenueFilter}
-                onChange={setRevenueFilter}
-                triggerClassName="bg-accent border border-border rounded-sm px-3.5 py-2 text-xs font-semibold text-foreground shadow-2xs"
-              />
+      {/* Create Business Banner CTA (only shown if not already a salon owner) */}
+      {isProfileLoading && profileResponse === undefined ? (
+        <div className="h-24 bg-card/60 border border-border/40 rounded-2xl animate-pulse" />
+      ) : !isSalonOwner ? (
+        <div className="bg-gradient-to-r from-primary/15 via-primary/5 to-card border border-primary/30 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-primary" />
+              <h3 className="font-serif font-bold text-lg text-foreground">Create &amp; Manage Your Salon Business</h3>
             </div>
-
-            {/* Recharts Responsive BarChart */}
-            <div className="h-56 w-full pt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData}
-                  margin={{ top: 25, right: 10, left: 10, bottom: 0 }}
-                >
-                  <XAxis
-                    dataKey="day"
-                    axisLine={false}
-                    tickLine={false}
-                    tick={({ x, y, payload }: { x?: number | string; y?: number | string; payload?: { value: string } }) => (
-                      <text
-                        x={x}
-                        y={Number(y || 0) + 14}
-                        textAnchor="middle"
-                        fill={payload?.value === "Mon" ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))"}
-                        fontSize={12}
-                        fontWeight={payload?.value === "Mon" ? "bold" : "normal"}
-                      >
-                        {payload?.value}
-                      </text>
-                    )}
-                  />
-                  <Tooltip
-                    cursor={{ fill: "rgba(160, 160, 160, 0.15)" }}
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const data = payload[0].payload;
-                        return (
-                          <div className="bg-card text-card-foreground border border-border text-xs px-3 py-1.5 rounded-md shadow-md">
-                            <span className="font-semibold">{data.day}: </span>
-                            <span className="text-primary font-bold">
-                              {data.label}
-                            </span>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Bar dataKey="revenue" radius={[4, 4, 0, 0]} maxBarSize={48}>
-                    <LabelList
-                      dataKey="label"
-                      position="top"
-                      style={{
-                        fill: "hsl(var(--foreground))",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                      }}
-                    />
-                    {chartData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={entry.isCurrent ? "hsl(var(--primary))" : "hsl(var(--accent))"}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Setup your salon page, list services, configure chair spaces, and start accepting client bookings directly.
+            </p>
           </div>
+          <Link
+            href="/professional/business"
+            className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 active:scale-95"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Create Business</span>
+          </Link>
+        </div>
+      ) : null}
 
-          {/* Recent Bookings Section */}
-          <div className="space-y-4">
-            <h2 className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
-              Recent Bookings
-            </h2>
-
-            <div className="space-y-3">
-              {recentBookings.map((b) => (
-                <div
-                  key={b.id}
-                  className="bg-card border border-border rounded-lg p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs hover:border-primary/50 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-14 h-14 rounded-md overflow-hidden bg-accent shrink-0 border border-border">
-                      <Image
-                        src={b.image}
-                        alt={b.stylistName}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <h3 className="font-serif font-bold text-lg text-foreground">
-                        {b.stylistName}
-                      </h3>
-                      <p className="text-xs font-semibold text-primary">
-                        {b.service}
-                      </p>
-                      <p className="text-xs text-muted-foreground font-normal flex items-center gap-1.5 flex-wrap">
-                        <span>{b.dateTime}</span>
-                        <span className="font-serif italic text-primary font-bold text-sm">
-                          {b.price}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="shrink-0 pt-2 sm:pt-0">
-                    <button
-                      type="button"
-                      className="px-5 py-2.5 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98]"
-                    >
-                      Reschedule
-                    </button>
+      {/* Top 4 API Stat Cards Grid */}
+      {isOverviewLoading ? (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} className="h-32 bg-card border border-border/60 rounded-2xl animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {statCards.map((stat, idx) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={idx}
+                className="bg-card border border-border/70 rounded-2xl p-5 transition-all shadow-2xs hover:border-[#D99722]/50 flex flex-col justify-between space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className={`p-2.5 rounded-xl border ${stat.color}`}>
+                    <Icon className="w-4 h-4" />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column (4 cols): Recent Activity */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="bg-card border border-border rounded-lg p-6 space-y-5 shadow-xs">
-            <h3 className="font-serif italic font-normal text-xl text-foreground">
-              Recent Activity
-            </h3>
-
-            <div className="divide-y divide-border space-y-3">
-              {recentActivities.map((act) => {
-                const Icon = act.icon;
-                return (
-                  <div
-                    key={act.id}
-                    className="pt-3 first:pt-0 flex items-start gap-3 pb-5"
-                  >
-                    <div className="w-10 h-10 rounded-md bg-accent border border-border flex items-center justify-center text-primary shrink-0 mt-0.5">
-                      <Icon className="w-4 h-4 text-primary" />
-                    </div>
-
-                    <div className="space-y-0.5">
-                      <h4 className="font-semibold text-xs sm:text-sm text-foreground leading-snug">
-                        {act.title}
-                      </h4>
-                      <p className="text-[11px] text-muted-foreground font-normal">
-                        {act.time}
-                      </p>
-                    </div>
+                <div>
+                  <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
+                    {stat.value}
                   </div>
-                );
-              })}
+                  <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">
+                    {stat.label}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Monthly Appointments Growth Chart */}
+      <div className="bg-card border border-border/70 rounded-2xl p-6 sm:p-8 space-y-4 shadow-xs">
+        <div className="flex items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <BarChart2 className="w-5 h-5 text-[#D99722]" />
+              <h2 className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
+                Monthly Appointments Growth
+              </h2>
             </div>
+            <p className="text-xs text-muted-foreground font-normal">
+              Overview of your appointment trends throughout the year
+            </p>
           </div>
         </div>
+
+        {isOverviewLoading ? (
+          <div className="h-64 w-full bg-accent/30 rounded-xl animate-pulse" />
+        ) : chartData.length === 0 ? (
+          <div className="h-48 flex items-center justify-center text-xs text-muted-foreground">
+            No monthly growth data available
+          </div>
+        ) : (
+          <div className="h-64 w-full pt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                margin={{ top: 28, right: 10, left: 0, bottom: 0 }}
+              >
+                <XAxis
+                  dataKey="month"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#A1A1AA", fontSize: 12, fontWeight: 600 }}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#A1A1AA", fontSize: 12, fontWeight: 600 }}
+                />
+                <Tooltip
+                  cursor={{ fill: "rgba(255, 255, 255, 0.05)" }}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="bg-[#27272A] text-white border border-zinc-700 text-xs px-3 py-2 rounded-xl shadow-xl space-y-0.5 z-50">
+                          <p className="font-bold text-white">{data.month}</p>
+                          <p className="text-[#D99722] font-semibold">
+                            {data.count} {data.count === 1 ? "appointment" : "appointments"}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={44}>
+                  <LabelList
+                    dataKey="count"
+                    position="top"
+                    formatter={(val: any) => (Number(val) > 0 ? val : "")}
+                    style={{
+                      fill: "#F4F4F5",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    }}
+                  />
+                  {chartData.map((entry: any, index: number) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.count > 0 ? "#D99722" : "rgba(255, 255, 255, 0.08)"}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
     </div>
   );

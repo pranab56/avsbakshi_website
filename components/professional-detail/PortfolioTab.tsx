@@ -1,33 +1,51 @@
-export default function PortfolioTab() {
-  const portfolioPhotos = [
-    "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1583001809873-a1284d56338b?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&w=800&q=80",
-  ];
+import { Image as ImageIcon } from "lucide-react";
+import ChairImage from "@/components/shared/ChairImage";
+
+interface PortfolioTabProps {
+  proData?: any;
+}
+
+export default function PortfolioTab({ proData }: PortfolioTabProps) {
+  const portfolioPhotos: string[] =
+    Array.isArray(proData?.photos) && proData.photos.length > 0
+      ? proData.photos
+      : [];
+
+  if (portfolioPhotos.length === 0) {
+    return (
+      <div className="p-12 bg-card rounded-2xl border border-border text-center space-y-3">
+        <ImageIcon className="w-10 h-10 text-muted-foreground mx-auto" />
+        <h4 className="text-base font-bold text-foreground">No Portfolio Photos Available</h4>
+        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+          This professional has not uploaded any portfolio photos yet.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 sm:p-8 rounded-lg space-y-4 animate-in fade-in duration-150">
-      <p className="text-xs text-muted-foreground font-medium">
-        {portfolioPhotos.length} photos &mdash; Click to enlarge
-      </p>
+    <div className="p-6 sm:p-8 bg-card rounded-2xl border border-border space-y-4 animate-in fade-in duration-150">
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-muted-foreground font-semibold">
+          {portfolioPhotos.length} portfolio photos
+        </p>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {portfolioPhotos.map((img, idx) => (
           <div
             key={idx}
-            className="relative h-48 rounded-lg overflow-hidden shadow-xs hover:opacity-90 transition-opacity cursor-pointer border border-border group"
+            className="relative h-48 sm:h-56 rounded-xl overflow-hidden shadow-xs hover:opacity-90 transition-opacity cursor-pointer border border-border group bg-muted"
           >
-            <img src={img} alt={`Portfolio ${idx}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <ChairImage
+              src={img}
+              alt={`Portfolio photo ${idx + 1}`}
+              size="lg"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
           </div>
         ))}
       </div>
     </div>
   );
 }
-

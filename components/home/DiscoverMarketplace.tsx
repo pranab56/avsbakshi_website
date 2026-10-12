@@ -1,186 +1,232 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Heart, Star, MapPin } from "lucide-react";
+import { ArrowRight, User, Building2, Star, MapPin, Calendar } from "lucide-react";
+import { useGetAllProfessionalQuery } from "@/features/profesional/profesionalApi";
+import ChairImage from "@/components/shared/ChairImage";
 
 export default function DiscoverMarketplace() {
-  const [likedCards, setLikedCards] = useState<Record<number, boolean>>({});
+  const { data: prosRes, isLoading } = useGetAllProfessionalQuery({});
 
-  const toggleLike = (id: number) => {
-    setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  const isValidImage = (url: any) =>
+    typeof url === "string" &&
+    url.trim().length > 0 &&
+    !url.includes("example.com");
+
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return "";
+    try {
+      return new Date(dateStr).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch (e) {
+      return "";
+    }
   };
 
-  const professionals = [
-    {
-      id: 1,
-      name: "Noir Salon & Suites",
-      category: "Hair & Styling",
-      rating: 4.9,
-      reviews: 142,
-      location: "Soho, New York",
-      price: "from $65",
-      badge: "Open until 9:00 PM",
-      tags: ["Haircut", "Balayage", "Blowout"],
-      img: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 2,
-      name: "Maya Chen Color Studio",
-      category: "Master Colorist",
-      rating: 4.9,
-      reviews: 184,
-      location: "Beverly Hills, Los Angeles",
-      price: "from $95",
-      badge: "Top Rated",
-      tags: ["Balayage", "Toning", "Highlights"],
-      img: "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 3,
-      name: "Luxe Nail Bar",
-      category: "Nails & Gel Art",
-      rating: 4.8,
-      reviews: 115,
-      location: "West Village, New York",
-      price: "from $45",
-      badge: "Open Today",
-      tags: ["Manicure", "Pedicure", "Nail Art"],
-      img: "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 4,
-      name: "The Fold Grooming Co.",
-      category: "Barbershop & Fade",
-      rating: 4.9,
-      reviews: 260,
-      location: "Tribeca, New York",
-      price: "from $55",
-      badge: "Popular",
-      tags: ["Beard Trim", "Hot Towel", "Fade"],
-      img: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 5,
-      name: "Glow MedSpa & Lash Lounge",
-      category: "Skincare & Lashes",
-      rating: 4.8,
-      reviews: 98,
-      location: "Miami Beach, Florida",
-      price: "from $75",
-      badge: "Open until 8:00 PM",
-      tags: ["Facials", "Lash Lift", "Brow Art"],
-      img: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: 6,
-      name: "Avenue Hair Collective",
-      category: "Full-Service Salon",
-      rating: 4.9,
-      reviews: 196,
-      location: "Downtown Chicago, Illinois",
-      price: "from $80",
-      badge: "Verified Salon",
-      tags: ["Haircut", "Highlights", "Treatments"],
-      img: "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-    },
-  ];
+  const rawData = Array.isArray(prosRes?.data) ? prosRes.data.slice(0, 8) : [];
 
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
           <span className="text-xs font-bold text-[#D99722] uppercase tracking-widest block mb-1">
-            DISCOVER
+            DISCOVER SPECIALISTS
           </span>
-          <h2 className="  text-2xl sm:text-4xl font-bold">
+          <h2 className="text-2xl sm:text-4xl font-bold text-foreground">
             Find your perfect beauty experience
           </h2>
-          <p className="text-xs text-zinc-500 mt-1 font-light">
-            A preview of the marketplace. Example profiles shown for illustration.
+          <p className="text-xs text-muted-foreground mt-1 font-light">
+            Explore top rated specialists, master colorists, and beauty professionals.
           </p>
         </div>
         <Link
-          href="/discover?tab=professionals"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-primary/30 bg-accent text-xs font-semibold text-foreground hover:bg-muted hover:border-primary transition-all w-full sm:w-auto"
+          href="/professionals"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-border bg-card text-xs font-semibold text-foreground hover:bg-accent hover:border-[#D99722] transition-all w-full sm:w-auto"
         >
-          Browse all services
-          <ArrowRight className="w-3.5 h-3.5 text-primary" />
+          <span>Browse all professionals</span>
+          <ArrowRight className="w-3.5 h-3.5 text-[#D99722]" />
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        {professionals.map((pro) => (
-          <div
-            key={pro.id}
-            className="bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
-          >
-            {/* Card Image */}
-            <div className="relative h-52 overflow-hidden">
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} className="bg-card rounded-2xl h-80 border border-border animate-pulse" />
+          ))}
+        </div>
+      ) : rawData.length === 0 ? (
+        <div className="bg-card rounded-2xl p-12 text-center border border-border space-y-3">
+          <User className="w-10 h-10 text-muted-foreground mx-auto" />
+          <h4 className="text-base font-bold text-foreground">No Specialists Found</h4>
+          <p className="text-xs text-muted-foreground max-w-md mx-auto">
+            No active professional specialists were found at the moment.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {rawData.map((item: any, idx: number) => {
+            const pro = item.professional || {};
+            const roleRef = pro.roleRef || {};
+            const salon = item.salon || {};
+
+            const proId = pro._id || item._id;
+            const cardKey = item._id || `${proId}-${idx}`;
+            const fullName =
+              `${pro.firstName || ""} ${pro.lastName || ""}`.trim() ||
+              "Professional Specialist";
+
+            const salonMainImg =
+              [salon.photos?.[0], salon.photos?.[1], salon.logo].find(isValidImage) ||
+              "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80";
+
+            const proAvatarImg =
+              [pro.image, roleRef.photos?.[0]].find(isValidImage) ||
+              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
+
+            const locationText =
+              salon.address?.city || pro.address?.city
+                ? `${salon.address?.city || pro.address?.city}${salon.address?.state || pro.address?.state
+                  ? ", " + (salon.address?.state || pro.address?.state)
+                  : ""
+                }`
+                : "Dhaka, Bangladesh";
+
+            const badgeText = pro.isSalonOwner
+              ? "Salon Owner & Pro"
+              : roleRef.isVerified
+                ? "Verified Pro"
+                : "Specialist";
+
+            const startingPrice = roleRef.startingPriceInUSD || 35;
+            const roleTitle = roleRef.title || pro.role || "Beauty & Grooming Specialist";
+            const rating = roleRef.avgRating || salon.avgRating || 5.0;
+            const reviewsCount = roleRef.totalReviews || salon.totalReviews || 0;
+
+            const startDateStr = formatDate(item.startDate);
+            const endDateStr = formatDate(item.endDate);
+            const dateRangeText = startDateStr && endDateStr ? `${startDateStr} – ${endDateStr}` : null;
+
+            return (
               <div
-                className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                style={{ backgroundImage: `url('${pro.img}')` }}
-              />
-
-              {/* Badge */}
-              <span className="absolute text-green-900 top-3 left-3 bg-background/90 backdrop-blur-md text-[10px] font-semibold px-2.5 py-1 rounded-full text-foreground border border-border/50 shadow-sm">
-                {pro.badge}
-              </span>
-
-              {/* Like Button */}
-              <button
-                type="button"
-                onClick={() => toggleLike(pro.id)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-lg bg-background/90 backdrop-blur-md text-foreground flex items-center justify-center border border-border/50 shadow hover:scale-110 transition-transform cursor-pointer"
+                key={cardKey}
+                className="bg-card rounded-2xl overflow-hidden border border-border/70 shadow-xs hover:shadow-xl transition-all duration-300 group flex flex-col justify-between text-card-foreground hover:-translate-y-1"
               >
-                <Heart className={`w-4 h-4 ${likedCards[pro.id] ? "fill-red-500 text-red-500" : ""}`} />
-              </button>
-            </div>
+                {/* Salon Cover Header */}
+                <div className="relative h-44 sm:h-48 overflow-hidden bg-muted">
+                  <Link href={`/salons/${salon._id || ''}`} className="block w-full h-full">
+                    <ChairImage
+                      src={salonMainImg}
+                      alt={salon.name || "Salon cover"}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/30" />
+                  </Link>
 
-            {/* Card Details */}
-            <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-              <div>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="  text-base font-bold text-foreground group-hover:text-primary transition-colors">
-                      {pro.name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground">{pro.category}</p>
-                  </div>
-                  <span className="  text-xs font-bold text-primary">
-                    {pro.price}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                  <Star className="w-3.5 h-3.5 fill-primary text-primary" />
-                  <span className="font-bold text-foreground">{pro.rating}</span>
-                  <span className="text-muted-foreground">({pro.reviews})</span>
-                  <span className="mx-1">•</span>
-                  <MapPin className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-muted-foreground truncate">{pro.location}</span>
-                </div>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {pro.tags.map((tag, idx) => (
-                    <span key={idx} className="bg-accent text-accent-foreground text-[10px] px-2 py-0.5 rounded-lg border border-border/40">
-                      {tag}
+                  {/* Top Badges */}
+                  <div className="absolute top-3 left-3 flex items-center justify-between pointer-events-none z-10">
+                    <span className="bg-black/60 backdrop-blur-md text-white border border-white/20 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-xs">
+                      {badgeText}
                     </span>
-                  ))}
+                  </div>
+                </div>
+
+                {/* Card Content Body */}
+                <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    {/* Pro Avatar + Info Column (Title -> Role -> Salon Name -> Price -> Location -> Rating) */}
+                    <div className="flex items-start gap-3">
+                      <Link href={`/professionals/${proId}`} className="shrink-0 block mt-0.5">
+                        <div className="w-12 h-12 rounded-full border-2 border-[#D99722]/60 overflow-hidden bg-muted shadow-sm">
+                          <ChairImage
+                            src={proAvatarImg}
+                            alt={fullName}
+                            className="w-full h-full object-cover"
+                            size="sm"
+                            fallbackIcon={<User className="w-4 h-4 text-[#D99722]" />}
+                          />
+                        </div>
+                      </Link>
+
+                      <div className="flex-1 min-w-0 space-y-1">
+                        {/* 1. Title (Name) */}
+                        <Link
+                          href={`/professionals/${proId}`}
+                          className="text-sm sm:text-base font-bold text-foreground hover:text-[#D99722] transition-colors block truncate"
+                        >
+                          {fullName}
+                        </Link>
+
+                        {/* 2. Role */}
+                        <p className="text-xs font-medium text-muted-foreground truncate capitalize">
+                          {roleTitle}
+                        </p>
+
+                        {/* 3. Salon Name */}
+                        {salon.name && (
+                          <Link
+                            href={`/salons/${salon._id || ''}`}
+                            className="inline-flex items-center gap-1.5 text-xs text-[#D99722] hover:underline font-semibold max-w-full"
+                          >
+                            <Building2 className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">{salon.name}</span>
+                          </Link>
+                        )}
+
+                        {/* 4. Price start from */}
+                        <div className="text-xs font-semibold text-foreground">
+                          <span className="text-muted-foreground font-normal">Starting from </span>
+                          <span className="text-[#D99722] font-bold">${startingPrice}</span>
+                        </div>
+
+                        {/* 5. Location */}
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <MapPin className="w-3.5 h-3.5 text-[#D99722] shrink-0" />
+                          <span className="truncate">{locationText}</span>
+                        </div>
+
+                        {/* 6. Rating */}
+                        <div className="flex items-center gap-1 text-xs pt-0.5">
+                          <Star className="w-3.5 h-3.5 fill-[#D99722] text-[#D99722] shrink-0" />
+                          <span className="font-bold text-foreground">{rating}</span>
+                          <span className="text-muted-foreground text-[11px]">({reviewsCount})</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Full Width Available Date */}
+                    {dateRangeText && (
+                      <div className="w-full flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-xl font-medium">
+                        <Calendar className="w-3.5 h-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                        <span className="truncate">Available: {dateRangeText}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="pt-3 border-t border-border/50 flex items-center justify-between gap-2">
+                    <Link
+                      href={`/professionals/${proId}`}
+                      className="flex-1 text-center py-2 bg-accent hover:bg-accent/80 text-foreground text-xs font-semibold rounded-xl border border-border/60 transition-colors block"
+                    >
+                      View Profile
+                    </Link>
+
+                    <Link
+                      href={`/book/1?proId=${proId}`}
+                      className="flex-1 text-center py-2 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-bold rounded-xl shadow-xs transition-transform active:scale-95 block"
+                    >
+                      Book Now
+                    </Link>
+                  </div>
                 </div>
               </div>
-
-              <Link
-                href="/professionals/1"
-                className="w-full text-center py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-md shadow transition-colors block mt-2"
-              >
-                Book Appointment
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }

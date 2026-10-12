@@ -1,93 +1,96 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Clock, Calendar, CheckCircle2, XCircle } from "lucide-react";
 
-export default function AvailabilityTab() {
-  const [selectedDate, setSelectedDate] = useState("18");
-  const [selectedTime, setSelectedTime] = useState("9:30 AM");
+interface AvailabilityTabProps {
+  proData?: any;
+}
+
+function formatTimeWithAMPM(timeStr?: string): string {
+  if (!timeStr) return "";
+  const trimmed = timeStr.trim();
+  if (!trimmed) return "";
+  if (trimmed.toLowerCase().includes("am") || trimmed.toLowerCase().includes("pm")) {
+    return trimmed;
+  }
+  const parts = trimmed.split(":");
+  if (parts.length < 2) return trimmed;
+
+  let hours = parseInt(parts[0], 10);
+  const minutes = parts[1];
+
+  if (isNaN(hours)) return trimmed;
+
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  if (hours === 0) hours = 12;
+
+  const formattedHours = hours < 10 ? `0${hours}` : `${hours}`;
+  return `${formattedHours}:${minutes} ${ampm}`;
+}
+
+export default function AvailabilityTab({ proData }: AvailabilityTabProps) {
+  const [selectedTime, setSelectedTime] = useState("09:30 AM");
+
+  const rawAvailability = Array.isArray(proData?.availability) ? proData.availability : [];
+
+  const defaultSchedule = [
+    { day: "Monday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+    { day: "Tuesday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+    { day: "Wednesday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+    { day: "Thursday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+    { day: "Friday", openTime: "09:00", closeTime: "19:00", isAvailable: true },
+    { day: "Saturday", openTime: "09:00", closeTime: "18:00", isAvailable: true },
+    { day: "Sunday", openTime: "00:00", closeTime: "00:00", isAvailable: false },
+  ];
+
+  const scheduleList = rawAvailability.length > 0 ? rawAvailability : defaultSchedule;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-150">
-      {/* Calendar Widget */}
-      <div className="p-6 sm:p-8 rounded-[24px] bg-card border border-border max-w-lg shadow-xs space-y-6">
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            className="w-10 h-10 rounded-xl bg-accent hover:bg-accent/80 border border-border flex items-center justify-center text-foreground transition-colors cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <h3 className="  text-xl sm:text-2xl font-bold text-foreground">
-            July 2025
-          </h3>
-          <button
-            type="button"
-            className="w-10 h-10 rounded-xl bg-accent hover:bg-accent/80 border border-border flex items-center justify-center text-foreground transition-colors cursor-pointer"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+      {/* Weekly Working Hours Schedule (From API) */}
+      <div className="p-6 sm:p-8 rounded-2xl bg-card border border-border shadow-xs space-y-5">
+        <div className="flex items-center justify-between border-b border-border pb-4">
+          <div>
+            <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-primary" />
+              <span>Weekly Availability Schedule</span>
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Working days & operating hours provided by API
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          <div className="grid grid-cols-7 gap-2 text-center">
-            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d, i) => (
-              <span key={i} className="text-xs font-medium text-muted-foreground py-1">
-                {d}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          {scheduleList.map((item: any, idx: number) => (
+            <div
+              key={idx}
+              className={`p-4 rounded-xl border flex items-center justify-between transition-all ${item.isAvailable
+                ? "bg-accent/30 border-border"
+                : "bg-muted/40 border-border/40 opacity-60"
+                }`}
+            >
+              <div className="flex items-center gap-2.5">
+                {item.isAvailable ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                ) : (
+                  <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                )}
+                <span className="text-xs font-bold text-foreground">{item.day}</span>
+              </div>
+
+              <span className="text-xs font-medium text-muted-foreground">
+                {item.isAvailable
+                  ? `${formatTimeWithAMPM(item.openTime || "09:00")} - ${formatTimeWithAMPM(item.closeTime || "19:00")}`
+                  : "Closed / Off"}
               </span>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-7 gap-2 text-center">
-            {[
-              { day: "14", disabled: false },
-              { day: "15", disabled: false },
-              { day: "16", disabled: true },
-              { day: "17", disabled: false },
-              { day: "18", disabled: false },
-              { day: "19", disabled: false },
-              { day: "20", disabled: true },
-            ].map((item, idx) => (
-              <button
-                key={idx}
-                disabled={item.disabled}
-                onClick={() => setSelectedDate(item.day)}
-                className={`py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-center ${item.disabled
-                    ? "text-muted-foreground/40 opacity-40 cursor-not-allowed font-light"
-                    : selectedDate === item.day
-                      ? "text-primary font-bold bg-accent/60"
-                      : "text-foreground hover:text-primary cursor-pointer"
-                  }`}
-              >
-                {item.day}
-              </button>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Time Slots 5-Column Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
-        {[
-          "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM", "11:00 AM",
-          "11:30 AM", "12:00 PM", "1:00 PM", "2:00 PM", "2:30 PM",
-          "3:00 PM", "4:00 PM", "5:00 PM", "5:30 PM", "6:00 PM",
-          "6:30 PM", "7:00 PM"
-        ].map((t, idx) => (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => setSelectedTime(t)}
-            className={`py-3.5 px-4 rounded-sm text-xs sm:text-sm transition-all border text-center cursor-pointer ${selectedTime === t
-                ? "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold border-primary shadow-xs"
-                : "bg-card hover:bg-accent text-foreground font-medium border-border"
-              }`}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
     </div>
   );
 }
-

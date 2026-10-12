@@ -18,14 +18,14 @@ export default function GetStartedCta() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-          <Link
+          {/* <Link
             href="/search"
             className="w-full sm:w-auto px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-xs sm:text-sm rounded-sm shadow transition-all cursor-pointer text-center"
           >
             Find a Service
-          </Link>
+          </Link> */}
           <Link
-            href="/discover"
+            href="/professionals"
             className="w-full sm:w-auto px-6 py-3 bg-card hover:bg-accent text-foreground font-medium text-xs sm:text-sm rounded-sm transition-all cursor-pointer text-center border border-border"
           >
             Explore Professionals

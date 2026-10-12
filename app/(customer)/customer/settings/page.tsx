@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { Switch } from "@/components/ui/switch";
+
 import {
   Dialog,
   DialogContent,
@@ -19,7 +19,7 @@ import {
 } from "@/features/profile/profileApi";
 import { PhoneInput } from "@/components/ui/phone-input";
 
-type SettingsTab = "Profile" | "Notifications" | "Privacy" | "Security";
+type SettingsTab = "Profile" | "Security";
 
 export default function CustomerSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
@@ -120,22 +120,7 @@ export default function CustomerSettingsPage() {
     confirmPassword: "",
   });
 
-  // Notifications Toggle States
-  const [notifications, setNotifications] = useState({
-    bookingConfirmations: true,
-    appointmentReminders: true,
-    cancellationAlerts: false,
-    rescheduleRequests: false,
-    newMessages: true,
-    unreadReminders: true,
-    specialOffers: true,
-    loyaltyRewards: true,
-    newProfessionals: false,
-  });
 
-  const toggleNotification = (key: keyof typeof notifications) => {
-    setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
   return (
     <div className="space-y-6">
@@ -148,9 +133,7 @@ export default function CustomerSettingsPage() {
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left Sidebar Menu */}
         <div className="w-full md:w-56 lg:w-64 shrink-0 bg-card border border-border rounded-lg overflow-hidden shadow-xs divide-y divide-border">
-          {(
-            ["Profile", "Notifications", "Privacy", "Security"] as SettingsTab[]
-          ).map((tab) => {
+          {(["Profile", "Security"] as SettingsTab[]).map((tab) => {
             const isActive = activeTab === tab;
             return (
               <button
@@ -295,228 +278,7 @@ export default function CustomerSettingsPage() {
             </div>
           )}
 
-          {/* ------------------------------------------------------------- */}
-          {/* TAB 2: NOTIFICATIONS */}
-          {/* ------------------------------------------------------------- */}
-          {activeTab === "Notifications" && (
-            <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
-                Notification Preferences
-              </h2>
 
-              {/* APPOINTMENTS */}
-              <div className="space-y-3">
-                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
-                  APPOINTMENTS
-                </h3>
-
-                <div className="space-y-2.5">
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      Booking confirmations
-                    </span>
-                    <Switch
-                      checked={notifications.bookingConfirmations}
-                      onCheckedChange={() =>
-                        toggleNotification("bookingConfirmations")
-                      }
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      Appointment reminders
-                    </span>
-                    <Switch
-                      checked={notifications.appointmentReminders}
-                      onCheckedChange={() =>
-                        toggleNotification("appointmentReminders")
-                      }
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      Cancellation alerts
-                    </span>
-                    <Switch
-                      checked={notifications.cancellationAlerts}
-                      onCheckedChange={() =>
-                        toggleNotification("cancellationAlerts")
-                      }
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      Reschedule requests
-                    </span>
-                    <Switch
-                      checked={notifications.rescheduleRequests}
-                      onCheckedChange={() =>
-                        toggleNotification("rescheduleRequests")
-                      }
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* MESSAGES */}
-              <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
-                  MESSAGES
-                </h3>
-
-                <div className="space-y-2.5">
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      New messages from professionals
-                    </span>
-                    <Switch
-                      checked={notifications.newMessages}
-                      onCheckedChange={() => toggleNotification("newMessages")}
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      Unread message reminders
-                    </span>
-                    <Switch
-                      checked={notifications.unreadReminders}
-                      onCheckedChange={() =>
-                        toggleNotification("unreadReminders")
-                      }
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* PROMOTIONS */}
-              <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
-                  PROMOTIONS
-                </h3>
-
-                <div className="space-y-2.5">
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      Special offers
-                    </span>
-                    <Switch
-                      checked={notifications.specialOffers}
-                      onCheckedChange={() => toggleNotification("specialOffers")}
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      Loyalty rewards
-                    </span>
-                    <Switch
-                      checked={notifications.loyaltyRewards}
-                      onCheckedChange={() => toggleNotification("loyaltyRewards")}
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-
-                  <div className="bg-accent px-4 py-3.5 rounded-lg flex items-center justify-between">
-                    <span className="text-xs sm:text-sm text-foreground font-medium">
-                      New professionals near you
-                    </span>
-                    <Switch
-                      checked={notifications.newProfessionals}
-                      onCheckedChange={() =>
-                        toggleNotification("newProfessionals")
-                      }
-                      className="data-[state=checked]:bg-primary"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ------------------------------------------------------------- */}
-          {/* TAB 3: PRIVACY SETTINGS */}
-          {/* ------------------------------------------------------------- */}
-          {activeTab === "Privacy" && (
-            <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
-                Privacy Settings
-              </h2>
-
-              <div className="divide-y divide-border space-y-4">
-                <div className="pt-2 flex items-center justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
-                      Profile visibility
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Control who can see your profile information
-                    </p>
-                  </div>
-                  <span className="bg-secondary text-secondary-foreground border border-border px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
-                    Private
-                  </span>
-                </div>
-
-                <div className="pt-4 flex items-center justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
-                      Search history
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Your search and browsing history
-                    </p>
-                  </div>
-                  <span className="bg-secondary text-secondary-foreground border border-border px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
-                    Stored for 90 days
-                  </span>
-                </div>
-
-                <div className="pt-4 flex items-center justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <h4 className="font-medium text-xs sm:text-sm text-foreground">
-                      Data usage
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      How we use your data to improve recommendations
-                    </p>
-                  </div>
-                  <span className="bg-secondary text-secondary-foreground border border-border px-4 py-1.5 rounded-xl text-xs font-medium shrink-0">
-                    Enabled
-                  </span>
-                </div>
-              </div>
-
-              {/* Danger Zone Box */}
-              <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-5 sm:p-6 space-y-3 mt-8">
-                <h3 className="font-serif font-bold text-lg text-destructive">
-                  Danger Zone
-                </h3>
-                <p className="text-xs text-destructive/80 leading-relaxed">
-                  Permanently delete your account and all associated data. This
-                  action cannot be undone.
-                </p>
-                <div className="pt-1">
-                  <button
-                    type="button"
-                    className="border border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground px-5 py-2.5 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
-                  >
-                    Delete Account
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* ------------------------------------------------------------- */}
           {/* TAB 4: SECURITY */}

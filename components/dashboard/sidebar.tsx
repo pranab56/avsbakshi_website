@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { logout } from "@/features/auth/authSlice";
 import { LogOut, X } from "lucide-react";
 import { NavItem, RoleType } from "./nav-config";
 import Image from "next/image";
+import { useGetAllChatsQuery } from "@/features/chat/chatApi";
+import { useGetMyAppointmentQuery } from "@/features/appointment/appointmentApi";
 import {
   Dialog,
   DialogContent,
@@ -34,16 +36,24 @@ export default function DashboardSidebar({
   const dispatch = useDispatch();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const handleLogout = async () => {
+  const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
+
+  const { data: chatsResponse } = useGetAllChatsQuery(undefined, { skip: !user });
+  const { data: appointmentsResponse } = useGetMyAppointmentQuery(undefined, { skip: !user });
+
+  const chatsCount = Array.isArray(chatsResponse?.data)
+    ? chatsResponse.data.length
+    : (chatsResponse?.pagination?.total ?? (Array.isArray(chatsResponse) ? chatsResponse.length : undefined));
+
+  const bookingsCount = Array.isArray(appointmentsResponse?.data)
+    ? appointmentsResponse.data.length
+    : (appointmentsResponse?.pagination?.total ?? (Array.isArray(appointmentsResponse) ? appointmentsResponse.length : undefined));
+
+  const handleLogout = () => {
     setShowLogoutConfirm(false);
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch {
-      // ignore
-    }
     dispatch(logout());
     toast.success("Successfully logged out.");
-    router.push("/login");
+    window.location.href = "/api/auth/logout";
   };
 
   return (
@@ -104,6 +114,13 @@ export default function DashboardSidebar({
                 item.href !== "/professional/dashboard" &&
                 pathname.startsWith(item.href));
 
+            let displayBadge = item.badge;
+            if (item.href.includes("/messages")) {
+              displayBadge = chatsCount;
+            } else if (item.href.includes("/bookings")) {
+              displayBadge = bookingsCount;
+            }
+
             return (
               <Link
                 key={item.title}
@@ -123,14 +140,14 @@ export default function DashboardSidebar({
                 </div>
 
                 {/* Optional Badge */}
-                {item.badge !== undefined && (
+                {displayBadge !== undefined && displayBadge !== null && (
                   <span
                     className={`px-2 py-0.5 text-xs font-bold rounded-full ${isActive
                       ? "bg-white text-[#D99722]"
                       : "bg-white/10 text-gray-300"
                       }`}
                   >
-                    {item.badge}
+                    {displayBadge}
                   </span>
                 )}
               </Link>

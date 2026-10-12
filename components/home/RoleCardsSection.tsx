@@ -11,7 +11,7 @@ export default function RoleCardsSection() {
       title: "For Customers",
       desc: "Book your favorite services anytime, anywhere.",
       img: "/images/hero/role-1.png",
-      link: "/discover",
+      link: "/professionals",
     },
     {
       title: "For Professionals",
@@ -23,7 +23,7 @@ export default function RoleCardsSection() {
       title: "For Businesses",
       desc: "Join the marketplace and reach more clients.",
       img: "/images/hero/role-3.png",
-      link: "/for-businesses",
+      link: "/salons",
     },
   ];
 

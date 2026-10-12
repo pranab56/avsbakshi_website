@@ -8,9 +8,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --: var(--);
+  --font-serif: var(--font-serif);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-heading: var(--);
+  --font-heading: var(--font-serif);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -41,8 +41,8 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-. {
-  font-family: var(--), Georgia, serif;
+.font-serif {
+  font-family: var(--font-serif), Georgia, serif;
 }
 
 /* Hide Google Translate toolbar */
@@ -319,4 +319,33 @@ body {
   opacity: 0.7;
   color: var(--foreground);
   border-color: var(--foreground);
+}
+
+/* =========================================================
+   PREMIUM CIRCULAR SHEET REVEAL THEME TRANSITION
+   ========================================================= */
+
+/* Disable browser default view transition animations */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+/* Old theme view snapshot sits underneath */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* New theme view snapshot sits on top to expand over the screen */
+::view-transition-new(root) {
+  z-index: 99999;
+}
+
+/* Disable element transition delays during snapshot generation */
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: none !important;
 }

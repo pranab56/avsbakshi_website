@@ -215,7 +215,7 @@ export default function Hero() {
             <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1 lg:pt-1.5 2xl:pt-2">
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Link
-                  href="/discover"
+                  href="/professionals"
                   className="px-4 py-2 sm:px-5 sm:py-2.5 2xl:px-6 2xl:py-3 rounded-sm bg-[#D99722] hover:bg-[#A0732A] text-white font-semibold text-xs 2xl:text-sm shadow-md transition-all flex items-center gap-1.5 sm:gap-2 group cursor-pointer"
                 >
                   <span>Book A service</span>

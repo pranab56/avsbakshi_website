@@ -25,8 +25,8 @@ import {
   useCreateServicesMutation,
   useUpdateServicesMutation,
   useDeleteServicesMutation,
-  useGetAllCategoriesQuery,
 } from "@/features/services/servicesApi";
+import { useGetAllCategoryQuery } from "@/features/category/category";
 
 interface CategoryObj {
   _id?: string;
@@ -56,7 +56,7 @@ export default function ProfessionalServicesPage() {
     refetch,
   } = useGetMyServicesQuery({});
 
-  const { data: categoriesRes } = useGetAllCategoriesQuery({});
+  const { data: categoriesRes } = useGetAllCategoryQuery({});
 
   const [createService, { isLoading: isCreating }] = useCreateServicesMutation();
   const [updateService, { isLoading: isUpdating }] = useUpdateServicesMutation();

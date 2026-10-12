@@ -1,177 +1,385 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   MessageSquare,
+  Calendar as CalendarIcon,
   Send,
   Search,
+  Trash2,
+  Loader2,
+  RefreshCw,
+  X,
+  User,
+  Image as LucideImage,
+  Paperclip,
+  Ban,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useGetAllChatsQuery, useDeleteChatMutation } from "@/features/chat/chatApi";
+import { useGetMyMessageQuery, useSendMessageMutation, useDeleteMessageMutation } from "@/features/message/messageApi";
+import { useUploadMutation } from "@/features/upload/uploadApi";
+import { useGetMyProfileQuery } from "@/features/profile/profileApi";
+import { getSocket } from "@/utils/socket";
 
-interface Message {
-  id: string;
-  sender: "customer" | "pro";
-  text: string;
-  time: string;
-}
+function ProfessionalMessagesContent() {
+  const searchParams = useSearchParams();
+  const chatIdParam = searchParams.get("chatId");
 
-interface Conversation {
-  id: string;
-  customerName: string;
-  avatar: string;
-  lastMessage: string;
-  timestamp: string;
-  unreadCount?: number;
-  isOnline: boolean;
-  appointmentInfo?: string;
-  messages: Message[];
-}
-
-export default function ProfessionalMessagesPage() {
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>("1");
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(chatIdParam || null);
   const [newMessageText, setNewMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteModalChat, setDeleteModalChat] = useState<{ id: string; name: string } | null>(null);
+
+  // Message deletion & Image attachment state
+  const [deleteMessageId, setDeleteMessageId] = useState<string | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [conversations, setConversations] = useState<Conversation[]>([
-    {
-      id: "1",
-      customerName: "Sarah Jenkins",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      lastMessage: "Hi James! Just confirming my Balayage & Cut for Monday at 2:30 PM.",
-      timestamp: "10 min ago",
-      unreadCount: 2,
-      isOnline: true,
-      appointmentInfo: "Mon, Aug 19 · 2:30 PM (Hair Coloring & Cut)",
-      messages: [
-        {
-          id: "m1",
-          sender: "customer",
-          text: "Hi James! I booked an appointment with you for Monday Aug 19 at 2:30 PM for Hair Coloring & Cut.",
-          time: "10:15 AM",
-        },
-        {
-          id: "m2",
-          sender: "pro",
-          text: "Hello Sarah! Great to hear from you. Your slot is confirmed for 2:30 PM.",
-          time: "10:20 AM",
-        },
-        {
-          id: "m3",
-          sender: "customer",
-          text: "Hi James! Just confirming my Balayage & Cut for Monday at 2:30 PM. Should I wash my hair before coming?",
-          time: "10:30 AM",
-        },
-      ],
-    },
-    {
-      id: "2",
-      customerName: "Michael Vance",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-      lastMessage: "Is it possible to shift my beard trim to 11:30 AM?",
-      timestamp: "1h ago",
-      unreadCount: 1,
-      isOnline: false,
-      appointmentInfo: "Sat, Aug 24 · 11:00 AM (Beard Trim & Styling)",
-      messages: [
-        {
-          id: "m10",
-          sender: "customer",
-          text: "Hi! Is it possible to shift my beard trim appointment on Saturday to 11:30 AM instead of 11:00 AM?",
-          time: "09:45 AM",
-        },
-      ],
-    },
-    {
-      id: "3",
-      customerName: "Emma Watson",
-      avatar:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
-      lastMessage: "Thank you so much for the appointment! Loved the result.",
-      timestamp: "Yesterday",
-      isOnline: true,
-      appointmentInfo: "Mon, Aug 19 · 3:30 PM (Manicure & Pedicure)",
-      messages: [
-        {
-          id: "m20",
-          sender: "customer",
-          text: "Thank you so much for the appointment! Loved the result.",
-          time: "4:45 PM",
-        },
-        {
-          id: "m21",
-          sender: "pro",
-          text: "You are very welcome Emma! Glad you liked it.",
-          time: "5:00 PM",
-        },
-      ],
-    },
-  ]);
+  // RTK Queries & Mutations
+  const { data: profileResponse } = useGetMyProfileQuery(undefined);
+  const myProfileId = profileResponse?.data?._id;
 
-  const filteredConversations = conversations.filter((c) =>
-    c.customerName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { data: chatsResponse, isLoading: isChatsLoading, isError: isChatsError, refetch: refetchChats, isFetching: isFetchingChats } = useGetAllChatsQuery(undefined);
+  const [deleteChat, { isLoading: isDeletingChat }] = useDeleteChatMutation();
+  const [sendMessage, { isLoading: isSendingMessage }] = useSendMessageMutation();
+  const [deleteMessage, { isLoading: isDeletingMessage }] = useDeleteMessageMutation();
+  const [uploadImage, { isLoading: isUploadingImage }] = useUploadMutation();
 
-  const activeConversation = conversations.find(
-    (c) => c.id === selectedConversationId
-  );
+  const chats = chatsResponse?.data || [];
 
+  // Update selectedChatId when chatIdParam changes or chats load
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [selectedConversationId, activeConversation?.messages]);
+    if (chatIdParam) {
+      setSelectedChatId(chatIdParam);
+    } else if (!selectedChatId && chats.length > 0) {
+      setSelectedChatId(chats[0]._id);
+    }
+  }, [chatIdParam, chats, selectedChatId]);
 
-  const handleSendMessage = () => {
-    if (!newMessageText.trim() || !selectedConversationId) return;
+  // Fetch messages for selected chat
+  const { data: messagesResponse, isLoading: isMessagesLoading, refetch: refetchMessages } = useGetMyMessageQuery(
+    selectedChatId,
+    { skip: !selectedChatId }
+  );
 
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      sender: "pro",
-      text: newMessageText,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+  const rawMessageList = messagesResponse?.data || messagesResponse || [];
+
+  // Sort messages chronologically (oldest at top, newest at bottom)
+  const messageList = Array.isArray(rawMessageList)
+    ? [...rawMessageList].sort((a: any, b: any) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime())
+    : [];
+
+  // 1. Global Socket Listeners for chat list updates & errors
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const handleChatList = (data?: any) => {
+      console.log("Realtime socket getChatList received:", data);
+      refetchChats();
     };
 
-    setConversations((prev) =>
-      prev.map((c) => {
-        if (c.id === selectedConversationId) {
-          return {
-            ...c,
-            lastMessage: newMessageText,
-            timestamp: "Just now",
-            messages: [...c.messages, newMsg],
-          };
-        }
-        return c;
-      })
-    );
+    const handleErrorMessage = (err?: any) => {
+      console.error("Realtime socket errorMessage received:", err);
+    };
 
-    setNewMessageText("");
-    toast.success("Message sent to client!");
+    socket.on("getChatList", handleChatList);
+    socket.on("errorMessage", handleErrorMessage);
+
+    return () => {
+      socket.off("getChatList", handleChatList);
+      socket.off("errorMessage", handleErrorMessage);
+    };
+  }, [refetchChats]);
+
+  // 2. Chat Room Connection & Message Listener (getMessage)
+  useEffect(() => {
+    if (!selectedChatId) return;
+
+    const socket = getSocket();
+    if (!socket) return;
+
+    const joinRoom = () => {
+      console.log("Emitting room:join with chatId:", selectedChatId);
+      socket.emit("room:join", { chatId: selectedChatId });
+    };
+
+    if (socket.connected) {
+      joinRoom();
+    } else {
+      socket.once("connect", joinRoom);
+      socket.connect();
+    }
+
+    const handleIncomingMessage = (data?: any) => {
+      console.log("Realtime socket getMessage received:", data);
+      refetchMessages();
+      refetchChats();
+    };
+
+    // Primary event according to Postman docs: getMessage
+    socket.on("getMessage", handleIncomingMessage);
+    socket.on("getChatList", handleIncomingMessage);
+    socket.on("get-message", handleIncomingMessage);
+    socket.on("new-message", handleIncomingMessage);
+    socket.on("message", handleIncomingMessage);
+    socket.on("room:message", handleIncomingMessage);
+
+    return () => {
+      console.log("Emitting room:leave with chatId:", selectedChatId);
+      socket.emit("room:leave", { chatId: selectedChatId });
+
+      socket.off("getMessage", handleIncomingMessage);
+      socket.off("getChatList", handleIncomingMessage);
+      socket.off("get-message", handleIncomingMessage);
+      socket.off("new-message", handleIncomingMessage);
+      socket.off("message", handleIncomingMessage);
+      socket.off("room:message", handleIncomingMessage);
+      socket.off("connect", joinRoom);
+    };
+  }, [selectedChatId, refetchMessages, refetchChats]);
+
+  // Scroll to bottom when messages update
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messageList.length, selectedChatId]);
+
+  // Helper to extract customer details from chat participants (filtering out current profile)
+  const getParticipantInfo = (chat: any) => {
+    if (!chat || !chat.participants || !Array.isArray(chat.participants) || chat.participants.length === 0) {
+      return {
+        id: chat?._id,
+        name: "Customer",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+        isOnline: false,
+      };
+    }
+
+    const customerParticipant = myProfileId
+      ? chat.participants.find((p: any) => p._id !== myProfileId) || chat.participants[0]
+      : chat.participants[0];
+
+    const p = customerParticipant || chat.participants[0];
+    const name = `${p.firstName || ""} ${p.lastName || ""}`.trim() || p.email || "Customer";
+    const avatar = p.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80";
+
+    return {
+      id: p._id,
+      name,
+      avatar,
+      isOnline: !!p.isOnline,
+    };
   };
 
-  const selectConversation = (id: string) => {
-    setSelectedConversationId(id);
-    setConversations((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, unreadCount: 0 } : c))
-    );
+  const getLastMessageText = (chat: any) => {
+    if (!chat.lastMessage) return "No messages yet";
+    if (typeof chat.lastMessage === "string") return chat.lastMessage;
+    return chat.lastMessage.text || chat.lastMessage.content || "No messages yet";
+  };
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    try {
+      const d = new Date(dateStr);
+      return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    } catch {
+      return "";
+    }
+  };
+
+  // Image Selection Handlers
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file.");
+      return;
+    }
+    setSelectedImageFile(file);
+    setImagePreviewUrl(URL.createObjectURL(file));
+  };
+
+  const clearSelectedImage = () => {
+    setSelectedImageFile(null);
+    if (imagePreviewUrl) {
+      URL.revokeObjectURL(imagePreviewUrl);
+      setImagePreviewUrl(null);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  // Filter chats by search query
+  const filteredChats = chats.filter((chat: any) => {
+    const { name } = getParticipantInfo(chat);
+    return name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  const activeChat = chats.find((c: any) => c._id === selectedChatId) || (chats.length > 0 && selectedChatId ? { _id: selectedChatId } : null);
+  const activeParticipant = activeChat ? getParticipantInfo(activeChat) : null;
+
+  // Send Message with Body Format: { chat, type, content }
+  const handleSendMessage = async () => {
+    if ((!newMessageText.trim() && !selectedImageFile) || !selectedChatId) return;
+
+    const textToSend = newMessageText.trim();
+    const imageFile = selectedImageFile;
+
+    // Reset inputs immediately
+    setNewMessageText("");
+    clearSelectedImage();
+
+    try {
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+        formData.append("file", imageFile);
+
+        toast.info("Uploading image...");
+        const uploadRes = await uploadImage(formData).unwrap();
+        const uploadedUrl = uploadRes?.data?.url || uploadRes?.data || uploadRes?.url || uploadRes?.image;
+
+        if (!uploadedUrl) {
+          throw new Error("Failed to upload image.");
+        }
+
+        const sentRes = await sendMessage({
+          chat: selectedChatId,
+          type: "image",
+          content: uploadedUrl,
+        }).unwrap();
+
+        toast.success("Image sent!");
+
+        refetchMessages();
+        refetchChats();
+
+        const socket = getSocket();
+        if (socket) {
+          const payload = {
+            chatId: selectedChatId,
+            chat: selectedChatId,
+            content: uploadedUrl,
+            type: "image",
+            message: sentRes?.data || sentRes,
+          };
+          socket.emit("send-message", payload);
+          socket.emit("new-message", payload);
+          socket.emit("room:message", payload);
+          socket.emit("message", payload);
+        }
+      } else {
+        const sentRes = await sendMessage({
+          chat: selectedChatId,
+          type: "text",
+          content: textToSend,
+        }).unwrap();
+
+        refetchMessages();
+        refetchChats();
+
+        const socket = getSocket();
+        if (socket) {
+          const payload = {
+            chatId: selectedChatId,
+            chat: selectedChatId,
+            content: textToSend,
+            type: "text",
+            message: sentRes?.data || sentRes,
+          };
+          socket.emit("send-message", payload);
+          socket.emit("new-message", payload);
+          socket.emit("room:message", payload);
+          socket.emit("message", payload);
+        }
+      }
+    } catch (err: any) {
+      console.error("Failed to send message:", err);
+      toast.error(err?.data?.message || err?.message || "Failed to send message.");
+    }
+  };
+
+  const handleDeleteChat = async () => {
+    if (!deleteModalChat) return;
+
+    try {
+      await deleteChat(deleteModalChat.id).unwrap();
+      toast.success("Chat deleted successfully!");
+      if (selectedChatId === deleteModalChat.id) {
+        const remaining = chats.filter((c: any) => c._id !== deleteModalChat.id);
+        setSelectedChatId(remaining.length > 0 ? remaining[0]._id : null);
+      }
+      setDeleteModalChat(null);
+    } catch (err: any) {
+      console.error("Failed to delete chat:", err);
+      toast.error(err?.data?.message || "Failed to delete chat.");
+    }
+  };
+
+  const handleConfirmDeleteMessage = async () => {
+    if (!deleteMessageId) return;
+
+    try {
+      await deleteMessage(deleteMessageId).unwrap();
+      toast.success("Message deleted!");
+      setDeleteMessageId(null);
+    } catch (err: any) {
+      console.error("Failed to delete message:", err);
+      toast.error(err?.data?.message || "Failed to delete message.");
+    }
   };
 
   return (
     <div className="space-y-6 pb-16 font-sans text-foreground">
-      {/* Page Title Header */}
-      <div className="border-b border-border pb-4">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
-          Customer Direct Messages
-        </h1>
-        <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
-          Chat directly with customers who booked services or inquired about your availability
-        </p>
+      {/* Top Header Row with Title & Main Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+        <div>
+          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+            Customer Direct Messages
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
+            Chat directly with customers who booked services or inquired about your availability
+          </p>
+        </div>
+
+        {/* Main Tab Switcher & Refresh */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => refetchChats()}
+            disabled={isFetchingChats}
+            className="p-2 rounded-lg border border-border bg-card hover:bg-accent text-xs font-semibold text-foreground flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+            title="Refresh Chats"
+          >
+            <RefreshCw className={`w-4 h-4 ${isFetchingChats ? "animate-spin" : ""}`} />
+          </button>
+
+          <div className="flex items-center gap-2 bg-accent p-1.5 rounded-lg border border-border w-full sm:w-auto">
+            <Link
+              href="/professional/calendar"
+              className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer text-muted-foreground hover:text-foreground"
+            >
+              <CalendarIcon className="w-4 h-4" />
+              <span>Calendar</span>
+            </Link>
+
+            <Link
+              href="/professional/messages"
+              className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer bg-primary text-primary-foreground shadow-sm"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>Messages</span>
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* Main Inbox Container */}
@@ -191,69 +399,102 @@ export default function ProfessionalMessagesPage() {
               />
             </div>
 
-            {/* List */}
+            {/* Chats List */}
             <div className="space-y-2 overflow-y-auto max-h-[480px] pr-1">
-              {filteredConversations.map((conv) => {
-                const isSelected = selectedConversationId === conv.id;
-                return (
-                  <div
-                    key={conv.id}
-                    onClick={() => selectConversation(conv.id)}
-                    className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center gap-3 ${
-                      isSelected
+              {isChatsLoading ? (
+                <div className="p-8 text-center flex flex-col items-center justify-center gap-2">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  <span className="text-xs text-muted-foreground">Loading chats...</span>
+                </div>
+              ) : isChatsError ? (
+                <div className="p-6 text-center text-xs text-destructive">
+                  Failed to load chats.
+                </div>
+              ) : filteredChats.length > 0 ? (
+                filteredChats.map((chat: any) => {
+                  const isSelected = selectedChatId === chat._id;
+                  const participant = getParticipantInfo(chat);
+                  const lastMsg = getLastMessageText(chat);
+                  const formattedTime = formatDate(chat.updatedAt);
+
+                  return (
+                    <div
+                      key={chat._id}
+                      onClick={() => setSelectedChatId(chat._id)}
+                      className={`group p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${isSelected
                         ? "bg-primary/10 border-primary shadow-xs"
                         : "bg-accent/30 border-border hover:bg-accent"
-                    }`}
-                  >
-                    {/* Avatar */}
-                    <div className="relative shrink-0">
-                      <div className="w-11 h-11 rounded-full overflow-hidden relative bg-muted">
-                        <Image
-                          src={conv.avatar}
-                          alt={conv.customerName}
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                      {conv.unreadCount && conv.unreadCount > 0 ? (
-                        <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-background">
-                          {conv.unreadCount}
-                        </span>
-                      ) : null}
-                    </div>
+                        }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        {/* Avatar */}
+                        <div className="relative shrink-0">
+                          <div className="w-11 h-11 rounded-full overflow-hidden relative bg-muted border border-border">
+                            <Image
+                              src={participant.avatar}
+                              alt={participant.name}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          </div>
+                          {chat.unreadCount && chat.unreadCount > 0 ? (
+                            <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-background">
+                              {chat.unreadCount}
+                            </span>
+                          ) : null}
+                        </div>
 
-                    {/* Content Preview */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">
-                          {conv.customerName}
-                        </h4>
-                        <span className="text-[10px] text-muted-foreground shrink-0">
-                          {conv.timestamp}
-                        </span>
+                        {/* Content Preview */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">
+                              {participant.name}
+                            </h4>
+                            <span className="text-[10px] text-muted-foreground shrink-0">
+                              {formattedTime}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate leading-tight mt-0.5">
+                            {lastMsg}
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-xs text-muted-foreground truncate leading-tight mt-0.5">
-                        {conv.lastMessage}
-                      </p>
+
+                      {/* Delete Action Icon */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteModalChat({ id: chat._id, name: participant.name });
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-all cursor-pointer shrink-0"
+                        title="Delete Chat"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div className="p-10 text-center text-xs text-muted-foreground italic">
+                  No conversations found.
+                </div>
+              )}
             </div>
           </div>
 
           {/* Right Column: Chat Box */}
           <div className="lg:col-span-8 flex flex-col justify-between pl-0 lg:pl-2">
-            {activeConversation ? (
+            {selectedChatId && activeParticipant ? (
               <>
                 {/* Chat Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-border">
                   <div className="flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0 border border-border">
                       <Image
-                        src={activeConversation.avatar}
-                        alt={activeConversation.customerName}
+                        src={activeParticipant.avatar}
+                        alt={activeParticipant.name}
                         fill
                         className="object-cover"
                         unoptimized
@@ -261,70 +502,177 @@ export default function ProfessionalMessagesPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-sm sm:text-base text-foreground">
-                        {activeConversation.customerName}
+                        {activeParticipant.name}
                       </h3>
-                      {activeConversation.appointmentInfo && (
-                        <p className="text-[11px] text-primary font-medium">
-                          {activeConversation.appointmentInfo}
-                        </p>
+                      {activeParticipant.isOnline ? (
+                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          Online
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-muted-foreground">Offline</span>
                       )}
                     </div>
                   </div>
 
-                  {activeConversation.isOnline && (
-                    <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Online
-                    </span>
-                  )}
+                  {/* Header Delete Action */}
+                  <button
+                    type="button"
+                    onClick={() => setDeleteModalChat({ id: selectedChatId, name: activeParticipant.name })}
+                    className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-medium"
+                    title="Delete Conversation"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span className="hidden sm:inline">Delete</span>
+                  </button>
                 </div>
 
                 {/* Messages Scroll Area */}
                 <div className="flex-1 overflow-y-auto space-y-4 py-4 pr-2 max-h-[380px]">
-                  {activeConversation.messages.map((msg) => {
-                    const isPro = msg.sender === "pro";
-                    return (
-                      <div
-                        key={msg.id}
-                        className={`flex flex-col ${
-                          isPro ? "items-end" : "items-start"
-                        }`}
-                      >
+                  {isMessagesLoading ? (
+                    <div className="p-12 text-center flex flex-col items-center justify-center gap-2">
+                      <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                      <span className="text-xs text-muted-foreground">Loading messages...</span>
+                    </div>
+                  ) : messageList.length > 0 ? (
+                    messageList.map((msg: any, idx: number) => {
+                      const senderId = typeof msg.sender === "object" ? msg.sender?._id : msg.sender;
+                      const isMyMessage = myProfileId
+                        ? senderId === myProfileId
+                        : (msg.isMyMessage ?? (msg.sender === "pro" || msg.role === "professional" || msg.sender?.role === "professional"));
+                      const msgType = msg.type || (msg.content?.startsWith("http") ? "image" : "text");
+                      const timeStr = formatDate(msg.createdAt);
+
+                      return (
                         <div
-                          className={`max-w-md p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
-                            isPro
-                              ? "bg-primary text-primary-foreground rounded-br-xs shadow-xs"
-                              : "bg-muted text-foreground rounded-bl-xs border border-border"
-                          }`}
+                          key={msg._id || idx}
+                          className={`group/msg flex flex-col ${isMyMessage ? "items-end" : "items-start"}`}
                         >
-                          {msg.text}
+                          <div className="relative max-w-xs sm:max-w-md flex items-center gap-1.5">
+                            {/* Delete Message Action Button */}
+                            {isMyMessage && !msg.isDeleted && (
+                              <button
+                                type="button"
+                                onClick={() => setDeleteMessageId(msg._id)}
+                                className="opacity-0 group-hover/msg:opacity-100 p-1 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-all cursor-pointer shrink-0"
+                                title="Delete Message"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+
+                            {/* Message Content Bubble */}
+                            {msg.isDeleted ? (
+                              <div className="p-3 rounded-2xl text-xs sm:text-sm leading-relaxed bg-accent/40 text-muted-foreground border border-border italic flex items-center gap-1.5">
+                                <Ban className="w-3.5 h-3.5 shrink-0 opacity-70" />
+                                <span>Message deleted</span>
+                              </div>
+                            ) : (
+                              <div
+                                className={`p-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${isMyMessage
+                                  ? "bg-primary text-primary-foreground rounded-br-xs shadow-xs"
+                                  : "bg-accent text-foreground rounded-bl-xs border border-border"
+                                  }`}
+                              >
+                                {msgType === "image" ? (
+                                  <div className="relative w-44 h-44 sm:w-56 sm:h-56 rounded-xl overflow-hidden bg-black/10 border border-white/20">
+                                    <Image
+                                      src={msg.content}
+                                      alt="Shared Attachment"
+                                      fill
+                                      className="object-cover cursor-pointer hover:scale-105 transition-transform"
+                                      unoptimized
+                                      onClick={() => window.open(msg.content, "_blank")}
+                                    />
+                                  </div>
+                                ) : (
+                                  <span>{msg.content || msg.text || ""}</span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Time & Read Status */}
+                          {timeStr && (
+                            <span className="text-[10px] text-muted-foreground mt-1 px-1 flex items-center gap-1">
+                              {timeStr}
+                              {msg.isSeen && isMyMessage && <span className="text-primary font-bold">✓✓</span>}
+                            </span>
+                          )}
                         </div>
-                        <span className="text-[10px] text-muted-foreground mt-1 px-1">
-                          {msg.time}
-                        </span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  ) : (
+                    <div className="p-12 text-center text-xs text-muted-foreground italic">
+                      No messages yet. Send a message to start the conversation!
+                    </div>
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
 
+                {/* Selected Image Attachment Preview Bar */}
+                {imagePreviewUrl && (
+                  <div className="px-4 py-2 bg-accent/60 border border-border rounded-xl mb-2 flex items-center justify-between animate-in fade-in duration-150">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-border bg-muted">
+                        <Image src={imagePreviewUrl} alt="Attachment Preview" fill className="object-cover" unoptimized />
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-foreground truncate max-w-[180px]">
+                          {selectedImageFile?.name}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">Ready to send as image</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={clearSelectedImage}
+                      className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-card rounded-md transition-colors cursor-pointer"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
                 {/* Input Bar */}
                 <div className="pt-3 border-t border-border flex items-center gap-2">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageSelect}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingImage || isSendingMessage}
+                    className="p-3 text-muted-foreground hover:text-foreground hover:bg-accent border border-border rounded-xl transition-colors cursor-pointer shrink-0 disabled:opacity-50"
+                    title="Attach Image"
+                  >
+                    <LucideImage className="w-4 h-4" />
+                  </button>
+
                   <input
                     type="text"
                     value={newMessageText}
                     onChange={(e) => setNewMessageText(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                    placeholder={`Reply to ${activeConversation.customerName}...`}
+                    placeholder={selectedImageFile ? "Press Send to upload image..." : `Reply to ${activeParticipant.name}...`}
                     className="flex-1 bg-accent/50 border border-border rounded-xl px-4 py-3 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary focus:bg-card transition-all"
                   />
 
                   <button
                     type="button"
                     onClick={handleSendMessage}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm shrink-0"
+                    disabled={isSendingMessage || isUploadingImage || (!newMessageText.trim() && !selectedImageFile)}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground px-5 py-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm shrink-0 disabled:opacity-50"
                   >
-                    <Send className="w-4 h-4" />
+                    {isSendingMessage || isUploadingImage ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Send className="w-4 h-4" />
+                    )}
                     <span>Send</span>
                   </button>
                 </div>
@@ -338,7 +686,109 @@ export default function ProfessionalMessagesPage() {
           </div>
         </div>
       </div>
+
+      {/* DELETE CHAT CONFIRMATION MODAL */}
+      {deleteModalChat && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 text-destructive">
+              <div className="p-2.5 rounded-full bg-destructive/10">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <h3 className="font-serif font-bold text-lg text-foreground">
+                Delete Conversation?
+              </h3>
+            </div>
+
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              Are you sure you want to delete your conversation with{" "}
+              <span className="font-semibold text-foreground">{deleteModalChat.name}</span>?
+              This action cannot be undone and will permanently remove this chat.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-border">
+              <button
+                type="button"
+                onClick={() => setDeleteModalChat(null)}
+                disabled={isDeletingChat}
+                className="px-4 py-2 rounded-xl border border-border bg-card hover:bg-accent text-xs font-semibold text-foreground transition-colors cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteChat}
+                disabled={isDeletingChat}
+                className="px-4 py-2 rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50 shadow-sm"
+              >
+                {isDeletingChat ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                ) : (
+                  <Trash2 className="w-4 h-4" />
+                )}
+                <span>Delete Chat</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SMALL MESSAGE DELETE CONFIRMATION MODAL */}
+      {deleteMessageId && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-xs p-5 space-y-3 shadow-2xl animate-in fade-in zoom-in-95 duration-150 text-center">
+            <div className="w-10 h-10 rounded-full bg-destructive/10 text-destructive mx-auto flex items-center justify-center">
+              <Trash2 className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="font-bold text-sm text-foreground">Delete Message?</h4>
+              <p className="text-xs text-muted-foreground">
+                Are you sure you want to remove this message?
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 pt-2 border-t border-border">
+              <button
+                type="button"
+                onClick={() => setDeleteMessageId(null)}
+                disabled={isDeletingMessage}
+                className="flex-1 py-2 rounded-xl border border-border bg-card hover:bg-accent text-xs font-semibold text-foreground transition-colors cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteMessage}
+                disabled={isDeletingMessage}
+                className="flex-1 py-2 rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shadow-sm"
+              >
+                {isDeletingMessage ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="w-3.5 h-3.5" />
+                )}
+                <span>Delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+export default function ProfessionalMessagesPage() {
+  return (
+    <Suspense fallback={
+      <div className="p-12 text-center flex flex-col items-center justify-center gap-2">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <span className="text-xs text-muted-foreground">Loading messages...</span>
+      </div>
+    }>
+      <ProfessionalMessagesContent />
+    </Suspense>
+  );
+}
+
+
 
