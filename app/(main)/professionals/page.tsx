@@ -367,7 +367,7 @@ function ProfessionalsContent() {
                       {/* Pro Avatar + Info Column (Title -> Role -> Salon Name -> Price -> Location -> Rating) */}
                       <div className="flex items-start gap-3">
                         <Link href={`/professionals/${proId}`} className="shrink-0 block mt-0.5">
-                          <div className="w-12 h-12 rounded-full border-2 border-[#D99722]/60 overflow-hidden bg-muted shadow-sm">
+                          <div className="w-12 h-12 rounded-xl border-2 border-[#D99722]/60 overflow-hidden bg-muted shadow-sm">
                             <ChairImage
                               src={proAvatarImg}
                               alt={fullName}
@@ -386,11 +386,6 @@ function ProfessionalsContent() {
                           >
                             {fullName}
                           </Link>
-
-                          {/* 2. Role */}
-                          <p className="text-xs font-medium text-muted-foreground truncate capitalize">
-                            {roleTitle}
-                          </p>
 
                           {/* 3. Salon Name */}
                           {salon.name && (
