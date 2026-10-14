@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import ChairImage from "@/components/shared/ChairImage";
 import {
   MapPin,
@@ -322,13 +323,18 @@ export default function ProfessionalWorkspacePage() {
                   >
                     {/* Image Container */}
                     <div className="relative w-full h-56 bg-accent">
-                      <ChairImage
-                        src={imageSrc}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        showLabel
-                      />
+                      <Link
+                        href={`/professional/workspace/${item._id}`}
+                        className="block w-full h-full group"
+                      >
+                        <ChairImage
+                          src={imageSrc}
+                          alt={item.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          showLabel
+                        />
+                      </Link>
 
                       {/* Open / Status Badge */}
                       <span className="absolute top-3 left-3 bg-background/80 backdrop-blur-xs text-foreground text-[11px] font-medium px-3 py-1 rounded-full shadow-xs border border-border capitalize">
@@ -355,9 +361,11 @@ export default function ProfessionalWorkspacePage() {
                         {/* Title & Price Row */}
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground leading-tight">
-                              {item.name}
-                            </h3>
+                            <Link href={`/professional/workspace/${item._id}`}>
+                              <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground leading-tight hover:text-primary transition-colors">
+                                {item.name}
+                              </h3>
+                            </Link>
                             <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5 font-medium">
                               <Building2 className="w-3 h-3 text-[#D99722]" />
                               <span>{salonName}</span>
@@ -407,13 +415,12 @@ export default function ProfessionalWorkspacePage() {
 
                       {/* Book Action */}
                       <div className="pt-2">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedChair(item)}
-                          className="w-full text-center bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground py-2.5 rounded-sm font-medium text-xs sm:text-sm transition-all cursor-pointer"
+                        <Link
+                          href={`/professional/workspace/${item._id}`}
+                          className="w-full block text-center bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground py-2.5 rounded-sm font-medium text-xs sm:text-sm transition-all cursor-pointer"
                         >
                           Book Work Space
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   </div>

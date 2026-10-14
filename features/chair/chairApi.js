@@ -37,6 +37,14 @@ export const chairApi = baseApi.injectEndpoints({
             providesTags: ["chair"]
         }),
 
+        getSingleChair: builder.query({
+            query: (id) => ({
+                url: `/chairs/single/${id}`,
+                method: "GET",
+            }),
+            providesTags: ["chair"]
+        }),
+
         deleteChair: builder.mutation({
             query: (arg) => {
                 const chairId = typeof arg === "string" ? arg : arg?.chairId;
@@ -58,4 +66,5 @@ export const {
     useGetMyChairsQuery,
     useGetAllChairsQuery,
     useDeleteChairMutation,
+    useGetSingleChairQuery,
 } = chairApi;

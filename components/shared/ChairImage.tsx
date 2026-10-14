@@ -61,8 +61,8 @@ export default function ChairImage({
             isSmall
               ? "w-7 h-7"
               : isLarge
-              ? "w-12 h-12 sm:w-14 sm:h-14"
-              : "w-9 h-9 sm:w-10 sm:h-10"
+                ? "w-12 h-12 sm:w-14 sm:h-14"
+                : "w-9 h-9 sm:w-10 sm:h-10"
           )}
         >
           {fallbackIcon || (
@@ -72,8 +72,8 @@ export default function ChairImage({
                 isSmall
                   ? "w-3.5 h-3.5"
                   : isLarge
-                  ? "w-6 h-6 sm:w-7 sm:h-7"
-                  : "w-4.5 h-4.5 sm:w-5 sm:h-5",
+                    ? "w-6 h-6 sm:w-7 sm:h-7"
+                    : "w-4.5 h-4.5 sm:w-5 sm:h-5",
                 iconClassName
               )}
             />
