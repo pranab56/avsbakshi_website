@@ -43,19 +43,12 @@ export default function DashboardLayout({
     }
   }, [user, role, router]);
 
-  if (user && isProfileLoading && profileResponse === undefined) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
-        <p className="text-sm font-medium text-muted-foreground animate-pulse">Loading dashboard...</p>
-      </div>
-    );
-  }
-
   const config = DASHBOARD_CONFIGS[role] || DASHBOARD_CONFIGS.customer;
   const navItems = role === "professional"
     ? getProfessionalNavItems(isSalonOwner)
     : config.navItems;
+
+  const isLayoutLoading = Boolean(user && isProfileLoading && profileResponse === undefined);
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-200">

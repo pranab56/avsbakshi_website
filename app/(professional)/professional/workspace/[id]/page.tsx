@@ -55,12 +55,22 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
   const chairData = chairRes?.data;
   const salon = chairData?.salon;
 
-  // Date selection states
-  const getTodayString = () => new Date().toISOString().split("T")[0];
+  // Timezone-safe local client date strings (YYYY-MM-DD)
+  const getTodayString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const getFutureString = (daysAhead = 2) => {
     const d = new Date();
     d.setDate(d.getDate() + daysAhead);
-    return d.toISOString().split("T")[0];
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   const [startDate, setStartDate] = useState(getTodayString());
@@ -103,6 +113,12 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chairData) return;
+
+    const today = getTodayString();
+    if (startDate < today) {
+      toast.error("Start date cannot be in the past");
+      return;
+    }
 
     if (new Date(startDate) > new Date(endDate)) {
       toast.error("End date cannot be earlier than start date");
@@ -585,13 +601,15 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                     min={getTodayString()}
                     value={startDate}
                     onChange={(e) => {
-                      setStartDate(e.target.value);
-                      if (new Date(e.target.value) > new Date(endDate)) {
-                        setEndDate(e.target.value);
+                      const newStart = e.target.value;
+                      if (!newStart) return;
+                      setStartDate(newStart);
+                      if (newStart > endDate) {
+                        setEndDate(newStart);
                       }
                     }}
                     required
-                    className="w-full bg-accent/50 border border-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full bg-accent/50 border border-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-foreground outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                   />
                 </div>
 
@@ -604,9 +622,17 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                     type="date"
                     min={startDate || getTodayString()}
                     value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
+                    onChange={(e) => {
+                      const newEnd = e.target.value;
+                      if (!newEnd) return;
+                      if (newEnd < startDate) {
+                        setEndDate(startDate);
+                      } else {
+                        setEndDate(newEnd);
+                      }
+                    }}
                     required
-                    className="w-full bg-accent/50 border border-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full bg-accent/50 border border-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-foreground outline-none focus:ring-1 focus:ring-primary cursor-pointer"
                   />
                 </div>
               </div>

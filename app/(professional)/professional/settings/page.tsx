@@ -55,10 +55,10 @@ export default function ProfessionalSettingsPage() {
 
   // Basic Profile Form State
   const [profileForm, setProfileForm] = useState({
-    fullName: "Sophia Martinez",
-    professionalTitle: "Senior Hair Stylist & Colorist",
-    email: "sophia@noirstudio.com",
-    phone: "+12125550199",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
   });
 
   // About Profile Form State
@@ -88,9 +88,8 @@ export default function ProfessionalSettingsPage() {
     if (profileData) {
       setProfileForm((prev) => ({
         ...prev,
-        fullName: profileData.firstName
-          ? `${profileData.firstName} ${profileData.lastName || ''}`.trim()
-          : prev.fullName,
+        firstName: profileData.firstName || "",
+        lastName: profileData.lastName || "",
         email: profileData.email || prev.email,
         phone: typeof profileData.phone === "object" ? profileData.phone?.number || "" : profileData.phone || prev.phone,
       }));
@@ -149,13 +148,9 @@ export default function ProfessionalSettingsPage() {
 
   const handleSaveProfile = async () => {
     try {
-      const nameParts = profileForm.fullName.trim().split(" ");
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.slice(1).join(" ") || "";
-
       const payload = {
-        firstName,
-        lastName,
+        firstName: profileForm.firstName.trim(),
+        lastName: profileForm.lastName.trim(),
         image: avatarPreview || profileData?.image || "",
         phone: {
           countryCode: profileData?.phone?.countryCode || "",
@@ -290,7 +285,7 @@ export default function ProfessionalSettingsPage() {
                   Basic Profile Information
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Update your display name, contact email, and professional title
+                  Update your personal information and contact details
                 </p>
               </div>
 
@@ -312,12 +307,17 @@ export default function ProfessionalSettingsPage() {
                           unoptimized
                         />
                       ) : (
-                        <span>{profileForm.fullName ? profileForm.fullName[0].toUpperCase() : "P"}</span>
+                        <span>
+                          {profileForm.firstName
+                            ? profileForm.firstName[0].toUpperCase()
+                            : "P"}
+                        </span>
                       )}
                     </div>
                     <div className="space-y-1">
                       <h3 className="font-serif font-bold text-lg text-foreground">
-                        {profileForm.fullName}
+                        {`${profileForm.firstName} ${profileForm.lastName}`.trim() ||
+                          "Professional"}
                       </h3>
                       <input
                         type="file"
@@ -340,31 +340,30 @@ export default function ProfessionalSettingsPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div className="space-y-1.5">
                       <label className="text-xs font-semibold text-foreground block">
-                        Full Name
+                        First Name
                       </label>
                       <input
                         type="text"
-                        value={profileForm.fullName}
+                        value={profileForm.firstName}
                         onChange={(e) =>
-                          setProfileForm({ ...profileForm, fullName: e.target.value })
+                          setProfileForm({ ...profileForm, firstName: e.target.value })
                         }
+                        placeholder="Enter first name"
                         className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>
 
                     <div className="space-y-1.5">
                       <label className="text-xs font-semibold text-foreground block">
-                        Professional Title / Specialty
+                        Last Name
                       </label>
                       <input
                         type="text"
-                        value={profileForm.professionalTitle}
+                        value={profileForm.lastName}
                         onChange={(e) =>
-                          setProfileForm({
-                            ...profileForm,
-                            professionalTitle: e.target.value,
-                          })
+                          setProfileForm({ ...profileForm, lastName: e.target.value })
                         }
+                        placeholder="Enter last name"
                         className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary"
                       />
                     </div>

@@ -14,34 +14,6 @@ export default function Hero() {
     { icon: "/icons/hero/computer.png", label: "Work From Anywhere" },
   ];
 
-  const verticalFeatures = [
-    {
-      icon: "/icons/hero/calendar.png",
-      title: "Book Anytime",
-      desc: "Easy. Fast. On your schedule.",
-    },
-    {
-      icon: "/icons/hero/user-1.png",
-      title: "Expert Specialists",
-      desc: "Verified pros. Top rated.",
-    },
-    {
-      icon: "/icons/hero/clock.png",
-      title: "Flexible Scheduling",
-      desc: "Choose what works best for you.",
-    },
-    {
-      icon: "/icons/hero/location-1.png",
-      title: "Services Wherever You Are",
-      desc: "At home, on-site or in-salon.",
-    },
-    {
-      icon: "/icons/hero/computer.png",
-      title: "Work From Anywhere",
-      desc: "Run your beauty business in the cloud.",
-    },
-  ];
-
   // Motion Variants
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -61,19 +33,6 @@ export default function Hero() {
       y: 0,
       transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
     },
-  };
-
-  const verticalFeatureVariant: Variants = {
-    hidden: { opacity: 0, x: 30 },
-    visible: (i: number) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: 0.45 + i * 0.1,
-        duration: 0.55,
-        ease: [0.22, 1, 0.36, 1] as const,
-      },
-    }),
   };
 
   return (
@@ -102,52 +61,14 @@ export default function Hero() {
               className="w-full h-full relative"
             >
               <Image
-                src="/images/hero/image.png"
+                src="/images/hero/images.png"
                 alt="The Cloud Salon Beauty Model"
                 fill
-                className="object-contain ml-[-120px]"
+                className="object-cover"
                 priority
               />
             </motion.div>
           </motion.div>
-          {/* Subtle gradient to keep text readable on dark background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/20 to-black/80" />
-        </div>
-
-        {/* 5 Vertical Feature Items Absolutely Positioned over Red-Marked Area */}
-        <div className="absolute top-1/2 -translate-y-1/2 right-8 sm:right-12 lg:right-16 xl:right-20 2xl:right-24 z-30 flex flex-col gap-3.5 lg:gap-3.5 xl:gap-4 2xl:gap-7">
-          {verticalFeatures.map((feat, i) => {
-            return (
-              <motion.div
-                key={i}
-                custom={i}
-                initial="hidden"
-                animate="visible"
-                variants={verticalFeatureVariant}
-                whileHover={{ x: 5 }}
-                transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                className="flex items-start gap-3 group"
-              >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform relative">
-                  <Image
-                    src={feat.icon}
-                    alt={feat.title}
-                    width={28}
-                    height={28}
-                    className="w-5 h-5 sm:w-7 sm:h-7 object-contain"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-normal text-xs sm:text-sm text-white leading-tight whitespace-nowrap group-hover:text-[#D99722] transition-colors">
-                    {feat.title}
-                  </h4>
-                  <p className="text-[10px] sm:text-xs text-zinc-400 font-light leading-snug whitespace-nowrap">
-                    {feat.desc}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
         </div>
       </motion.div>
 

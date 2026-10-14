@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { logout } from "@/features/auth/authSlice";
 import { Loader2 } from "lucide-react";
-import { useGetAllCategoryQuery } from "@/features/category/category";
 import { useGetMyProfileQuery } from "@/features/profile/profileApi";
 import {
   Dialog,
@@ -49,25 +48,12 @@ export default function Navbar() {
     "";
   const userInitial = displayName ? displayName[0].toUpperCase() : "";
 
-  const { data: categoriesRes, isLoading: isCategoriesLoading } = useGetAllCategoryQuery({});
-
-  const apiCategories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
-  const categoriesList = apiCategories.map((cat: any) => ({
-    id: cat._id || cat.id,
-    title: cat.name || cat.title,
-    count: cat.totalServices !== undefined ? String(cat.totalServices) : "0",
-    img: cat.image || cat.img || "",
-    desc: cat.name ? `${cat.name} professional beauty services` : "",
-  }));
-
   const [mounted, setMounted] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [discoverOpen, setDiscoverOpen] = useState(false);
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -82,23 +68,6 @@ export default function Navbar() {
     dispatch(logout());
     toast.success("Successfully logged out.");
     window.location.href = "/api/auth/logout";
-  };
-
-  const handleServicesMouseEnter = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-    setDiscoverOpen(true);
-  };
-
-  const handleServicesMouseLeave = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-    hoverTimeoutRef.current = setTimeout(() => {
-      setDiscoverOpen(false);
-    }, 250);
   };
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     if (typeof document !== "undefined") {
@@ -141,6 +110,9 @@ export default function Navbar() {
   const isSalonsActive =
     pathname === "/salons" ||
     pathname.startsWith("/salons/");
+  const isServicesActive =
+    pathname === "/services" ||
+    pathname.startsWith("/services/");
   const isDiscoverActive =
     pathname === "/discover" ||
     pathname.startsWith("/discover/") ||
@@ -199,88 +171,20 @@ export default function Navbar() {
               />
             </Link>
 
-            {/* Services Dropdown */}
-            <div
-              className="relative group/dropdown py-2"
-              onMouseEnter={handleServicesMouseEnter}
-              onMouseLeave={handleServicesMouseLeave}
+            {/* Services Link */}
+            <Link
+              href="/services"
+              className={`group relative py-2 transition-colors ${isServicesActive
+                ? "text-foreground font-semibold"
+                : "hover:text-foreground"
+                }`}
             >
-              <button
-                type="button"
-                onClick={() => setDiscoverOpen((prev) => !prev)}
-                className={`group relative flex items-center gap-1 transition-colors cursor-pointer ${isDiscoverActive ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+              <span>Services</span>
+              <span
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isServicesActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
-              >
-                <span>Services</span>
-                <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${discoverOpen ? "rotate-180 text-primary" : ""
-                    }`}
-                />
-                <span
-                  className={`absolute -bottom-2 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isDiscoverActive ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
-                />
-              </button>
-
-              {discoverOpen && (
-                <div
-                  onMouseEnter={handleServicesMouseEnter}
-                  onMouseLeave={handleServicesMouseLeave}
-                  className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 w-[640px] sm:w-[720px] max-w-[90vw] animate-in fade-in slide-in-from-top-1 duration-150"
-                >
-                  <div className="bg-popover/98 rounded-2xl border border-border shadow-2xl backdrop-blur-xl text-popover-foreground overflow-hidden p-4 sm:p-5 space-y-4">
-                    <div className="flex items-center justify-between px-1 pt-1">
-                      <span className="text-[11px] font-extrabold text-muted-foreground uppercase tracking-wider">
-                        POPULAR SERVICE CATEGORIES
-                      </span>
-                    </div>
-
-                    {/* Categories Grid (2 Columns) */}
-                    <div className="max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
-                      {isCategoriesLoading ? (
-                        <div className="p-8 text-center space-y-2">
-                          <Loader2 className="w-5 h-5 animate-spin text-[#D99722] mx-auto" />
-                          <p className="text-xs text-muted-foreground">Loading categories...</p>
-                        </div>
-                      ) : categoriesList.length === 0 ? (
-                        <div className="p-6 text-center text-xs text-muted-foreground font-medium">
-                          No categories available
-                        </div>
-                      ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                          {categoriesList.map((cat: any) => (
-                            <Link
-                              key={cat.id}
-                              href={`/professionals?serviceCategory=${encodeURIComponent(cat.id)}`}
-                              onClick={() => setDiscoverOpen(false)}
-                              className="flex items-center justify-between p-2.5 rounded-xl border border-[#D99722]/30 hover:border-[#D99722]/60 bg-[#D99722]/10 hover:bg-[#D99722]/20 text-foreground transition-all cursor-pointer group shadow-2xs"
-                            >
-                              <div className="flex items-center gap-2.5 min-w-0">
-                                {cat.img ? (
-                                  <div className="w-8 h-8 rounded-lg overflow-hidden relative shrink-0 border border-[#D99722]/40 shadow-xs">
-                                    <Image src={cat.img} alt={cat.title} fill className="object-cover group-hover:scale-110 transition-transform duration-300" />
-                                  </div>
-                                ) : (
-                                  <div className="w-8 h-8 rounded-lg bg-[#D99722]/20 text-[#D99722] flex items-center justify-center font-bold shrink-0 text-xs">
-                                    <Sparkles className="w-4 h-4" />
-                                  </div>
-                                )}
-                                <span className="font-semibold text-xs text-foreground group-hover:text-[#D99722] transition-colors truncate">
-                                  {cat.title}
-                                </span>
-                              </div>
-                              <span className="text-[10px] bg-[#D99722]/20 text-[#D99722] border border-[#D99722]/30 px-2.5 py-0.5 rounded-full font-bold shrink-0 ml-1">
-                                {cat.count}
-                              </span>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+              />
+            </Link>
 
             {/* Professionals */}
             <Link
@@ -429,7 +333,7 @@ export default function Navbar() {
                               <span>My Dashboard</span>
                             </Link>
                             <Link
-                              href="/professional/appointments"
+                              href="/professional/bookings"
                               onClick={() => setProfileOpen(false)}
                               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
                             >
@@ -637,15 +541,15 @@ export default function Navbar() {
             <div className="w-10 h-1 bg-muted-foreground/30 rounded-full mx-auto mb-3" />
 
             <Link
-              href="/discover"
+              href="/services"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isDiscoverActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isServicesActive
                 ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                 : "text-foreground hover:bg-accent/60"
                 }`}
             >
-              <Compass className={`w-5 h-5 ${isDiscoverActive ? "text-primary" : "text-muted-foreground"}`} />
-              <span>Discover Services & Salons</span>
+              <Sparkles className={`w-5 h-5 ${isServicesActive ? "text-primary" : "text-muted-foreground"}`} />
+              <span>Services</span>
             </Link>
 
             <Link

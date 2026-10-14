@@ -101,11 +101,22 @@ export default function ProfessionalWorkspacePage() {
   // Modal State for Booking a Chair
   const [selectedChair, setSelectedChair] = useState<ChairRentalItem | null>(null);
 
-  const getTodayString = () => new Date().toISOString().split("T")[0];
+  // Timezone-safe local client date strings (YYYY-MM-DD)
+  const getTodayString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const getFutureString = (daysAhead = 2) => {
     const d = new Date();
     d.setDate(d.getDate() + daysAhead);
-    return d.toISOString().split("T")[0];
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   const [startDate, setStartDate] = useState(getTodayString());
@@ -169,6 +180,12 @@ export default function ProfessionalWorkspacePage() {
   const handleBookChairSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedChair) return;
+
+    const today = getTodayString();
+    if (startDate < today) {
+      toast.error("Start date cannot be in the past");
+      return;
+    }
 
     if (new Date(startDate) > new Date(endDate)) {
       toast.error("End date cannot be earlier than start date");
@@ -578,9 +595,17 @@ export default function ProfessionalWorkspacePage() {
                   <div className="relative">
                     <input
                       type="date"
+                      min={getTodayString()}
                       value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full bg-accent border border-border rounded-md px-3 py-2 text-foreground focus:outline-none focus:border-primary transition-colors"
+                      onChange={(e) => {
+                        const newStart = e.target.value;
+                        if (!newStart) return;
+                        setStartDate(newStart);
+                        if (newStart > endDate) {
+                          setEndDate(newStart);
+                        }
+                      }}
+                      className="w-full bg-accent border border-border rounded-md px-3 py-2 text-foreground focus:outline-none focus:border-primary transition-colors cursor-pointer"
                       required
                     />
                     <Calendar className="w-4 h-4 text-muted-foreground absolute right-3 top-2.5 pointer-events-none" />
@@ -594,9 +619,18 @@ export default function ProfessionalWorkspacePage() {
                   <div className="relative">
                     <input
                       type="date"
+                      min={startDate || getTodayString()}
                       value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full bg-accent border border-border rounded-md px-3 py-2 text-foreground focus:outline-none focus:border-primary transition-colors"
+                      onChange={(e) => {
+                        const newEnd = e.target.value;
+                        if (!newEnd) return;
+                        if (newEnd < startDate) {
+                          setEndDate(startDate);
+                        } else {
+                          setEndDate(newEnd);
+                        }
+                      }}
+                      className="w-full bg-accent border border-border rounded-md px-3 py-2 text-foreground focus:outline-none focus:border-primary transition-colors cursor-pointer"
                       required
                     />
                     <Calendar className="w-4 h-4 text-muted-foreground absolute right-3 top-2.5 pointer-events-none" />

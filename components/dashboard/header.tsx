@@ -34,13 +34,56 @@ export default function DashboardHeader({
     if (segments.length === 0 || segments[segments.length - 1] === "dashboard") {
       return "Dashboard";
     }
-    const lastSegment = segments[segments.length - 1];
-    if (lastSegment === "workspace" || lastSegment === "work-space") {
+
+    let targetSegment = segments[segments.length - 1];
+
+    // Check if the last segment is an ID (MongoDB 24-hex ObjectId, UUID, numeric or mixed hash)
+    const isId =
+      /^[a-f0-9]{24}$/i.test(targetSegment) ||
+      /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(targetSegment) ||
+      /^\d+$/.test(targetSegment) ||
+      (targetSegment.length >= 12 && /\d/.test(targetSegment));
+
+    if (isId && segments.length > 1) {
+      targetSegment = segments[segments.length - 2];
+    }
+
+    if (
+      targetSegment === "workspace" ||
+      targetSegment === "work-space" ||
+      targetSegment === "chairs-space" ||
+      targetSegment === "my-chair-rentals"
+    ) {
       return "Work Space";
     }
+    if (targetSegment === "bookings" || targetSegment === "appointments") {
+      return "Bookings";
+    }
+    if (targetSegment === "services") {
+      return "Services";
+    }
+    if (targetSegment === "messages" || targetSegment === "chats") {
+      return "Messages";
+    }
+    if (targetSegment === "calendar") {
+      return "Calendar";
+    }
+    if (targetSegment === "portfolio") {
+      return "Portfolio";
+    }
+    if (targetSegment === "reviews") {
+      return "Reviews";
+    }
+    if (targetSegment === "settings") {
+      return "Settings";
+    }
+    if (targetSegment === "notifications") {
+      return "Notifications";
+    }
+
     return (
-      lastSegment.charAt(0).toUpperCase() +
-      lastSegment.slice(1).replace(/-/g, " ")
+      targetSegment.charAt(0).toUpperCase() +
+      targetSegment.slice(1).replace(/-/g, " ")
     );
   };
 
