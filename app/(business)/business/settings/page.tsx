@@ -19,7 +19,7 @@ import {
 } from "@/features/profile/profileApi";
 import { PhoneInput } from "@/components/ui/phone-input";
 
-type SettingsTab = "Profile" | "About Profile" | "Notifications" | "Privacy" | "Security";
+type SettingsTab = "Profile" | "About Profile" | "Notifications" | "Privacy" | "Change Password";
 
 export default function BusinessSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
@@ -757,7 +757,7 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {/* TAB 5: SECURITY */}
           {/* ------------------------------------------------------------- */}
-          {activeTab === "Security" && (
+          {activeTab === "Change Password" && (
             <div className="space-y-6">
               <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Security

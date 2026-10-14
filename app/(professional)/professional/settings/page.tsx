@@ -31,10 +31,10 @@ import { useCreateBusinessMutation } from "@/features/business/businessApi";
 import { useGetAllProfessionalQuery } from "@/features/profesional/profesionalApi";
 import { PhoneInput } from "@/components/ui/phone-input";
 
-type SettingsTab = "Profile" | "About Profile" | "Security";
+type SettingsTab = "Basic Info" | "Professional Info" | "Change Password";
 
 export default function ProfessionalSettingsPage() {
-  const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
+  const [activeTab, setActiveTab] = useState<SettingsTab>("Basic Info");
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -256,9 +256,9 @@ export default function ProfessionalSettingsPage() {
         <div className="w-full md:w-56 lg:w-64 shrink-0 bg-card border border-border rounded-lg overflow-hidden shadow-xs divide-y divide-border">
           {(
             [
-              "Profile",
-              "About Profile",
-              "Security",
+              "Basic Info",
+              "Professional Info",
+              "Change Password",
             ] as SettingsTab[]
           ).map((tab) => {
             const isActive = activeTab === tab;
@@ -267,11 +267,10 @@ export default function ProfessionalSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${
-                  isActive
+                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${isActive
                     ? "bg-primary/15 text-primary font-semibold"
                     : "text-foreground hover:bg-accent font-normal"
-                }`}
+                  }`}
               >
                 <span>{tab}</span>
               </button>
@@ -284,7 +283,7 @@ export default function ProfessionalSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {/* TAB 1: BASIC PROFILE INFORMATION */}
           {/* ------------------------------------------------------------- */}
-          {activeTab === "Profile" && (
+          {activeTab === "Basic Info" && (
             <div className="space-y-6">
               <div className="border-b border-border pb-3">
                 <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
@@ -417,7 +416,7 @@ export default function ProfessionalSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {/* TAB 2: ABOUT PROFILE (NEW) */}
           {/* ------------------------------------------------------------- */}
-          {activeTab === "About Profile" && (
+          {activeTab === "Professional Info" && (
             <div className="space-y-6">
               <div className="border-b border-border pb-3">
                 <div className="flex items-center gap-2 mb-1">
@@ -604,11 +603,10 @@ export default function ProfessionalSettingsPage() {
                                   }));
                                 }
                               }}
-                              className={`text-[11px] px-2.5 py-1 rounded-full border transition-all cursor-pointer ${
-                                isAlreadyAdded
+                              className={`text-[11px] px-2.5 py-1 rounded-full border transition-all cursor-pointer ${isAlreadyAdded
                                   ? "bg-muted text-muted-foreground/50 border-border cursor-not-allowed"
                                   : "bg-card hover:bg-accent text-muted-foreground hover:text-foreground border-border hover:border-primary/50"
-                              }`}
+                                }`}
                             >
                               + {suggestion}
                             </button>
@@ -666,7 +664,7 @@ export default function ProfessionalSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {/* TAB 3: SECURITY */}
           {/* ------------------------------------------------------------- */}
-          {activeTab === "Security" && (
+          {activeTab === "Change Password" && (
             <div className="space-y-6">
               <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
                 Security
@@ -766,9 +764,8 @@ export default function ProfessionalSettingsPage() {
                       setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                   }}
                   placeholder="Enter current password"
-                  className={`w-full bg-accent/50 border ${
-                    passwordErrors.oldPassword ? "border-destructive" : "border-border"
-                  } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                  className={`w-full bg-accent/50 border ${passwordErrors.oldPassword ? "border-destructive" : "border-border"
+                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
                 />
                 <button
                   type="button"
@@ -800,9 +797,8 @@ export default function ProfessionalSettingsPage() {
                       setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                   }}
                   placeholder="Enter new password"
-                  className={`w-full bg-accent/50 border ${
-                    passwordErrors.newPassword ? "border-destructive" : "border-border"
-                  } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                  className={`w-full bg-accent/50 border ${passwordErrors.newPassword ? "border-destructive" : "border-border"
+                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
                 />
                 <button
                   type="button"
@@ -834,9 +830,8 @@ export default function ProfessionalSettingsPage() {
                       setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                   }}
                   placeholder="Confirm new password"
-                  className={`w-full bg-accent/50 border ${
-                    passwordErrors.confirmPassword ? "border-destructive" : "border-border"
-                  } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                  className={`w-full bg-accent/50 border ${passwordErrors.confirmPassword ? "border-destructive" : "border-border"
+                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
                 />
                 <button
                   type="button"
