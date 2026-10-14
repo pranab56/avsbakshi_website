@@ -102,7 +102,7 @@ export default function HowItWorksPage() {
     businesses: {
       headerTitle: "Power your salon operations effortlessly.",
       headerSubtitle:
-        "Manage multiple chairs, staff schedules, chair rentals, and enterprise salon analytics in one unified cloud system.",
+        "Manage multiple chairs, staff schedules, workspace rentals, and enterprise salon analytics in one unified cloud system.",
       steps: [
         {
           num: "01",
@@ -112,7 +112,7 @@ export default function HowItWorksPage() {
         },
         {
           num: "02",
-          title: "Manage chair rentals & staff",
+          title: "Manage workspaces & staff",
           desc: "Rent out unused styling chairs to independent professionals or manage employed staff schedules all from one central portal.",
           icon: FileText,
         },

@@ -126,11 +126,11 @@ export default function StatsTicker() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex items-center justify-center gap-1 min-[360px]:gap-2 sm:gap-6 text-[8px] min-[360px]:text-[9.5px] min-[400px]:text-[10.5px] sm:text-xs font-bold uppercase tracking-[0.05em] min-[360px]:tracking-[0.1em] min-[400px]:tracking-[0.16em] sm:tracking-[0.25em] text-[#1C1C1E]/80 dark:text-white/80 shrink-0"
           >
-            <span>BEAUTY</span>
+            <span>CUSTOMER</span>
             <span className="text-[#D99722]/80 text-[7px] sm:text-xs">★</span>
-            <span>CONNECTION</span>
+            <span>PROFESSIONAL</span>
             <span className="text-[#D99722]/80 text-[7px] sm:text-xs">★</span>
-            <span>OPPORTUNITY</span>
+            <span>SALON</span>
             <span className="text-[#D99722]/80 text-[7px] sm:text-xs">★</span>
             <span>IN THE CLOUD</span>
           </motion.div>

@@ -2,13 +2,12 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Building2, Search, MapPin, Star, Armchair, X } from "lucide-react";
+import { Building2, Search, MapPin, Star, X } from "lucide-react";
 import Image from "next/image";
 import ChairImage from "@/components/shared/ChairImage";
 import Link from "next/link";
 import { GooglePlacesInput, GooglePlaceResult } from "@/components/ui/google-places-input";
 import { useGetAllSalonsQuery } from "@/features/salon/salonApi";
-import { useGetAllChairRentalsQuery } from "@/features/chairRental/chairRentalApi";
 
 function SalonsContent() {
   const router = useRouter();
@@ -23,7 +22,6 @@ function SalonsContent() {
   const [locationAddress, setLocationAddress] = useState(urlLocation);
   const [latitude, setLatitude] = useState<number | string | null>(urlLatitude || null);
   const [longitude, setLongitude] = useState<number | string | null>(urlLongitude || null);
-  const [viewTab, setViewTab] = useState<"salons" | "chairs">("salons");
 
   useEffect(() => {
     setSearchTerm(urlSearchTerm);
@@ -39,7 +37,6 @@ function SalonsContent() {
 
   // API Queries
   const { data: salonsRes, isLoading: isSalonsLoading } = useGetAllSalonsQuery(queryParams);
-  const { data: chairRentalsRes, isLoading: isChairsLoading } = useGetAllChairRentalsQuery({ page: 1 });
 
   const handlePlaceSelect = (place: GooglePlaceResult) => {
     setLocationAddress(place.address);
@@ -112,8 +109,6 @@ function SalonsContent() {
 
   const filteredSalons = mappedSalons;
 
-  const rawChairRentals = Array.isArray(chairRentalsRes?.data) ? chairRentalsRes.data : [];
-
   return (
     <div className="min-h-screen bg-background text-foreground select-none transition-colors duration-200">
       {/* Top Hero Section */}
@@ -173,29 +168,10 @@ function SalonsContent() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-4 rounded-2xl border border-border shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setViewTab("salons")}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${viewTab === "salons"
-                  ? "bg-[#D99722] text-white shadow-sm"
-                  : "bg-accent/60 text-muted-foreground hover:text-foreground hover:bg-accent"
-                  }`}
-              >
+              <div className="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#D99722] text-white shadow-sm flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
                 <span>Salons ({mappedSalons.length})</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setViewTab("chairs")}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${viewTab === "chairs"
-                  ? "bg-[#D99722] text-white shadow-sm"
-                  : "bg-accent/60 text-muted-foreground hover:text-foreground hover:bg-accent"
-                  }`}
-              >
-                <Armchair className="w-4 h-4" />
-                <span>Chair Rentals ({rawChairRentals.length})</span>
-              </button>
+              </div>
             </div>
 
             {(urlSearchTerm || urlLocation) && (
@@ -224,8 +200,7 @@ function SalonsContent() {
         </div>
 
         {/* SALONS LIST VIEW */}
-        {viewTab === "salons" && (
-          <div className="space-y-4">
+        <div className="space-y-4">
             {isSalonsLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {[1, 2, 3, 4].map((n) => (
@@ -329,100 +304,6 @@ function SalonsContent() {
               </div>
             )}
           </div>
-        )}
-
-        {/* CHAIR RENTALS LIST VIEW */}
-        {viewTab === "chairs" && (
-          <div className="space-y-4">
-            {isChairsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((n) => (
-                  <div key={n} className="bg-card rounded-2xl h-72 border border-border animate-pulse" />
-                ))}
-              </div>
-            ) : rawChairRentals.length === 0 ? (
-              <div className="bg-card rounded-2xl p-12 text-center border border-border space-y-3">
-                <Armchair className="w-10 h-10 text-muted-foreground mx-auto" />
-                <h4 className="text-base font-bold text-foreground">No Chair Rentals Listed</h4>
-                <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                  No active chair rental offers were found in the database.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rawChairRentals.map((rental: any) => {
-                  const chair = rental.chair || {};
-                  const salon = rental.salon || {};
-                  const price = chair.pricePerDayInUSD || rental.pricing?.total || 0;
-                  const chairPhoto =
-                    chair.photo ||
-                    salon.logo ||
-                    "";
-
-                  return (
-                    <div
-                      key={rental._id}
-                      className="bg-card rounded-2xl overflow-hidden border border-border shadow-xs hover:shadow-lg transition-all flex flex-col justify-between group"
-                    >
-                      <div className="relative h-48 overflow-hidden bg-muted">
-                        <ChairImage
-                          src={chairPhoto}
-                          alt={chair.name || "Salon Chair"}
-                          fill
-                          className="object-cover"
-                          showLabel
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-                        <span className="absolute top-3 left-3 bg-background/90 backdrop-blur-md text-[10px] font-bold px-2.5 py-1 rounded-md text-foreground border border-border/50 flex items-center gap-1">
-                          <Armchair className="w-3 h-3 text-[#D99722]" />
-                          <span>{chair.uid || rental.uid || "CHAIR"}</span>
-                        </span>
-
-                        <div className="absolute bottom-3 left-3 right-3 text-white">
-                          <span className="text-[10px] font-bold text-[#D99722] uppercase tracking-wider block">
-                            {salon.name || "Salon Station"}
-                          </span>
-                          <h4 className="text-base font-bold truncate">
-                            {chair.name || "Salon Styling Station"}
-                          </h4>
-                        </div>
-                      </div>
-
-                      <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground font-medium flex items-center gap-1">
-                              <MapPin className="w-3.5 h-3.5 text-[#D99722]" />
-                              <span className="truncate max-w-[170px]">
-                                {chair.location || "Main Salon Floor"}
-                              </span>
-                            </span>
-                            <span className="text-base font-extrabold text-[#D99722]">
-                              ${price}
-                              <span className="text-[10px] font-normal text-muted-foreground">/day</span>
-                            </span>
-                          </div>
-
-                          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                            {chair.description || "Fully equipped styling chair with high quality lighting and amenities."}
-                          </p>
-                        </div>
-
-                        <Link
-                          href={`/salons/${salon._id || "1"}`}
-                          className="w-full text-center py-2.5 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-bold rounded-xl shadow-xs transition-colors block"
-                        >
-                          Rent Station
-                        </Link>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
       </section>
     </div>
   );

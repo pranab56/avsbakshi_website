@@ -8,7 +8,7 @@ export const businessApi = baseApi.injectEndpoints({
                 method: "PATCH",
                 body: data,
             }),
-            invalidatesTags: ["profile"],
+            invalidatesTags: ["profile", "professional"],
         }),
     }),
 });

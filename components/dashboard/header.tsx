@@ -35,6 +35,9 @@ export default function DashboardHeader({
       return "Dashboard";
     }
     const lastSegment = segments[segments.length - 1];
+    if (lastSegment === "workspace" || lastSegment === "work-space") {
+      return "Work Space";
+    }
     return (
       lastSegment.charAt(0).toUpperCase() +
       lastSegment.slice(1).replace(/-/g, " ")

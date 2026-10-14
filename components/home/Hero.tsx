@@ -172,7 +172,7 @@ export default function Hero() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="h-[2px] bg-[#D99722]  inline-block"
               />
-              <span>ALL YOUR SALON SERVICES. YOUR CHOICE.</span>
+              <span>ALL IN ONE PLACE IN THE CLOUD</span>
             </motion.div>
 
             {/* Main Editorial Headline */}
@@ -218,7 +218,7 @@ export default function Hero() {
                   href="/professionals"
                   className="px-4 py-2 sm:px-5 sm:py-2.5 2xl:px-6 2xl:py-3 rounded-sm bg-[#D99722] hover:bg-[#A0732A] text-white font-semibold text-xs 2xl:text-sm shadow-md transition-all flex items-center gap-1.5 sm:gap-2 group cursor-pointer"
                 >
-                  <span>Book A service</span>
+                  <span>Book services</span>
                   <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
@@ -241,7 +241,7 @@ export default function Hero() {
                   className="px-4 py-2 sm:px-5 sm:py-2.5 2xl:px-6 2xl:py-3 rounded-sm bg-zinc-900 dark:bg-zinc-800 hover:bg-black text-white font-semibold text-xs 2xl:text-sm shadow-md transition-all flex items-center gap-1.5 border border-[#D99722]/50 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-[#D99722] animate-pulse" />
-                  <span>Book with AI</span>
+                  <span>Cloud Assistant</span>
                 </button>
               </motion.div>
             </motion.div>

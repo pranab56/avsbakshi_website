@@ -9,16 +9,29 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import {
+  Loader2,
+  Eye,
+  EyeOff,
+  Save,
+  Plus,
+  X,
+  Sparkles,
+  Clock,
+  DollarSign,
+  Quote,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   useGetMyProfileQuery,
   useUpdateMyProfileMutation,
   useChangePasswordMutation,
 } from "@/features/profile/profileApi";
+import { useCreateBusinessMutation } from "@/features/business/businessApi";
+import { useGetAllProfessionalQuery } from "@/features/profesional/profesionalApi";
 import { PhoneInput } from "@/components/ui/phone-input";
 
-type SettingsTab = "Profile" | "Security";
+type SettingsTab = "Profile" | "About Profile" | "Security";
 
 export default function ProfessionalSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
@@ -33,10 +46,90 @@ export default function ProfessionalSettingsPage() {
 
   // RTK Query Hooks
   const { data: profileResponse, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined);
+  const { data: proResponse, isLoading: isProLoading } = useGetAllProfessionalQuery(undefined);
   const [updateMyProfile, { isLoading: isUpdating }] = useUpdateMyProfileMutation();
+  const [createBusiness, { isLoading: isUpdatingBusiness }] = useCreateBusinessMutation();
   const [changePassword, { isLoading: isChangingPassword }] = useChangePasswordMutation();
 
   const profileData = profileResponse?.data;
+
+  // Basic Profile Form State
+  const [profileForm, setProfileForm] = useState({
+    fullName: "Sophia Martinez",
+    professionalTitle: "Senior Hair Stylist & Colorist",
+    email: "sophia@noirstudio.com",
+    phone: "+12125550199",
+  });
+
+  // About Profile Form State
+  const [aboutForm, setAboutForm] = useState({
+    title: "",
+    quote: "",
+    bio: "",
+    experienceYears: 0,
+    specialties: [] as string[],
+    startingPriceInUSD: 0,
+  });
+  const [newSpecialtyInput, setNewSpecialtyInput] = useState("");
+
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordErrors, setPasswordErrors] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  // Sync basic profile data from API GET response
+  useEffect(() => {
+    if (profileData) {
+      setProfileForm((prev) => ({
+        ...prev,
+        fullName: profileData.firstName
+          ? `${profileData.firstName} ${profileData.lastName || ''}`.trim()
+          : prev.fullName,
+        email: profileData.email || prev.email,
+        phone: typeof profileData.phone === "object" ? profileData.phone?.number || "" : profileData.phone || prev.phone,
+      }));
+      if (profileData.image) {
+        setAvatarPreview(profileData.image);
+      }
+    }
+  }, [profileData]);
+
+  // Sync About Profile data from roleRef (from profileResponse or proResponse)
+  useEffect(() => {
+    const profile = profileResponse?.data || profileResponse;
+    const proList = proResponse?.data || [];
+    const pro = Array.isArray(proList) ? proList[0] : proList;
+    const rRef =
+      profile?.roleRef ||
+      pro?.roleRef ||
+      pro?.professional?.roleRef ||
+      {};
+
+    if (
+      rRef &&
+      (rRef.title ||
+        rRef.quote ||
+        rRef.bio ||
+        rRef.experienceYears ||
+        rRef.specialties?.length ||
+        rRef.startingPriceInUSD)
+    ) {
+      setAboutForm({
+        title: rRef.title || "",
+        quote: rRef.quote || "",
+        bio: rRef.bio || "",
+        experienceYears: typeof rRef.experienceYears === "number" ? rRef.experienceYears : 0,
+        specialties: Array.isArray(rRef.specialties) ? rRef.specialties : [],
+        startingPriceInUSD: typeof rRef.startingPriceInUSD === "number" ? rRef.startingPriceInUSD : 0,
+      });
+    }
+  }, [profileResponse, proResponse]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -53,42 +146,6 @@ export default function ProfessionalSettingsPage() {
       toast.success("Profile photo preview updated!");
     }
   };
-
-  const [passwordForm, setPasswordForm] = useState({
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-  const [passwordErrors, setPasswordErrors] = useState({
-    oldPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-
-  // Profile Form State
-  const [profileForm, setProfileForm] = useState({
-    fullName: "Sophia Martinez",
-    professionalTitle: "Senior Hair Stylist & Colorist",
-    email: "sophia@noirstudio.com",
-    phone: "+12125550199",
-  });
-
-  // Sync profile data from API GET response
-  useEffect(() => {
-    if (profileData) {
-      setProfileForm((prev) => ({
-        ...prev,
-        fullName: profileData.firstName
-          ? `${profileData.firstName} ${profileData.lastName || ''}`.trim()
-          : prev.fullName,
-        email: profileData.email || prev.email,
-        phone: typeof profileData.phone === "object" ? profileData.phone?.number || "" : profileData.phone || prev.phone,
-      }));
-      if (profileData.image) {
-        setAvatarPreview(profileData.image);
-      }
-    }
-  }, [profileData]);
 
   const handleSaveProfile = async () => {
     try {
@@ -125,6 +182,60 @@ export default function ProfessionalSettingsPage() {
     }
   };
 
+  // Specialties handler
+  const handleAddSpecialty = () => {
+    const trimmed = newSpecialtyInput.trim();
+    if (!trimmed) return;
+    if (aboutForm.specialties.includes(trimmed)) {
+      toast.info("This specialty is already added");
+      return;
+    }
+    setAboutForm((prev) => ({
+      ...prev,
+      specialties: [...prev.specialties, trimmed],
+    }));
+    setNewSpecialtyInput("");
+  };
+
+  const handleRemoveSpecialty = (itemToRemove: string) => {
+    setAboutForm((prev) => ({
+      ...prev,
+      specialties: prev.specialties.filter((s) => s !== itemToRemove),
+    }));
+  };
+
+  const quickSpecialtySuggestions = [
+    "Skin Fades",
+    "Beard Sculpting",
+    "Hot Towel Shave",
+    "Scissors Cut",
+    "Hair Styling",
+    "Coloring & Highlights",
+    "Balayage",
+    "Keratin Treatment",
+  ];
+
+  // Save About Profile via useCreateBusinessMutation
+  const handleSaveAboutProfile = async () => {
+    try {
+      const payload = {
+        title: aboutForm.title.trim(),
+        quote: aboutForm.quote.trim(),
+        bio: aboutForm.bio.trim(),
+        experienceYears: Number(aboutForm.experienceYears) || 0,
+        specialties: aboutForm.specialties,
+        startingPriceInUSD: Number(aboutForm.startingPriceInUSD) || 0,
+      };
+
+      const res = await createBusiness(payload).unwrap();
+      toast.success(res?.message || "About Profile details updated successfully!");
+    } catch (err: any) {
+      console.error("Failed to update about profile:", err);
+      const errMsg = err?.data?.message || err?.message || "Failed to update About Profile details";
+      toast.error(errMsg);
+    }
+  };
+
   return (
     <div className="space-y-6 pb-16 font-sans text-foreground">
       {/* Page Title & Subtitle */}
@@ -134,7 +245,7 @@ export default function ProfessionalSettingsPage() {
             Account &amp; Profile Settings
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
-            Manage your personal profile and account credentials
+            Manage your personal profile, professional details, and account credentials
           </p>
         </div>
       </div>
@@ -146,6 +257,7 @@ export default function ProfessionalSettingsPage() {
           {(
             [
               "Profile",
+              "About Profile",
               "Security",
             ] as SettingsTab[]
           ).map((tab) => {
@@ -155,10 +267,11 @@ export default function ProfessionalSettingsPage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${isActive
+                className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer flex items-center justify-between ${
+                  isActive
                     ? "bg-primary/15 text-primary font-semibold"
                     : "text-foreground hover:bg-accent font-normal"
-                  }`}
+                }`}
               >
                 <span>{tab}</span>
               </button>
@@ -302,7 +415,256 @@ export default function ProfessionalSettingsPage() {
           )}
 
           {/* ------------------------------------------------------------- */}
-          {/* TAB 2: SECURITY */}
+          {/* TAB 2: ABOUT PROFILE (NEW) */}
+          {/* ------------------------------------------------------------- */}
+          {activeTab === "About Profile" && (
+            <div className="space-y-6">
+              <div className="border-b border-border pb-3">
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+                    About Profile Information
+                  </h2>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/20">
+                    <Sparkles className="w-3 h-3" />
+                    Client Profile
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Highlight your professional headline, client quote, bio, experience, and service specialties
+                </p>
+              </div>
+
+              {isProfileLoading || isProLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : (
+                <div className="space-y-5 pt-1">
+                  {/* Title & Quote Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Professional Title */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>Professional Title</span>
+                        <span className="text-[10px] text-muted-foreground font-normal">e.g. Master Barber &amp; Specialist</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={aboutForm.title}
+                        onChange={(e) => setAboutForm({ ...aboutForm, title: e.target.value })}
+                        placeholder="Master Barber & Grooming Specialist"
+                        className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50"
+                      />
+                    </div>
+
+                    {/* Headline Quote */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span className="flex items-center gap-1">
+                          <Quote className="w-3 h-3 text-primary" />
+                          <span>Personal Quote / Tagline</span>
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-normal">Displayed on profile</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={aboutForm.quote}
+                        onChange={(e) => setAboutForm({ ...aboutForm, quote: e.target.value })}
+                        placeholder="Precision fades and classic hot towel shaves crafted with care."
+                        className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Experience & Starting Price Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Experience Years */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-primary" />
+                        <span>Experience (in Years)</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="70"
+                        value={aboutForm.experienceYears || ""}
+                        onChange={(e) =>
+                          setAboutForm({
+                            ...aboutForm,
+                            experienceYears: Math.max(0, parseInt(e.target.value) || 0),
+                          })
+                        }
+                        placeholder="e.g. 7"
+                        className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50"
+                      />
+                    </div>
+
+                    {/* Starting Price in USD */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                        <DollarSign className="w-3.5 h-3.5 text-primary" />
+                        <span>Starting Price (USD $)</span>
+                      </label>
+                      <div className="relative">
+                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground font-bold text-sm">
+                          $
+                        </span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={aboutForm.startingPriceInUSD || ""}
+                          onChange={(e) =>
+                            setAboutForm({
+                              ...aboutForm,
+                              startingPriceInUSD: Math.max(0, parseFloat(e.target.value) || 0),
+                            })
+                          }
+                          placeholder="e.g. 35"
+                          className="w-full bg-accent/50 border border-border rounded-sm pl-8 pr-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Specialties Tag Input */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-foreground block">
+                      Specialties &amp; Skills
+                    </label>
+
+                    {/* Active Tags / Chips */}
+                    <div className="flex flex-wrap gap-2 min-h-[38px] p-2.5 rounded-sm bg-accent/30 border border-border">
+                      {aboutForm.specialties.length === 0 ? (
+                        <span className="text-xs text-muted-foreground italic py-1 px-1">
+                          No specialties added yet. Type below or click recommendations to add.
+                        </span>
+                      ) : (
+                        aboutForm.specialties.map((item, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-primary/15 text-primary border border-primary/30 animate-in fade-in duration-150"
+                          >
+                            <span>{item}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSpecialty(item)}
+                              className="w-3.5 h-3.5 rounded-full hover:bg-primary/20 flex items-center justify-center cursor-pointer transition-colors"
+                            >
+                              <X className="w-2.5 h-2.5" />
+                            </button>
+                          </span>
+                        ))
+                      )}
+                    </div>
+
+                    {/* Input to Add New Specialty */}
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newSpecialtyInput}
+                        onChange={(e) => setNewSpecialtyInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddSpecialty();
+                          }
+                        }}
+                        placeholder="Add a specialty (e.g. Skin Fades, Beard Sculpting) and press Enter"
+                        className="flex-1 bg-accent/50 border border-border rounded-sm px-4 py-2.5 text-xs sm:text-sm text-foreground outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddSpecialty}
+                        className="px-4 py-2.5 rounded-sm bg-accent hover:bg-accent/80 border border-border text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1 transition-colors cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Add</span>
+                      </button>
+                    </div>
+
+                    {/* Quick Recommendations */}
+                    <div className="pt-1">
+                      <p className="text-[11px] text-muted-foreground font-medium mb-1.5">
+                        Quick recommendations:
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {quickSpecialtySuggestions.map((suggestion) => {
+                          const isAlreadyAdded = aboutForm.specialties.includes(suggestion);
+                          return (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              disabled={isAlreadyAdded}
+                              onClick={() => {
+                                if (!isAlreadyAdded) {
+                                  setAboutForm((prev) => ({
+                                    ...prev,
+                                    specialties: [...prev.specialties, suggestion],
+                                  }));
+                                }
+                              }}
+                              className={`text-[11px] px-2.5 py-1 rounded-full border transition-all cursor-pointer ${
+                                isAlreadyAdded
+                                  ? "bg-muted text-muted-foreground/50 border-border cursor-not-allowed"
+                                  : "bg-card hover:bg-accent text-muted-foreground hover:text-foreground border-border hover:border-primary/50"
+                              }`}
+                            >
+                              + {suggestion}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bio Textarea */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-semibold text-foreground block">
+                        Professional Bio / Background
+                      </label>
+                      <span className="text-[11px] text-muted-foreground">
+                        {aboutForm.bio.length} characters
+                      </span>
+                    </div>
+                    <textarea
+                      rows={4}
+                      value={aboutForm.bio}
+                      onChange={(e) => setAboutForm({ ...aboutForm, bio: e.target.value })}
+                      placeholder="Specializing in modern fades, traditional straight-razor shaves, and tailored beard sculpts with over 7 years in premium barbershops."
+                      className="w-full bg-accent/50 border border-border rounded-sm px-4 py-3 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary placeholder:text-muted-foreground/50 resize-y min-h-[100px]"
+                    />
+                  </div>
+
+                  {/* Save Button */}
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveAboutProfile}
+                      disabled={isUpdatingBusiness}
+                      className="px-6 py-3 rounded-sm bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {isUpdatingBusiness ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Saving About Profile...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          <span>Save About Profile</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ------------------------------------------------------------- */}
+          {/* TAB 3: SECURITY */}
           {/* ------------------------------------------------------------- */}
           {activeTab === "Security" && (
             <div className="space-y-6">
@@ -404,8 +766,9 @@ export default function ProfessionalSettingsPage() {
                       setPasswordErrors((prev) => ({ ...prev, oldPassword: "" }));
                   }}
                   placeholder="Enter current password"
-                  className={`w-full bg-accent/50 border ${passwordErrors.oldPassword ? "border-destructive" : "border-border"
-                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                  className={`w-full bg-accent/50 border ${
+                    passwordErrors.oldPassword ? "border-destructive" : "border-border"
+                  } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
                 />
                 <button
                   type="button"
@@ -437,8 +800,9 @@ export default function ProfessionalSettingsPage() {
                       setPasswordErrors((prev) => ({ ...prev, newPassword: "" }));
                   }}
                   placeholder="Enter new password"
-                  className={`w-full bg-accent/50 border ${passwordErrors.newPassword ? "border-destructive" : "border-border"
-                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                  className={`w-full bg-accent/50 border ${
+                    passwordErrors.newPassword ? "border-destructive" : "border-border"
+                  } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
                 />
                 <button
                   type="button"
@@ -470,8 +834,9 @@ export default function ProfessionalSettingsPage() {
                       setPasswordErrors((prev) => ({ ...prev, confirmPassword: "" }));
                   }}
                   placeholder="Confirm new password"
-                  className={`w-full bg-accent/50 border ${passwordErrors.confirmPassword ? "border-destructive" : "border-border"
-                    } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
+                  className={`w-full bg-accent/50 border ${
+                    passwordErrors.confirmPassword ? "border-destructive" : "border-border"
+                  } rounded-sm px-4 py-2.5 pr-10 text-sm text-foreground outline-none focus:ring-1 focus:ring-primary`}
                 />
                 <button
                   type="button"
@@ -514,4 +879,3 @@ export default function ProfessionalSettingsPage() {
     </div>
   );
 }
-

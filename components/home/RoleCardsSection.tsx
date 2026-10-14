@@ -9,7 +9,7 @@ export default function RoleCardsSection() {
   const cards = [
     {
       title: "For Customers",
-      desc: "Book your favorite services anytime, anywhere.",
+      desc: "Book your services all in one place.",
       img: "/images/hero/role-1.png",
       link: "/professionals",
     },
@@ -21,7 +21,7 @@ export default function RoleCardsSection() {
     },
     {
       title: "For Businesses",
-      desc: "Join the marketplace and reach more clients.",
+      desc: "Join The Cloud Salon reach more customers and professionals.",
       img: "/images/hero/role-3.png",
       link: "/salons",
     },

@@ -56,12 +56,11 @@ export default function Header({
     if (!proId) return;
 
     try {
-      const res = await addAndRemoveWishList({
+      await addAndRemoveWishList({
         entityType: "user",
         entity: proId,
       }).unwrap();
       setIsLiked(!isLiked);
-      toast.success(res?.message || "Wishlist updated successfully");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to update wishlist");
     }

@@ -1,5 +1,5 @@
 "use client";
 
-import MyChairRentalsPage from "@/app/(business)/business/my-chair-rentals/page";
+import ProfessionalWorkspacePage from "../workspace/page";
 
-export default MyChairRentalsPage;
+export default ProfessionalWorkspacePage;

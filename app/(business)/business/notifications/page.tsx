@@ -36,11 +36,11 @@ export default function BusinessNotificationsPage() {
     {
       id: "n1",
       type: "rental",
-      title: "New Chair Rental Request",
-      description: "Alex Rivera requested a weekly chair rental for Station #3 starting Mon, Sep 1.",
+      title: "New Work Space Request",
+      description: "Alex Rivera requested a weekly workspace rental for Station #3 starting Mon, Sep 1.",
       timestamp: "20 min ago",
       isRead: false,
-      actionUrl: "/business/chairs-space",
+      actionUrl: "/business/workspace",
       actionLabel: "Review Request",
     },
     {
@@ -130,7 +130,7 @@ export default function BusinessNotificationsPage() {
             )}
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
-            Manage notifications for chair rentals, staff schedules, salon bookings, and payout reports
+            Manage notifications for workspaces, staff schedules, salon bookings, and payout reports
           </p>
         </div>
 
@@ -154,7 +154,7 @@ export default function BusinessNotificationsPage() {
         {[
           { key: "all", label: "All Notifications" },
           { key: "unread", label: `Unread (${unreadCount})` },
-          { key: "rental", label: "Chair Rentals" },
+          { key: "rental", label: "Work Space" },
           { key: "booking", label: "Bookings" },
           { key: "staff", label: "Staff Updates" },
         ].map((tab) => (

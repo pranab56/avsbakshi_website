@@ -41,12 +41,11 @@ export default function SearchResultsList({ results, loc, isLoading }: SearchRes
       return;
     }
     try {
-      const res = await addAndRemoveWishList({
+      await addAndRemoveWishList({
         entityType: type,
         entity: String(id),
       }).unwrap();
       setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
-      toast.success(res?.message || "Wishlist updated");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to update wishlist");
     }

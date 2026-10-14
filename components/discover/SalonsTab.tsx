@@ -120,7 +120,7 @@ export default function SalonsTab() {
                 }`}
             >
               <Armchair className="w-4 h-4" />
-              <span>Chair Rentals ({rawChairRentals.length})</span>
+              <span>Work Space ({rawChairRentals.length})</span>
             </button>
           </div>
 
@@ -270,7 +270,7 @@ export default function SalonsTab() {
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Armchair className="w-4 h-4 text-[#D99722]" />
-              <span>Available Salon Chair & Booth Rentals</span>
+              <span>Available Work Spaces & Booths</span>
             </h3>
             <span className="text-xs text-muted-foreground">
               Direct API integration (`useGetAllChairRentalsQuery`)
@@ -289,9 +289,9 @@ export default function SalonsTab() {
           ) : rawChairRentals.length === 0 ? (
             <div className="bg-card rounded-2xl p-12 text-center border border-border space-y-3">
               <Armchair className="w-10 h-10 text-muted-foreground mx-auto" />
-              <h4 className="text-base font-bold text-foreground">No Chair Rentals Listed</h4>
+              <h4 className="text-base font-bold text-foreground">No Work Spaces Listed</h4>
               <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                No active chair rental offers were found in the database.
+                No active workspace rental offers were found in the database.
               </p>
             </div>
           ) : (

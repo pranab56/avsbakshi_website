@@ -72,7 +72,7 @@ export default function DashboardSidebar({
           }`}
       >
         {/* Header / Brand Logo */}
-        <div className="relative flex items-center justify-center py-4 px-6 border-b border-white/10">
+        <div className="relative flex items-center justify-center h-16 sm:h-20 px-6 border-b border-white/10 shrink-0">
           <Link href="/" className="flex items-center justify-center group">
             {/* Light Mode Logo */}
             <Image

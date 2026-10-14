@@ -180,12 +180,11 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
     if (!salonId) return;
 
     try {
-      const res = await addAndRemoveWishList({
+      await addAndRemoveWishList({
         entityType: "salon",
         entity: salonId,
       }).unwrap();
       setIsFavorite(!isFavorite);
-      toast.success(res?.message || "Wishlist updated successfully");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to update wishlist");
     }

@@ -1,23 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
-  MessageSquare,
   Calendar as CalendarIcon,
-  Send,
   X,
-  ExternalLink,
   Loader2,
   CheckCircle2,
   XCircle,
   Clock,
   RefreshCw,
-  User,
   Phone,
   Mail,
 } from "lucide-react";
@@ -27,130 +21,20 @@ import { useGetMyAppointmentQuery, useUpdateStatusMutation } from "@/features/ap
 
 type CalendarView = "Month" | "Week" | "Day";
 
-interface Message {
-  id: string;
-  sender: "customer" | "pro";
-  text: string;
-  time: string;
-}
-
-interface Conversation {
-  id: string;
-  customerName: string;
-  avatar: string;
-  lastMessage: string;
-  timestamp: string;
-  unreadCount?: number;
-  isOnline: boolean;
-  appointmentInfo?: string;
-  serviceName: string;
-  messages: Message[];
-}
-
 export default function ProfessionalCalendarPage() {
-  const router = useRouter();
   const [view, setView] = useState<CalendarView>("Month");
 
   // Selected date for calendar view navigation
   const [currentDateState, setCurrentDateState] = useState<Date>(new Date());
   const [selectedAppointment, setSelectedAppointment] = useState<any | null>(null);
 
-  // Chat states
-  const [selectedConversationId, setSelectedConversationId] = useState<string | null>("1");
-  const [newMessageText, setNewMessageText] = useState("");
-  const [quickChatConvId, setQuickChatConvId] = useState<string | null>(null);
-  const [quickChatMessageText, setQuickChatMessageText] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const quickChatEndRef = useRef<HTMLDivElement>(null);
 
   // RTK Query API Hooks
   const { data: response, isLoading: isAppointmentsLoading, isFetching, refetch } = useGetMyAppointmentQuery(undefined);
   const [updateStatus] = useUpdateStatusMutation();
 
   const appointmentsList = response?.data || [];
-
-  // Conversations data representing direct messages from customers
-  const [conversations, setConversations] = useState<Conversation[]>([
-    {
-      id: "1",
-      customerName: "Sarah Jenkins",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      lastMessage: "Hi James! Just confirming my Balayage & Cut for Monday at 2:30 PM.",
-      timestamp: "10 min ago",
-      unreadCount: 2,
-      isOnline: true,
-      serviceName: "Balayage & Cut",
-      appointmentInfo: "Mon, Aug 19 · 2:30 PM (Hair Coloring & Cut)",
-      messages: [
-        {
-          id: "m1",
-          sender: "customer",
-          text: "Hi James! I booked an appointment with you for Monday Aug 19 at 2:30 PM for Hair Coloring & Cut.",
-          time: "10:15 AM",
-        },
-        {
-          id: "m2",
-          sender: "pro",
-          text: "Hello Sarah! Great to hear from you. Your slot is confirmed for 2:30 PM.",
-          time: "10:20 AM",
-        },
-        {
-          id: "m3",
-          sender: "customer",
-          text: "Hi James! Just confirming my Balayage & Cut for Monday at 2:30 PM. Should I wash my hair before coming?",
-          time: "10:30 AM",
-        },
-      ],
-    },
-    {
-      id: "2",
-      customerName: "Michael Vance",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-      lastMessage: "Is it possible to shift my beard trim to 11:30 AM?",
-      timestamp: "1h ago",
-      unreadCount: 1,
-      isOnline: false,
-      serviceName: "Beard Trim & Styling",
-      appointmentInfo: "Sat, Aug 24 · 11:00 AM (Beard Trim & Styling)",
-      messages: [
-        {
-          id: "m10",
-          sender: "customer",
-          text: "Hi! Is it possible to shift my beard trim appointment on Saturday to 11:30 AM instead of 11:00 AM?",
-          time: "09:45 AM",
-        },
-      ],
-    },
-    {
-      id: "3",
-      customerName: "Emma Watson",
-      avatar:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
-      lastMessage: "Thank you so much for the appointment! Loved the result.",
-      timestamp: "Yesterday",
-      isOnline: true,
-      serviceName: "Manicure & Pedicure",
-      appointmentInfo: "Mon, Aug 19 · 3:30 PM (Manicure & Pedicure)",
-      messages: [
-        {
-          id: "m20",
-          sender: "customer",
-          text: "Thank you so much for the appointment! Loved the result.",
-          time: "4:45 PM",
-        },
-        {
-          id: "m21",
-          sender: "pro",
-          text: "You are very welcome Emma! Glad you liked it.",
-          time: "5:00 PM",
-        },
-      ],
-    },
-  ]);
 
   const handleStatusChange = async (id: string, newStatus: "confirmed" | "cancelled") => {
     try {
@@ -267,97 +151,17 @@ export default function ProfessionalCalendarPage() {
     year: "numeric",
   });
 
-  const activeConversation = conversations.find(
-    (c) => c.id === selectedConversationId
-  );
-
-  const activeQuickChatConv = conversations.find(
-    (c) => c.id === quickChatConvId
-  );
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [selectedConversationId, activeConversation?.messages]);
-
-  useEffect(() => {
-    quickChatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [quickChatConvId, activeQuickChatConv?.messages]);
-
-  const handleSendQuickMessage = () => {
-    if (!quickChatMessageText.trim() || !quickChatConvId) return;
-
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      sender: "pro",
-      text: quickChatMessageText,
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    setConversations((prev) =>
-      prev.map((c) => {
-        if (c.id === quickChatConvId) {
-          return {
-            ...c,
-            lastMessage: quickChatMessageText,
-            timestamp: "Just now",
-            messages: [...c.messages, newMsg],
-          };
-        }
-        return c;
-      })
-    );
-
-    setQuickChatMessageText("");
-    toast.success("Message sent to customer!");
-  };
-
-  const totalUnread = conversations.reduce(
-    (acc, curr) => acc + (curr.unreadCount || 0),
-    0
-  );
-
-  const openFullInboxChat = (convId: string) => {
-    router.push("/professional/messages");
-  };
-
   return (
     <div className="space-y-6 pb-16 font-sans text-foreground">
-      {/* Top Header Row with Title & Main Tabs */}
+      {/* Top Header Row with Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
           <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
-            Calendar &amp; Client Messages
+            Calendar
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
-            Manage your appointment schedules and reply directly to client inquiries
+            Manage your appointment schedules and view bookings
           </p>
-        </div>
-
-        {/* Main Tab Switcher */}
-        <div className="flex items-center gap-2 bg-accent p-1.5 rounded-lg border border-border w-full sm:w-auto">
-          <Link
-            href="/professional/calendar"
-            className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer bg-primary text-primary-foreground shadow-sm"
-          >
-            <CalendarIcon className="w-4 h-4" />
-            <span>Calendar</span>
-          </Link>
-
-          <Link
-            href="/professional/messages"
-            className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer relative text-muted-foreground hover:text-foreground"
-          >
-            <MessageSquare className="w-4 h-4" />
-            <span>Messages</span>
-            {totalUnread > 0 && (
-              <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                {totalUnread}
-              </span>
-            )}
-          </Link>
         </div>
       </div>
 
@@ -806,108 +610,6 @@ export default function ProfessionalCalendarPage() {
                     </button>
                   )}
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* QUICK CHAT MODAL OVERLAY ON CALENDAR */}
-        {quickChatConvId && activeQuickChatConv && (
-          <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-            <div className="bg-card border border-border rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-              {/* Modal Header */}
-              <div className="bg-accent p-4 border-b border-border flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden bg-accent shrink-0">
-                    <Image
-                      src={activeQuickChatConv.avatar}
-                      alt={activeQuickChatConv.customerName}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-serif font-bold text-base text-foreground">
-                        {activeQuickChatConv.customerName}
-                      </h3>
-                      {activeQuickChatConv.isOnline && (
-                        <span className="w-2 h-2 rounded-full bg-emerald-500" title="Online" />
-                      )}
-                    </div>
-                    <p className="text-[11px] text-primary font-medium">
-                      {activeQuickChatConv.appointmentInfo}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => openFullInboxChat(quickChatConvId)}
-                    className="p-2 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-                    title="Open in full inbox"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setQuickChatConvId(null)}
-                    className="p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Modal Chat Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[250px] max-h-[360px] bg-accent/40">
-                {activeQuickChatConv.messages.map((msg) => {
-                  const isPro = msg.sender === "pro";
-                  return (
-                    <div
-                      key={msg.id}
-                      className={`flex flex-col ${
-                        isPro ? "items-end" : "items-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-[80%] p-3 rounded-2xl text-xs sm:text-sm leading-relaxed ${
-                          isPro
-                            ? "bg-primary text-primary-foreground rounded-br-xs shadow-xs"
-                            : "bg-card text-foreground rounded-bl-xs border border-border"
-                        }`}
-                      >
-                        {msg.text}
-                      </div>
-                      <span className="text-[10px] text-muted-foreground mt-1 px-1">
-                        {msg.time}
-                      </span>
-                    </div>
-                  );
-                })}
-                <div ref={quickChatEndRef} />
-              </div>
-
-              {/* Modal Footer / Input */}
-              <div className="p-3 bg-card border-t border-border flex items-center gap-2">
-                <input
-                  type="text"
-                  value={quickChatMessageText}
-                  onChange={(e) => setQuickChatMessageText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendQuickMessage()}
-                  placeholder={`Direct message ${activeQuickChatConv.customerName}...`}
-                  className="flex-1 bg-accent border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-primary"
-                />
-                <button
-                  type="button"
-                  onClick={handleSendQuickMessage}
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 rounded-xl font-semibold text-xs flex items-center gap-1 transition-colors cursor-pointer shrink-0"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Send</span>
-                </button>
               </div>
             </div>
           </div>

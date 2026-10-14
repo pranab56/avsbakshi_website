@@ -75,11 +75,10 @@ export default function CustomerFavoritesPage() {
 
   const toggleFavorite = async (item: any) => {
     try {
-      const res = await addAndRemoveWishList({
+      await addAndRemoveWishList({
         entityType: item.entityType,
         entity: item.entityId,
       }).unwrap();
-      toast.success(res?.message || "Removed from favorites");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to update favorites");
     }
