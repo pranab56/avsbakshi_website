@@ -8,6 +8,7 @@ import { Menu, Bell } from "lucide-react";
 import { DashboardConfig } from "./nav-config";
 import ThemeToggle from "@/components/shared/theme-toggle";
 import { useGetMyProfileQuery } from "@/features/profile/profileApi";
+import { getUser } from "@/utils/storage";
 
 interface DashboardHeaderProps {
   config: DashboardConfig;
@@ -24,7 +25,9 @@ export default function DashboardHeader({
 
   const { data: profileResponse } = useGetMyProfileQuery(undefined, { skip: !token });
   const profileData = profileResponse?.data;
-  const currentUser = profileData || user;
+  const storedUser = typeof window !== "undefined" ? getUser() : null;
+  const storedDisplayName = typeof window !== "undefined" ? localStorage.getItem("userDisplayName") : null;
+  const currentUser = profileData || user || storedUser;
 
   const userImage = typeof currentUser?.image === "string" && currentUser.image.trim().length > 0 ? currentUser.image : null;
 
@@ -89,11 +92,11 @@ export default function DashboardHeader({
 
   const displayName = currentUser?.firstName
     ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim()
-    : (currentUser?.email?.split('@')[0] || "User");
+    : storedDisplayName || currentUser?.name || (currentUser?.email?.split('@')[0] || "Business Professional");
 
   const initial = currentUser?.firstName
     ? currentUser.firstName[0].toUpperCase()
-    : (displayName[0] ? displayName[0].toUpperCase() : "U");
+    : (displayName[0] ? displayName[0].toUpperCase() : "B");
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-16 sm:h-20 px-3 sm:px-6 lg:px-8 bg-background/95 backdrop-blur-md border-b border-border transition-colors duration-200">

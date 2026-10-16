@@ -61,39 +61,31 @@ export default function CustomerOverviewPage() {
         </h1>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {[1, 2, 3, 4, 5].map((n) => (
-            <div key={n} className="h-32 bg-card border border-border/60 rounded-2xl animate-pulse" />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {stats.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={idx}
-                className="bg-card border border-border/70 rounded-2xl p-5 transition-all shadow-2xs hover:border-[#D99722]/50 flex flex-col justify-between space-y-3"
-              >
-                <div className="flex items-center justify-between">
-                  <div className={`p-2.5 rounded-xl border ${stat.color}`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
-                    {stat.value}
-                  </div>
-                  <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">
-                    {stat.label}
-                  </p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {stats.map((stat, idx) => {
+          const Icon = stat.icon;
+          return (
+            <div
+              key={idx}
+              className="bg-card border border-border/70 rounded-2xl p-5 transition-all shadow-2xs hover:border-[#D99722]/50 flex flex-col justify-between space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className={`p-2.5 rounded-xl border ${stat.color}`}>
+                  <Icon className="w-4 h-4" />
                 </div>
               </div>
-            );
-          })}
-        </div>
-      )}
+              <div>
+                <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
+                  {stat.value}
+                </div>
+                <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">
+                  {stat.label}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

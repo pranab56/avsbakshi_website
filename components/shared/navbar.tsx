@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { logout } from "@/features/auth/authSlice";
 import { Loader2 } from "lucide-react";
 import { useGetMyProfileQuery } from "@/features/profile/profileApi";
+import { removeStorage } from "@/utils/storage";
 import {
   Dialog,
   DialogContent,
@@ -53,21 +54,22 @@ export default function Navbar() {
   const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    router.prefetch("/login?logout=true");
+  }, [router]);
 
   const isLoggedIn = mounted && Boolean(token);
 
   const handleLogout = () => {
+    setIsLoggingOut(true);
     setProfileOpen(false);
     setMobileMenuOpen(false);
-    setShowLogoutConfirm(false);
-    dispatch(logout());
-    toast.success("Successfully logged out.");
-    window.location.href = "/api/auth/logout";
+    removeStorage();
+    window.location.replace("/login?logout=true");
   };
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     if (typeof document !== "undefined") {
@@ -333,7 +335,7 @@ export default function Navbar() {
                               <span>My Dashboard</span>
                             </Link>
                             <Link
-                              href="/professional/bookings"
+                              href="/professional/service-bookings"
                               onClick={() => setProfileOpen(false)}
                               className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-foreground hover:bg-accent hover:text-primary transition-colors"
                             >
@@ -742,7 +744,12 @@ export default function Navbar() {
       )}
 
       {/* Logout Confirmation Modal */}
-      <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+      <Dialog
+        open={showLogoutConfirm}
+        onOpenChange={(open) => {
+          if (!isLoggingOut) setShowLogoutConfirm(open);
+        }}
+      >
         <DialogContent className="sm:max-w-md bg-popover border border-border text-popover-foreground p-6 rounded-xl">
           <DialogHeader className="space-y-2 text-left">
             <DialogTitle className="font-bold text-xl text-foreground">
@@ -756,20 +763,26 @@ export default function Navbar() {
           <div className="flex items-center justify-end gap-3 pt-4">
             <button
               type="button"
+              disabled={isLoggingOut}
               onClick={() => setShowLogoutConfirm(false)}
-              className="px-4 py-2.5 rounded-lg border border-border text-foreground hover:bg-accent text-sm font-medium transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-lg border border-border text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="button"
-              onClick={() => {
-                setShowLogoutConfirm(false);
-                handleLogout();
-              }}
-              className="px-4 py-2.5 rounded-lg bg-[#E54D42] hover:bg-[#D43B30] text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
+              disabled={isLoggingOut}
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#E54D42] hover:bg-[#D43B30] disabled:opacity-75 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
             >
-              Log out
+              {isLoggingOut ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Logging out...</span>
+                </>
+              ) : (
+                <span>Log out</span>
+              )}
             </button>
           </div>
         </DialogContent>

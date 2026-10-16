@@ -19,7 +19,7 @@ import {
 } from "@/features/profile/profileApi";
 import { PhoneInput } from "@/components/ui/phone-input";
 
-type SettingsTab = "Profile" | "Security";
+type SettingsTab = "Profile" | "Change Password";
 
 export default function CustomerSettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("Profile");
@@ -133,7 +133,7 @@ export default function CustomerSettingsPage() {
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left Sidebar Menu */}
         <div className="w-full md:w-56 lg:w-64 shrink-0 bg-card border border-border rounded-lg overflow-hidden shadow-xs divide-y divide-border">
-          {(["Profile", "Security"] as SettingsTab[]).map((tab) => {
+          {(["Profile", "Change Password"] as SettingsTab[]).map((tab) => {
             const isActive = activeTab === tab;
             return (
               <button
@@ -141,8 +141,8 @@ export default function CustomerSettingsPage() {
                 type="button"
                 onClick={() => setActiveTab(tab)}
                 className={`w-full text-left px-5 py-4 text-sm transition-all cursor-pointer ${isActive
-                    ? "bg-primary/15 text-primary font-medium"
-                    : "text-foreground hover:bg-accent font-normal"
+                  ? "bg-primary/15 text-primary font-medium"
+                  : "text-foreground hover:bg-accent font-normal"
                   }`}
               >
                 {tab}
@@ -283,10 +283,10 @@ export default function CustomerSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {/* TAB 4: SECURITY */}
           {/* ------------------------------------------------------------- */}
-          {activeTab === "Security" && (
+          {activeTab === "Change Password" && (
             <div className="space-y-6">
               <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
-                Security
+                Change Password
               </h2>
 
               <div className="bg-accent p-5 sm:p-6 rounded-lg space-y-3">

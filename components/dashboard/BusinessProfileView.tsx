@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import Link from "next/link";
 import { toast } from "sonner";
 
 import {
@@ -23,6 +24,15 @@ import {
   CalendarCheck,
   DollarSign,
   Save,
+  ExternalLink,
+  Sparkles,
+  ShieldCheck,
+  CheckCircle2,
+  BadgeCheck,
+  User,
+  Navigation,
+  ChevronRight,
+  Calendar,
 } from "lucide-react";
 import { useGetMySalonQuery, useUpdateSalonMutation } from "@/features/salon/salonApi";
 import { useUploadMutation } from "@/features/upload/uploadApi";
@@ -40,6 +50,79 @@ const GoogleMapPicker = dynamic(() => import("@/components/shared/GoogleMapPicke
   ),
 });
 
+const FALLBACK_SALON_PHOTOS = [
+  "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=800&q=80",
+];
+
+function ShowcasePhotoItem({
+  src,
+  alt,
+  fallback,
+  isCover,
+  badgeText,
+  onClick,
+}: {
+  src: string;
+  alt: string;
+  fallback: string;
+  isCover?: boolean;
+  badgeText?: string;
+  onClick?: () => void;
+}) {
+  const [imgUrl, setImgUrl] = useState(src);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setImgUrl(src);
+    setHasError(false);
+  }, [src]);
+
+  return (
+    <div
+      onClick={onClick}
+      className={`relative w-full h-full rounded-2xl overflow-hidden border border-border group bg-accent shadow-2xs ${
+        onClick ? "cursor-pointer" : ""
+      }`}
+    >
+      <Image
+        src={hasError ? fallback : imgUrl}
+        alt={alt}
+        fill
+        unoptimized
+        onError={() => {
+          if (!hasError) {
+            setHasError(true);
+            setImgUrl(fallback);
+          }
+        }}
+        className="object-cover group-hover:scale-105 transition-transform duration-300"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3 pointer-events-none">
+        <span className="text-white text-[11px] font-medium drop-shadow-sm truncate">
+          {alt}
+        </span>
+      </div>
+      {isCover && (
+        <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">
+          <span className="bg-background/90 backdrop-blur-md text-foreground text-[10px] font-bold px-2 py-0.5 rounded-md border border-border/60 shadow-xs flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span>Cover Photo</span>
+          </span>
+        </div>
+      )}
+      {badgeText && (
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex flex-col items-center justify-center gap-1 text-white font-bold text-xs p-2 text-center group-hover:bg-black/70 transition-colors">
+          <ImageIcon className="w-4 h-4 text-primary" />
+          <span>{badgeText}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function BusinessProfileView() {
   const [activeTab, setActiveTab] = useState<"overview" | "edit" | "location" | "hours" | "photos">("overview");
 
@@ -55,6 +138,36 @@ export default function BusinessProfileView() {
     : Array.isArray(categoryResponse)
       ? categoryResponse
       : [];
+
+  // Ref & State to synchronize right side image height with left side cards
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const [leftHeight, setLeftHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = leftColRef.current;
+    if (!el) return;
+
+    const updateHeight = () => {
+      if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+        setLeftHeight(el.offsetHeight);
+      } else {
+        setLeftHeight(null);
+      }
+    };
+
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeight();
+    });
+    resizeObserver.observe(el);
+
+    window.addEventListener("resize", updateHeight);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, [salonData, activeTab]);
 
   // Business Form State
   const [formData, setFormData] = useState({
@@ -345,20 +458,34 @@ export default function BusinessProfileView() {
 
   if (isSalonLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-sm font-medium text-muted-foreground">Fetching salon profile details...</p>
+      <div className="flex flex-col items-center justify-center min-h-[55vh] py-16 space-y-4 animate-in fade-in duration-300">
+        <div className="relative flex items-center justify-center">
+          <div className="absolute w-16 h-16 rounded-full bg-primary/20 blur-xl animate-pulse" />
+          <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+          <div className="absolute flex items-center justify-center text-primary">
+            <Building2 className="w-5 h-5 animate-pulse" />
+          </div>
+        </div>
+        <div className="space-y-1 text-center">
+          <p className="text-xs font-semibold tracking-widest uppercase text-foreground/80 font-sans">
+            Salon Profile
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            Fetching salon profile details...
+          </p>
         </div>
       </div>
     );
   }
 
   const defaultBannerPhoto = formData.photos[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1600&q=80";
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const currentDayName = daysOfWeek[new Date().getDay()];
+  const availableDaysCount = formData.availability.filter((d) => d.isAvailable).length;
 
   return (
     <div className="space-y-8 pb-16 font-sans text-foreground">
-      {/* Top Title Header & Action Button */}
+      {/* Top Title Header & Quick Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold border border-primary/20">
@@ -372,26 +499,10 @@ export default function BusinessProfileView() {
             Manage your salon information, location map, business hours, and photo gallery.
           </p>
         </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            type="button"
-            onClick={() => handleSaveSalon("Business Profile")}
-            disabled={isUpdating}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
-          >
-            {isUpdating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Save className="w-4 h-4" />
-            )}
-            <span>Save All Changes</span>
-          </button>
-        </div>
       </div>
 
-      {/* 5 Navigation Tabs Header */}
-      <div className="flex items-center gap-2 border-b border-border overflow-x-auto pb-1 scrollbar-none">
+      {/* 5 Navigation Tabs Header with Underline Active Style */}
+      <div className="flex items-center gap-6 sm:gap-8 border-b border-border overflow-x-auto scrollbar-none">
         {[
           { key: "overview", label: "Overview", icon: Eye },
           { key: "edit", label: "Edit Profile", icon: Edit3 },
@@ -406,13 +517,19 @@ export default function BusinessProfileView() {
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key as any)}
-              className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${isActive
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground hover:bg-accent hover:text-foreground"
+              className={`group relative pb-3.5 pt-2 px-1 text-xs sm:text-sm font-medium transition-all flex items-center gap-2 shrink-0 cursor-pointer ${isActive
+                ? "text-primary font-semibold"
+                : "text-muted-foreground hover:text-foreground"
                 }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon
+                className={`w-4 h-4 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                  }`}
+              />
               <span>{tab.label}</span>
+              {isActive && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full shadow-sm" />
+              )}
             </button>
           );
         })}
@@ -421,166 +538,509 @@ export default function BusinessProfileView() {
       {/* TAB 1: OVERVIEW */}
       {activeTab === "overview" && (
         <div className="space-y-6 animate-in fade-in duration-200">
-          {/* Main Salon Banner Card */}
+          {/* Main Salon Banner & Profile Identity Card */}
           <div className="relative bg-card border border-border rounded-3xl overflow-hidden shadow-md">
-            <div className="relative h-48 sm:h-60 w-full bg-accent/40">
+            {/* Banner Image */}
+            <div className="relative h-56 sm:h-72 w-full bg-accent/40">
               <Image
-                src={defaultBannerPhoto}
+                src={formData.photos[0] || defaultBannerPhoto}
                 alt={formData.name || "Salon Cover"}
                 fill
                 priority
+                unoptimized
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-black/30" />
             </div>
 
+            {/* Overlapping Profile Info Strip */}
             <div className="relative p-6 sm:p-8 -mt-16 sm:-mt-20 flex flex-col md:flex-row md:items-end justify-between gap-6 z-10">
-              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-card border-4 border-background shadow-xl overflow-hidden shrink-0">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5">
+                {/* Salon Logo with verified badge */}
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-card border-4 border-background shadow-2xl overflow-hidden shrink-0 ring-1 ring-border/50">
                   {formData.logo ? (
-                    <Image src={formData.logo} alt={formData.name} fill className="object-cover" />
+                    <Image
+                      src={formData.logo}
+                      alt={formData.name || "Salon Logo"}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full bg-primary/20 text-primary flex items-center justify-center font-bold text-3xl font-serif">
                       {formData.name?.charAt(0) || "S"}
                     </div>
                   )}
+                  <div
+                    className="absolute bottom-1 right-1 bg-primary text-primary-foreground p-1 rounded-full shadow-md"
+                    title="Verified Business"
+                  >
+                    <BadgeCheck className="w-3.5 h-3.5" />
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2 flex-wrap">
+                {/* Salon Name, Rating, Category, Description */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 flex-wrap">
                     <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
                       {formData.name || "Salon Business"}
                     </h2>
-                    <span className="bg-primary/15 text-primary text-[11px] font-bold px-3 py-1 rounded-full border border-primary/20">
+                    <span className="bg-primary/15 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/20">
                       {activeCategoryName}
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xl">
+
+                  {/* Integrated Rating Strip (Directly in Profile Header) */}
+                  <div className="flex items-center gap-3 text-xs flex-wrap">
+                    <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
+                      <div className="flex items-center text-amber-500">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`w-3.5 h-3.5 ${star <= Math.round(salonData?.avgRating || 0)
+                              ? "fill-amber-500 text-amber-500"
+                              : "text-amber-500/30"
+                              }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="font-bold text-amber-600 dark:text-amber-400">
+                        {(salonData?.avgRating || 0).toFixed(1)}
+                      </span>
+                    </div>
+
+                    <span className="text-muted-foreground font-medium">
+                      {salonData?.totalReviews && salonData.totalReviews > 0
+                        ? `${salonData.totalReviews} verified reviews`
+                        : "0 reviews · New studio"}
+                    </span>
+
+                    <span className="text-muted-foreground/40">•</span>
+
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-primary" />
+                      <span>
+                        {formData.address.city || "Pabna"}, {formData.address.country || "Bangladesh"}
+                      </span>
+                    </span>
+
+                    {salonData?.createdAt && (
+                      <>
+                        <span className="text-muted-foreground/40">•</span>
+                        <span className="text-muted-foreground flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5 text-primary" />
+                          <span>
+                            Member since{" "}
+                            {new Date(salonData.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </span>
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl pt-0.5">
                     {formData.description || "No description provided yet."}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              {/* Header Action Buttons */}
+              <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-end">
                 <button
                   type="button"
                   onClick={() => setActiveTab("edit")}
-                  className="bg-card hover:bg-accent text-foreground border border-border text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="bg-card hover:bg-accent text-foreground border border-border text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
                 >
                   <Edit3 className="w-3.5 h-3.5 text-primary" />
                   <span>Edit Profile</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("photos")}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                >
+                  <ImageIcon className="w-3.5 h-3.5" />
+                  <span>Manage Photos ({formData.photos.length})</span>
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Contact Details Card & Key Metrics Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Contact & Address Overview (1 col) */}
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-2xs">
-              <h3 className="font-serif font-bold text-base text-foreground flex items-center gap-2 border-b border-border pb-3">
-                <Building2 className="w-4 h-4 text-primary" />
-                <span>Business Info</span>
-              </h3>
-
-              <div className="space-y-3 text-xs">
-                <div className="flex items-start gap-3 text-muted-foreground">
-                  <Phone className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <span className="block font-semibold text-foreground">Phone Number</span>
-                    <span>{formData.phone || "Not provided"}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 text-muted-foreground">
-                  <Mail className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <span className="block font-semibold text-foreground">Email Address</span>
-                    <span className="break-all">{formData.email || "Not provided"}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 text-muted-foreground">
-                  <Globe className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <span className="block font-semibold text-foreground">Website</span>
-                    <span className="break-all">{formData.website || "Not provided"}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 text-muted-foreground">
-                  <Instagram className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <span className="block font-semibold text-foreground">Instagram</span>
-                    <span>{formData.instagram || "Not provided"}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 text-muted-foreground pt-1 border-t border-border">
-                  <MapPin className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <span className="block font-semibold text-foreground">Salon Location</span>
-                    <span>
-                      {formData.address.line1 || "Location not configured"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Statistics & Performance Overview Grid (2 cols) */}
-            <div className="lg:col-span-2 space-y-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="bg-card border border-border rounded-2xl p-5 space-y-1 shadow-2xs">
-                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-2">
-                    <CalendarCheck className="w-5 h-5" />
-                  </div>
-                  <p className="text-2xl sm:text-3xl font-bold font-serif text-foreground">247</p>
-                  <p className="text-xs text-muted-foreground font-medium">Total Bookings</p>
-                </div>
-
-                <div className="bg-card border border-border rounded-2xl p-5 space-y-1 shadow-2xs">
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-2">
-                    <Star className="w-5 h-5" />
-                  </div>
-                  <p className="text-2xl sm:text-3xl font-bold font-serif text-foreground">4.9 ★</p>
-                  <p className="text-xs text-muted-foreground font-medium">Average Rating</p>
-                </div>
-
-                <div className="bg-card border border-border rounded-2xl p-5 space-y-1 shadow-2xs">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-2">
-                    <DollarSign className="w-5 h-5" />
-                  </div>
-                  <p className="text-2xl sm:text-3xl font-bold font-serif text-foreground">$6,420</p>
-                  <p className="text-xs text-muted-foreground font-medium">Total Revenue</p>
-                </div>
-              </div>
-
-              {/* Photos Gallery Preview */}
-              <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-2xs">
-                <div className="flex items-center justify-between">
+          {/* Two-Column Content Grid: Left Contact & Info (5 cols) / Right Gallery & Hours (7 cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Left 5 Cols: Business Info & Contacts */}
+            <div ref={leftColRef} className="lg:col-span-5 flex flex-col gap-6">
+              <div className="bg-card border border-border rounded-2xl p-6 space-y-5 shadow-2xs">
+                <div className="flex items-center justify-between border-b border-border pb-3.5">
                   <h3 className="font-serif font-bold text-base text-foreground flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4 text-primary" />
-                    <span>Photo Gallery Showcase</span>
+                    <Building2 className="w-4 h-4 text-primary" />
+                    <span>Business Information</span>
                   </h3>
                   <button
                     type="button"
-                    onClick={() => setActiveTab("photos")}
-                    className="text-xs font-semibold text-primary hover:underline cursor-pointer"
+                    onClick={() => setActiveTab("edit")}
+                    className="text-xs font-semibold text-primary hover:underline cursor-pointer flex items-center gap-1"
                   >
-                    View All ({formData.photos.length}) →
+                    <Edit3 className="w-3 h-3" />
+                    <span>Edit</span>
                   </button>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {formData.photos.slice(0, 4).map((photoUrl, idx) => (
-                    <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-border bg-accent">
-                      <Image src={photoUrl} alt="Gallery Photo" fill className="object-cover" />
+                {/* Contact Items */}
+                <div className="space-y-4 text-xs">
+                  {/* Phone */}
+                  <div className="flex items-start gap-3 text-muted-foreground">
+                    <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center shrink-0 text-primary">
+                      <Phone className="w-4 h-4" />
                     </div>
-                  ))}
+                    <div className="min-w-0 flex-1">
+                      <span className="block font-semibold text-foreground">Phone Number</span>
+                      {formData.phone ? (
+                        <a
+                          href={`tel:${formData.phone}`}
+                          className="text-foreground hover:text-primary transition-colors hover:underline font-medium break-all"
+                        >
+                          {formData.phone}
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground/60 italic">Not provided</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-start gap-3 text-muted-foreground">
+                    <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center shrink-0 text-primary">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="block font-semibold text-foreground">Email Address</span>
+                      {formData.email ? (
+                        <a
+                          href={`mailto:${formData.email}`}
+                          className="text-foreground hover:text-primary transition-colors hover:underline font-medium break-all"
+                        >
+                          {formData.email}
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground/60 italic">Not provided</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Website */}
+                  <div className="flex items-start gap-3 text-muted-foreground">
+                    <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center shrink-0 text-primary">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="block font-semibold text-foreground">Website</span>
+                      {formData.website ? (
+                        <a
+                          href={formData.website.startsWith("http") ? formData.website : `https://${formData.website}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline font-medium inline-flex items-center gap-1 break-all"
+                        >
+                          <span>{formData.website.replace(/^https?:\/\//, "")}</span>
+                          <ExternalLink className="w-3 h-3 shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground/60 italic">Not provided</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Instagram */}
+                  <div className="flex items-start gap-3 text-muted-foreground">
+                    <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center shrink-0 text-primary">
+                      <Instagram className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="block font-semibold text-foreground">Instagram</span>
+                      {formData.instagram ? (
+                        <a
+                          href={
+                            formData.instagram.startsWith("http")
+                              ? formData.instagram
+                              : `https://instagram.com/${formData.instagram.replace(/^@/, "")}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground hover:text-primary transition-colors hover:underline font-medium"
+                        >
+                          {formData.instagram.startsWith("@") ? formData.instagram : `@${formData.instagram}`}
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground/60 italic">Not provided</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Address & GPS Map */}
+                  <div className="flex items-start gap-3 text-muted-foreground pt-3 border-t border-border">
+                    <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center shrink-0 text-primary">
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="block font-semibold text-foreground">Salon Location</span>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("location")}
+                          className="text-[11px] text-primary hover:underline font-semibold cursor-pointer"
+                        >
+                          Edit Map
+                        </button>
+                      </div>
+                      <p className="text-foreground font-medium">
+                        {formData.address.line1 || "Street address not configured"}
+                        {formData.address.line2 ? `, ${formData.address.line2}` : ""}
+                      </p>
+                      <p className="text-muted-foreground">
+                        {[
+                          formData.address.city,
+                          formData.address.state,
+                          formData.address.postalCode,
+                          formData.address.country,
+                        ]
+                          .filter(Boolean)
+                          .join(", ") || "City & Postal Code"}
+                      </p>
+
+                      {/* Coordinates & Google Maps CTA */}
+                      <div className="pt-2 flex items-center gap-2 flex-wrap">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-accent text-[11px] font-mono text-muted-foreground">
+                          <Navigation className="w-3 h-3 text-primary" />
+                          <span>
+                            {Number(formData.location.coordinates[1]).toFixed(4)}° N,{" "}
+                            {Number(formData.location.coordinates[0]).toFixed(4)}° E
+                          </span>
+                        </span>
+                        <a
+                          href={`https://www.google.com/maps?q=${formData.location.coordinates[1]},${formData.location.coordinates[0]}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+                        >
+                          <span>Google Maps</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Business Creator / Owner Card (from createdBy) */}
+              {salonData?.createdBy && (
+                <div className="bg-card border border-border rounded-2xl p-5 space-y-3 shadow-2xs">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold font-serif text-lg shrink-0">
+                      {salonData.createdBy.firstName?.[0] || <User className="w-5 h-5" />}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">
+                          {salonData.createdBy.firstName} {salonData.createdBy.lastName}
+                        </h4>
+                        {salonData.createdBy.isSalonOwner && (
+                          <span className="bg-primary/15 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full border border-primary/20">
+                            Salon Owner
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        {salonData.createdBy.email || "Registered Professional"}
+                      </p>
+                    </div>
+                  </div>
+                  {salonData.createdBy.phone?.number && (
+                    <div className="text-[11px] text-muted-foreground flex items-center gap-2 pt-2 border-t border-border">
+                      <Phone className="w-3.5 h-3.5 text-primary" />
+                      <span>Direct: {salonData.createdBy.phone.number}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Right 7 Cols: Photo Gallery Showcase */}
+            <div className="lg:col-span-7 flex flex-col">
+              {/* Photo Gallery Showcase Card */}
+              <div
+                style={{ height: leftHeight ? `${leftHeight}px` : undefined }}
+                className="bg-card border border-border rounded-2xl p-6 flex flex-col shadow-2xs h-full"
+              >
+                <div className="flex items-center justify-between border-b border-border pb-3.5 shrink-0">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="w-4 h-4 text-primary" />
+                    <h3 className="font-serif font-bold text-base text-foreground">
+                      Photo Gallery Showcase
+                    </h3>
+                    <span className="text-xs bg-primary/10 text-primary font-bold px-2.5 py-0.5 rounded-full">
+                      {formData.photos.length} Photos
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("photos")}
+                    className="text-xs font-semibold text-primary hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <span>Manage Gallery</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Dynamic Gallery Showcase matching left column height */}
+                <div className="flex-1 min-h-[300px] sm:min-h-[360px] lg:min-h-0 pt-4">
+                  {/* 0 Photos: Empty State */}
                   {formData.photos.length === 0 && (
-                    <div className="col-span-full border border-dashed border-border rounded-xl p-6 text-center text-xs text-muted-foreground italic">
-                      No photos uploaded yet. Click &quot;Photos&quot; tab to upload gallery images.
+                    <div className="w-full h-full border border-dashed border-border rounded-2xl p-8 flex flex-col items-center justify-center text-center space-y-3 bg-accent/10">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                        <ImageIcon className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs font-semibold text-foreground">No gallery photos yet</p>
+                        <p className="text-[11px] text-muted-foreground max-w-xs">
+                          Upload high quality pictures of your studio interior, services, and work.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("photos")}
+                        className="bg-primary text-primary-foreground text-xs font-semibold px-4 py-2 rounded-xl inline-flex items-center gap-2 cursor-pointer shadow-sm hover:bg-primary/90 transition-all"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Upload Salon Photos</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* 1 Photo */}
+                  {formData.photos.length === 1 && (
+                    <div className="w-full h-full">
+                      <ShowcasePhotoItem
+                        src={formData.photos[0]}
+                        alt="Featured Cover Photo"
+                        fallback={FALLBACK_SALON_PHOTOS[0]}
+                        isCover
+                        onClick={() => setActiveTab("photos")}
+                      />
+                    </div>
+                  )}
+
+                  {/* 2 Photos */}
+                  {formData.photos.length === 2 && (
+                    <div className="grid grid-cols-2 gap-3 h-full">
+                      <ShowcasePhotoItem
+                        src={formData.photos[0]}
+                        alt="Featured Cover Photo"
+                        fallback={FALLBACK_SALON_PHOTOS[0]}
+                        isCover
+                        onClick={() => setActiveTab("photos")}
+                      />
+                      <ShowcasePhotoItem
+                        src={formData.photos[1]}
+                        alt="Salon Photo 2"
+                        fallback={FALLBACK_SALON_PHOTOS[1]}
+                        onClick={() => setActiveTab("photos")}
+                      />
+                    </div>
+                  )}
+
+                  {/* 3 Photos (User scenario) */}
+                  {formData.photos.length === 3 && (
+                    <div className="grid grid-cols-12 gap-3 h-full">
+                      <div className="col-span-7 sm:col-span-8 h-full">
+                        <ShowcasePhotoItem
+                          src={formData.photos[0]}
+                          alt="Featured Cover Photo"
+                          fallback={FALLBACK_SALON_PHOTOS[0]}
+                          isCover
+                          onClick={() => setActiveTab("photos")}
+                        />
+                      </div>
+                      <div className="col-span-5 sm:col-span-4 flex flex-col gap-3 h-full">
+                        <div className="flex-1 min-h-0">
+                          <ShowcasePhotoItem
+                            src={formData.photos[1]}
+                            alt="Salon Photo 2"
+                            fallback={FALLBACK_SALON_PHOTOS[1]}
+                            onClick={() => setActiveTab("photos")}
+                          />
+                        </div>
+                        <div className="flex-1 min-h-0">
+                          <ShowcasePhotoItem
+                            src={formData.photos[2]}
+                            alt="Salon Photo 3"
+                            fallback={FALLBACK_SALON_PHOTOS[2]}
+                            onClick={() => setActiveTab("photos")}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 4 Photos */}
+                  {formData.photos.length === 4 && (
+                    <div className="grid grid-cols-12 gap-3 h-full">
+                      <div className="col-span-7 sm:col-span-8 h-full">
+                        <ShowcasePhotoItem
+                          src={formData.photos[0]}
+                          alt="Featured Cover Photo"
+                          fallback={FALLBACK_SALON_PHOTOS[0]}
+                          isCover
+                          onClick={() => setActiveTab("photos")}
+                        />
+                      </div>
+                      <div className="col-span-5 sm:col-span-4 flex flex-col gap-2.5 h-full">
+                        {formData.photos.slice(1, 4).map((url, i) => (
+                          <div key={i} className="flex-1 min-h-0">
+                            <ShowcasePhotoItem
+                              src={url}
+                              alt={`Salon Photo ${i + 2}`}
+                              fallback={FALLBACK_SALON_PHOTOS[(i + 1) % FALLBACK_SALON_PHOTOS.length]}
+                              onClick={() => setActiveTab("photos")}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 5 or more Photos */}
+                  {formData.photos.length >= 5 && (
+                    <div className="grid grid-cols-12 gap-3 h-full">
+                      <div className="col-span-7 sm:col-span-7 h-full">
+                        <ShowcasePhotoItem
+                          src={formData.photos[0]}
+                          alt="Featured Cover Photo"
+                          fallback={FALLBACK_SALON_PHOTOS[0]}
+                          isCover
+                          onClick={() => setActiveTab("photos")}
+                        />
+                      </div>
+                      <div className="col-span-5 sm:col-span-5 grid grid-cols-2 grid-rows-2 gap-2.5 h-full">
+                        {formData.photos.slice(1, 5).map((url, i) => {
+                          const isLastSlot = i === 3 && formData.photos.length > 5;
+                          const remainingCount = formData.photos.length - 5;
+                          return (
+                            <div key={i} className="h-full min-h-0">
+                              <ShowcasePhotoItem
+                                src={url}
+                                alt={`Salon Photo ${i + 2}`}
+                                fallback={FALLBACK_SALON_PHOTOS[(i + 1) % FALLBACK_SALON_PHOTOS.length]}
+                                badgeText={isLastSlot ? `+${remainingCount} More` : undefined}
+                                onClick={() => setActiveTab("photos")}
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -606,7 +1066,7 @@ export default function BusinessProfileView() {
             <div className="flex items-center gap-4">
               <div className="relative w-20 h-20 rounded-2xl border border-border overflow-hidden bg-accent shrink-0">
                 {formData.logo ? (
-                  <Image src={formData.logo} alt="Salon Logo" fill className="object-cover" />
+                  <Image src={formData.logo} alt="Salon Logo" fill unoptimized className="object-cover" />
                 ) : (
                   <div className="w-full h-full bg-primary/20 text-primary flex items-center justify-center font-bold text-2xl">
                     {formData.name?.charAt(0) || "S"}
@@ -716,15 +1176,19 @@ export default function BusinessProfileView() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-border">
+          <div className="pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />
+              <span>Update your salon&apos;s basic info, contact details, and category.</span>
+            </p>
             <button
               type="button"
               onClick={() => handleSaveSalon("Profile Information")}
               disabled={isUpdating}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shrink-0"
             >
               {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              <span>Save Changes</span>
+              <span>Save Profile</span>
             </button>
           </div>
         </div>
@@ -768,12 +1232,16 @@ export default function BusinessProfileView() {
             />
           </div>
 
-          <div className="pt-4 border-t border-border">
+          <div className="pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+              <span>Pin your salon on the map to help clients find you easily.</span>
+            </p>
             <button
               type="button"
               onClick={() => handleSaveSalon("Location Details")}
               disabled={isUpdating}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shrink-0"
             >
               {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span>Save Location</span>
@@ -842,12 +1310,16 @@ export default function BusinessProfileView() {
             ))}
           </div>
 
-          <div className="pt-4 border-t border-border">
+          <div className="pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
+              <span>Appointments can only be booked during your active hours.</span>
+            </p>
             <button
               type="button"
               onClick={() => handleSaveSalon("Operating Hours")}
               disabled={isUpdating}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shrink-0"
             >
               {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               <span>Save Operating Hours</span>
@@ -894,6 +1366,7 @@ export default function BusinessProfileView() {
                   src={photoUrl}
                   alt={`Salon Photo ${index + 1}`}
                   fill
+                  unoptimized
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -931,16 +1404,18 @@ export default function BusinessProfileView() {
             </label>
           </div>
 
-          <div className="pt-4 border-t border-border flex items-center justify-between">
-            <span className="text-xs text-muted-foreground">Total {formData.photos.length} photo(s) in gallery</span>
+          <div className="pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <span className="text-xs text-muted-foreground">
+              Total {formData.photos.length} photo(s) in gallery
+            </span>
             <button
               type="button"
               onClick={() => handleSaveSalon("Gallery Photos")}
               disabled={isUpdating}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs sm:text-sm px-6 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shrink-0"
             >
               {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              <span>Save Photo Gallery</span>
+              <span>Save Gallery Photos</span>
             </button>
           </div>
         </div>

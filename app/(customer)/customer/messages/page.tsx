@@ -53,9 +53,26 @@ function CustomerMessagesContent() {
   // Sync selectedChatId with query param
   useEffect(() => {
     if (chatIdParam) {
-      setSelectedChatId(chatIdParam);
+      if (chats.length > 0) {
+        const directChat = chats.find((c: any) => c._id === chatIdParam);
+        if (directChat) {
+          setSelectedChatId(directChat._id);
+        } else {
+          const participantChat = chats.find((c: any) =>
+            Array.isArray(c.participants) &&
+            c.participants.some((p: any) => p._id === chatIdParam || p.id === chatIdParam)
+          );
+          if (participantChat) {
+            setSelectedChatId(participantChat._id);
+          } else {
+            setSelectedChatId(chatIdParam);
+          }
+        }
+      } else {
+        setSelectedChatId(chatIdParam);
+      }
     }
-  }, [chatIdParam]);
+  }, [chatIdParam, chats]);
 
   // Fetch messages for selected chat
   const { data: messagesResponse, isLoading: isMessagesLoading, refetch: refetchMessages } = useGetMyMessageQuery(
@@ -211,7 +228,13 @@ function CustomerMessagesContent() {
     }
   };
 
-  const activeChat = chats.find((c: any) => c._id === selectedChatId);
+  const activeChat =
+    chats.find((c: any) => c._id === selectedChatId) ||
+    chats.find((c: any) =>
+      Array.isArray(c.participants) &&
+      c.participants.some((p: any) => p._id === selectedChatId || p.id === selectedChatId)
+    ) ||
+    (selectedChatId ? { _id: selectedChatId } : null);
   const activeParticipant = activeChat ? getParticipantInfo(activeChat) : null;
 
   // Send Message logic

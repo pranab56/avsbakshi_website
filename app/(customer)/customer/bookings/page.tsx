@@ -4,16 +4,20 @@ import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import ChairImage from "@/components/shared/ChairImage";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { Clock, CheckCircle2, AlertCircle, MessageSquare, Loader2 } from "lucide-react";
 import { useGetMyAppointmentQuery } from "@/features/appointment/appointmentApi";
+import { useCreateChatMutation } from "@/features/chat/chatApi";
 
 function CustomerBookingsContent() {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const [messagingProId, setMessagingProId] = useState<string | null>(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const { data: appointmentsRes, isLoading } = useGetMyAppointmentQuery(undefined);
+  const [createChat] = useCreateChatMutation();
 
   useEffect(() => {
     const paymentStatus = searchParams.get("payment") || searchParams.get("status");
@@ -45,8 +49,8 @@ function CustomerBookingsContent() {
   const formattedBookings = rawAppointments.map((item: any) => {
     const pro = item.professional || {};
     const salon = item.salon || {};
-    const firstName = pro.firstName || "";
-    const lastName = pro.lastName || "";
+    const firstName = pro.firstName || pro.user?.firstName || "";
+    const lastName = pro.lastName || pro.user?.lastName || "";
     const proName = `${firstName} ${lastName}`.trim() || salon.name || "Professional Specialist";
 
     const serviceNames = Array.isArray(item.services) && item.services.length > 0
@@ -60,14 +64,20 @@ function CustomerBookingsContent() {
         : "$0";
 
     const imageUrl =
-      pro.image && pro.image.trim() !== ""
-        ? pro.image
-        : salon.logo && salon.logo.trim() !== ""
-          ? salon.logo
-          : "";
+      (pro.image && pro.image.trim() !== "" ? pro.image : "") ||
+      (pro.user?.image && pro.user?.image.trim() !== "" ? pro.user.image : "") ||
+      (salon.logo && salon.logo.trim() !== "" ? salon.logo : "");
 
     const startsAtDate = item.startsAt ? new Date(item.startsAt) : new Date();
     const isPast = startsAtDate < new Date() || item.status === "completed" || item.status === "cancelled";
+
+    // Extract target professional user ID for chat creation
+    const proUserId =
+      pro.user?._id ||
+      pro.userId ||
+      (typeof pro.user === "string" ? pro.user : null) ||
+      (typeof pro === "object" ? pro._id : null) ||
+      (typeof item.professional === "string" ? item.professional : null);
 
     return {
       id: item._id || item.uid,
@@ -81,10 +91,36 @@ function CustomerBookingsContent() {
       status: item.status || "pending",
       paymentStatus: item.paymentStatus || "unpaid",
       isPast,
-      proId: pro._id,
+      proId: pro._id || (typeof item.professional === "string" ? item.professional : null),
+      proUserId,
+      rawItem: item,
       startsAtDate,
     };
   });
+
+  const handleMessageProfessional = async (booking: any) => {
+    const targetUserId = booking.proUserId || booking.proId;
+    if (!targetUserId) {
+      toast.error("Specialist contact information is unavailable for messaging.");
+      return;
+    }
+
+    try {
+      setMessagingProId(booking.id || targetUserId);
+      const res = await createChat({
+        participants: [targetUserId],
+      }).unwrap();
+
+      const createdChatId = res?.data?._id || res?._id || targetUserId;
+      router.push(`/customer/messages?chatId=${createdChatId}`);
+    } catch (err: any) {
+      console.error("Failed to create chat:", err);
+      // Fallback redirect with targetUserId so customer messages page can find or open conversation
+      router.push(`/customer/messages?chatId=${targetUserId}`);
+    } finally {
+      setMessagingProId(null);
+    }
+  };
 
   const upcomingBookings = formattedBookings.filter((b: any) => !b.isPast);
   const pastBookings = formattedBookings.filter((b: any) => b.isPast);
@@ -109,8 +145,8 @@ function CustomerBookingsContent() {
           type="button"
           onClick={() => setActiveTab("upcoming")}
           className={`pb-2.5 font-medium transition-all cursor-pointer relative ${activeTab === "upcoming"
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground"
+            ? "text-primary"
+            : "text-muted-foreground hover:text-foreground"
             }`}
         >
           Upcoming ({upcomingBookings.length})
@@ -123,8 +159,8 @@ function CustomerBookingsContent() {
           type="button"
           onClick={() => setActiveTab("past")}
           className={`pb-2.5 font-medium transition-all cursor-pointer relative ${activeTab === "past"
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground"
+            ? "text-primary"
+            : "text-muted-foreground hover:text-foreground"
             }`}
         >
           Past ({pastBookings.length})
@@ -189,8 +225,8 @@ function CustomerBookingsContent() {
 
                   <div className="flex items-center gap-2 pt-1">
                     <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full capitalize ${booking.paymentStatus === "paid"
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                        : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                      : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
                       }`}>
                       {booking.paymentStatus === "paid" ? <CheckCircle2 className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
                       Payment: {booking.paymentStatus}
@@ -203,11 +239,29 @@ function CustomerBookingsContent() {
                 </div>
               </div>
 
-              {/* Action Button */}
-              <div className="sm:self-center shrink-0">
+              {/* Action Buttons */}
+              <div className="sm:self-center shrink-0 flex items-center gap-2 w-full sm:w-auto">
+                {/* Message Professional Button (Only when payment is paid) */}
+                {booking.paymentStatus?.toLowerCase() === "paid" && (
+                  <button
+                    type="button"
+                    onClick={() => handleMessageProfessional(booking)}
+                    disabled={messagingProId === (booking.id || booking.proUserId || booking.proId)}
+                    title={`Message ${booking.stylistName}`}
+                    className="flex-1 sm:flex-none px-3.5 py-2.5 rounded-lg bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all cursor-pointer flex items-center justify-center gap-1.5 text-xs font-semibold shadow-xs disabled:opacity-50 active:scale-95 group"
+                  >
+                    {messagingProId === (booking.id || booking.proUserId || booking.proId) ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                    ) : (
+                      <MessageSquare className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
+                    )}
+                    <span>Message</span>
+                  </button>
+                )}
+
                 <Link
                   href={booking.proId ? `/professionals/${booking.proId}` : "/discover"}
-                  className="w-full sm:w-auto inline-block text-center px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold transition-colors shadow-xs"
+                  className="flex-1 sm:flex-none text-center px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold transition-colors shadow-xs"
                 >
                   {activeTab === "upcoming" ? "View Specialist" : "Re-Book Service"}
                 </Link>

@@ -9,9 +9,9 @@ import * as z from "zod";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { Loader2, Eye, EyeOff } from "lucide-react";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useLoginMutation } from "@/features/auth/authApi";
-import { setCredentials } from "@/features/auth/authSlice";
+import { setCredentials, logout } from "@/features/auth/authSlice";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
@@ -28,6 +28,14 @@ function LoginFormContent() {
   const [login, { isLoading }] = useLoginMutation();
 
   const redirectParam = searchParams.get("redirect") || (typeof window !== "undefined" ? sessionStorage.getItem("pendingBookingUrl") : null);
+
+  useEffect(() => {
+    if (searchParams.get("logout") === "true") {
+      dispatch(logout());
+      toast.success("Successfully logged out.");
+      router.replace("/login");
+    }
+  }, [searchParams, dispatch, router]);
 
   const {
     register,

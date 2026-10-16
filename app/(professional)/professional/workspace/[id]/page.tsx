@@ -18,12 +18,7 @@ import {
   CheckCircle2,
   XCircle,
   Loader2,
-  ShieldCheck,
-  Armchair,
-  Sparkles,
   ArrowRight,
-  Info,
-  DollarSign,
   Share2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -53,7 +48,10 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
     useCreateChairRentalMutation();
 
   const chairData = chairRes?.data;
-  const salon = chairData?.salon;
+  const salon =
+    typeof chairData?.salon === "object" && chairData?.salon !== null
+      ? chairData.salon
+      : null;
 
   // Timezone-safe local client date strings (YYYY-MM-DD)
   const getTodayString = () => {
@@ -215,11 +213,29 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
 
   const activePhoto = allPhotos[selectedPhotoIndex] || allPhotos[0] || chairData.photo;
 
-  const salonAddress = salon?.address
-    ? [salon.address.line1, salon.address.city, salon.address.state, salon.address.country]
-      .filter(Boolean)
-      .join(", ")
-    : "Location not specified";
+  const addressParts = salon?.address
+    ? [
+        salon.address.line1,
+        salon.address.city,
+        salon.address.state,
+        salon.address.postalCode,
+        salon.address.country,
+      ].filter(Boolean)
+    : [];
+
+  const hasContactInfo = Boolean(
+    salon && (salon.email || salon.phone || salon.website || salon.instagram)
+  );
+
+  const hasSalonDetails = Boolean(
+    salon &&
+      (salon.name ||
+        salon.logo ||
+        salon.description ||
+        addressParts.length > 0 ||
+        hasContactInfo ||
+        (Array.isArray(salon.availability) && salon.availability.length > 0))
+  );
 
   return (
     <div className="space-y-6 pb-20 font-sans text-foreground">
@@ -271,30 +287,38 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                       {chairData.uid}
                     </span>
                   )}
-                  <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 capitalize">
-                    {chairData.status || "Active"}
-                  </span>
+                  {chairData.status && (
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 capitalize">
+                      {chairData.status}
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                  <Building2 className="w-4 h-4 text-primary" />
-                  <span className="font-semibold text-foreground">
-                    {salon?.name || "Premium Salon"}
-                  </span>
-                  <span>•</span>
-                  <span>{salon?.businessType || "Hair & Beauty Salon"}</span>
-                </div>
+                {salon && (salon.name || salon.businessType) && (
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                    <Building2 className="w-4 h-4 text-primary" />
+                    {salon.name && (
+                      <span className="font-semibold text-foreground">
+                        {salon.name}
+                      </span>
+                    )}
+                    {salon.name && salon.businessType && <span>•</span>}
+                    {salon.businessType && <span>{salon.businessType}</span>}
+                  </div>
+                )}
               </div>
 
               {/* Price display */}
-              <div className="sm:text-right shrink-0">
-                <span className="font-serif italic font-bold text-3xl sm:text-4xl text-primary">
-                  ${chairData.pricePerDayInUSD}
-                </span>
-                <span className="text-xs sm:text-sm font-normal text-muted-foreground ml-1">
-                  / day
-                </span>
-              </div>
+              {chairData?.pricePerDayInUSD !== undefined && chairData?.pricePerDayInUSD !== null && (
+                <div className="sm:text-right shrink-0">
+                  <span className="font-serif italic font-bold text-3xl sm:text-4xl text-primary">
+                    ${chairData.pricePerDayInUSD}
+                  </span>
+                  <span className="text-xs sm:text-sm font-normal text-muted-foreground ml-1">
+                    / day
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Featured Image Viewer */}
@@ -322,10 +346,11 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                       key={idx}
                       type="button"
                       onClick={() => setSelectedPhotoIndex(idx)}
-                      className={`relative w-20 h-16 rounded-xl overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${selectedPhotoIndex === idx
+                      className={`relative w-20 h-16 rounded-xl overflow-hidden border-2 shrink-0 transition-all cursor-pointer ${
+                        selectedPhotoIndex === idx
                           ? "border-primary ring-2 ring-primary/30"
                           : "border-border hover:border-primary/50 opacity-75 hover:opacity-100"
-                        }`}
+                      }`}
                     >
                       <Image
                         src={photoUrl}
@@ -350,93 +375,101 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                 </div>
               )}
 
-              <div>
-                <h3 className="font-serif font-bold text-lg text-foreground mb-2">
-                  Station &amp; Chair Features
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  {chairData.description ||
-                    "Comfortable and well-equipped salon chair located in the styling area, suitable for hairstylists and beauty professionals. Includes access to a mirror, workstation, lighting, and shared salon facilities."}
-                </p>
-              </div>
+              {chairData.description && (
+                <div>
+                  <h3 className="font-serif font-bold text-lg text-foreground mb-2">
+                    Description
+                  </h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                    {chairData.description}
+                  </p>
+                </div>
+              )}
 
-              {/* Highlights pills */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2">
-                {[
-                  "Ergonomic Hydraulic Chair",
-                  "Styling Mirror & Light",
-                  "Dedicated Power Outlets",
-                  "Wash Basin Access",
-                  "Sanitized Workstation",
-                  "Shared Waiting Lounge",
-                ].map((perk, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30 border border-border text-xs text-foreground font-medium"
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
-                    <span className="truncate">{perk}</span>
+              {/* Dynamic highlights/amenities only if returned from API */}
+              {Array.isArray(chairData.amenities || chairData.features) &&
+                (chairData.amenities || chairData.features).length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2">
+                    {(chairData.amenities || chairData.features).map(
+                      (perk: string, i: number) => (
+                        <div
+                          key={i}
+                          className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30 border border-border text-xs text-foreground font-medium"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                          <span className="truncate">{perk}</span>
+                        </div>
+                      )
+                    )}
                   </div>
-                ))}
-              </div>
+                )}
             </div>
           </div>
 
-          {/* 2. SALON DETAILS CARD */}
-          {salon && (
+          {/* 2. SALON DETAILS CARD (Only if salon info exists in API) */}
+          {hasSalonDetails && salon && (
             <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs p-6 sm:p-8 space-y-6">
               {/* Salon Header with Logo */}
               <div className="flex items-start justify-between gap-4 border-b border-border pb-5">
                 <div className="flex items-center gap-4">
-                  <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-accent border border-border shrink-0 shadow-xs">
-                    {salon.logo ? (
+                  {salon.logo ? (
+                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-accent border border-border shrink-0 shadow-xs">
                       <Image
                         src={salon.logo}
-                        alt={salon.name}
+                        alt={salon.name || "Salon logo"}
                         fill
                         className="object-cover"
                         unoptimized
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-primary font-serif font-bold text-2xl">
-                        {salon.name?.[0] || "S"}
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  ) : salon.name ? (
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-accent border border-border shrink-0 shadow-xs flex items-center justify-center text-primary font-serif font-bold text-2xl">
+                      {salon.name[0]}
+                    </div>
+                  ) : null}
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="font-serif font-bold text-2xl text-foreground">
-                        {salon.name}
-                      </h2>
+                      {salon.name && (
+                        <h2 className="font-serif font-bold text-2xl text-foreground">
+                          {salon.name}
+                        </h2>
+                      )}
                       {salon.uid && (
                         <span className="px-2 py-0.5 rounded-md bg-accent text-[10px] font-mono font-semibold text-muted-foreground">
                           {salon.uid}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {salon.businessType || "Hair & Beauty Salon"}
-                    </p>
+                    {salon.businessType && (
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {salon.businessType}
+                      </p>
+                    )}
 
-                    {/* Ratings */}
-                    <div className="flex items-center gap-1.5 text-xs text-foreground mt-1">
-                      <div className="flex items-center text-primary">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-3.5 h-3.5 ${i < (salon.avgRating || 5)
-                                ? "fill-primary text-primary"
-                                : "text-muted-foreground/30"
+                    {/* Ratings (Only if present in API response) */}
+                    {typeof salon.avgRating === "number" && salon.avgRating > 0 && (
+                      <div className="flex items-center gap-1.5 text-xs text-foreground mt-1">
+                        <div className="flex items-center text-primary">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3.5 h-3.5 ${
+                                i < Math.round(salon.avgRating)
+                                  ? "fill-primary text-primary"
+                                  : "text-muted-foreground/30"
                               }`}
-                          />
-                        ))}
+                            />
+                          ))}
+                        </div>
+                        <span className="font-bold">{salon.avgRating}</span>
+                        {typeof salon.totalReviews === "number" && (
+                          <span className="text-muted-foreground">
+                            ({salon.totalReviews} reviews)
+                          </span>
+                        )}
                       </div>
-                      <span className="font-bold">{salon.avgRating || 5.0}</span>
-                      <span className="text-muted-foreground">
-                        ({salon.totalReviews || 0} reviews)
-                      </span>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -447,87 +480,93 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                   <h3 className="font-serif font-bold text-base text-foreground">
                     About the Salon
                   </h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
                     {salon.description}
                   </p>
                 </div>
               )}
 
               {/* Address / Location Section */}
-              <div className="space-y-2">
-                <h3 className="font-serif font-bold text-base text-foreground">
-                  Address &amp; Location
-                </h3>
-                <div className="flex items-start gap-3 p-4 rounded-xl bg-accent/40 border border-border">
-                  <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <div className="space-y-0.5 text-xs sm:text-sm">
-                    <p className="font-bold text-foreground">
-                      {salon.address?.line1 || "Street address"}
-                    </p>
-                    <p className="text-muted-foreground">
-                      {[
-                        salon.address?.city,
-                        salon.address?.state,
-                        salon.address?.postalCode,
-                        salon.address?.country,
-                      ]
-                        .filter(Boolean)
-                        .join(", ")}
-                    </p>
+              {addressParts.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="font-serif font-bold text-base text-foreground">
+                    Address &amp; Location
+                  </h3>
+                  <div className="flex items-start gap-3 p-4 rounded-xl bg-accent/40 border border-border">
+                    <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <div className="space-y-0.5 text-xs sm:text-sm">
+                      {salon.address?.line1 && (
+                        <p className="font-bold text-foreground">
+                          {salon.address.line1}
+                        </p>
+                      )}
+                      <p className="text-muted-foreground">
+                        {[
+                          salon.address?.city,
+                          salon.address?.state,
+                          salon.address?.postalCode,
+                          salon.address?.country,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Contact Information Grid */}
-              <div className="space-y-2">
-                <h3 className="font-serif font-bold text-base text-foreground">
-                  Salon Contact Details
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
-                  {salon.email && (
-                    <a
-                      href={`mailto:${salon.email}`}
-                      className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <Mail className="w-4 h-4 text-primary shrink-0" />
-                      <span className="truncate">{salon.email}</span>
-                    </a>
-                  )}
+              {hasContactInfo && (
+                <div className="space-y-2">
+                  <h3 className="font-serif font-bold text-base text-foreground">
+                    Salon Contact Details
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                    {salon.email && (
+                      <a
+                        href={`mailto:${salon.email}`}
+                        className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <Mail className="w-4 h-4 text-primary shrink-0" />
+                        <span className="truncate">{salon.email}</span>
+                      </a>
+                    )}
 
-                  {salon.phone && (
-                    <a
-                      href={`tel:${salon.phone}`}
-                      className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <Phone className="w-4 h-4 text-primary shrink-0" />
-                      <span className="truncate">{salon.phone}</span>
-                    </a>
-                  )}
+                    {salon.phone && (
+                      <a
+                        href={`tel:${salon.phone}`}
+                        className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <Phone className="w-4 h-4 text-primary shrink-0" />
+                        <span className="truncate">{salon.phone}</span>
+                      </a>
+                    )}
 
-                  {salon.website && (
-                    <a
-                      href={
-                        salon.website.startsWith("http")
-                          ? salon.website
-                          : `https://${salon.website}`
-                      }
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <Globe className="w-4 h-4 text-primary shrink-0" />
-                      <span className="truncate">{salon.website}</span>
-                    </a>
-                  )}
+                    {salon.website && (
+                      <a
+                        href={
+                          salon.website.startsWith("http")
+                            ? salon.website
+                            : `https://${salon.website}`
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <Globe className="w-4 h-4 text-primary shrink-0" />
+                        <span className="truncate">{salon.website}</span>
+                      </a>
+                    )}
 
-                  {salon.instagram && (
-                    <div className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground">
-                      <Instagram className="w-4 h-4 text-primary shrink-0" />
-                      <span className="truncate">{salon.instagram}</span>
-                    </div>
-                  )}
+                    {salon.instagram && (
+                      <div className="p-3 rounded-xl bg-accent/30 border border-border flex items-center gap-2.5 text-muted-foreground">
+                        <Instagram className="w-4 h-4 text-primary shrink-0" />
+                        <span className="truncate">{salon.instagram}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Operating Hours / Weekly Availability */}
               {Array.isArray(salon.availability) && salon.availability.length > 0 && (
@@ -582,9 +621,6 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                 </span>
                 <span className="text-sm text-muted-foreground">/ day</span>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-1">
-                Flexible day-by-day chair rental for independent professionals
-              </p>
             </div>
 
             {/* Booking Form */}
@@ -649,16 +685,6 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>Station &amp; Equipment access</span>
-                  <span className="text-emerald-500 font-semibold">Included</span>
-                </div>
-
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>Utilities, lighting &amp; water</span>
-                  <span className="text-emerald-500 font-semibold">Included</span>
-                </div>
-
                 <div className="border-t border-border pt-2.5 flex items-center justify-between text-sm font-bold text-foreground">
                   <span>Total Estimated Cost</span>
                   <span className="font-serif italic text-lg text-primary">
@@ -686,22 +712,6 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                 )}
               </button>
             </form>
-
-            {/* Trust and Guarantee Badges */}
-            <div className="pt-2 border-t border-border space-y-2.5 text-[11px] text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Verified Salon Partner &amp; Guaranteed Space</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                <span>Instant reservation request sent to salon</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Info className="w-4 h-4 text-muted-foreground shrink-0" />
-                <span>Standard check-in from 09:00 AM daily</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

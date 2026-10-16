@@ -55,6 +55,7 @@ export default function ChairsSpacePage() {
   const [modalMode, setModalMode] = useState<"add" | "edit">("add");
   const [editingChairId, setEditingChairId] = useState<string | null>(null);
   const [deletingChair, setDeletingChair] = useState<Chair | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -92,9 +93,18 @@ export default function ChairsSpacePage() {
     return "";
   };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleProcessFile = async (file: File) => {
     if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size exceeds 5MB limit. Please select a smaller photo.");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file (PNG, JPG, or WEBP).");
+      return;
+    }
 
     const localPreview = URL.createObjectURL(file);
     setImagePreview(localPreview);
@@ -111,6 +121,11 @@ export default function ChairsSpacePage() {
       toast.error("Failed to upload photo. Using local preview.");
       setForm((prev) => ({ ...prev, photo: localPreview }));
     }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleProcessFile(file);
   };
 
   const handleRemoveImage = () => {
@@ -447,9 +462,23 @@ export default function ChairsSpacePage() {
 
             {/* Field 5: Chair Image Upload / URL */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-foreground block">
-                Chair Image <span className="text-muted-foreground font-normal">(Optional)</span>
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-foreground block">
+                  Chair Image <span className="text-muted-foreground font-normal">(Optional)</span>
+                </label>
+                {isUploadingImage && (
+                  <span className="text-[11px] font-medium text-[#D99722] flex items-center gap-1.5 animate-pulse">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Uploading photo...</span>
+                  </span>
+                )}
+                {!isUploadingImage && (imagePreview || form.photo) && (
+                  <span className="text-[11px] font-medium text-emerald-500 flex items-center gap-1">
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Photo ready</span>
+                  </span>
+                )}
+              </div>
 
               <input
                 type="file"
@@ -460,7 +489,7 @@ export default function ChairsSpacePage() {
               />
 
               {imagePreview || form.photo ? (
-                <div className="relative w-full h-36 rounded-lg overflow-hidden border border-border bg-muted group">
+                <div className="relative w-full h-40 rounded-xl overflow-hidden border border-border bg-muted group shadow-2xs">
                   <Image
                     src={imagePreview || form.photo}
                     alt="Chair Preview"
@@ -468,47 +497,116 @@ export default function ChairsSpacePage() {
                     className="object-cover"
                     unoptimized
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isUploadingImage}
-                      className="px-3 py-1.5 bg-background/90 hover:bg-background text-foreground text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer disabled:opacity-50"
-                    >
-                      {isUploadingImage ? "Uploading..." : "Change"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="px-3 py-1.5 bg-red-600/90 hover:bg-red-600 text-white text-xs font-medium rounded-md shadow-xs transition-colors cursor-pointer"
-                    >
-                      Remove
-                    </button>
-                  </div>
+
+                  {/* ACTIVE UPLOAD OVERLAY - Always visible while uploading */}
+                  {isUploadingImage ? (
+                    <div className="absolute inset-0 bg-black/75 backdrop-blur-xs flex flex-col items-center justify-center gap-2 z-20 animate-in fade-in duration-200">
+                      <div className="w-11 h-11 rounded-full bg-[#D99722]/20 border border-[#D99722]/40 flex items-center justify-center">
+                        <Loader2 className="w-6 h-6 animate-spin text-[#D99722]" />
+                      </div>
+                      <div className="text-center space-y-0.5">
+                        <p className="text-xs font-semibold text-white tracking-wide">
+                          Uploading photo to cloud...
+                        </p>
+                        <p className="text-[10px] text-white/70">
+                          Please wait a moment
+                        </p>
+                      </div>
+                      {/* Animated bottom progress bar */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 overflow-hidden">
+                        <div className="h-full bg-[#D99722] animate-pulse w-full" />
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Upload Success Badge */}
+                      <div className="absolute top-2.5 right-2.5 z-10 pointer-events-none">
+                        <span className="bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs flex items-center gap-1">
+                          <Check className="w-3 h-3" />
+                          <span>Uploaded</span>
+                        </span>
+                      </div>
+
+                      {/* Hover Overlay with Action Buttons */}
+                      <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2.5 z-10">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="px-3.5 py-1.5 bg-background/95 hover:bg-background text-foreground text-xs font-semibold rounded-lg shadow-sm transition-all cursor-pointer flex items-center gap-1.5 hover:scale-105 active:scale-95"
+                        >
+                          <Upload className="w-3.5 h-3.5 text-[#D99722]" />
+                          <span>Change Photo</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleRemoveImage}
+                          className="px-3.5 py-1.5 bg-destructive/95 hover:bg-destructive text-destructive-foreground text-xs font-semibold rounded-lg shadow-sm transition-all cursor-pointer flex items-center gap-1.5 hover:scale-105 active:scale-95"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Remove</span>
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploadingImage}
-                  className="w-full h-28 border-2 border-dashed border-border hover:border-[#D99722] bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group disabled:opacity-50"
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    if (!isUploadingImage) setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    if (!isUploadingImage) {
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) handleProcessFile(file);
+                    }
+                  }}
+                  onClick={() => !isUploadingImage && fileInputRef.current?.click()}
+                  className={`w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 transition-all cursor-pointer group ${
+                    isDragging
+                      ? "border-[#D99722] bg-[#D99722]/10 scale-[0.99]"
+                      : isUploadingImage
+                      ? "border-[#D99722]/60 bg-[#D99722]/5 cursor-wait"
+                      : "border-border hover:border-[#D99722]/60 bg-muted/40 hover:bg-muted/70"
+                  }`}
                 >
-                  <div className="w-9 h-9 rounded-full bg-secondary text-muted-foreground group-hover:bg-[#D99722]/15 group-hover:text-[#D99722] flex items-center justify-center transition-colors">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                      isUploadingImage
+                        ? "bg-[#D99722]/20 text-[#D99722]"
+                        : "bg-secondary text-muted-foreground group-hover:bg-[#D99722]/15 group-hover:text-[#D99722] group-hover:scale-110"
+                    }`}
+                  >
                     {isUploadingImage ? (
-                      <Loader2 className="w-4 h-4 animate-spin text-[#D99722]" />
+                      <Loader2 className="w-5 h-5 animate-spin text-[#D99722]" />
                     ) : (
-                      <Upload className="w-4 h-4" />
+                      <Upload className="w-5 h-5" />
                     )}
                   </div>
-                  <div className="text-center">
-                    <span className="text-xs font-semibold text-foreground group-hover:text-[#D99722] transition-colors">
-                      {isUploadingImage ? "Uploading image..." : "Click to upload chair space photo"}
+                  <div className="text-center space-y-0.5">
+                    <span
+                      className={`text-xs font-semibold block transition-colors ${
+                        isUploadingImage
+                          ? "text-[#D99722]"
+                          : isDragging
+                          ? "text-[#D99722]"
+                          : "text-foreground group-hover:text-[#D99722]"
+                      }`}
+                    >
+                      {isUploadingImage
+                        ? "Uploading chair photo..."
+                        : isDragging
+                        ? "Drop photo here to upload"
+                        : "Click to upload chair space photo"}
                     </span>
                     <span className="text-[11px] text-muted-foreground block">
-                      PNG, JPG or WEBP (Max 5MB)
+                      PNG, JPG, WEBP (Max 5MB) · Drag &amp; drop supported
                     </span>
                   </div>
-                </button>
+                </div>
               )}
             </div>
 
@@ -517,7 +615,7 @@ export default function ChairsSpacePage() {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                disabled={isCreating || isUpdating}
+                disabled={isCreating || isUpdating || isUploadingImage}
                 className="px-5 py-2.5 rounded-sm bg-secondary border border-border text-muted-foreground hover:text-foreground text-sm font-medium transition-colors cursor-pointer disabled:opacity-50"
               >
                 Cancel
@@ -526,15 +624,32 @@ export default function ChairsSpacePage() {
               <button
                 type="submit"
                 disabled={isCreating || isUpdating || isUploadingImage}
-                className="px-6 py-2.5 rounded-sm bg-[#D99722] hover:bg-[#8F6929] text-white text-sm font-medium transition-colors cursor-pointer shadow-xs active:scale-[0.98] flex items-center gap-2 disabled:opacity-50"
+                className={`px-6 py-2.5 rounded-sm text-white text-sm font-medium transition-all shadow-xs flex items-center gap-2 ${
+                  isCreating || isUpdating || isUploadingImage
+                    ? "bg-[#D99722]/70 cursor-not-allowed opacity-80"
+                    : "bg-[#D99722] hover:bg-[#8F6929] cursor-pointer active:scale-[0.98]"
+                }`}
               >
-                {isCreating || isUpdating ? (
+                {isUploadingImage ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>{modalMode === "add" ? "Creating..." : "Saving..."}</span>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Uploading Photo...</span>
+                  </>
+                ) : isCreating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Creating Chair...</span>
+                  </>
+                ) : isUpdating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Saving Changes...</span>
                   </>
                 ) : (
-                  <span>{modalMode === "add" ? "Create Chair" : "Save Changes"}</span>
+                  <>
+                    {modalMode === "add" ? <Plus className="w-4 h-4" /> : <Check className="w-4 h-4" />}
+                    <span>{modalMode === "add" ? "Create Chair" : "Save Changes"}</span>
+                  </>
                 )}
               </button>
             </div>

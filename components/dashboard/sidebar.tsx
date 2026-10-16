@@ -1,16 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "sonner";
-import { logout } from "@/features/auth/authSlice";
-import { LogOut, X } from "lucide-react";
+import { useSelector } from "react-redux";
+import { LogOut, X, Loader2 } from "lucide-react";
 import { NavItem, RoleType } from "./nav-config";
 import Image from "next/image";
 import { useGetAllChatsQuery } from "@/features/chat/chatApi";
 import { useGetMyAppointmentQuery } from "@/features/appointment/appointmentApi";
+import { removeStorage } from "@/utils/storage";
 import {
   Dialog,
   DialogContent,
@@ -33,8 +32,12 @@ export default function DashboardSidebar({
 }: DashboardSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const dispatch = useDispatch();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  useEffect(() => {
+    router.prefetch("/login?logout=true");
+  }, [router]);
 
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
 
@@ -50,10 +53,9 @@ export default function DashboardSidebar({
     : (appointmentsResponse?.pagination?.total ?? (Array.isArray(appointmentsResponse) ? appointmentsResponse.length : undefined));
 
   const handleLogout = () => {
-    setShowLogoutConfirm(false);
-    dispatch(logout());
-    toast.success("Successfully logged out.");
-    window.location.href = "/api/auth/logout";
+    setIsLoggingOut(true);
+    removeStorage();
+    window.location.replace("/login?logout=true");
   };
 
   return (
@@ -68,8 +70,9 @@ export default function DashboardSidebar({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col w-64 max-w-[85vw] lg:max-w-none bg-[#161618] text-white transition-transform duration-300 ease-in-out lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col w-64 max-w-[85vw] lg:max-w-none bg-[#161618] text-white ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 transition-transform duration-300 ease-in-out lg:transition-none`}
       >
         {/* Header / Brand Logo */}
         <div className="relative flex items-center justify-center h-16 sm:h-20 px-6 border-b border-white/10 shrink-0">
@@ -140,7 +143,7 @@ export default function DashboardSidebar({
                 </div>
 
                 {/* Optional Badge */}
-                {displayBadge !== undefined && displayBadge !== null && (
+                {Boolean(displayBadge && Number(displayBadge) > 0) && (
                   <span
                     className={`px-2 py-0.5 text-xs font-bold rounded-full ${isActive
                       ? "bg-white text-[#D99722]"
@@ -168,10 +171,15 @@ export default function DashboardSidebar({
       </aside>
 
       {/* Logout Confirmation Modal */}
-      <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+      <Dialog
+        open={showLogoutConfirm}
+        onOpenChange={(open) => {
+          if (!isLoggingOut) setShowLogoutConfirm(open);
+        }}
+      >
         <DialogContent className="sm:max-w-md bg-popover border border-border text-popover-foreground p-6 rounded-xl">
           <DialogHeader className="space-y-2 text-left">
-            <DialogTitle className="  font-bold text-xl text-foreground">
+            <DialogTitle className="font-bold text-xl text-foreground">
               Confirm Logout
             </DialogTitle>
             <DialogDescription className="text-sm text-muted-foreground">
@@ -182,17 +190,26 @@ export default function DashboardSidebar({
           <div className="flex items-center justify-end gap-3 pt-4">
             <button
               type="button"
+              disabled={isLoggingOut}
               onClick={() => setShowLogoutConfirm(false)}
-              className="px-4 py-2.5 rounded-lg border border-border text-foreground hover:bg-accent text-sm font-medium transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-lg border border-border text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="button"
+              disabled={isLoggingOut}
               onClick={handleLogout}
-              className="px-4 py-2.5 rounded-lg bg-[#E54D42] hover:bg-[#D43B30] text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#E54D42] hover:bg-[#D43B30] disabled:opacity-75 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors cursor-pointer shadow-sm shadow-[#E54D42]/20"
             >
-              Log out
+              {isLoggingOut ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Logging out...</span>
+                </>
+              ) : (
+                <span>Log out</span>
+              )}
             </button>
           </div>
         </DialogContent>

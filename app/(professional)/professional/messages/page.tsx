@@ -361,24 +361,6 @@ function ProfessionalMessagesContent() {
           >
             <RefreshCw className={`w-4 h-4 ${isFetchingChats ? "animate-spin" : ""}`} />
           </button>
-
-          <div className="flex items-center gap-2 bg-accent p-1.5 rounded-lg border border-border w-full sm:w-auto">
-            <Link
-              href="/professional/calendar"
-              className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer text-muted-foreground hover:text-foreground"
-            >
-              <CalendarIcon className="w-4 h-4" />
-              <span>Calendar</span>
-            </Link>
-
-            <Link
-              href="/professional/messages"
-              className="flex-1 sm:flex-none justify-center px-4 py-2 text-xs sm:text-sm font-semibold rounded-md flex items-center gap-2 transition-all cursor-pointer bg-primary text-primary-foreground shadow-sm"
-            >
-              <MessageSquare className="w-4 h-4" />
-              <span>Messages</span>
-            </Link>
-          </div>
         </div>
       </div>
 

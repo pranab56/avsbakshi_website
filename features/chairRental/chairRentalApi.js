@@ -13,11 +13,15 @@ export const chairRentalApi = baseApi.injectEndpoints({
         }),
 
         updateChairRental: builder.mutation({
-            query: ({ chairRentalId, data }) => ({
-                url: `/chair-rentals/${chairRentalId}`,
-                method: "PATCH",
-                body: data,
-            }),
+            query: ({ chairRentalId, id, data, ...rest }) => {
+                const targetId = chairRentalId || id;
+                const body = data !== undefined ? data : rest;
+                return {
+                    url: `/chair-rentals/${targetId}`,
+                    method: "PATCH",
+                    body,
+                };
+            },
             invalidatesTags: ["chairRental"]
         }),
 
