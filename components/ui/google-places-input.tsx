@@ -74,7 +74,11 @@ export function GooglePlacesInput({
   useEffect(() => {
     const getApiKey = async () => {
       const config = await envConfig();
-      const key = config.googleMapsApiKey || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+      const key =
+        config.googleMapsApiKey ||
+        process.env.GOOGLE_MAPS_API_KEY ||
+        process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
+        '';
       setApiKey(key);
     };
     getApiKey();

@@ -50,7 +50,12 @@ export default function GoogleMapPicker({
   useEffect(() => {
     const getApiKey = async () => {
       const config = await envConfig();
-      setApiKey(config.googleMapsApiKey || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "");
+      setApiKey(
+        config.googleMapsApiKey ||
+        process.env.GOOGLE_MAPS_API_KEY ||
+        process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
+        ""
+      );
     };
     getApiKey();
   }, []);
