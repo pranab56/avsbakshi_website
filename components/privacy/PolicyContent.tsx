@@ -24,12 +24,12 @@ export default function PolicyContent() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-16 text-muted-foreground">
-          <Loader2 className="w-6 h-6 animate-spin mr-2" />
+          <Loader2 className="w-6 h-6 animate-spin mr-2 text-primary" />
           <span className="text-sm font-medium">Loading Privacy Policy...</span>
         </div>
       ) : content ? (
         <div
-          className="prose dark:prose-invert max-w-none text-muted-foreground [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline"
+          className="prose dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-sm sm:[&_p]:text-base [&_p]:leading-relaxed [&_p]:text-zinc-700 dark:[&_p]:text-zinc-300 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       ) : (
@@ -38,12 +38,12 @@ export default function PolicyContent() {
           {/* Section 1: Introduction */}
           <section className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full" />
-              <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 1. Introduction
               </h2>
             </div>
-            <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed pl-4 border-l-2 border-border">
+            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
               <p>
                 This Privacy Policy describes how Cloud Salon (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) collects, uses, discloses, and protects your personal information when you access or use our platform, including our website and mobile application (collectively, the &ldquo;Platform&rdquo;).
               </p>
@@ -56,18 +56,18 @@ export default function PolicyContent() {
           {/* Section 2: Information We Collect */}
           <section className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full" />
-              <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 2. Information We Collect
               </h2>
             </div>
 
-            <div className="space-y-6 text-xs sm:text-sm text-muted-foreground pl-4 border-l-2 border-border">
+            <div className="space-y-6 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 pl-4 border-l-2 border-[#D99722]/40">
               <div className="space-y-2">
-                <h3 className="font-semibold text-foreground text-sm sm:text-base">
+                <h3 className="font-bold text-foreground text-base">
                   A. Information You Provide Directly
                 </h3>
-                <ul className="space-y-2.5 pl-5 list-disc text-muted-foreground">
+                <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
                   <li>
                     <strong className="text-foreground">Account Registration:</strong> Name, email address, phone number, and password when registering as a customer, professional, or business.
                   </li>
@@ -84,10 +84,10 @@ export default function PolicyContent() {
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-semibold text-foreground text-sm sm:text-base">
+                <h3 className="font-bold text-foreground text-base">
                   B. Information Collected Automatically
                 </h3>
-                <ul className="space-y-2.5 pl-5 list-disc text-muted-foreground">
+                <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
                   <li>
                     <strong className="text-foreground">Device &amp; Usage Data:</strong> IP address, device type, browser details, pages visited, and interaction logs.
                   </li>
@@ -105,14 +105,14 @@ export default function PolicyContent() {
           {/* Section 3: How We Use Information */}
           <section className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full" />
-              <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 3. How We Use Your Information
               </h2>
             </div>
-            <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed pl-4 border-l-2 border-border">
+            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
               <p>We process collected data for legitimate operational and business purposes:</p>
-              <ul className="space-y-2.5 pl-5 list-disc text-muted-foreground">
+              <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
                 <li>Facilitating appointment bookings, client notifications, and automated booking reminders.</li>
                 <li>Processing secure payments, split payouts for salon renters, and digital receipts.</li>
                 <li>Personalizing service recommendations based on past appointments and location.</li>
@@ -125,17 +125,17 @@ export default function PolicyContent() {
           {/* Section 4: Data Security & Retention */}
           <section className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full" />
-              <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 4. Data Security &amp; Retention
               </h2>
             </div>
-            <div className="space-y-3 text-xs sm:text-sm text-muted-foreground leading-relaxed pl-4 border-l-2 border-border">
+            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
               <p>
                 We implement industry-standard technical and organizational security measures, including SSL encryption, secure data storage, and strict access controls. Payment card details are tokenized and processed exclusively by PCI-DSS compliant payment providers.
               </p>
               <p>
-                We retain personal data only for as long as necessary to fulfill the purposes outlined in this policy or as required by applicable UK legal and tax regulations.
+                We retain personal data only for as long as necessary to fulfill the purposes outlined in this policy or as required by applicable legal and tax regulations.
               </p>
             </div>
           </section>
@@ -143,14 +143,14 @@ export default function PolicyContent() {
           {/* Section 5: Your Privacy Rights */}
           <section className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full" />
-              <h2 className="  text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 5. Your Privacy Rights
               </h2>
             </div>
-            <div className="space-y-3 text-muted-foreground leading-relaxed pl-4 border-l-2 border-border text-xs sm:text-sm">
+            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
               <p>Depending on your location, you hold specific rights regarding your personal information:</p>
-              <ul className="space-y-2.5 pl-5 list-disc text-muted-foreground">
+              <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
                 <li><strong className="text-foreground">Access &amp; Correction:</strong> Request a copy of your personal data or request corrections to inaccurate entries.</li>
                 <li><strong className="text-foreground">Erasure (Right to be Forgotten):</strong> Request account deletion and removal of associated non-transactional data.</li>
                 <li><strong className="text-foreground">Opt-Out:</strong> Unsubscribe from marketing emails at any time using the link in the footer of our emails.</li>
@@ -160,10 +160,10 @@ export default function PolicyContent() {
 
           {/* Section 6: Contact Us */}
           <section className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-xs">
-            <h3 className="  text-xl font-bold text-foreground">
+            <h3 className="text-xl font-bold text-foreground">
               Questions about our Privacy Policy?
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
               If you have any questions, concerns, or requests regarding your personal data, please contact our Data Protection Team at{" "}
               <a href="mailto:privacy@cloudsalon.com" className="text-primary font-semibold hover:underline">
                 privacy@cloudsalon.com

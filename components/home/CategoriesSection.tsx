@@ -3,22 +3,23 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { SERVICE_CATEGORIES } from "@/lib/data/marketplaceData";
+import { Sparkles } from "lucide-react";
 import { useGetAllCategoryQuery } from "@/features/category/category";
 
 export default function CategoriesSection() {
-  const { data: categoriesRes } = useGetAllCategoryQuery({});
+  const { data: categoriesRes, isLoading } = useGetAllCategoryQuery({});
 
   const apiCategories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
-  const categoriesList = apiCategories.length > 0
-    ? apiCategories.map((cat: any, idx: number) => ({
-        id: cat._id || cat.id || `cat-${idx}`,
-        title: cat.name || cat.title,
-        count: cat.totalServices !== undefined ? `${cat.totalServices} Services` : cat.count || "0 Services",
-        img: cat.image || cat.img || SERVICE_CATEGORIES[idx % SERVICE_CATEGORIES.length]?.img || "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-        desc: cat.name ? `${cat.name} professional beauty services` : cat.desc || "",
-      }))
-    : SERVICE_CATEGORIES;
+  const categoriesList = apiCategories.map((cat: any, idx: number) => ({
+    id: cat._id || cat.id || `cat-${idx}`,
+    title: cat.name || cat.title || "Beauty Service",
+    count: cat.totalServices !== undefined ? `${cat.totalServices} Services` : cat.count || "0 Services",
+    img:
+      cat.image ||
+      cat.img ||
+      "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
+    desc: cat.description || cat.desc || (cat.name ? `${cat.name} professional beauty services` : ""),
+  }));
 
   return (
     <section className="w-full py-6 sm:py-10 bg-white dark:bg-[#121214] transition-colors duration-200 select-none">
@@ -46,16 +47,34 @@ export default function CategoriesSection() {
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {categoriesList.map((cat: any, idx: number) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.05 }}
-              className="bg-card rounded-xl overflow-hidden border border-border shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
-            >
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="bg-card rounded-xl h-64 border border-border animate-pulse"
+              />
+            ))}
+          </div>
+        ) : categoriesList.length === 0 ? (
+          <div className="bg-card rounded-2xl p-10 text-center border border-border space-y-2">
+            <Sparkles className="w-8 h-8 text-muted-foreground mx-auto" />
+            <h4 className="text-sm font-bold text-foreground">No Categories Available</h4>
+            <p className="text-xs text-muted-foreground">
+              No service categories are currently available.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {categoriesList.map((cat: any, idx: number) => (
+              <motion.div
+                key={cat.id}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                className="bg-card rounded-xl overflow-hidden border border-border shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
+              >
               {/* Category Image Header */}
               <Link
                 href={`/professionals?serviceCategory=${encodeURIComponent(cat.id)}`}
@@ -102,7 +121,8 @@ export default function CategoriesSection() {
               </div>
             </motion.div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

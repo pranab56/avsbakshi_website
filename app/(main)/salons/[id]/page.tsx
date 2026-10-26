@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
-import { getSalonById, getProfessionalsBySalon } from "@/lib/data/marketplaceData";
 import { useGetSingleSalonQuery } from "@/features/salon/salonApi";
 import { useGetProfessionalsBySalonIdQuery } from "@/features/profesional/profesionalApi";
 import { useAddAndRemoveWishListMutation } from "@/features/wishlist/wishlistApi";
@@ -99,10 +98,7 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
     }, 50);
   };
 
-  const mockSalon = getSalonById(salonId) || getSalonById(101);
-  const mockProfessionals = getProfessionalsBySalon(salonId) || getProfessionalsBySalon(101) || [];
-
-  const apiTeamMembers = Array.isArray(prosBySalonRes?.data)
+  const teamMembers = Array.isArray(prosBySalonRes?.data)
     ? prosBySalonRes.data.map((item: any) => {
       const pro = item.professional || {};
       const roleRef = pro.roleRef || {};
@@ -129,31 +125,29 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
     })
     : [];
 
-  const teamMembers = apiTeamMembers.length > 0 ? apiTeamMembers : mockProfessionals;
-
   const salon = apiSalonData
     ? {
       id: apiSalonData._id,
-      name: apiSalonData.name,
+      name: apiSalonData.name || "Beauty Salon",
       salonType: apiSalonData.businessType || "Hair & Beauty Salon",
       category: apiSalonData.businessType || "Beauty & Spa Studio",
       rating: apiSalonData.avgRating || 5.0,
       reviews: apiSalonData.totalReviews || 0,
-      location: apiSalonData.address ? `${apiSalonData.address.line1 ? apiSalonData.address.line1 + ", " : ""}${apiSalonData.address.city || ""}` : mockSalon?.location || "Dhaka, Bangladesh",
-      address: apiSalonData.address ? `${apiSalonData.address.line1 || ""}${apiSalonData.address.line2 ? ", " + apiSalonData.address.line2 : ""}, ${apiSalonData.address.city || ""}, ${apiSalonData.address.country || ""}` : mockSalon?.address || "",
-      phone: apiSalonData.phone || mockSalon?.phone || "+880 1700-000000",
+      location: apiSalonData.address ? `${apiSalonData.address.line1 ? apiSalonData.address.line1 + ", " : ""}${apiSalonData.address.city || ""}` : (apiSalonData.location || "Dhaka, Bangladesh"),
+      address: apiSalonData.address ? `${apiSalonData.address.line1 || ""}${apiSalonData.address.line2 ? ", " + apiSalonData.address.line2 : ""}, ${apiSalonData.address.city || ""}, ${apiSalonData.address.country || ""}` : "",
+      phone: apiSalonData.phone || "",
       email: apiSalonData.email || "",
       website: apiSalonData.website || "",
       instagram: apiSalonData.instagram || "",
       badge: apiSalonData.status === "active" ? "Open Today" : "Verified Salon",
-      tags: [apiSalonData.businessType || "Beauty", apiSalonData.address?.city || "Salon"],
-      img: apiSalonData.logo || apiSalonData.photos?.[0] || mockSalon?.img || "",
-      description: apiSalonData.description || mockSalon?.description || "",
-      amenities: mockSalon?.amenities || ["Free Wi-Fi", "Coffee & Tea Lounge", "Private Rooms", "Card Accepted"],
-      photos: Array.isArray(apiSalonData.photos) && apiSalonData.photos.length > 0 ? apiSalonData.photos : mockSalon?.photos || [],
+      tags: [apiSalonData.businessType || "Beauty", apiSalonData.address?.city || "Salon"].filter(Boolean),
+      img: apiSalonData.logo || apiSalonData.photos?.[0] || "",
+      description: apiSalonData.description || "",
+      amenities: Array.isArray(apiSalonData.amenities) ? apiSalonData.amenities : [],
+      photos: Array.isArray(apiSalonData.photos) ? apiSalonData.photos : [],
       createdBy: apiSalonData.createdBy,
     }
-    : mockSalon;
+    : null;
 
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -217,10 +211,30 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
       : "Today: Closed"
     : "Mon-Sat: 09:00 AM - 07:00 PM";
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground py-16 px-4">
+        <Loader2 className="w-10 h-10 animate-spin text-[#D99722] mb-3" />
+        <p className="text-sm font-medium text-muted-foreground">Loading salon details...</p>
+      </div>
+    );
+  }
+
   if (!salon) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-        <p className="text-sm text-muted-foreground">Salon not found.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground py-16 px-4">
+        <div className="bg-card rounded-2xl border border-border p-8 text-center max-w-md w-full space-y-3 shadow-sm">
+          <p className="text-base font-bold text-foreground">Salon Not Found</p>
+          <p className="text-xs text-muted-foreground">The requested salon details could not be found or are not available.</p>
+          <div className="pt-2">
+            <Link
+              href="/salons"
+              className="inline-flex px-4 py-2 rounded-xl bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold"
+            >
+              Browse All Salons
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -394,9 +408,13 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
           {/* TAB 1: TEAM MEMBERS / PROFESSIONALS */}
           {activeTab === "team" && (
             <div className="space-y-4 animate-in fade-in duration-200">
-              <h3 className="text-sm font-bold text-foreground">Meet the Specialists at {salon.name}</h3>
               {isProsLoading ? (
                 <div className="py-8 text-center text-xs text-muted-foreground">Loading team members...</div>
+              ) : teamMembers.length === 0 ? (
+                <div className="bg-card rounded-2xl p-10 text-center border border-border space-y-2">
+                  <p className="text-sm font-bold text-foreground">No Specialists Found</p>
+                  <p className="text-xs text-muted-foreground">This salon currently has no specialists listed.</p>
+                </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {teamMembers.map((pro: any) => (
@@ -516,14 +534,18 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
 
                 <div className="bg-card rounded-2xl p-6 border border-border space-y-4 shadow-xs">
                   <h3 className="text-sm font-bold text-foreground">Salon Amenities</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {(salon.amenities || ["Free Wi-Fi", "Espresso & Drinks Bar", "Private Rooms", "Wheelchair Accessible", "Cards Accepted"]).map((amenity: string, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-foreground bg-accent/60 p-3 rounded-xl border border-border/40">
-                        <CheckCircle2 className="w-4 h-4 text-[#D99722]" />
-                        <span>{amenity}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {salon.amenities && salon.amenities.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {salon.amenities.map((amenity: string, idx: number) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-foreground bg-accent/60 p-3 rounded-xl border border-border/40">
+                          <CheckCircle2 className="w-4 h-4 text-[#D99722]" />
+                          <span>{amenity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground">No amenities listed for this salon.</p>
+                  )}
                 </div>
               </div>
 
@@ -535,10 +557,12 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
                       <MapPin className="w-4 h-4 text-[#D99722] shrink-0 mt-0.5" />
                       <span>{salon.address || salon.location}</span>
                     </div>
-                    <div className="flex items-center gap-2.5">
-                      <Phone className="w-4 h-4 text-[#D99722] shrink-0" />
-                      <span>{salon.phone || "+880 1700-000000"}</span>
-                    </div>
+                    {salon.phone && (
+                      <div className="flex items-center gap-2.5">
+                        <Phone className="w-4 h-4 text-[#D99722] shrink-0" />
+                        <span>{salon.phone}</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2.5">
                       <Clock className="w-4 h-4 text-[#D99722] shrink-0" />
                       <span>{todayHoursSummary}</span>

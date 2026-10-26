@@ -1,23 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { SERVICE_CATEGORIES } from "@/lib/data/marketplaceData";
 import { Sparkles, ChevronRight, Tag } from "lucide-react";
 import { useGetAllCategoryQuery } from "@/features/category/category";
 
 export default function ServicesTab() {
-  const { data: categoriesRes } = useGetAllCategoryQuery({});
+  const { data: categoriesRes, isLoading } = useGetAllCategoryQuery({});
 
   const apiCategories = Array.isArray(categoriesRes?.data) ? categoriesRes.data : [];
-  const categoriesList = apiCategories.length > 0
-    ? apiCategories.map((cat: any, idx: number) => ({
-      id: cat._id || cat.id || `cat-${idx}`,
-      title: cat.name || cat.title,
-      count: cat.totalServices !== undefined ? `${cat.totalServices}` : cat.count || "0",
-      img: cat.image || cat.img || SERVICE_CATEGORIES[idx % SERVICE_CATEGORIES.length]?.img || "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-      desc: cat.name ? `${cat.name} professional beauty services` : cat.desc || "",
-    }))
-    : SERVICE_CATEGORIES;
+  const categoriesList = apiCategories.map((cat: any, idx: number) => ({
+    id: cat._id || cat.id || `cat-${idx}`,
+    title: cat.name || cat.title || "Beauty Service",
+    count: cat.totalServices !== undefined ? `${cat.totalServices}` : cat.count || "0",
+    img:
+      cat.image ||
+      cat.img ||
+      "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
+    desc: cat.description || cat.desc || (cat.name ? `${cat.name} professional beauty services` : ""),
+  }));
 
   return (
     <div className="animate-in fade-in duration-200 space-y-8">
@@ -32,7 +32,25 @@ export default function ServicesTab() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {isLoading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="bg-card rounded-xl h-64 border border-border animate-pulse"
+              />
+            ))}
+          </div>
+        ) : categoriesList.length === 0 ? (
+          <div className="bg-card rounded-2xl p-12 text-center border border-border space-y-3">
+            <Sparkles className="w-10 h-10 text-muted-foreground mx-auto" />
+            <h4 className="text-base font-bold text-foreground">No Service Categories Found</h4>
+            <p className="text-xs text-muted-foreground max-w-md mx-auto">
+              No service categories are currently available in the database.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {categoriesList.map((cat: any) => (
             <Link
               key={cat.id}
@@ -75,6 +93,7 @@ export default function ServicesTab() {
             </Link>
           ))}
         </div>
+        )}
 
         {/* Popular Search Tags */}
         <div className="pt-8 border-t border-border">

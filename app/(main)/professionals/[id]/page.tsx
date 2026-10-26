@@ -57,19 +57,19 @@ function ProfessionalDetailsContent({ professionalId }: { professionalId: string
             ? ", " + (salonObj.address?.state || proObj.address?.state)
             : ""
         }`
-      : "Springfield, Oregon";
+      : (salonObj.location || proObj.location || "");
 
   const proData = rawItem
     ? {
         id: proObj._id || rawItem._id || professionalId,
         name: fullName,
-        title: roleRef.title || proObj.role || "Master Barber & Grooming Specialist",
+        title: roleRef.title || proObj.role || "Specialist",
         quote: roleRef.quote || "",
         bio: roleRef.bio || "",
-        experienceYears: roleRef.experienceYears || 7,
+        experienceYears: roleRef.experienceYears || 0,
         specialties: Array.isArray(roleRef.specialties) ? roleRef.specialties : [],
         photos: Array.isArray(roleRef.photos) ? roleRef.photos : [],
-        startingPrice: roleRef.startingPriceInUSD || 35,
+        startingPrice: roleRef.startingPriceInUSD || 0,
         reviewsCount: roleRef.totalReviews || salonObj.totalReviews || 0,
         rating: roleRef.avgRating || salonObj.avgRating || 0,
         availability: Array.isArray(salonObj.availability)

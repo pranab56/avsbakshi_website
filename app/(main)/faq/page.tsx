@@ -76,7 +76,7 @@ export default function FaqPage() {
   });
 
   return (
-    <div className="min-h-screen bg-white text-[#1A1A1A] font-sans">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-200 font-sans">
       <Hero searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       
       <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-8">

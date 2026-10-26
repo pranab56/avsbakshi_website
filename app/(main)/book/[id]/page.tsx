@@ -40,10 +40,12 @@ function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
 
   const proData = {
     id: proObj._id || rawItem?._id || proIdParam,
-    name: `${proObj.firstName || ""} ${proObj.lastName || ""}`.trim() || "Sophia Martinez",
-    title: roleRef.title || proObj.role || "Master Barber & Grooming Specialist",
-    avatar: proObj.image || roleRef.photos?.[0] || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
-    location: salonObj.address?.city ? `${salonObj.address.city}, ${salonObj.address.state || "USA"}` : "SoHo, New York, NY",
+    name: `${proObj.firstName || ""} ${proObj.lastName || ""}`.trim() || proObj.name || "Specialist",
+    title: roleRef.title || proObj.role || "Beauty Specialist",
+    avatar: proObj.image || roleRef.photos?.[0] || "",
+    location: salonObj.address?.city
+      ? `${salonObj.address.city}${salonObj.address.state ? ", " + salonObj.address.state : ""}`
+      : (salonObj.location || proObj.address?.city || ""),
   };
 
   const rawServices = Array.isArray(servicesRes?.data) ? servicesRes.data : [];
