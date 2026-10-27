@@ -9,35 +9,17 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen w-full bg-background text-foreground grid grid-cols-1 lg:grid-cols-12">
       {/* Left Visual Banner (Desktop only) */}
-      <div className="hidden lg:flex lg:col-span-6 relative bg-zinc-900 text-white p-6 sm:p-8 lg:p-12 flex-col justify-between overflow-hidden lg:min-h-screen">
-        <div className="absolute inset-0 bg-cover bg-center opacity-45 transform hover:scale-105 transition-transform duration-700" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1000&q=80')` }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-
-        <div className="relative z-10">
-          <Link href="/" className="inline-block">
-            <Image
-              src="/icons/Light_Mode.png"
-              alt="The Cloud Salon"
-              width={140}
-              height={40}
-              className="h-10 w-auto object-contain block dark:hidden"
-            />
-            <Image
-              src="/icons/Dark_Mode.png"
-              alt="The Cloud Salon"
-              width={140}
-              height={40}
-              className="h-10 w-auto object-contain hidden dark:block"
-            />
-          </Link>
-        </div>
-
-        <div className="relative z-10 space-y-2 sm:space-y-3 pt-4 lg:pt-0">
-          <blockquote className="text-base sm:text-xl lg:text-2xl font-light italic leading-snug text-white/95">
-            &ldquo;Discover beauty services you will love, from professionals you can trust.&rdquo;
-          </blockquote>
-          <div className="w-12 h-1 bg-primary rounded-full" />
-        </div>
+      <div className="hidden lg:block lg:col-span-6 relative bg-zinc-950 overflow-hidden lg:min-h-screen">
+        <Link href="/" className="relative block w-full h-full" title="Back to home">
+          <Image
+            src="/images/auth/image.png"
+            alt="The Cloud Salon"
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover object-top"
+          />
+        </Link>
       </div>
 
       {/* Right Form Container */}

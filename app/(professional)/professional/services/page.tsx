@@ -27,6 +27,7 @@ import {
   useDeleteServicesMutation,
 } from "@/features/services/servicesApi";
 import { useGetAllCategoryQuery } from "@/features/category/category";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 interface CategoryObj {
   _id?: string;
@@ -197,9 +198,8 @@ export default function ProfessionalServicesPage() {
 
       {/* Main Content */}
       {isServicesLoading ? (
-        <div className="p-16 text-center bg-card border border-border rounded-lg flex flex-col items-center justify-center space-y-3">
-          <Loader2 className="w-8 h-8 animate-spin text-[#D99722]" />
-          <p className="text-sm text-muted-foreground">Loading your services...</p>
+        <div className="bg-card border border-border rounded-lg p-2">
+          <ListSkeleton count={4} />
         </div>
       ) : isError ? (
         <div className="p-8 text-center bg-destructive/10 border border-destructive/20 rounded-lg flex flex-col items-center justify-center space-y-3">

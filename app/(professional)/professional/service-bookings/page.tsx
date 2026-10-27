@@ -238,11 +238,39 @@ export default function ProfessionalBookingsPage() {
           <div className="col-span-3 text-right">STATUS & ACTIONS</div>
         </div>
 
-        {/* Loading State */}
+        {/* Loading Skeleton Rows inside Table */}
         {isLoading ? (
-          <div className="p-16 text-center flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            <p className="text-sm font-medium text-muted-foreground">Fetching appointments...</p>
+          <div className="divide-y divide-border">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <div
+                key={n}
+                className="p-4 sm:p-5 flex flex-col md:grid md:grid-cols-12 items-start md:items-center gap-3 sm:gap-2 animate-pulse"
+              >
+                <div className="col-span-3 flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full bg-muted/70 dark:bg-zinc-800/70 shrink-0" />
+                  <div className="space-y-1.5 flex-1">
+                    <div className="h-3.5 bg-muted/70 dark:bg-zinc-800/70 rounded w-28" />
+                    <div className="h-2.5 bg-muted/50 dark:bg-zinc-800/50 rounded w-16" />
+                  </div>
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <div className="h-3.5 bg-muted/70 dark:bg-zinc-800/70 rounded w-24" />
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <div className="h-3.5 bg-muted/70 dark:bg-zinc-800/70 rounded w-28" />
+                </div>
+                <div className="col-span-1">
+                  <div className="h-3.5 bg-muted/70 dark:bg-zinc-800/70 rounded w-12" />
+                </div>
+                <div className="col-span-1">
+                  <div className="h-3.5 bg-muted/70 dark:bg-zinc-800/70 rounded w-14" />
+                </div>
+                <div className="col-span-3 flex items-center justify-end gap-2 w-full md:w-auto">
+                  <div className="h-6 bg-muted/70 dark:bg-zinc-800/70 rounded-full w-20" />
+                  <div className="h-8 bg-muted/70 dark:bg-zinc-800/70 rounded-lg w-16" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : isError ? (
           <div className="p-12 text-center text-muted-foreground text-sm space-y-3">

@@ -328,11 +328,13 @@ export default function ProfessionalPortfolioPage() {
 
             {/* Gallery Photos Grid */}
             {isLoadingInitial ? (
-                <div className="p-20 text-center flex flex-col items-center justify-center gap-3 bg-card border border-border rounded-2xl">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                    <p className="text-xs text-muted-foreground">
-                        Loading your portfolio showcase...
-                    </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="aspect-square rounded-2xl bg-muted/70 dark:bg-zinc-800/70 animate-pulse"
+                        />
+                    ))}
                 </div>
             ) : photos.length === 0 && uploadingCount === 0 ? (
                 <div className="p-16 bg-card border border-border rounded-2xl text-center space-y-4">

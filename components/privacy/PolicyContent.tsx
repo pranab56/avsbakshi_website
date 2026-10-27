@@ -7,172 +7,58 @@ import { useDisclaimerQuery } from "@/features/disclaimers/disclaimersApi";
 export default function PolicyContent() {
   const { data: disclaimerRes, isLoading } = useDisclaimerQuery({ type: "privacy_policy" });
   const content = disclaimerRes?.data?.content;
+  const updatedAt = disclaimerRes?.data?.updatedAt;
+
+  const formattedDate = updatedAt
+    ? new Date(updatedAt).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
 
   return (
-    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-10">
-      {/* Navigation Link to Terms */}
-      <div className="flex items-center justify-between pb-6 border-b border-border text-xs sm:text-sm font-medium">
-        <span className="text-muted-foreground">Privacy Policy Overview</span>
+    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
+      {/* Navigation Link to Terms & Last Updated */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-6 border-b border-border text-xs sm:text-sm font-medium">
+        <span className="text-muted-foreground">
+          {formattedDate ? `Last updated: ${formattedDate}` : "Privacy & Data Protection"}
+        </span>
         <Link
           href="/terms"
-          className="inline-flex items-center gap-1.5 text-primary hover:text-primary/90 transition-colors"
+          className="inline-flex items-center gap-1.5 text-[#D99722] hover:text-[#C2841B] transition-colors"
         >
-          Terms &amp; Conditions
+          <span>Terms &amp; Conditions</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16 text-muted-foreground">
-          <Loader2 className="w-6 h-6 animate-spin mr-2 text-primary" />
+        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-3">
+          <Loader2 className="w-7 h-7 animate-spin text-[#D99722]" />
           <span className="text-sm font-medium">Loading Privacy Policy...</span>
         </div>
       ) : content ? (
         <div
-          className="prose dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-sm sm:[&_p]:text-base [&_p]:leading-relaxed [&_p]:text-zinc-700 dark:[&_p]:text-zinc-300 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline"
+          className="prose dark:prose-invert max-w-none 
+            text-zinc-700 dark:text-zinc-300
+            [&_h1]:text-2xl sm:[&_h1]:text-3xl [&_h1]:font-extrabold [&_h1]:text-zinc-900 dark:[&_h1]:text-white [&_h1]:mb-4 [&_h1]:tracking-tight
+            [&_h2]:text-2xl sm:[&_h2]:text-3xl [&_h2]:font-extrabold [&_h2]:text-zinc-900 dark:[&_h2]:text-white [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:tracking-tight [&_h2]:border-b [&_h2]:border-border/60 [&_h2]:pb-2
+            [&_h3]:text-lg sm:[&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-[#D99722] dark:[&_h3]:text-[#D99722] [&_h3]:mt-6 [&_h3]:mb-3
+            [&_h4]:text-base sm:[&_h4]:text-lg [&_h4]:font-bold [&_h4]:text-zinc-900 dark:[&_h4]:text-white [&_h4]:mt-4 [&_h4]:mb-2
+            [&_p]:text-sm sm:[&_p]:text-base [&_p]:leading-relaxed [&_p]:text-zinc-700 dark:[&_p]:text-zinc-300 [&_p]:mb-4
+            [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1.5
+            [&_li]:text-sm sm:[&_li]:text-base [&_li]:text-zinc-700 dark:[&_li]:text-zinc-300
+            [&_strong]:font-bold [&_strong]:text-zinc-900 dark:[&_strong]:text-white
+            [&_a]:text-[#D99722] [&_a]:underline hover:[&_a]:text-[#C2841B]"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       ) : (
-        /* Policy Sections Fallback */
-        <div className="space-y-10">
-          {/* Section 1: Introduction */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                1. Introduction
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>
-                This Privacy Policy describes how Cloud Salon (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) collects, uses, discloses, and protects your personal information when you access or use our platform, including our website and mobile application (collectively, the &ldquo;Platform&rdquo;).
-              </p>
-              <p>
-                Cloud Salon is an online marketplace connecting customers with independent beauty and wellness professionals. By using our Platform, you acknowledge that you have read and understood the practices described herein.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 2: Information We Collect */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                2. Information We Collect
-              </h2>
-            </div>
-
-            <div className="space-y-6 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 pl-4 border-l-2 border-[#D99722]/40">
-              <div className="space-y-2">
-                <h3 className="font-bold text-foreground text-base">
-                  A. Information You Provide Directly
-                </h3>
-                <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
-                  <li>
-                    <strong className="text-foreground">Account Registration:</strong> Name, email address, phone number, and password when registering as a customer, professional, or business.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Professional Credentials:</strong> Professional licenses, portfolio photographs, business location, and service pricing menus.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Booking &amp; Payments:</strong> Appointment dates, selected services, and transaction details processed securely via certified payment gateways.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Communications &amp; Reviews:</strong> User feedback, ratings, direct support inquiries, and messages sent through our platform.
-                  </li>
-                </ul>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="font-bold text-foreground text-base">
-                  B. Information Collected Automatically
-                </h3>
-                <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
-                  <li>
-                    <strong className="text-foreground">Device &amp; Usage Data:</strong> IP address, device type, browser details, pages visited, and interaction logs.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Location Data:</strong> Approximate or precise location (with explicit device consent) to display nearby professionals and salons.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Cookies &amp; Analytics:</strong> Tracking technologies to retain session preferences and analyze application performance.
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 3: How We Use Information */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                3. How We Use Your Information
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>We process collected data for legitimate operational and business purposes:</p>
-              <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
-                <li>Facilitating appointment bookings, client notifications, and automated booking reminders.</li>
-                <li>Processing secure payments, split payouts for salon renters, and digital receipts.</li>
-                <li>Personalizing service recommendations based on past appointments and location.</li>
-                <li>Detecting fraudulent activity, verifying professional accounts, and enforcing community safety standards.</li>
-                <li>Sending transactional updates, service announcements, and optional promotional offers.</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Section 4: Data Security & Retention */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                4. Data Security &amp; Retention
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>
-                We implement industry-standard technical and organizational security measures, including SSL encryption, secure data storage, and strict access controls. Payment card details are tokenized and processed exclusively by PCI-DSS compliant payment providers.
-              </p>
-              <p>
-                We retain personal data only for as long as necessary to fulfill the purposes outlined in this policy or as required by applicable legal and tax regulations.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 5: Your Privacy Rights */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                5. Your Privacy Rights
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>Depending on your location, you hold specific rights regarding your personal information:</p>
-              <ul className="space-y-2.5 pl-5 list-disc text-zinc-700 dark:text-zinc-300">
-                <li><strong className="text-foreground">Access &amp; Correction:</strong> Request a copy of your personal data or request corrections to inaccurate entries.</li>
-                <li><strong className="text-foreground">Erasure (Right to be Forgotten):</strong> Request account deletion and removal of associated non-transactional data.</li>
-                <li><strong className="text-foreground">Opt-Out:</strong> Unsubscribe from marketing emails at any time using the link in the footer of our emails.</li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Section 6: Contact Us */}
-          <section className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-xs">
-            <h3 className="text-xl font-bold text-foreground">
-              Questions about our Privacy Policy?
-            </h3>
-            <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-              If you have any questions, concerns, or requests regarding your personal data, please contact our Data Protection Team at{" "}
-              <a href="mailto:privacy@cloudsalon.com" className="text-primary font-semibold hover:underline">
-                privacy@cloudsalon.com
-              </a>.
-            </p>
-          </section>
+        <div className="p-12 text-center bg-card border border-border rounded-2xl text-muted-foreground space-y-2">
+          <p className="text-base font-semibold text-foreground">No Privacy Policy available.</p>
+          <p className="text-xs text-muted-foreground">Please check back soon for updated policies.</p>
         </div>
       )}
     </section>
   );
 }
-

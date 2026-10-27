@@ -8,6 +8,7 @@ import { Menu, Bell } from "lucide-react";
 import { DashboardConfig } from "./nav-config";
 import ThemeToggle from "@/components/shared/theme-toggle";
 import { useGetMyProfileQuery } from "@/features/profile/profileApi";
+import { useGetAllNotificationQuery } from "@/features/notification/notificationApi";
 import { getUser } from "@/utils/storage";
 
 interface DashboardHeaderProps {
@@ -28,6 +29,22 @@ export default function DashboardHeader({
   const storedUser = typeof window !== "undefined" ? getUser() : null;
   const storedDisplayName = typeof window !== "undefined" ? localStorage.getItem("userDisplayName") : null;
   const currentUser = profileData || user || storedUser;
+
+  const { data: notificationRes } = useGetAllNotificationQuery(undefined, {
+    skip: !token,
+    pollingInterval: 60000,
+  });
+
+  const notificationsList = Array.isArray(notificationRes?.data?.data)
+    ? notificationRes.data.data
+    : Array.isArray(notificationRes?.data)
+    ? notificationRes.data
+    : [];
+
+  const unreadCount =
+    typeof notificationRes?.data?.unreadCount === "number"
+      ? notificationRes.data.unreadCount
+      : notificationsList.filter((n: any) => !n.isRead).length;
 
   const userImage = typeof currentUser?.image === "string" && currentUser.image.trim().length > 0 ? currentUser.image : null;
 
@@ -133,7 +150,11 @@ export default function DashboardHeader({
           aria-label="Notifications"
         >
           <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-2 h-2 rounded-full bg-primary ring-2 ring-background" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center ring-2 ring-background shadow-xs">
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          )}
         </Link>
 
         {/* User Profile Avatar */}

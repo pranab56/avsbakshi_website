@@ -28,6 +28,7 @@ import { useGetAllReviewsQuery } from "@/features/review/reviewApi";
 import ShareModal from "@/components/shared/ShareModal";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import SalonDetailsLoading from "./loading";
 
 type SalonTab = "team" | "about" | "reviews" | "gallery";
 
@@ -59,7 +60,10 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
   const salonId = resolvedParams.id;
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
-  const { data: singleSalonRes, isLoading } = useGetSingleSalonQuery({ id: salonId }, { skip: !salonId });
+  const { data: singleSalonRes, isLoading, isFetching, isError } = useGetSingleSalonQuery(
+    { id: salonId },
+    { skip: !salonId }
+  );
   const apiSalonData = singleSalonRes?.data;
 
   // Fetch live team members for this salon
@@ -211,16 +215,12 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
       : "Today: Closed"
     : "Mon-Sat: 09:00 AM - 07:00 PM";
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground py-16 px-4">
-        <Loader2 className="w-10 h-10 animate-spin text-[#D99722] mb-3" />
-        <p className="text-sm font-medium text-muted-foreground">Loading salon details...</p>
-      </div>
-    );
+  // Smooth skeleton loading state — prevents jarring content switching or premature "Salon Not Found"
+  if (isLoading || isFetching || (!singleSalonRes && !isError)) {
+    return <SalonDetailsLoading />;
   }
 
-  if (!salon) {
+  if (isError || !salon) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground py-16 px-4">
         <div className="bg-card rounded-2xl border border-border p-8 text-center max-w-md w-full space-y-3 shadow-sm">
@@ -409,7 +409,23 @@ export default function SalonDetailsPage({ params }: { params: Promise<{ id: str
           {activeTab === "team" && (
             <div className="space-y-4 animate-in fade-in duration-200">
               {isProsLoading ? (
-                <div className="py-8 text-center text-xs text-muted-foreground">Loading team members...</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3].map((n) => (
+                    <div key={n} className="bg-card rounded-2xl p-5 border border-border space-y-4 animate-pulse">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-2xl bg-muted shrink-0" />
+                        <div className="space-y-2 flex-1">
+                          <div className="h-4 w-3/4 bg-muted rounded" />
+                          <div className="h-3 w-1/2 bg-muted rounded" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border/40">
+                        <div className="h-9 bg-muted rounded-xl" />
+                        <div className="h-9 bg-muted rounded-xl" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : teamMembers.length === 0 ? (
                 <div className="bg-card rounded-2xl p-10 text-center border border-border space-y-2">
                   <p className="text-sm font-bold text-foreground">No Specialists Found</p>

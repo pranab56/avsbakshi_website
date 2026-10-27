@@ -7,7 +7,20 @@ import Link from "next/link";
 import { GooglePlacesInput, GooglePlaceResult } from "@/components/ui/google-places-input";
 import { useGetAllProfessionalQuery } from "@/features/profesional/profesionalApi";
 import { useGetAllCategoryQuery } from "@/features/category/category";
-import { Search, X, User, Building2, Star, MapPin, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Search,
+  X,
+  User,
+  Building2,
+  Star,
+  MapPin,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+} from "lucide-react";
 import ChairImage from "@/components/shared/ChairImage";
 
 function ProfessionalsContent() {
@@ -122,7 +135,7 @@ function ProfessionalsContent() {
         day: "numeric",
         year: "numeric",
       });
-    } catch (e) {
+    } catch {
       return "";
     }
   };
@@ -130,31 +143,33 @@ function ProfessionalsContent() {
   return (
     <div className="min-h-screen bg-background text-foreground select-none transition-colors duration-200">
       {/* Top Hero Section */}
-      <section className="bg-[#1E1C1A] text-white pt-12 sm:pt-16 pb-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-tl from-[#7C4F24]/35 via-[#5A3819]/10 to-transparent pointer-events-none" />
+      <section className="bg-[#121214] text-white pt-14 sm:pt-18 pb-14 relative overflow-hidden border-b border-white/10">
+        {/* Subtle Ambient Gold Lighting */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#D99722]/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-[-5%] w-80 h-80 bg-[#D99722]/8 rounded-full blur-[90px] pointer-events-none" />
 
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="w-8 h-[2px] bg-[#D99722]" />
-              <span className="text-xs font-semibold text-[#D99722] uppercase tracking-[0.2em]">
-                VERIFIED BEAUTY SPECIALISTS
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-[#D99722]" />
+              <span className="text-xs font-bold text-[#D99722] uppercase tracking-[0.2em]">
+                VERIFIED BEAUTY &amp; GROOMING SPECIALISTS
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-normal leading-tight text-white">
-              Find Verified Beauty & <br />
-              <span className="font-light italic text-[#CAA054]">Grooming Professionals</span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-white tracking-tight">
+              Discover &amp; Book Top <br />
+              <span className="font-light italic text-[#D99722]">Beauty Professionals</span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-zinc-300 font-light max-w-xl leading-relaxed">
-              Book top hairstylists, estheticians, barbers, and nail artists near you with transparent pricing and real portfolio work.
+            <p className="text-sm sm:text-base text-zinc-300 font-normal max-w-xl leading-relaxed">
+              Connect with vetted hairstylists, estheticians, barbers, and nail artists with transparent starting rates and verified client portfolios.
             </p>
           </div>
 
-          {/* Search Box */}
+          {/* Search Box with Glassmorphism */}
           <div className="max-w-2xl relative pt-2">
-            <div className="bg-white/5 p-2 rounded-2xl border border-white/15 backdrop-blur-md flex flex-col sm:flex-row items-center gap-2.5 shadow-xl">
+            <div className="bg-white/5 p-2 rounded-2xl border border-white/15 backdrop-blur-xl flex flex-col sm:flex-row items-center gap-2.5 shadow-2xl">
               <div className="w-full flex-1 relative">
                 <GooglePlacesInput
                   variant="dark"
@@ -163,17 +178,17 @@ function ProfessionalsContent() {
                   onPlaceSelectAction={handlePlaceSelect}
                   onTextChange={(val) => setLocationAddress(val)}
                   onKeyDown={handleKeyDown}
-                  className="!h-11 !rounded-xl"
+                  className="!h-12 !rounded-xl text-sm"
                 />
               </div>
 
               <button
                 type="button"
                 onClick={handleSearch}
-                className="w-full sm:w-auto px-6 h-11 bg-[#D99722] hover:bg-[#C2841B] active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shrink-0 cursor-pointer flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-7 h-12 bg-[#D99722] hover:bg-[#C2841B] active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md shrink-0 cursor-pointer flex items-center justify-center gap-2"
               >
                 <Search className="w-4 h-4" />
-                <span>Search</span>
+                <span>Find Specialists</span>
               </button>
             </div>
           </div>
@@ -181,13 +196,13 @@ function ProfessionalsContent() {
       </section>
 
       {/* Main Content Area */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6">
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
         {/* Category Carousel Pills Bar */}
         <div className="relative flex items-center gap-2">
           <button
             type="button"
             onClick={handleScrollPrev}
-            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-accent shrink-0 transition-all cursor-pointer shadow-xs"
+            className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-accent shrink-0 transition-all cursor-pointer shadow-xs"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -201,10 +216,11 @@ function ProfessionalsContent() {
             <button
               type="button"
               onClick={() => handleSelectCategory("")}
-              className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border cursor-pointer ${!urlServiceCategory
-                ? "bg-[#D99722] text-white border-[#D99722] shadow-sm"
-                : "bg-card hover:bg-accent text-foreground border-border/60"
-                }`}
+              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all border cursor-pointer ${
+                !urlServiceCategory
+                  ? "bg-[#D99722] text-white border-[#D99722] shadow-md shadow-[#D99722]/20 scale-102"
+                  : "bg-card hover:bg-accent text-foreground border-border/80"
+              }`}
             >
               All Categories
             </button>
@@ -219,10 +235,11 @@ function ProfessionalsContent() {
                   key={catId}
                   type="button"
                   onClick={() => handleSelectCategory(catId)}
-                  className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all border cursor-pointer ${isActive
-                    ? "bg-[#D99722] text-white border-[#D99722] shadow-sm"
-                    : "bg-card hover:bg-accent text-foreground border-border/60"
-                    }`}
+                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all border cursor-pointer ${
+                    isActive
+                      ? "bg-[#D99722] text-white border-[#D99722] shadow-md shadow-[#D99722]/20 scale-102"
+                      : "bg-card hover:bg-accent text-foreground border-border/80"
+                  }`}
                 >
                   {catName}
                 </button>
@@ -233,7 +250,7 @@ function ProfessionalsContent() {
           <button
             type="button"
             onClick={handleScrollNext}
-            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-accent shrink-0 transition-all cursor-pointer shadow-xs"
+            className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-accent shrink-0 transition-all cursor-pointer shadow-xs"
             aria-label="Scroll right"
           >
             <ChevronRight className="w-4 h-4" />
@@ -241,59 +258,66 @@ function ProfessionalsContent() {
         </div>
 
         {/* Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card p-4 rounded-2xl border border-border shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-5 rounded-2xl border border-border shadow-xs">
           <div>
-            <h3 className="text-sm font-bold text-foreground">Verified Beauty & Grooming Specialists</h3>
-            <p className="text-xs text-muted-foreground">{rawData.length} specialists available</p>
+            <h3 className="text-base font-bold text-foreground">Verified Beauty &amp; Grooming Specialists</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">{rawData.length} active professionals ready for booking</p>
             {(urlSearchTerm || urlServiceCategory || urlLocation) && (
-              <div className="flex flex-wrap items-center gap-2 mt-2">
+              <div className="flex flex-wrap items-center gap-2 mt-3">
                 {urlSearchTerm && (
-                  <span className="bg-primary/10 text-primary border border-primary/20 text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                    Term: "{urlSearchTerm}"
-
+                  <span className="bg-[#D99722]/10 text-[#D99722] border border-[#D99722]/20 text-[11px] font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
+                    Search: &ldquo;{urlSearchTerm}&rdquo;
                   </span>
                 )}
                 {urlServiceCategory && (
-                  <span className="bg-[#D99722]/10 text-[#D99722] border border-[#D99722]/20 text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <span className="bg-[#D99722]/10 text-[#D99722] border border-[#D99722]/20 text-[11px] font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
                     Category: {categoryDisplayName}
                   </span>
                 )}
                 {urlLocation && (
-                  <span className="bg-[#D99722]/10 text-[#D99722] border border-[#D99722]/20 text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                    Loc: {urlLocation}
+                  <span className="bg-[#D99722]/10 text-[#D99722] border border-[#D99722]/20 text-[11px] font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
+                    Location: {urlLocation}
                   </span>
                 )}
                 <button
                   type="button"
                   onClick={clearSearch}
-                  className="text-[11px] font-bold text-red-500 hover:underline flex items-center gap-0.5 ml-1 cursor-pointer"
+                  className="text-xs font-bold text-red-500 hover:underline flex items-center gap-1 ml-1 cursor-pointer"
                 >
-                  <X className="w-3 h-3" />
-                  Clear
+                  <X className="w-3.5 h-3.5" />
+                  Reset Filters
                 </button>
               </div>
             )}
           </div>
-
         </div>
 
         {/* Content Grid */}
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3,4].map((n) => (
-              <div key={n} className="bg-card rounded-2xl h-80 border border-border animate-pulse" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+              <div key={n} className="bg-card rounded-2xl h-96 border border-border animate-pulse" />
             ))}
           </div>
         ) : rawData.length === 0 ? (
-          <div className="bg-card rounded-2xl p-12 text-center border border-border space-y-3">
-            <User className="w-10 h-10 text-muted-foreground mx-auto" />
-            <h4 className="text-base font-bold text-foreground">No Professionals Found</h4>
-            <p className="text-xs text-muted-foreground max-w-md mx-auto">
-              No active professional specialists were returned from the server. Try clearing your search parameters.
+          <div className="bg-card rounded-3xl p-16 text-center border border-border space-y-4 max-w-lg mx-auto shadow-xs">
+            <div className="w-16 h-16 rounded-full bg-[#D99722]/15 text-[#D99722] flex items-center justify-center mx-auto">
+              <User className="w-8 h-8" />
+            </div>
+            <h4 className="text-lg font-bold text-foreground">No Specialists Found</h4>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              We couldn&apos;t find any beauty professionals matching your criteria. Try adjusting your location or clearing filters.
             </p>
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="px-6 py-2.5 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer inline-flex items-center gap-2"
+            >
+              <span>Clear All Filters</span>
+            </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {rawData.map((item: any, idx: number) => {
               const pro = item.professional || {};
               const roleRef = pro.roleRef || {};
@@ -303,7 +327,7 @@ function ProfessionalsContent() {
               const cardKey = item._id || `${proId}-${idx}`;
               const fullName =
                 `${pro.firstName || ""} ${pro.lastName || ""}`.trim() ||
-                "Professional Specialist";
+                "Beauty Specialist";
 
               const salonMainImg =
                 [salon.photos?.[0], salon.photos?.[1], salon.logo].find(isValidImage) ||
@@ -315,23 +339,22 @@ function ProfessionalsContent() {
 
               const locationText =
                 salon.address?.city || pro.address?.city
-                  ? `${salon.address?.city || pro.address?.city}${salon.address?.state || pro.address?.state
-                    ? ", " + (salon.address?.state || pro.address?.state)
-                    : ""
-                  }`
-                  : "Dhaka, Bangladesh";
+                  ? `${salon.address?.city || pro.address?.city}${
+                      salon.address?.state || pro.address?.state
+                        ? ", " + (salon.address?.state || pro.address?.state)
+                        : ""
+                    }`
+                  : "New York, USA";
 
               const badgeText = pro.isSalonOwner
                 ? "Salon Owner & Pro"
                 : roleRef.isVerified
-                  ? "Verified Pro"
-                  : "Specialist";
+                ? "Verified Specialist"
+                : "Professional";
 
               const startingPrice = roleRef.startingPriceInUSD || 35;
-              const roleTitle = roleRef.title || pro.role || "Beauty & Grooming Specialist";
               const rating = roleRef.avgRating || salon.avgRating || 5.0;
               const reviewsCount = roleRef.totalReviews || salon.totalReviews || 0;
-              const specialtiesList = Array.isArray(roleRef.specialties) ? roleRef.specialties : [];
 
               const startDateStr = formatDate(item.startDate);
               const endDateStr = formatDate(item.endDate);
@@ -340,34 +363,41 @@ function ProfessionalsContent() {
               return (
                 <div
                   key={cardKey}
-                  className="bg-card rounded-2xl overflow-hidden border border-border/70 shadow-xs hover:shadow-xl transition-all duration-300 group flex flex-col justify-between text-card-foreground hover:-translate-y-1"
+                  className="bg-card rounded-2xl overflow-hidden border border-border/80 shadow-xs hover:shadow-2xl hover:border-[#D99722]/40 transition-all duration-300 group flex flex-col justify-between text-card-foreground hover:-translate-y-1.5"
                 >
                   {/* Salon Cover Header */}
-                  <div className="relative h-44 sm:h-48 overflow-hidden bg-muted">
+                  <div className="relative h-48 overflow-hidden bg-muted">
                     <Link href={`/salons/${salon._id || ''}`} className="block w-full h-full">
                       <ChairImage
                         src={salonMainImg}
-                        alt={salon.name || "Salon cover"}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        alt={salon.name || "Salon Workspace"}
+                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/30" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/30" />
                     </Link>
 
                     {/* Top Badges */}
-                    <div className="absolute top-3 left-3 flex items-center justify-between pointer-events-none z-10">
-                      <span className="bg-black/60 backdrop-blur-md text-white border border-white/20 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-xs">
-                        {badgeText}
+                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
+                      <span className="bg-black/70 backdrop-blur-md text-white border border-white/20 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <ShieldCheck className="w-3 h-3 text-[#D99722]" />
+                        <span>{badgeText}</span>
                       </span>
+
+                      <div className="flex items-center gap-1 bg-black/70 backdrop-blur-md text-white border border-white/20 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
+                        <Star className="w-3 h-3 fill-[#D99722] text-[#D99722]" />
+                        <span>{rating}</span>
+                        {reviewsCount > 0 && <span className="text-zinc-400 font-normal">({reviewsCount})</span>}
+                      </div>
                     </div>
                   </div>
 
                   {/* Card Content Body */}
-                  <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
+                  <div className="p-4 sm:p-5 space-y-4 flex-1 flex flex-col justify-between">
                     <div className="space-y-3">
-                      {/* Pro Avatar + Info Column (Title -> Role -> Salon Name -> Price -> Location -> Rating) */}
+                      {/* Pro Avatar + Info */}
                       <div className="flex items-start gap-3">
                         <Link href={`/professionals/${proId}`} className="shrink-0 block mt-0.5">
-                          <div className="w-12 h-12 rounded-xl border-2 border-[#D99722]/60 overflow-hidden bg-muted shadow-sm">
+                          <div className="w-12 h-12 rounded-2xl border-2 border-[#D99722] overflow-hidden bg-muted shadow-sm transition-transform group-hover:scale-105">
                             <ChairImage
                               src={proAvatarImg}
                               alt={fullName}
@@ -379,15 +409,13 @@ function ProfessionalsContent() {
                         </Link>
 
                         <div className="flex-1 min-w-0 space-y-1">
-                          {/* 1. Title (Name) */}
                           <Link
                             href={`/professionals/${proId}`}
-                            className="text-sm sm:text-base font-bold text-foreground hover:text-[#D99722] transition-colors block truncate"
+                            className="text-base font-bold text-foreground hover:text-[#D99722] transition-colors block truncate"
                           >
                             {fullName}
                           </Link>
 
-                          {/* 3. Salon Name */}
                           {salon.name && (
                             <Link
                               href={`/salons/${salon._id || ''}`}
@@ -398,48 +426,43 @@ function ProfessionalsContent() {
                             </Link>
                           )}
 
-                          {/* 4. Price start from */}
-                          <div className="text-xs font-semibold text-foreground">
-                            <span className="text-muted-foreground font-normal">Starting from </span>
-                            <span className="text-[#D99722] font-bold">${startingPrice}</span>
-                          </div>
-
-                          {/* 5. Location */}
+                          {/* Location */}
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <MapPin className="w-3.5 h-3.5 text-[#D99722] shrink-0" />
+                            <MapPin className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                             <span className="truncate">{locationText}</span>
                           </div>
-
-                          {/* 6. Rating */}
-                          <div className="flex items-center gap-1 text-xs pt-0.5">
-                            <Star className="w-3.5 h-3.5 fill-[#D99722] text-[#D99722] shrink-0" />
-                            <span className="font-bold text-foreground">{rating}</span>
-                            <span className="text-muted-foreground text-[11px]">({reviewsCount})</span>
-                          </div>
                         </div>
+                      </div>
+
+                      {/* Pricing Tag */}
+                      <div className="flex items-center justify-between text-xs pt-1 px-3 py-2 rounded-xl bg-accent/40 border border-border/50">
+                        <span className="text-muted-foreground font-medium">Starting Rate</span>
+                        <span className="text-sm font-extrabold text-[#D99722]">
+                          ${startingPrice}
+                        </span>
                       </div>
 
                       {/* Full Width Available Date */}
                       {dateRangeText && (
                         <div className="w-full flex items-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-xl font-medium">
-                          <Calendar className="w-3.5 h-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                          <Calendar className="w-3.5 h-3.5 shrink-0" />
                           <span className="truncate">Available: {dateRangeText}</span>
                         </div>
                       )}
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="pt-3 border-t border-border/50 flex items-center justify-between gap-2">
+                    <div className="pt-3 border-t border-border/60 flex items-center justify-between gap-2.5">
                       <Link
                         href={`/professionals/${proId}`}
-                        className="flex-1 text-center py-2 bg-accent hover:bg-accent/80 text-foreground text-xs font-semibold rounded-xl border border-border/60 transition-colors block"
+                        className="flex-1 text-center py-2.5 bg-accent hover:bg-accent/80 text-foreground text-xs font-bold rounded-xl border border-border transition-colors block"
                       >
                         View Profile
                       </Link>
 
                       <Link
                         href={`/book/1?proId=${proId}`}
-                        className="flex-1 text-center py-2 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-bold rounded-xl shadow-xs transition-transform active:scale-95 block"
+                        className="flex-1 text-center py-2.5 bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-bold rounded-xl shadow-xs transition-transform active:scale-95 block"
                       >
                         Book Now
                       </Link>
@@ -457,7 +480,7 @@ function ProfessionalsContent() {
 
 export default function ProfessionalsPage() {
   return (
-    <Suspense fallback={<div className="text-center py-10">Loading Professionals...</div>}>
+    <Suspense fallback={<div className="text-center py-20 text-muted-foreground">Loading verified professionals...</div>}>
       <ProfessionalsContent />
     </Suspense>
   );

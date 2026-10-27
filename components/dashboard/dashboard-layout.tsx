@@ -147,33 +147,7 @@ export default function DashboardLayout({
 
         {/* Dynamic Page Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6">
-          {!isMounted || (isProfileLoading && !profileData) ? (
-            <div className="flex flex-col items-center justify-center min-h-[55vh] py-16 space-y-4 animate-in fade-in duration-300">
-              <div className="relative flex items-center justify-center">
-                {/* Outer luxury pulsing glow */}
-                <div className="absolute w-16 h-16 rounded-full bg-primary/20 blur-xl animate-pulse" />
-
-                {/* Spinning gradient ring */}
-                <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
-
-                {/* Center brand sparkle */}
-                <div className="absolute flex items-center justify-center text-primary">
-                  <Sparkles className="w-5 h-5 animate-pulse" />
-                </div>
-              </div>
-
-              <div className="space-y-1 text-center">
-                <p className="text-xs font-semibold tracking-widest uppercase text-foreground/80 font-sans">
-                  Loading Dashboard
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  Please wait while we prepare your workspace...
-                </p>
-              </div>
-            </div>
-          ) : (
-            children
-          )}
+          {children}
         </main>
       </div>
     </div>

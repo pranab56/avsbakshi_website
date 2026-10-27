@@ -10,107 +10,82 @@ import {
   CheckCircle2,
   Clock,
   CheckCheck,
-  Trash2,
-  ArrowRight,
   Filter,
+  FileText,
+  Loader2,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
-
-type NotificationType = "booking" | "rental" | "staff" | "system";
-
-interface NotificationItem {
-  id: string;
-  type: NotificationType;
-  title: string;
-  description: string;
-  timestamp: string;
-  isRead: boolean;
-  actionUrl?: string;
-  actionLabel?: string;
-}
+import {
+  useGetAllNotificationQuery,
+  useReadAllNotificationMutation,
+  useReadSingleNotificationMutation,
+} from "@/features/notification/notificationApi";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 export default function BusinessNotificationsPage() {
-  const [filter, setFilter] = useState<"all" | "unread" | NotificationType>("all");
+  const [filter, setFilter] = useState<string>("all");
 
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    {
-      id: "n1",
-      type: "rental",
-      title: "New Work Space Request",
-      description: "Alex Rivera requested a weekly workspace rental for Station #3 starting Mon, Sep 1.",
-      timestamp: "20 min ago",
-      isRead: false,
-      actionUrl: "/business/workspace",
-      actionLabel: "Review Request",
-    },
-    {
-      id: "n2",
-      type: "booking",
-      title: "Salon Appointment Summary",
-      description: "8 new salon client appointments booked across your listed staff today.",
-      timestamp: "2 hours ago",
-      isRead: false,
-      actionUrl: "/business/calendar",
-      actionLabel: "View Calendar",
-    },
-    {
-      id: "n3",
-      type: "staff",
-      title: "Staff Schedule Updated",
-      description: "Elena Rostova updated her shift availability for next week.",
-      timestamp: " Yesterday at 4:30 PM",
-      isRead: true,
-      actionUrl: "/business/staff",
-      actionLabel: "Manage Staff",
-    },
-    {
-      id: "n4",
-      type: "system",
-      title: "Monthly Salon Payout Verified",
-      description: "Your monthly salon venue commission payout statement for August 2026 is ready.",
-      timestamp: "3 days ago",
-      isRead: true,
-      actionUrl: "/business/analytics",
-      actionLabel: "View Analytics",
-    },
-  ]);
+  const { data: notificationRes, isLoading } = useGetAllNotificationQuery({
+    page: 1,
+    limit: 50,
+  });
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const [readAllNotification, { isLoading: isMarkingAll }] = useReadAllNotificationMutation();
+  const [readSingleNotification] = useReadSingleNotificationMutation();
 
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-    toast.success("All notifications marked as read!");
+  const notificationsList = Array.isArray(notificationRes?.data?.data)
+    ? notificationRes.data.data
+    : Array.isArray(notificationRes?.data)
+    ? notificationRes.data
+    : [];
+
+  const unreadCount =
+    typeof notificationRes?.data?.unreadCount === "number"
+      ? notificationRes.data.unreadCount
+      : notificationsList.filter((n: any) => !n.isRead).length;
+
+  const markAllAsRead = async () => {
+    try {
+      await readAllNotification(undefined).unwrap();
+      toast.success("All notifications marked as read!");
+    } catch {
+      toast.error("Failed to mark notifications as read");
+    }
   };
 
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+  const markAsRead = async (id: string, isAlreadyRead: boolean) => {
+    if (!isAlreadyRead) {
+      try {
+        await readSingleNotification(id).unwrap();
+      } catch {
+        // Silent fail
+      }
+    }
   };
 
-  const deleteNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-    toast.success("Notification removed!");
-  };
-
-  const filteredNotifications = notifications.filter((n) => {
+  const filteredNotifications = notificationsList.filter((n: any) => {
     if (filter === "unread") return !n.isRead;
-    if (filter !== "all") return n.type === filter;
     return true;
   });
 
-  const getIcon = (type: NotificationType) => {
+  const getIcon = (type: string) => {
     switch (type) {
       case "rental":
+      case "workspace":
         return <Building2 className="w-5 h-5 text-[#D99722]" />;
       case "booking":
-        return <Calendar className="w-5 h-5 text-indigo-600" />;
+      case "appointment":
+        return <Calendar className="w-5 h-5 text-emerald-500" />;
       case "staff":
-        return <Users className="w-5 h-5 text-foreground" />;
+        return <Users className="w-5 h-5 text-blue-500" />;
+      case "policy_updated":
+      case "disclaimer":
+        return <FileText className="w-5 h-5 text-[#D99722]" />;
       case "system":
         return <CheckCircle2 className="w-5 h-5 text-emerald-600" />;
       default:
-        return <Bell className="w-5 h-5 text-zinc-600" />;
+        return <Sparkles className="w-5 h-5 text-[#D99722]" />;
     }
   };
 
@@ -121,16 +96,16 @@ export default function BusinessNotificationsPage() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
-              Salon Notifications
+              Notifications
             </h1>
             {unreadCount > 0 && (
-              <span className="bg-[#D99722] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+              <span className="bg-[#D99722] text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-xs">
                 {unreadCount} Unread
               </span>
             )}
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
-            Manage notifications for workspaces, staff schedules, salon bookings, and payout reports
+            Stay updated with workspace rentals, salon bookings, staff schedules, and platform notices
           </p>
         </div>
 
@@ -138,34 +113,36 @@ export default function BusinessNotificationsPage() {
           <button
             type="button"
             onClick={markAllAsRead}
-            className="bg-secondary hover:bg-secondary/80 text-foreground px-4 py-2 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs self-start sm:self-auto border border-border"
+            disabled={isMarkingAll}
+            className="bg-accent hover:bg-accent/80 text-foreground px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs self-start sm:self-auto border border-border disabled:opacity-60"
           >
-            <CheckCheck className="w-4 h-4 text-[#D99722]" />
+            {isMarkingAll ? (
+              <Loader2 className="w-4 h-4 animate-spin text-[#D99722]" />
+            ) : (
+              <CheckCheck className="w-4 h-4 text-[#D99722]" />
+            )}
             <span>Mark all as read</span>
           </button>
         )}
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-border/50">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-border scrollbar-none">
         <span className="text-xs font-semibold text-muted-foreground flex items-center gap-1 mr-2 shrink-0">
           <Filter className="w-3.5 h-3.5" /> Filter:
         </span>
         {[
           { key: "all", label: "All Notifications" },
           { key: "unread", label: `Unread (${unreadCount})` },
-          { key: "rental", label: "Work Space" },
-          { key: "booking", label: "Bookings" },
-          { key: "staff", label: "Staff Updates" },
         ].map((tab) => (
           <button
             key={tab.key}
             type="button"
-            onClick={() => setFilter(tab.key as "all" | "unread" | NotificationType)}
-            className={`px-3.5 py-1.5 text-xs font-medium rounded-full transition-all cursor-pointer shrink-0 ${
+            onClick={() => setFilter(tab.key)}
+            className={`px-3.5 py-1.5 text-xs font-semibold rounded-full border transition-colors cursor-pointer shrink-0 ${
               filter === tab.key
-                ? "bg-[#D99722] text-white shadow-xs"
-                : "bg-secondary border border-border text-foreground hover:bg-secondary/80"
+                ? "bg-[#D99722] border-[#D99722] text-white shadow-xs"
+                : "bg-card border-border text-foreground hover:bg-accent"
             }`}
           >
             {tab.label}
@@ -175,25 +152,27 @@ export default function BusinessNotificationsPage() {
 
       {/* Notification List Container */}
       <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xs divide-y divide-border">
-        {filteredNotifications.length > 0 ? (
-          filteredNotifications.map((n) => (
+        {isLoading ? (
+          <ListSkeleton count={4} />
+        ) : filteredNotifications.length > 0 ? (
+          filteredNotifications.map((n: any) => (
             <div
-              key={n.id}
-              onClick={() => markAsRead(n.id)}
-              className={`p-4 sm:p-5 flex flex-col sm:flex-row items-start justify-between gap-4 transition-colors ${
-                !n.isRead ? "bg-[#D99722]/10" : "hover:bg-secondary/50"
+              key={n._id}
+              onClick={() => markAsRead(n._id, n.isRead)}
+              className={`p-4 sm:p-5 flex flex-col sm:flex-row items-start justify-between gap-4 transition-colors cursor-pointer ${
+                !n.isRead ? "bg-[#D99722]/8 hover:bg-[#D99722]/12" : "hover:bg-accent/40"
               }`}
             >
               <div className="flex items-start gap-3.5 flex-1 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-accent border border-border flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
                   {getIcon(n.type)}
                 </div>
 
                 <div className="space-y-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3
-                      className={`text-sm font-semibold ${
-                        !n.isRead ? "text-foreground font-bold" : "text-muted-foreground"
+                      className={`text-sm font-bold ${
+                        !n.isRead ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
                       {n.title}
@@ -203,43 +182,27 @@ export default function BusinessNotificationsPage() {
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    {n.description}
+                    {n.message || n.description}
                   </p>
-                  <div className="flex items-center gap-1 text-[11px] text-muted-foreground/70 pt-0.5">
+                  <div className="flex items-center gap-1 text-[11px] text-muted-foreground/80 pt-0.5">
                     <Clock className="w-3 h-3" />
-                    <span>{n.timestamp}</span>
+                    <span>{n.timeAgo || (n.createdAt ? new Date(n.createdAt).toLocaleDateString() : "")}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 self-end sm:self-center shrink-0">
-                {n.actionUrl && (
-                  <Link
-                    href={n.actionUrl}
-                    className="bg-secondary border border-border hover:bg-secondary/80 text-foreground px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                  >
-                    <span>{n.actionLabel || "View"}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#D99722]" />
-                  </Link>
-                )}
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteNotification(n.id);
-                  }}
-                  className="p-1.5 text-muted-foreground hover:text-red-600 transition-colors cursor-pointer"
-                  title="Delete notification"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+              {!n.isRead && (
+                <div className="self-end sm:self-center shrink-0">
+                  <span className="text-[11px] font-semibold text-[#D99722] bg-[#D99722]/15 px-2.5 py-1 rounded-full border border-[#D99722]/20">
+                    New
+                  </span>
+                </div>
+              )}
             </div>
           ))
         ) : (
           <div className="p-12 text-center text-muted-foreground space-y-3">
-            <Bell className="w-12 h-12 mx-auto text-muted-foreground/50 stroke-[1.5]" />
+            <Bell className="w-12 h-12 mx-auto text-muted-foreground/40 stroke-[1.5]" />
             <p className="text-sm font-medium">No notifications found.</p>
           </div>
         )}

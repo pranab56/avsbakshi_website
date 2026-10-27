@@ -1,66 +1,78 @@
+import { Sparkles, ShieldCheck, HeartHandshake, Compass } from "lucide-react";
+
 export default function CorePrinciples() {
   const principles = [
     {
       num: "01",
+      icon: Sparkles,
       title: "Craft first, scale second.",
-      desc: "Beauty is a practice of precision and intuition. Every professional on Cloud Salon is vetted not for volume, but for quality of work and depth of care.",
+      desc: "Beauty is an art form of precision, empathy, and personal trust. Every professional on Cloud Salon is vetted for quality of service, verified client satisfaction, and true dedication to their craft.",
     },
     {
       num: "02",
+      icon: Compass,
       title: "Independence, not dependence.",
-      desc: "We build tools that make professionals more powerful — never tools that make them dependent on us. Your clients, your pricing, your calendar. We're just the infrastructure.",
+      desc: "We build intuitive tools that make beauty specialists powerful and autonomous — never trapped. Your clients, your pricing, your schedules remain 100% yours.",
     },
     {
       num: "03",
+      icon: ShieldCheck,
       title: "Trust through transparency.",
-      desc: "We show real reviews, real pricing, real availability. Clients know exactly what to expect. Professionals know exactly what they earn.",
+      desc: "Authentic verified reviews, clear up-front pricing, and real-time chair rental availability. Clients know exactly what they are booking, and specialists keep what they earn.",
     },
     {
       num: "04",
+      icon: HeartHandshake,
       title: "Community over competition.",
-      desc: "The beauty industry thrives when professionals support each other. We invest in education, mentorship, and the connections that help careers grow.",
+      desc: "The beauty and barber industry flourishes when professionals uplift one another. We bridge stylists, barbers, and salon owners through continuous innovation and shared growth.",
     },
   ];
 
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
-        <div className="md:col-span-5 space-y-4">
-          <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
-            WHAT WE STAND FOR
-          </span>
-          <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] text-foreground">
-            The principles that shape every decision we make.
-          </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-sm">
-            When we face a hard product or business decision, we come back to these four ideas.
-          </p>
-        </div>
+      <div className="max-w-3xl mb-12 sm:mb-16">
+        <span className="text-xs font-bold text-[#D99722] uppercase tracking-[0.2em] block mb-3">
+          WHAT WE STAND FOR
+        </span>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15]">
+          The core principles that shape <br className="hidden sm:inline" />
+          <span className="text-[#D99722]">every decision</span> we make.
+        </h2>
+        <p className="text-sm sm:text-base text-muted-foreground mt-4 leading-relaxed max-w-xl">
+          When we design a new booking workflow, chair rental service, or platform policy, we hold ourselves accountable to these four core foundations.
+        </p>
+      </div>
 
-        <div className="md:col-span-7">
-          {principles.map((p, idx) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {principles.map((p, idx) => {
+          const Icon = p.icon;
+          return (
             <div
               key={idx}
-              className="border-b border-border pb-8 mb-8 last:border-b-0 last:pb-0 last:mb-0"
+              className="bg-card rounded-2xl p-6 sm:p-8 border border-border/80 shadow-xs hover:shadow-xl hover:border-[#D99722]/50 transition-all duration-300 group flex flex-col justify-between"
             >
-              <div className="flex items-start gap-6 sm:gap-8">
-                <span className="  font-light italic text-2xl sm:text-3xl text-primary w-8 shrink-0 pt-0.5">
-                  {p.num}
-                </span>
-                <div className="space-y-2">
-                  <h3 className="  text-lg sm:text-xl font-bold text-foreground">
-                    {p.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
-                    {p.desc}
-                  </p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black tracking-wider text-[#D99722] bg-[#D99722]/10 border border-[#D99722]/20 px-3 py-1 rounded-full">
+                    PRINCIPLE {p.num}
+                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-accent text-[#D99722] flex items-center justify-center group-hover:bg-[#D99722] group-hover:text-white transition-colors">
+                    <Icon className="w-5 h-5" />
+                  </div>
                 </div>
+
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight group-hover:text-[#D99722] transition-colors">
+                  {p.title}
+                </h3>
+
+                <p className="text-sm text-muted-foreground font-normal leading-relaxed">
+                  {p.desc}
+                </p>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </section>
   );
 }
-

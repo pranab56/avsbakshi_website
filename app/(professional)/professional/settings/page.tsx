@@ -290,8 +290,19 @@ export default function ProfessionalSettingsPage() {
               </div>
 
               {isProfileLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <div className="space-y-6 py-4 animate-pulse">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-md bg-muted/70 dark:bg-zinc-800/70" />
+                    <div className="space-y-2">
+                      <div className="h-4 w-32 bg-muted/70 dark:bg-zinc-800/70 rounded" />
+                      <div className="h-3 w-48 bg-muted/50 dark:bg-zinc-800/50 rounded" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="h-10 bg-muted/60 dark:bg-zinc-800/60 rounded-md" />
+                    <div className="h-10 bg-muted/60 dark:bg-zinc-800/60 rounded-md" />
+                  </div>
+                  <div className="h-10 bg-muted/60 dark:bg-zinc-800/60 rounded-md" />
                 </div>
               ) : (
                 <>
@@ -433,8 +444,13 @@ export default function ProfessionalSettingsPage() {
               </div>
 
               {isProfileLoading || isProLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <div className="space-y-4 py-4 animate-pulse">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="h-10 bg-muted/60 dark:bg-zinc-800/60 rounded-md" />
+                    <div className="h-10 bg-muted/60 dark:bg-zinc-800/60 rounded-md" />
+                  </div>
+                  <div className="h-24 bg-muted/60 dark:bg-zinc-800/60 rounded-md" />
+                  <div className="h-10 bg-muted/60 dark:bg-zinc-800/60 rounded-md" />
                 </div>
               ) : (
                 <div className="space-y-5 pt-1">

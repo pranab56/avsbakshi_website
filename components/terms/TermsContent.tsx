@@ -7,139 +7,58 @@ import { useDisclaimerQuery } from "@/features/disclaimers/disclaimersApi";
 export default function TermsContent() {
   const { data: disclaimerRes, isLoading } = useDisclaimerQuery({ type: "terms_of_service" });
   const content = disclaimerRes?.data?.content;
+  const updatedAt = disclaimerRes?.data?.updatedAt;
+
+  const formattedDate = updatedAt
+    ? new Date(updatedAt).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : null;
 
   return (
-    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-10">
-      {/* Navigation Link to Privacy */}
-      <div className="flex items-center justify-between pb-6 border-b border-border text-xs sm:text-sm font-medium">
+    <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
+      {/* Navigation Link to Privacy & Last Updated */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-6 border-b border-border text-xs sm:text-sm font-medium">
         <Link
           href="/privacy"
-          className="inline-flex items-center gap-1.5 text-primary hover:text-primary/90 transition-colors"
+          className="inline-flex items-center gap-1.5 text-[#D99722] hover:text-[#C2841B] transition-colors"
         >
           <ArrowRight className="w-4 h-4 rotate-180" />
-          Privacy Policy
+          <span>Switch to Privacy Policy</span>
         </Link>
-        <span className="text-muted-foreground">Terms of Service Overview</span>
+        {formattedDate && (
+          <span className="text-muted-foreground">Last updated: {formattedDate}</span>
+        )}
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16 text-muted-foreground">
-          <Loader2 className="w-6 h-6 animate-spin mr-2 text-primary" />
+        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground space-y-3">
+          <Loader2 className="w-7 h-7 animate-spin text-[#D99722]" />
           <span className="text-sm font-medium">Loading Terms of Service...</span>
         </div>
       ) : content ? (
         <div
-          className="prose dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:text-foreground [&_h1]:mb-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mt-4 [&_h3]:mb-2 [&_p]:text-sm sm:[&_p]:text-base [&_p]:leading-relaxed [&_p]:text-zinc-700 dark:[&_p]:text-zinc-300 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline"
+          className="prose dark:prose-invert max-w-none 
+            text-zinc-700 dark:text-zinc-300
+            [&_h1]:text-2xl sm:[&_h1]:text-3xl [&_h1]:font-extrabold [&_h1]:text-zinc-900 dark:[&_h1]:text-white [&_h1]:mb-4 [&_h1]:tracking-tight
+            [&_h2]:text-2xl sm:[&_h2]:text-3xl [&_h2]:font-extrabold [&_h2]:text-zinc-900 dark:[&_h2]:text-white [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:tracking-tight [&_h2]:border-b [&_h2]:border-border/60 [&_h2]:pb-2
+            [&_h3]:text-lg sm:[&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-[#D99722] dark:[&_h3]:text-[#D99722] [&_h3]:mt-6 [&_h3]:mb-3
+            [&_h4]:text-base sm:[&_h4]:text-lg [&_h4]:font-bold [&_h4]:text-zinc-900 dark:[&_h4]:text-white [&_h4]:mt-4 [&_h4]:mb-2
+            [&_p]:text-sm sm:[&_p]:text-base [&_p]:leading-relaxed [&_p]:text-zinc-700 dark:[&_p]:text-zinc-300 [&_p]:mb-4
+            [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ul]:space-y-1.5
+            [&_li]:text-sm sm:[&_li]:text-base [&_li]:text-zinc-700 dark:[&_li]:text-zinc-300
+            [&_strong]:font-bold [&_strong]:text-zinc-900 dark:[&_strong]:text-white
+            [&_a]:text-[#D99722] [&_a]:underline hover:[&_a]:text-[#C2841B]"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       ) : (
-        /* Terms Sections Fallback */
-        <div className="space-y-10">
-          {/* Section 1: Overview */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                1. Overview of the Platform
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>
-                Cloud Salon is an online technology marketplace connecting clients with independent beauty professionals and salon venues. Professionals use our tools to display service menus, manage calendars, and accept payments.
-              </p>
-              <p>
-                Cloud Salon acts solely as an intermediary technology provider. We are not a service provider, employer, or contract party to the beauty services rendered. All treatments and beauty services are provided independently by third-party professionals.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 2: Acceptance of Terms */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                2. Acceptance of Terms
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>
-                By accessing, browsing, or registering an account on Cloud Salon, you agree to be bound by these Terms &amp; Conditions, our <Link href="/privacy" className="text-primary underline font-medium hover:text-primary/90">Privacy Policy</Link>, and any applicable guidelines.
-              </p>
-              <p>
-                If you do not agree to these terms in full, you must discontinue using our website and mobile application immediately.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 3: User Registration & Accounts */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                3. User Accounts &amp; Registration
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>
-                To access features like booking appointments or creating a professional storefront, you must register for an account. You agree to provide current, complete, and accurate information during signup.
-              </p>
-              <p>
-                You are solely responsible for keeping your login credentials secure and for all activities under your account. Professionals must submit valid identification and qualifications during verification.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 4: Bookings & Cancellations */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                4. Bookings, Payments &amp; Cancellations
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>
-                Bookings are confirmed immediately upon completion of the checkout process. Payments are processed securely via integrated card payment gateways.
-              </p>
-              <p>
-                Each professional maintains their individual cancellation window and deposit policies. Late cancellations or missed appointments (no-shows) may be subject to cancellation fees as outlined on the professional&apos;s service page prior to confirmation.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 5: Professional Conduct */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-1.5 h-6 bg-primary rounded-full shrink-0" />
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-                5. Professional Responsibilities &amp; Insurance
-              </h2>
-            </div>
-            <div className="space-y-3 text-sm sm:text-base text-zinc-700 dark:text-zinc-300 leading-relaxed pl-4 border-l-2 border-[#D99722]/40">
-              <p>
-                Beauty professionals warrant that they possess all required certifications, licenses, and public liability insurance necessary to perform services safely and legally in their jurisdiction.
-              </p>
-              <p>
-                Professionals must adhere to health and safety standards, maintain clean workspace environments, and accurately represent their service pricing and treatment descriptions.
-              </p>
-            </div>
-          </section>
-
-          {/* Section 6: Contact */}
-          <section className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-xs">
-            <h3 className="text-xl font-bold text-foreground">
-              Need clarification on our Terms?
-            </h3>
-            <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-              If you have any questions regarding these Terms &amp; Conditions, please contact our support team at{" "}
-              <a href="mailto:support@cloudsalon.com" className="text-primary font-semibold hover:underline">
-                support@cloudsalon.com
-              </a>.
-            </p>
-          </section>
+        <div className="p-12 text-center bg-card border border-border rounded-2xl text-muted-foreground space-y-2">
+          <p className="text-base font-semibold text-foreground">No Terms of Service available.</p>
+          <p className="text-xs text-muted-foreground">Please check back soon for updated policies.</p>
         </div>
       )}
     </section>
   );
 }
-

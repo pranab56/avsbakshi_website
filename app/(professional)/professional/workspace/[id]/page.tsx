@@ -160,11 +160,24 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
   // Loading state
   if (isChairLoading) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
-        <p className="text-sm font-medium text-muted-foreground">
-          Loading work space details...
-        </p>
+      <div className="space-y-6 max-w-7xl mx-auto pb-16 animate-pulse">
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-24 bg-muted/70 dark:bg-zinc-800/70 rounded" />
+          <div className="h-4 w-4 bg-muted/40 dark:bg-zinc-800/40 rounded" />
+          <div className="h-4 w-36 bg-muted/70 dark:bg-zinc-800/70 rounded" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 space-y-6">
+            <div className="h-80 w-full rounded-2xl bg-muted/70 dark:bg-zinc-800/70" />
+            <div className="space-y-3">
+              <div className="h-8 w-64 bg-muted/70 dark:bg-zinc-800/70 rounded" />
+              <div className="h-4 w-96 bg-muted/50 dark:bg-zinc-800/50 rounded" />
+            </div>
+          </div>
+          <div className="lg:col-span-4 space-y-4">
+            <div className="h-96 w-full rounded-2xl bg-muted/70 dark:bg-zinc-800/70" />
+          </div>
+        </div>
       </div>
     );
   }

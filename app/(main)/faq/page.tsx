@@ -1,24 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Scissors,
-  Calendar,
-  CreditCard,
-  ShieldCheck,
-  Settings,
-  Loader2,
-} from "lucide-react";
 import Hero from "@/components/faq/Hero";
 import AccordionList, { QuestionItem } from "@/components/faq/AccordionList";
-import CategoriesGrid, { CategoryItem } from "@/components/faq/CategoriesGrid";
 import GetStartedCta from "@/components/faq/GetStartedCta";
 import { useFAQListQuery } from "@/features/faq/faqApi";
 
 export default function FaqPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [openIndex, setOpenIndex] = useState<number | null>(1);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const { data: faqRes, isLoading } = useFAQListQuery(undefined);
 
@@ -53,26 +43,17 @@ export default function FaqPage() {
   const apiFaqs = faqRes?.data || [];
   const questionsList: QuestionItem[] = apiFaqs.length > 0
     ? apiFaqs.map((f: { _id?: string; question?: string; answer?: string; category?: string }) => ({
-        q: f.question || "",
-        a: f.answer || "",
-        category: f.category || "general",
-      }))
+      q: f.question || "",
+      a: f.answer || "",
+      category: f.category || "general",
+    }))
     : topQuestions;
-
-  const categories: CategoryItem[] = [
-    { icon: Scissors, title: "For Professionals", count: "6 questions", key: "For Professionals" },
-    { icon: Calendar, title: "Bookings & Cancellations", count: "5 questions", key: "Bookings & Cancellations" },
-    { icon: CreditCard, title: "Payments & Pricing", count: "5 questions", key: "Payments & Pricing" },
-    { icon: ShieldCheck, title: "Trust & Safety", count: "4 questions", key: "Trust & Safety" },
-    { icon: Settings, title: "Account & Settings", count: "3 questions", key: "Account & Settings" },
-  ];
 
   const filteredQuestions = questionsList.filter((item) => {
     const matchesSearch =
       item.q.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.a.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory ? item.category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   return (
@@ -86,11 +67,6 @@ export default function FaqPage() {
           setOpenIndex={setOpenIndex}
           searchQuery={searchQuery}
           isLoading={isLoading}
-        />
-        <CategoriesGrid
-          categories={categories}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
         />
       </section>
 

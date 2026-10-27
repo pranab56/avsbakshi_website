@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors, ChevronRight, Sparkles, Grid, LayoutDashboard, Calendar, Settings, Heart, LogOut } from "lucide-react";
+import { ChevronDown, Menu, X, Compass, Briefcase, Building2, HelpCircle, Info, FileText, Globe, User, Scissors, ChevronRight, Sparkles, Grid, LayoutDashboard, Calendar, Settings, Heart, LogOut, Armchair } from "lucide-react";
 import Button from "./Button";
 import ThemeToggle from "./theme-toggle";
 import { Combobox } from "@/components/ui/combobox";
@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import NotificationDropdown from "./NotificationDropdown";
 
 const languageOptions = [
   { value: "en", label: "English" },
@@ -112,6 +113,11 @@ export default function Navbar() {
   const isSalonsActive =
     pathname === "/salons" ||
     pathname.startsWith("/salons/");
+  const isSalonOwnersActive =
+    pathname === "/salon-owners" ||
+    pathname.startsWith("/salon-owners/") ||
+    pathname === "/salon-owner" ||
+    pathname.startsWith("/salon-owner/");
   const isServicesActive =
     pathname === "/services" ||
     pathname.startsWith("/services/");
@@ -214,6 +220,19 @@ export default function Navbar() {
               />
             </Link>
 
+            {/* Salon Owners */}
+            <Link
+              href="/salon-owners"
+              className={`group relative py-2 transition-colors ${isSalonOwnersActive ? "text-foreground font-semibold" : "hover:text-foreground"
+                }`}
+            >
+              <span>Salon Owners</span>
+              <span
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isSalonOwnersActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+              />
+            </Link>
+
             {/* How it Works */}
             <Link
               href="/how-it-works"
@@ -263,10 +282,13 @@ export default function Navbar() {
                 <div className="h-3.5 w-16 bg-muted/80 rounded-sm flex-1" />
               </div>
             ) : isLoggedIn ? (
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setProfileOpen(!profileOpen)}
+              <div className="flex items-center gap-2">
+                <NotificationDropdown userRole={userRole} />
+
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setProfileOpen(!profileOpen)}
                   className="h-10 px-3 rounded-sm bg-card border border-border hover:bg-accent hover:border-primary/40 text-foreground text-xs font-semibold shadow-2xs flex items-center gap-2 cursor-pointer transition-all active:scale-95 relative z-50"
                 >
                   <div className="w-6 h-6 rounded-md bg-[#D99722] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs overflow-hidden relative">
@@ -434,6 +456,7 @@ export default function Navbar() {
                   </>
                 )}
               </div>
+            </div>
             ) : (
               <>
                 {/* Login Button */}
@@ -517,6 +540,13 @@ export default function Navbar() {
               align="end"
             />
             <ThemeToggle />
+            {isLoggedIn && (
+              <NotificationDropdown
+                userRole={userRole}
+                isMobile
+                onNavigate={() => setMobileMenuOpen(false)}
+              />
+            )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2.5 rounded-full text-foreground hover:text-primary hover:bg-accent transition-all focus:outline-none cursor-pointer active:scale-95"
@@ -576,6 +606,18 @@ export default function Navbar() {
             >
               <Building2 className={`w-5 h-5 ${isSalonsActive ? "text-primary" : "text-muted-foreground"}`} />
               <span>Salons</span>
+            </Link>
+
+            <Link
+              href="/salon-owners"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isSalonOwnersActive
+                ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
+                : "text-foreground hover:bg-accent/60"
+                }`}
+            >
+              <Armchair className={`w-5 h-5 ${isSalonOwnersActive ? "text-primary" : "text-muted-foreground"}`} />
+              <span>Salon Owners</span>
             </Link>
 
             <Link

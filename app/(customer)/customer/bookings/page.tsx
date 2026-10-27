@@ -174,7 +174,23 @@ function CustomerBookingsContent() {
       {isLoading ? (
         <div className="max-w-3xl space-y-4 pt-2">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="bg-card border border-border rounded-xl h-28 animate-pulse" />
+            <div
+              key={n}
+              className="bg-card border border-border rounded-xl p-4 sm:p-5 flex items-center justify-between gap-4 animate-pulse"
+            >
+              <div className="flex items-center gap-4 flex-1">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-muted/70 dark:bg-zinc-800/70 shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 bg-muted/70 dark:bg-zinc-800/70 rounded w-36" />
+                  <div className="h-3 bg-muted/60 dark:bg-zinc-800/60 rounded w-24" />
+                  <div className="h-3 bg-muted/50 dark:bg-zinc-800/50 rounded w-48" />
+                </div>
+              </div>
+              <div className="space-y-2 items-end flex flex-col shrink-0">
+                <div className="h-5 bg-muted/70 dark:bg-zinc-800/70 rounded w-16" />
+                <div className="h-8 bg-muted/70 dark:bg-zinc-800/70 rounded-lg w-20" />
+              </div>
+            </div>
           ))}
         </div>
       ) : currentBookings.length > 0 ? (

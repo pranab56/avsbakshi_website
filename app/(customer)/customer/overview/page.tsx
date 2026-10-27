@@ -1,8 +1,9 @@
 "use client";
 
 import { useGetCustomerOverviewQuery } from "@/features/analytics/analyticsApi";
-import { Calendar, CheckCircle2, Star, Heart, Clock, Loader2 } from "lucide-react";
+import { Calendar, CheckCircle2, Star, Heart, Clock } from "lucide-react";
 import { useSelector } from "react-redux";
+import { StatsSkeletonGrid } from "@/components/ui/skeleton";
 
 export default function CustomerOverviewPage() {
   const user = useSelector((state: { auth?: { user?: any } }) => state.auth?.user);
@@ -61,8 +62,11 @@ export default function CustomerOverviewPage() {
         </h1>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-        {stats.map((stat, idx) => {
+      {isLoading ? (
+        <StatsSkeletonGrid count={5} />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
             <div
@@ -85,7 +89,8 @@ export default function CustomerOverviewPage() {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

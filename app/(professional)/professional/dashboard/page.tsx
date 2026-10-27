@@ -37,10 +37,12 @@ const DEFAULT_CHART_DATA = MONTHS.map((month) => ({
   count: 0,
 }));
 
+import { StatsSkeletonGrid, Skeleton } from "@/components/ui/skeleton";
+
 export default function ProfessionalDashboardPage() {
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
   const { data: profileResponse, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined);
-  const { data: overviewRes } = useGetProfessionalOverviewQuery(undefined);
+  const { data: overviewRes, isLoading: isOverviewLoading } = useGetProfessionalOverviewQuery(undefined);
 
   const profileData = profileResponse?.data || profileResponse;
   const storedUser = typeof window !== "undefined" ? getUser() : null;
@@ -158,34 +160,38 @@ export default function ProfessionalDashboardPage() {
         </div>
       )}
 
-      {/* Top 4 Stat Cards Grid (directly rendered without empty blank boxes) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((stat, idx) => {
-          const Icon = stat.icon;
-          return (
-            <div
-              key={idx}
-              className="bg-card border border-border/70 rounded-2xl p-5 shadow-2xs hover:border-[#D99722]/50 flex flex-col justify-between space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <div className={`p-2.5 rounded-xl border ${stat.color}`}>
-                  <Icon className="w-4 h-4" />
+      {/* Top 4 Stat Cards Grid */}
+      {isOverviewLoading ? (
+        <StatsSkeletonGrid count={4} />
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {statCards.map((stat, idx) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={idx}
+                className="bg-card border border-border/70 rounded-2xl p-5 shadow-2xs hover:border-[#D99722]/50 flex flex-col justify-between space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className={`p-2.5 rounded-xl border ${stat.color}`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
+                    {stat.value}
+                  </div>
+                  <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">
+                    {stat.label}
+                  </p>
                 </div>
               </div>
-              <div>
-                <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
-                  {stat.value}
-                </div>
-                <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">
-                  {stat.label}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
-      {/* Monthly Appointments Growth Chart (always renders chart structure without blank placeholder box) */}
+      {/* Monthly Appointments Growth Chart */}
       <div className="bg-card border border-border/70 rounded-2xl p-6 sm:p-8 space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="space-y-1">
@@ -201,8 +207,13 @@ export default function ProfessionalDashboardPage() {
           </div>
         </div>
 
-        <div className="h-64 w-full pt-4">
-          <ResponsiveContainer width="100%" height="100%">
+        {isOverviewLoading ? (
+          <div className="h-64 w-full pt-4">
+            <Skeleton className="h-full w-full rounded-xl" />
+          </div>
+        ) : (
+          <div className="h-64 w-full pt-4">
+            <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
               margin={{ top: 28, right: 10, left: 0, bottom: 0 }}
@@ -257,6 +268,7 @@ export default function ProfessionalDashboardPage() {
             </BarChart>
           </ResponsiveContainer>
         </div>
+      )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Star, CheckCircle2, Loader2, MessageSquare, Award, ThumbsUp } from "lucide-react";
 import { useGetMyReviewsQuery } from "@/features/review/reviewApi";
+import { ListSkeleton } from "@/components/ui/skeleton";
 
 export default function ProfessionalReviewsPage() {
   const { data: reviewsResponse, isLoading } = useGetMyReviewsQuery({});
@@ -145,9 +146,8 @@ export default function ProfessionalReviewsPage() {
       {/* Reviews Stacked List */}
       <div className="space-y-4 pt-2">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-3 bg-card border border-border rounded-lg">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            <p className="text-xs text-muted-foreground">Loading reviews...</p>
+          <div className="bg-card border border-border rounded-lg p-2">
+            <ListSkeleton count={3} />
           </div>
         ) : reviewsList.length === 0 ? (
           <div className="bg-card border border-border rounded-lg p-12 text-center space-y-3 shadow-xs">

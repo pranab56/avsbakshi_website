@@ -26,6 +26,7 @@ import {
   useUpdateChairRentalMutation,
 } from "@/features/chairRental/chairRentalApi";
 import BusinessWorkspacePage from "@/app/(business)/business/workspace/page";
+import { CardGridSkeleton, ListSkeleton } from "@/components/ui/skeleton";
 
 interface SalonInfo {
   _id?: string;
@@ -278,10 +279,7 @@ export default function ProfessionalWorkspacePage() {
       {activeTab === "browse" && (
         <>
           {isLoadingChairs ? (
-            <div className="p-16 text-center bg-card border border-border rounded-lg flex flex-col items-center justify-center space-y-3">
-              <Loader2 className="w-8 h-8 animate-spin text-[#D99722]" />
-              <p className="text-sm text-muted-foreground">Loading available workspaces...</p>
-            </div>
+            <CardGridSkeleton count={3} />
           ) : isErrorChairs ? (
             <div className="p-8 text-center bg-destructive/10 border border-destructive/20 rounded-lg flex flex-col items-center justify-center space-y-3">
               <AlertCircle className="w-8 h-8 text-destructive" />
@@ -452,10 +450,7 @@ export default function ProfessionalWorkspacePage() {
       {activeTab === "bookings" && (
         <div className="space-y-4 pt-2 max-w-5xl">
           {isLoadingRentals ? (
-            <div className="p-12 text-center bg-card border border-border rounded-lg flex flex-col items-center justify-center space-y-3">
-              <Loader2 className="w-8 h-8 animate-spin text-[#D99722]" />
-              <p className="text-sm text-muted-foreground">Loading your bookings...</p>
-            </div>
+            <ListSkeleton count={3} />
           ) : myBookingsList.length > 0 ? (
             myBookingsList.map((booking) => {
               const chairObj = typeof booking.chair === "object" ? booking.chair : null;

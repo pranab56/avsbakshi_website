@@ -45,8 +45,28 @@ export const chairRentalApi = baseApi.injectEndpoints({
         }),
 
         getAllChairRentals: builder.query({
-            query: ({ page = 1 } = {}) => ({
-                url: `/chairs?page=${page}`,
+            query: (params = {}) => {
+                const page = typeof params === "number" ? params : (params?.page || 1);
+                const limit = params?.limit;
+                const search = params?.searchTerm || params?.search;
+                const status = params?.status;
+
+                let url = `/chair-rentals?page=${page}`;
+                if (limit) url += `&limit=${limit}`;
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (status && status !== "all") url += `&status=${encodeURIComponent(status)}`;
+
+                return {
+                    url,
+                    method: "GET",
+                };
+            },
+            providesTags: ["chairRental"]
+        }),
+
+        getSingleCharRentals: builder.query({
+            query: (id) => ({
+                url: `/chair-rentals/single/${id}`,
                 method: "GET",
             }),
             providesTags: ["chairRental"]
@@ -73,5 +93,8 @@ export const {
     useGetMyChairRentalsQuery,
     useGetSalonRentalsQuery,
     useGetAllChairRentalsQuery,
+    useGetSingleCharRentalsQuery,
     useGetMyRentalsQuery
 } = chairRentalApi;
+
+export const useGetSingleChairRentalQuery = chairRentalApi.useGetSingleCharRentalsQuery;

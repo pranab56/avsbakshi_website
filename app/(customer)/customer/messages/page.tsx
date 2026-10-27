@@ -378,9 +378,22 @@ function CustomerMessagesContent() {
           {/* Conversations List Container */}
           <div className="bg-card border border-border rounded-xl overflow-hidden divide-y divide-border shadow-xs">
             {isChatsLoading ? (
-              <div className="p-12 text-center flex flex-col items-center justify-center gap-2">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                <span className="text-xs text-muted-foreground">Loading messages...</span>
+              <div className="divide-y divide-border/60">
+                {[1, 2, 3, 4].map((n) => (
+                  <div
+                    key={n}
+                    className="p-4 sm:p-5 flex items-center gap-4 animate-pulse"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-muted/70 dark:bg-zinc-800/70 shrink-0" />
+                    <div className="space-y-2 flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <div className="h-4 bg-muted/70 dark:bg-zinc-800/70 rounded w-32" />
+                        <div className="h-3 bg-muted/50 dark:bg-zinc-800/50 rounded w-14" />
+                      </div>
+                      <div className="h-3 bg-muted/50 dark:bg-zinc-800/50 rounded w-48" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : isChatsError ? (
               <div className="p-8 text-center text-xs text-destructive">

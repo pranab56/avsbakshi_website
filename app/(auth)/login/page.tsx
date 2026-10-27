@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Suspense, useState, useEffect } from "react";
 import { useLoginMutation } from "@/features/auth/authApi";
 import { setCredentials, logout } from "@/features/auth/authSlice";
@@ -25,6 +25,7 @@ function LoginFormContent() {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
 
   const redirectParam = searchParams.get("redirect") || (typeof window !== "undefined" ? sessionStorage.getItem("pendingBookingUrl") : null);
@@ -58,8 +59,26 @@ function LoginFormContent() {
 
       const tokenData = res?.data?.accessToken || res?.accessToken || res?.token;
       const refreshToken = res?.data?.refreshToken || res?.refreshToken;
-      const userData = res?.data || res?.user;
-      const role = (res?.data?.role || res?.role || userData?.role || "customer").toLowerCase();
+      const userData = res?.data?.user || res?.data || res?.user;
+
+      const rawRole =
+        res?.data?.role ||
+        res?.role ||
+        res?.data?.user?.role ||
+        res?.user?.role ||
+        userData?.role ||
+        "";
+
+      const role = String(rawRole).toLowerCase().trim();
+
+      // Only customer (or user) and professional roles are allowed.
+      // Super admin or any other role throws an error and is blocked.
+      const isCustomer = role === "customer" || role === "user";
+      const isProfessional = role === "professional";
+
+      if (!isCustomer && !isProfessional) {
+        throw new Error("Access denied. Only Customer and Professional accounts can log in here. Super Admin and unauthorized roles are not permitted.");
+      }
 
       if (tokenData) {
         // Store token & role securely in httpOnly cookies via server handler
@@ -85,13 +104,11 @@ function LoginFormContent() {
 
       toast.success(res?.message || "User logged in successfully.");
 
-      // Check role & navigate accordingly
+      // Check role & determine destination path
       let targetPath = "/customer/overview";
-      if (role === "professional") {
+      if (isProfessional) {
         targetPath = "/professional/dashboard";
-      } else if (role === "business") {
-        targetPath = "/business/dashboard";
-      } else if (role === "customer" || role === "user") {
+      } else if (isCustomer) {
         if (redirectParam) {
           if (typeof window !== "undefined") {
             sessionStorage.removeItem("pendingBookingUrl");
@@ -101,10 +118,15 @@ function LoginFormContent() {
           targetPath = "/customer/overview";
         }
       }
+
+      // Smooth redirection delay
+      setIsRedirecting(true);
+      await new Promise((resolve) => setTimeout(resolve, 1200));
       router.push(targetPath);
     } catch (err: unknown) {
-      const error = err as { data?: { message?: string } };
-      toast.error(error?.data?.message || "Login failed. Please check your credentials.");
+      setIsRedirecting(false);
+      const error = err as { data?: { message?: string }; message?: string };
+      toast.error(error?.data?.message || error?.message || "Login failed. Please check your credentials.");
     }
   };
 
@@ -113,28 +135,30 @@ function LoginFormContent() {
     : "/register";
 
   return (
-    <div className="max-w-lg mx-auto w-full space-y-6">
+    <div className="max-w-md mx-auto w-full space-y-6">
       <div className="space-y-3">
-        <Image
-          src="/icons/Light_Mode.png"
-          alt="Cloud Salon Logo"
-          width={150}
-          height={40}
-          className="h-10 w-auto object-contain block dark:hidden"
-        />
-        <Image
-          src="/icons/Dark_Mode.png"
-          alt="Cloud Salon Logo"
-          width={150}
-          height={40}
-          className="h-10 w-auto object-contain hidden dark:block"
-        />
+        <Link href="/" className="inline-block group">
+          <Image
+            src="/icons/Light_Mode.png"
+            alt="Cloud Salon Logo"
+            width={160}
+            height={44}
+            className="h-10 w-auto object-contain block dark:hidden transition-transform group-hover:scale-102"
+          />
+          <Image
+            src="/icons/Dark_Mode.png"
+            alt="Cloud Salon Logo"
+            width={160}
+            height={44}
+            className="h-10 w-auto object-contain hidden dark:block transition-transform group-hover:scale-102"
+          />
+        </Link>
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
             Welcome back
           </h1>
-          <p className="text-xs text-muted-foreground">
-            Log in to your Cloud Salon account.
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Log in to manage appointments, workspaces, or book your next service.
           </p>
         </div>
       </div>
@@ -142,20 +166,25 @@ function LoginFormContent() {
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Email Field */}
-        <div className="space-y-1 text-left">
-          <label className="text-xs font-semibold text-foreground block">
+        <div className="space-y-1.5 text-left">
+          <label className="text-xs font-bold text-foreground block">
             Email or username
           </label>
-          <input
-            type="email"
-            placeholder="you@example.com"
-            {...register("email")}
-            className={`w-full px-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
-              errors.email
-                ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
-                : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
-            }`}
-          />
+          <div className="relative">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+              <Mail className="w-4 h-4" />
+            </div>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              {...register("email")}
+              className={`w-full pl-10 pr-3.5 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
+                errors.email
+                  ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
+                  : "border-border bg-card text-foreground focus:border-[#D99722] focus:ring-[#D99722]/20"
+              }`}
+            />
+          </div>
           {errors.email && (
             <p className="text-destructive text-xs font-medium mt-1">
               {errors.email.message}
@@ -164,24 +193,27 @@ function LoginFormContent() {
         </div>
 
         {/* Password Field */}
-        <div className="space-y-1 text-left">
+        <div className="space-y-1.5 text-left">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-foreground block">
+            <label className="text-xs font-bold text-foreground block">
               Password
             </label>
-            <Link href="/forgot-password" className="text-[11px] text-primary hover:underline">
+            <Link href="/forgot-password" className="text-[11px] font-semibold text-[#D99722] hover:underline">
               Forgot password?
             </Link>
           </div>
           <div className="relative">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
+              <Lock className="w-4 h-4" />
+            </div>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               {...register("password")}
-              className={`w-full px-3.5 py-3 pr-10 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
+              className={`w-full pl-10 pr-10 py-3 rounded-xl border text-sm transition-all focus:outline-none focus:ring-2 ${
                 errors.password
                   ? "border-destructive bg-destructive/10 focus:ring-destructive/30"
-                  : "border-border bg-card text-foreground focus:border-primary focus:ring-primary/20"
+                  : "border-border bg-card text-foreground focus:border-[#D99722] focus:ring-[#D99722]/20"
               }`}
             />
             <button
@@ -206,21 +238,24 @@ function LoginFormContent() {
 
         <button
           type="submit"
-          disabled={isSubmitting || isLoading}
-          className="w-full py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-2 disabled:opacity-70"
+          disabled={isSubmitting || isLoading || isRedirecting}
+          className="w-full py-3.5 bg-[#D99722] hover:bg-[#C2841B] active:scale-[0.99] text-white font-bold rounded-xl shadow-lg shadow-[#D99722]/20 transition-all text-sm cursor-pointer flex items-center justify-center gap-2 mt-3 disabled:opacity-70"
         >
-          {isLoading || isSubmitting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+          {isLoading || isSubmitting || isRedirecting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>{isRedirecting ? "Redirecting..." : "Logging In..."}</span>
+            </>
           ) : (
             "Log In"
           )}
         </button>
       </form>
 
-      <p className="text-xs text-center text-muted-foreground pt-2">
+      <p className="text-xs text-center text-muted-foreground pt-1">
         Don&apos;t have an account?{" "}
-        <Link href={registerHref} className="text-primary font-semibold hover:underline">
-          Sign up
+        <Link href={registerHref} className="text-[#D99722] font-bold hover:underline">
+          Create an account
         </Link>
       </p>
     </div>

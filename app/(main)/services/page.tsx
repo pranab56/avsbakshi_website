@@ -469,24 +469,27 @@ export default function ServicesPage() {
             BOTTOM CALL-TO-ACTION BANNER (Matching Client Reference Image)
         ========================================================================= */}
         <div className="mt-16 sm:mt-20">
-          <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-r from-card via-[#D99722]/8 to-card p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
-            <div className="flex items-center gap-4 text-left">
-              <div className="w-13 h-13 rounded-2xl bg-[#D99722]/15 text-[#D99722] flex items-center justify-center shrink-0 border border-[#D99722]/30">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#121214] text-white p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+            {/* Ambient Lighting */}
+            <div className="absolute top-0 right-1/4 w-80 h-80 bg-[#D99722]/15 rounded-full blur-[90px] pointer-events-none" />
+
+            <div className="relative z-10 flex items-center gap-5 text-left">
+              <div className="w-14 h-14 rounded-2xl bg-[#D99722]/20 text-[#D99722] flex items-center justify-center shrink-0 border border-[#D99722]/40 shadow-inner">
                 <UserPlus className="w-7 h-7" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-base sm:text-xl font-bold text-foreground">
-                  Are you a beauty professional?
+                <h3 className="text-lg sm:text-2xl font-extrabold text-white tracking-tight">
+                  Are you an independent beauty specialist?
                 </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  Showcase your work, manage appointments, and connect with local clients.
+                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed max-w-lg">
+                  Showcase your portfolio, take direct client bookings, rent chairs at luxury salons, and keep 100% of your earnings.
                 </p>
               </div>
             </div>
 
             <Link
               href="/for-professionals"
-              className="px-6 py-3 rounded-xl bg-[#D99722] hover:bg-[#C2841B] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer active:scale-98"
+              className="relative z-10 px-8 py-3.5 rounded-xl bg-[#D99722] hover:bg-[#C2841B] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#D99722]/25 transition-all flex items-center gap-2 shrink-0 cursor-pointer active:scale-95"
             >
               <span>Join as a Professional</span>
               <ArrowRight className="w-4 h-4" />

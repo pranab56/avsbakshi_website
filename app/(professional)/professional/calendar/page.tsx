@@ -259,9 +259,15 @@ export default function ProfessionalCalendarPage() {
               </div>
 
               {isAppointmentsLoading ? (
-                <div className="p-20 text-center flex flex-col items-center justify-center gap-3">
-                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                  <p className="text-xs text-muted-foreground">Loading calendar appointments...</p>
+                <div className="grid grid-cols-7 divide-x divide-y divide-border bg-card">
+                  {Array.from({ length: 35 }).map((_, i) => (
+                    <div key={i} className="min-h-[100px] p-2 space-y-2 animate-pulse">
+                      <div className="w-5 h-5 rounded bg-muted/70 dark:bg-zinc-800/70" />
+                      {i % 3 === 0 && (
+                        <div className="w-full h-4 rounded bg-muted/60 dark:bg-zinc-800/60" />
+                      )}
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <div className="grid grid-cols-7 divide-x divide-y divide-border bg-card">

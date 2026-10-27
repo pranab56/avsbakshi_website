@@ -384,9 +384,19 @@ function ProfessionalMessagesContent() {
             {/* Chats List */}
             <div className="space-y-2 overflow-y-auto max-h-[480px] pr-1">
               {isChatsLoading ? (
-                <div className="p-8 text-center flex flex-col items-center justify-center gap-2">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                  <span className="text-xs text-muted-foreground">Loading chats...</span>
+                <div className="space-y-2">
+                  {[1, 2, 3, 4].map((n) => (
+                    <div
+                      key={n}
+                      className="p-3 rounded-xl border border-border flex items-center gap-3 animate-pulse bg-card"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-muted/70 dark:bg-zinc-800/70 shrink-0" />
+                      <div className="space-y-1.5 flex-1 min-w-0">
+                        <div className="h-3.5 bg-muted/70 dark:bg-zinc-800/70 rounded w-28" />
+                        <div className="h-2.5 bg-muted/50 dark:bg-zinc-800/50 rounded w-36" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : isChatsError ? (
                 <div className="p-6 text-center text-xs text-destructive">
