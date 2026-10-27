@@ -281,7 +281,7 @@ export default function SalonOwnersPage() {
           </div>
 
           <h1 className="font-serif italic font-normal text-3xl sm:text-4xl lg:text-5xl text-foreground">
-            Work Space &amp; Chair Rentals
+            Work Space
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide max-w-2xl leading-relaxed">
             Find and book dedicated salon chairs, barber booths, and private workspaces hosted by certified salon owners.
@@ -319,11 +319,10 @@ export default function SalonOwnersPage() {
                   <button
                     key={st}
                     onClick={() => setStatusFilter(st)}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg capitalize transition-all cursor-pointer ${
-                      statusFilter === st
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg capitalize transition-all cursor-pointer ${statusFilter === st
                         ? "bg-[#D99722] text-white shadow-2xs"
                         : "text-muted-foreground hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     {st === "all" ? "All" : st}
                   </button>
@@ -340,9 +339,8 @@ export default function SalonOwnersPage() {
                   <ArrowUpDown className="w-3.5 h-3.5 text-[#D99722]" />
                   <span>{currentSortOption.label}</span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${
-                      isSortOpen ? "rotate-180 text-[#D99722]" : ""
-                    }`}
+                    className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isSortOpen ? "rotate-180 text-[#D99722]" : ""
+                      }`}
                   />
                 </button>
 
@@ -358,11 +356,10 @@ export default function SalonOwnersPage() {
                             setSortBy(opt.value);
                             setIsSortOpen(false);
                           }}
-                          className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg transition-colors text-left cursor-pointer ${
-                            isSelected
+                          className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg transition-colors text-left cursor-pointer ${isSelected
                               ? "bg-[#D99722]/10 text-[#D99722] font-bold"
                               : "text-foreground hover:bg-accent font-medium"
-                          }`}
+                            }`}
                         >
                           <span>{opt.label}</span>
                           {isSelected && <Check className="w-3.5 h-3.5 text-[#D99722]" />}
@@ -485,9 +482,8 @@ export default function SalonOwnersPage() {
                       className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur-xs flex items-center justify-center text-[#D99722] hover:bg-background transition-all cursor-pointer shadow-xs border border-border"
                     >
                       <Heart
-                        className={`w-4 h-4 ${
-                          isFav ? "fill-[#D99722] text-[#D99722]" : "text-[#D99722]"
-                        }`}
+                        className={`w-4 h-4 ${isFav ? "fill-[#D99722] text-[#D99722]" : "text-[#D99722]"
+                          }`}
                       />
                     </button>
                   </div>
@@ -551,23 +547,14 @@ export default function SalonOwnersPage() {
                       </div>
                     </div>
 
-                    {/* Book Work Space Action Buttons */}
-                    <div className="pt-2 flex items-center gap-2">
+                    {/* Book Work Space Action Button */}
+                    <div className="pt-2">
                       <Link
                         href={`/salon-owners/${item._id}`}
-                        className="flex-1 text-center bg-[#D99722] hover:bg-[#C2841B] active:scale-[0.98] text-white py-2.5 rounded-sm font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-xs"
+                        className="w-full block text-center bg-[#D99722] hover:bg-[#C2841B] active:scale-[0.98] text-white py-2.5 rounded-sm font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-xs"
                       >
                         Book Work Space
                       </Link>
-
-                      <button
-                        type="button"
-                        onClick={() => setSelectedChair(item)}
-                        className="px-3 py-2.5 rounded-sm border border-border bg-accent/60 hover:bg-accent text-foreground text-xs font-semibold cursor-pointer transition-colors"
-                        title="Quick Reserve"
-                      >
-                        <Calendar className="w-4 h-4 text-[#D99722]" />
-                      </button>
                     </div>
                   </div>
                 </div>

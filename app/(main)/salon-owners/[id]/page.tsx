@@ -20,7 +20,6 @@ import {
   Share2,
   Armchair,
   DollarSign,
-  User,
   ExternalLink,
   Loader2,
   ArrowRight,
@@ -361,49 +360,6 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Workspace Title Header */}
         <div className="space-y-3 mb-8">
-          <div className="flex flex-wrap items-center gap-2">
-            {rentalData?.uid && (
-              <span className="px-2.5 py-1 rounded-md bg-[#D99722]/15 text-[#D99722] text-xs font-extrabold flex items-center gap-1 border border-[#D99722]/30">
-                <Armchair className="w-3.5 h-3.5" />
-                <span>{rentalData.uid}</span>
-              </span>
-            )}
-
-            {chair?.uid && (
-              <span className="px-2.5 py-1 rounded-md bg-secondary text-muted-foreground text-xs font-bold border border-border">
-                Station UID: {chair.uid}
-              </span>
-            )}
-
-            {(rentalData?.status || chair?.status) && (
-              <span
-                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold capitalize ${
-                  (rentalData?.status || chair?.status) === "confirmed" ||
-                  (rentalData?.status || chair?.status) === "active"
-                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                    : (rentalData?.status || chair?.status) === "pending"
-                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30"
-                    : "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400 border border-zinc-500/30"
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                Status: {rentalData?.status || chair?.status}
-              </span>
-            )}
-
-            {rentalData?.paymentStatus && (
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${
-                  rentalData.paymentStatus === "paid"
-                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25"
-                    : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/25"
-                }`}
-              >
-                Payment: {rentalData.paymentStatus}
-              </span>
-            )}
-          </div>
-
           {chair?.name && (
             <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
               {chair.name}
@@ -851,80 +807,6 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
                     )}
                   </button>
                 </form>
-              )}
-
-              {/* Existing Rental Details from Response (if available) */}
-              {(rentalData?.uid || rentalData?.status || rentalData?.paymentStatus) && (
-                <div className="p-3.5 rounded-xl bg-background border border-border space-y-2 text-xs pt-3">
-                  <span className="font-bold text-foreground block">
-                    Listing Status &amp; Records
-                  </span>
-
-                  {rentalData.uid && (
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Record UID:</span>
-                      <strong className="text-foreground">{rentalData.uid}</strong>
-                    </div>
-                  )}
-
-                  {rentalData.status && (
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Listing Status:</span>
-                      <strong className="text-foreground capitalize">{rentalData.status}</strong>
-                    </div>
-                  )}
-
-                  {rentalData.paymentStatus && (
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Payment:</span>
-                      <strong className="text-foreground capitalize">{rentalData.paymentStatus}</strong>
-                    </div>
-                  )}
-
-                  {rentalData.transaction && (
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Transaction:</span>
-                      <strong className="text-foreground">{rentalData.transaction}</strong>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Rented Professional Info from response if present */}
-              {professional && professional.firstName && (
-                <div className="p-3.5 rounded-xl bg-background border border-border space-y-2 text-xs">
-                  <span className="font-bold text-foreground block flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-[#D99722]" />
-                    <span>Current Booker</span>
-                  </span>
-
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-[#D99722]/15 text-[#D99722] font-bold text-xs flex items-center justify-center shrink-0">
-                      {professional.image ? (
-                        <Image
-                          src={professional.image}
-                          alt={professional.firstName}
-                          width={32}
-                          height={32}
-                          className="rounded-lg object-cover"
-                          unoptimized
-                        />
-                      ) : (
-                        `${professional.firstName[0]}${professional.lastName?.[0] || ""}`
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-bold text-foreground truncate">
-                        {professional.firstName} {professional.lastName || ""}
-                      </p>
-                      {professional.email && (
-                        <p className="text-[11px] text-muted-foreground truncate">
-                          {professional.email}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
               )}
 
               {/* Salon Profile Link & Share Action */}
