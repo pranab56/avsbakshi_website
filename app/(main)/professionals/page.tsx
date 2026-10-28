@@ -159,7 +159,7 @@ function ProfessionalsContent() {
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-white tracking-tight">
               Discover &amp; Book Top <br />
-              <span className="font-light italic text-[#D99722]">Beauty Professionals</span>
+              <span className="text-[#D99722]">Beauty Professionals</span>
             </h1>
 
             <p className="text-sm sm:text-base text-zinc-300 font-normal max-w-xl leading-relaxed">

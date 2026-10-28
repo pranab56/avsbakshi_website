@@ -189,7 +189,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
         <div className="w-12 h-12 rounded-full bg-destructive/10 text-destructive mx-auto flex items-center justify-center">
           <XCircle className="w-6 h-6" />
         </div>
-        <h2 className="font-serif font-bold text-2xl text-foreground">
+        <h2 className="text-2xl font-bold text-foreground">
           Work Space Not Found
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground">
@@ -292,7 +292,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-border pb-5">
               <div className="space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+                  <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
                     {chairData.name}
                   </h1>
                   {chairData.uid && (
@@ -324,7 +324,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
               {/* Price display */}
               {chairData?.pricePerDayInUSD !== undefined && chairData?.pricePerDayInUSD !== null && (
                 <div className="sm:text-right shrink-0">
-                  <span className="font-serif italic font-bold text-3xl sm:text-4xl text-primary">
+                  <span className="font-bold text-3xl sm:text-4xl text-primary">
                     ${chairData.pricePerDayInUSD}
                   </span>
                   <span className="text-xs sm:text-sm font-normal text-muted-foreground ml-1">
@@ -390,7 +390,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
 
               {chairData.description && (
                 <div>
-                  <h3 className="font-serif font-bold text-lg text-foreground mb-2">
+                  <h3 className="text-lg font-bold text-foreground mb-2">
                     Description
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
@@ -436,7 +436,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                       />
                     </div>
                   ) : salon.name ? (
-                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-accent border border-border shrink-0 shadow-xs flex items-center justify-center text-primary font-serif font-bold text-2xl">
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden bg-accent border border-border shrink-0 shadow-xs flex items-center justify-center text-primary font-bold text-2xl">
                       {salon.name[0]}
                     </div>
                   ) : null}
@@ -444,7 +444,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                   <div>
                     <div className="flex items-center gap-2">
                       {salon.name && (
-                        <h2 className="font-serif font-bold text-2xl text-foreground">
+                        <h2 className="text-2xl font-bold text-foreground">
                           {salon.name}
                         </h2>
                       )}
@@ -490,7 +490,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
               {/* Salon Description */}
               {salon.description && (
                 <div className="space-y-2">
-                  <h3 className="font-serif font-bold text-base text-foreground">
+                  <h3 className="text-base font-bold text-foreground">
                     About the Salon
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
@@ -502,7 +502,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
               {/* Address / Location Section */}
               {addressParts.length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="font-serif font-bold text-base text-foreground">
+                  <h3 className="text-base font-bold text-foreground">
                     Address &amp; Location
                   </h3>
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-accent/40 border border-border">
@@ -531,7 +531,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
               {/* Contact Information Grid */}
               {hasContactInfo && (
                 <div className="space-y-2">
-                  <h3 className="font-serif font-bold text-base text-foreground">
+                  <h3 className="text-base font-bold text-foreground">
                     Salon Contact Details
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
@@ -586,7 +586,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                 <div className="space-y-3 pt-2">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-primary" />
-                    <h3 className="font-serif font-bold text-base text-foreground">
+                    <h3 className="text-base font-bold text-foreground">
                       Business Operating Hours
                     </h3>
                   </div>
@@ -629,7 +629,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                 Rental Rate
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className="font-serif italic font-bold text-3xl sm:text-4xl text-primary">
+                <span className="font-bold text-3xl sm:text-4xl text-primary">
                   ${chairData.pricePerDayInUSD}
                 </span>
                 <span className="text-sm text-muted-foreground">/ day</span>
@@ -700,7 +700,7 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
 
                 <div className="border-t border-border pt-2.5 flex items-center justify-between text-sm font-bold text-foreground">
                   <span>Total Estimated Cost</span>
-                  <span className="font-serif italic text-lg text-primary">
+                  <span className="font-bold text-lg text-primary">
                     ${estimatedTotal}
                   </span>
                 </div>

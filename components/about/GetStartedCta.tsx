@@ -17,7 +17,7 @@ export default function GetStartedCta() {
 
         <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
           Ready for your next <br />
-          <span className="font-light italic text-[#D99722]">exceptional appointment?</span>
+          <span className="text-[#D99722]">exceptional appointment?</span>
         </h2>
 
         <p className="text-sm sm:text-base text-zinc-300 font-normal max-w-xl mx-auto leading-relaxed">

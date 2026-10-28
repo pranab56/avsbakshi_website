@@ -342,7 +342,7 @@ function ProfessionalMessagesContent() {
       {/* Top Header Row with Title & Main Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
             Customer Direct Messages
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
@@ -687,7 +687,7 @@ function ProfessionalMessagesContent() {
               <div className="p-2.5 rounded-full bg-destructive/10">
                 <Trash2 className="w-6 h-6" />
               </div>
-              <h3 className="font-serif font-bold text-lg text-foreground">
+              <h3 className="font-bold text-lg text-foreground">
                 Delete Conversation?
               </h3>
             </div>

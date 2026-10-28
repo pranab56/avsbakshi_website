@@ -18,7 +18,7 @@ export default function CategoriesSection() {
       cat.image ||
       cat.img ||
       "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-    desc: cat.description || cat.desc || (cat.name ? `${cat.name} professional beauty services` : ""),
+    desc: cat.description || cat.desc || "",
   }));
 
   return (
@@ -84,6 +84,7 @@ export default function CategoriesSection() {
                   src={cat.img}
                   alt={cat.title}
                   fill
+                  unoptimized
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover transition-transform duration-700 group-hover/img:scale-108"
                 />
@@ -98,19 +99,18 @@ export default function CategoriesSection() {
                       {cat.count}
                     </span>
                   </div>
-                  <p className="text-[11px] text-white/80 font-normal mt-0.5 truncate">
-                    {cat.desc}
-                  </p>
                 </div>
               </Link>
 
               {/* Category Footer */}
               <div className="p-3.5 space-y-2 flex-1 flex flex-col justify-between bg-card">
-                <p className="text-xs text-muted-foreground line-clamp-2">
-                  {cat.desc}
-                </p>
+                {cat.desc ? (
+                  <p className="text-xs text-muted-foreground line-clamp-2">
+                    {cat.desc}
+                  </p>
+                ) : null}
 
-                <div className="pt-2 border-t border-border/40 text-right">
+                <div className={cat.desc ? "pt-2 border-t border-border/40 text-right" : "text-right"}>
                   <Link
                     href={`/professionals?serviceCategory=${encodeURIComponent(cat.id)}`}
                     className="text-[11px] font-semibold text-[#D99722] hover:underline"

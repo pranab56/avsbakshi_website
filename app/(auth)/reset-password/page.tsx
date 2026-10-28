@@ -88,7 +88,7 @@ function ResetPasswordContent() {
           className="h-10 w-auto object-contain hidden dark:block"
         />
         <div className="space-y-1.5">
-          <h1 className="  text-3xl font-bold text-foreground">
+          <h1 className="text-3xl font-bold text-foreground">
             Set New Password
           </h1>
           <p className="text-xs text-muted-foreground">

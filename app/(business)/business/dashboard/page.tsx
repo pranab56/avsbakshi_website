@@ -83,7 +83,7 @@ export default function BusinessDashboardPage() {
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
           Monday, 19 August 2026
         </p>
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           Good morning, Noir Studio.
         </h1>
       </div>
@@ -91,28 +91,28 @@ export default function BusinessDashboardPage() {
       {/* Top 4 Stat Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             4
           </div>
           <p className="text-xs text-muted-foreground font-normal">Today&apos;s Bookings</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             £240
           </div>
           <p className="text-xs text-muted-foreground font-normal">Today&apos;s Revenue</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             2 / 6
           </div>
           <p className="text-xs text-muted-foreground font-normal">Available Chairs</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs hover:border-[#D99722]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-[#D99722] mb-1">
+          <div className="text-3xl font-extrabold text-[#D99722] mb-1 tracking-tight">
             4.8
           </div>
           <p className="text-xs text-muted-foreground font-normal">Average Rating</p>
@@ -127,7 +127,7 @@ export default function BusinessDashboardPage() {
           <div className="bg-card border border-border rounded-lg p-6 sm:p-8 space-y-4 shadow-xs">
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-0.5">
-                <h2 className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                   Revenue Overview
                 </h2>
                 <p className="text-xs text-muted-foreground font-normal">
@@ -214,7 +214,7 @@ export default function BusinessDashboardPage() {
 
           {/* Recent Bookings Section */}
           <div className="space-y-4">
-            <h2 className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground">
               Recent Bookings
             </h2>
 
@@ -236,7 +236,7 @@ export default function BusinessDashboardPage() {
                     </div>
 
                     <div className="space-y-1">
-                      <h3 className="font-serif font-bold text-lg text-foreground">
+                      <h3 className="font-bold text-lg text-foreground">
                         {b.stylistName}
                       </h3>
                       <p className="text-xs font-semibold text-[#D99722]">
@@ -244,7 +244,7 @@ export default function BusinessDashboardPage() {
                       </p>
                       <p className="text-xs text-muted-foreground font-normal flex items-center gap-1.5 flex-wrap">
                         <span>{b.dateTime}</span>
-                        <span className="font-serif italic text-[#D99722] font-bold text-sm">
+                        <span className="text-[#D99722] font-bold text-sm">
                           {b.price}
                         </span>
                       </p>
@@ -268,7 +268,7 @@ export default function BusinessDashboardPage() {
         {/* Right Column (4 cols): Recent Activity */}
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-card border border-border rounded-lg p-6 space-y-5 shadow-xs">
-            <h3 className="font-serif italic font-normal text-xl text-foreground">
+            <h3 className="text-xl font-bold text-foreground">
               Recent Activity
             </h3>
 

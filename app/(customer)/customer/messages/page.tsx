@@ -357,7 +357,7 @@ function CustomerMessagesContent() {
           {/* Header Title & Refresh */}
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+              <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
                 Messages
               </h1>
               <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -432,7 +432,7 @@ function CustomerMessagesContent() {
 
                       {/* Name & Preview Text */}
                       <div className="space-y-0.5 min-w-0 flex-1">
-                        <h3 className="font-serif font-bold text-base text-foreground truncate">
+                        <h3 className="font-bold text-base text-foreground truncate">
                           {participant.name}
                         </h3>
                         <p className="text-xs sm:text-sm leading-tight text-muted-foreground truncate">
@@ -498,7 +498,7 @@ function CustomerMessagesContent() {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <h2 className="font-serif font-bold text-base sm:text-lg text-foreground leading-tight">
+                  <h2 className="font-bold text-base sm:text-lg text-foreground leading-tight">
                     {activeParticipant.name}
                   </h2>
                   {activeParticipant.isOnline ? (
@@ -690,7 +690,7 @@ function CustomerMessagesContent() {
               <div className="p-2.5 rounded-full bg-destructive/10">
                 <Trash2 className="w-6 h-6" />
               </div>
-              <h3 className="font-serif font-bold text-lg text-foreground">
+              <h3 className="font-bold text-lg text-foreground">
                 Delete Conversation?
               </h3>
             </div>

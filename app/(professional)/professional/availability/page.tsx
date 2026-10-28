@@ -104,7 +104,7 @@ export default function AvailabilityPage() {
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
             Availability
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -125,21 +125,21 @@ export default function AvailabilityPage() {
       {/* Stat Metric Cards matching business-profile overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             {openDaysCount} Days
           </div>
           <p className="text-xs text-muted-foreground font-normal">Working Days / Week</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             {totalWeeklyHours} hrs
           </div>
           <p className="text-xs text-muted-foreground font-normal">Total Weekly Hours</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/50 transition-colors shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             {sundayStatus}
           </div>
           <p className="text-xs text-muted-foreground font-normal">Sunday Status</p>
@@ -232,7 +232,7 @@ export default function AvailabilityPage() {
                   ) : (
                     /* Day Off Text */
                     <td colSpan={2} className="py-4 px-4">
-                      <span className="text-xs italic text-muted-foreground font-serif font-medium bg-accent px-3 py-1.5 rounded-sm border border-border inline-block">
+                      <span className="text-xs text-muted-foreground font-medium bg-accent px-3 py-1.5 rounded-sm border border-border inline-block">
                         Day off
                       </span>
                     </td>

@@ -15,13 +15,13 @@ export default function Hero() {
             </span>
           </div>
 
-          <h1 className="  text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.1] text-white">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-white tracking-tight">
             Your Skills. <br />
             Your Clients. <br />
-            <span className="font-light italic text-[#CAA054]">Your Business.</span>
+            <span className="text-[#D99722]">Your Business.</span>
           </h1>
 
-          <p className="text-xs sm:text-sm text-zinc-300 font-light leading-relaxed max-w-lg">
+          <p className="text-xs sm:text-sm text-zinc-300 font-normal leading-relaxed max-w-lg">
             Join thousands of independent beauty professionals who manage their entire business through Cloud Salon.
           </p>
 
@@ -43,15 +43,15 @@ export default function Hero() {
           {/* Stats Row */}
           <div className="grid grid-cols-3 gap-3 sm:gap-8 pt-6 sm:pt-8 border-t border-white/10">
             <div>
-              <h4 className="  text-xl sm:text-3xl font-bold text-white mb-0.5">12,000+</h4>
+              <h4 className="text-xl sm:text-3xl font-bold text-white mb-0.5">12,000+</h4>
               <p className="text-[11px] sm:text-xs text-zinc-400 font-normal">Active Professionals</p>
             </div>
             <div>
-              <h4 className="  text-xl sm:text-3xl font-bold text-white mb-0.5">4.8★</h4>
+              <h4 className="text-xl sm:text-3xl font-bold text-white mb-0.5">4.8★</h4>
               <p className="text-[11px] sm:text-xs text-zinc-400 font-normal">Average Rating</p>
             </div>
             <div>
-              <h4 className="  text-xl sm:text-3xl font-bold text-white mb-0.5">$1,250</h4>
+              <h4 className="text-xl sm:text-3xl font-bold text-white mb-0.5">$1,250</h4>
               <p className="text-[11px] sm:text-xs text-zinc-400 font-normal">Avg Monthly Earnings</p>
             </div>
           </div>

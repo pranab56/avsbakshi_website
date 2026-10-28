@@ -17,11 +17,11 @@ export default function Hero({ activeRole, setActiveRole }: HeroProps) {
           HOW IT WORKS
         </span>
 
-        <h1 className="  text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] tracking-tight">
-          <span className="italic block text-white font-serif">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.15] tracking-tight">
+          <span className="block text-white">
             Simple for everyone.
           </span>
-          <span className="italic block text-[#D99722] font-serif mt-1">
+          <span className="block text-[#D99722] mt-1">
             Powerful where it counts.
           </span>
         </h1>

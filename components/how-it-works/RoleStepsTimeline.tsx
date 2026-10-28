@@ -40,10 +40,10 @@ export default function RoleStepsTimeline({ steps }: RoleStepsTimelineProps) {
               {/* Content */}
               <div className="pt-1 sm:pt-2 flex-1">
                 <div className="flex items-baseline gap-2">
-                  <span className="  font-semibold text-xs sm:text-sm text-primary">
+                  <span className="font-semibold text-xs sm:text-sm text-primary">
                     {step.num}
                   </span>
-                  <h3 className="  text-lg sm:text-xl font-bold text-foreground">
+                  <h3 className="text-lg sm:text-xl font-bold text-foreground">
                     {step.title}
                   </h3>
                 </div>

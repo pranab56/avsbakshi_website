@@ -62,7 +62,7 @@ export default function OnboardingModal({
             <Sparkles className="w-3.5 h-3.5" />
             <span>Welcome Professional</span>
           </div>
-          <DialogTitle className="font-serif italic font-normal text-2xl sm:text-3xl text-foreground">
+          <DialogTitle className="font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight">
             Verification Successful!
           </DialogTitle>
           <DialogDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -81,7 +81,7 @@ export default function OnboardingModal({
               <Building2 className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-serif font-bold text-base text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
+              <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors flex items-center justify-between">
                 <span>Setup Salon Business</span>
                 <ArrowRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
               </h3>
@@ -104,7 +104,7 @@ export default function OnboardingModal({
               <Armchair className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-serif font-bold text-base text-foreground group-hover:text-emerald-500 transition-colors flex items-center justify-between">
+              <h3 className="font-bold text-base text-foreground group-hover:text-emerald-500 transition-colors flex items-center justify-between">
                 <span>Rent Chair / Independent</span>
                 <ArrowRight className="w-4 h-4 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
               </h3>

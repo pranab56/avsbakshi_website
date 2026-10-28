@@ -10,7 +10,7 @@ export default function DualBanners() {
             <span className="text-xs font-semibold text-[#D99722] dark:text-primary-light uppercase tracking-[0.2em] block mb-2 sm:mb-3">
               FOR PROFESSIONALS
             </span>
-            <h3 className="  text-2xl sm:text-4xl lg:text-[40px] font-bold leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
+            <h3 className="text-2xl sm:text-4xl lg:text-[40px] font-bold leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
               Turn Your Talent Into Your Business.
             </h3>
             <p className="text-xs sm:text-sm text-zinc-400 dark:text-muted-foreground font-normal leading-relaxed max-w-md">
@@ -40,7 +40,7 @@ export default function DualBanners() {
             <span className="text-xs font-semibold text-white/80 dark:text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
               FOR BUSINESSES
             </span>
-            <h3 className="  text-2xl sm:text-4xl lg:text-[40px] font-bold leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
+            <h3 className="text-2xl sm:text-4xl lg:text-[40px] font-bold leading-tight text-white dark:text-foreground mb-3 sm:mb-4">
               Run Your Salon From One Place.
             </h3>
             <p className="text-xs sm:text-sm text-white/95 dark:text-muted-foreground font-normal leading-relaxed max-w-md">

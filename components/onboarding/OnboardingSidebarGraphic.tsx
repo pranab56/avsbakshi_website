@@ -17,16 +17,16 @@ export default function OnboardingSidebarGraphic() {
           <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-sm">
             ✨
           </div>
-          <span className="font-serif font-bold tracking-wider text-sm uppercase">
+          <span className="font-bold tracking-wider text-sm uppercase">
             Salon Website Portal
           </span>
         </div>
 
         <div className="space-y-4 max-w-lg">
-          <h2 className="font-serif text-3xl xl:text-4xl font-normal leading-tight">
+          <h2 className="text-3xl xl:text-4xl font-extrabold leading-tight tracking-tight">
             Grow your salon business with modern tools and client bookings.
           </h2>
-          <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-light">
+          <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-normal">
             Join hundreds of beauty professionals using our platform to manage their schedules, showcase portfolios, and accept instant appointments.
           </p>
         </div>

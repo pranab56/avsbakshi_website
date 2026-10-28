@@ -16,7 +16,7 @@ export default function ServicesTab() {
       cat.image ||
       cat.img ||
       "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-    desc: cat.description || cat.desc || (cat.name ? `${cat.name} professional beauty services` : ""),
+    desc: cat.description || cat.desc || "",
   }));
 
   return (
@@ -81,11 +81,13 @@ export default function ServicesTab() {
 
               {/* Category Card Footer */}
               <div className="p-4 space-y-3 bg-card flex-1 flex flex-col justify-between">
-                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                  {cat.desc}
-                </p>
+                {cat.desc ? (
+                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                    {cat.desc}
+                  </p>
+                ) : null}
 
-                <div className="pt-2 border-t border-border/50 flex items-center justify-between text-xs font-semibold text-[#D99722] group-hover:text-[#C2841B] transition-colors">
+                <div className={cat.desc ? "pt-2 border-t border-border/50 flex items-center justify-between text-xs font-semibold text-[#D99722] group-hover:text-[#C2841B] transition-colors" : "flex items-center justify-between text-xs font-semibold text-[#D99722] group-hover:text-[#C2841B] transition-colors"}>
                   <span>Explore Services</span>
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>

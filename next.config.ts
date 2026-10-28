@@ -10,7 +10,14 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ['10.10.7.37', '192.168.1.202'],
+      allowedOrigins: [
+        '10.10.7.98:3000',
+        '10.10.7.98',
+        '10.10.7.37:3000',
+        '10.10.7.37',
+        'localhost:3000',
+        '192.168.1.202',
+      ],
     },
   },
   images: {
@@ -31,7 +38,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'example.com',
       },
-
       {
         protocol: 'https',
         hostname: 'www.mamp.one',
@@ -39,6 +45,22 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 't3.ftcdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.thecloudsalon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.thecloudsalon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'thecloudsalon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.thecloudsalon.com',
       },
       {
         protocol: 'https',

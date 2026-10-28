@@ -157,7 +157,7 @@ export default function BusinessWorkspacePage() {
     <div className="space-y-6 pb-16">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           Work Space
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -190,7 +190,7 @@ export default function BusinessWorkspacePage() {
             <Armchair className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h3 className="font-serif text-lg font-semibold text-foreground">
+            <h3 className="text-lg font-bold text-foreground">
               No workspace rentals requested
             </h3>
             <p className="text-xs text-muted-foreground max-w-sm">
@@ -247,7 +247,7 @@ export default function BusinessWorkspacePage() {
 
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-serif font-bold text-base sm:text-lg text-foreground">
+                      <span className="font-bold text-base sm:text-lg text-foreground">
                         {chairName}
                       </span>
                       {chairObj?.uid && (
@@ -444,7 +444,7 @@ export default function BusinessWorkspacePage() {
                 <div className="flex items-start justify-between border-b border-border pb-4 gap-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <DialogTitle className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+                      <DialogTitle className="font-bold text-xl sm:text-2xl text-foreground">
                         Rental Details
                       </DialogTitle>
                       {rental.uid && (
@@ -485,7 +485,7 @@ export default function BusinessWorkspacePage() {
 
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     {/* Avatar */}
-                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-primary/10 border-2 border-primary/30 text-primary flex items-center justify-center font-bold font-serif text-xl shrink-0 shadow-xs">
+                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-primary/10 border-2 border-primary/30 text-primary flex items-center justify-center font-bold text-xl shrink-0 shadow-xs">
                       {prof?.image ? (
                         <Image
                           src={prof.image}
@@ -501,7 +501,7 @@ export default function BusinessWorkspacePage() {
 
                     {/* Name & Contact */}
                     <div className="min-w-0 flex-1 space-y-1.5">
-                      <h3 className="font-serif font-bold text-lg text-foreground truncate">
+                      <h3 className="font-bold text-lg text-foreground truncate">
                         {profFullName}
                       </h3>
 
@@ -554,7 +554,7 @@ export default function BusinessWorkspacePage() {
 
                     <div className="space-y-1 min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-serif font-bold text-base text-foreground">
+                        <span className="font-bold text-base text-foreground">
                           {chairName}
                         </span>
                         {chairObj?.uid && (

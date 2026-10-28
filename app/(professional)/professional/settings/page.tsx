@@ -236,7 +236,7 @@ export default function ProfessionalSettingsPage() {
       {/* Page Title & Subtitle */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
             Account &amp; Profile Settings
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
@@ -281,7 +281,7 @@ export default function ProfessionalSettingsPage() {
           {activeTab === "Basic Info" && (
             <div className="space-y-6">
               <div className="border-b border-border pb-3">
-                <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+                <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                   Basic Profile Information
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -308,7 +308,7 @@ export default function ProfessionalSettingsPage() {
                 <>
                   {/* Avatar Photo Section */}
                   <div className="flex items-center gap-4">
-                    <div className="relative w-16 h-16 rounded-md bg-muted text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
+                    <div className="relative w-16 h-16 rounded-md bg-muted text-foreground text-2xl flex items-center justify-center font-bold shadow-xs shrink-0 overflow-hidden border border-border">
                       {avatarPreview ? (
                         <Image
                           src={avatarPreview}
@@ -326,7 +326,7 @@ export default function ProfessionalSettingsPage() {
                       )}
                     </div>
                     <div className="space-y-1">
-                      <h3 className="font-serif font-bold text-lg text-foreground">
+                      <h3 className="text-lg font-bold text-foreground">
                         {`${profileForm.firstName} ${profileForm.lastName}`.trim() ||
                           "Professional"}
                       </h3>
@@ -430,7 +430,7 @@ export default function ProfessionalSettingsPage() {
             <div className="space-y-6">
               <div className="border-b border-border pb-3">
                 <div className="flex items-center gap-2 mb-1">
-                  <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+                  <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                     About Profile Information
                   </h2>
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/20">
@@ -681,7 +681,7 @@ export default function ProfessionalSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Change Password" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 Security
               </h2>
 
@@ -711,7 +711,7 @@ export default function ProfessionalSettingsPage() {
       <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
         <DialogContent className="sm:max-w-md bg-card border border-border text-card-foreground p-6 rounded-lg shadow-lg">
           <DialogHeader className="space-y-1.5 text-left">
-            <DialogTitle className="font-serif font-bold text-xl text-foreground">
+            <DialogTitle className="text-xl font-bold text-foreground">
               Change Password
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">

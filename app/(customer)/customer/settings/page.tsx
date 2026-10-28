@@ -125,7 +125,7 @@ export default function CustomerSettingsPage() {
   return (
     <div className="space-y-6">
       {/* Page Title */}
-      <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+      <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
         Settings
       </h1>
 
@@ -158,7 +158,7 @@ export default function CustomerSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Profile" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+              <h2 className="font-bold text-xl sm:text-2xl text-foreground">
                 Profile Information
               </h2>
 
@@ -170,7 +170,7 @@ export default function CustomerSettingsPage() {
                 <>
                   {/* Avatar Photo Section */}
                   <div className="flex items-center gap-4">
-                    <div className="relative w-16 h-16 rounded-full bg-primary text-primary-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden">
+                    <div className="relative w-16 h-16 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex items-center justify-center shadow-xs shrink-0 overflow-hidden">
                       {avatarPreview ? (
                         <Image
                           src={avatarPreview}
@@ -184,7 +184,7 @@ export default function CustomerSettingsPage() {
                       )}
                     </div>
                     <div className="space-y-1">
-                      <h3 className="font-serif font-bold text-lg text-foreground">
+                      <h3 className="font-bold text-lg text-foreground">
                         {profileForm.firstName} {profileForm.lastName}
                       </h3>
                       <input
@@ -285,7 +285,7 @@ export default function CustomerSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Change Password" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+              <h2 className="font-bold text-xl sm:text-2xl text-foreground">
                 Change Password
               </h2>
 
@@ -315,7 +315,7 @@ export default function CustomerSettingsPage() {
       <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
         <DialogContent className="sm:max-w-md bg-card border border-border text-foreground p-6 rounded-lg shadow-lg">
           <DialogHeader className="space-y-1.5 text-left">
-            <DialogTitle className="font-serif font-bold text-xl text-foreground">
+            <DialogTitle className="font-bold text-xl text-foreground">
               Change Password
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">

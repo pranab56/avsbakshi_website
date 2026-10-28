@@ -63,12 +63,12 @@ export default function Hero({ q, loc, latitude: initialLat = "", longitude: ini
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-5xl lg:text-6xl font-normal leading-[1.15] sm:leading-[1.1] text-white">
+          <h1 className="text-2xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.15] sm:leading-[1.1] text-white tracking-tight">
             Find your perfect <br />
-            <span className="font-light italic text-[#CAA054]">beauty experience</span>
+            <span className="text-[#D99722]">beauty experience</span>
           </h1>
 
-          <p className="text-xs sm:text-sm text-zinc-300 font-light max-w-xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-zinc-300 font-normal max-w-xl leading-relaxed">
             Search by service, location and date, then compare verified professionals and salons side by side.
           </p>
         </div>

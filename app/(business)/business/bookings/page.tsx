@@ -133,7 +133,7 @@ export default function BusinessBookingsPage() {
     <div className="space-y-6 pb-16">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           Bookings
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -235,7 +235,7 @@ export default function BusinessBookingsPage() {
                 </div>
 
                 {/* Price */}
-                <div className="col-span-1 font-serif italic font-bold text-foreground text-sm sm:text-base">
+                <div className="col-span-1 font-bold text-foreground text-sm sm:text-base">
                   <span className="md:hidden text-xs text-muted-foreground block font-sans font-normal">
                     Price:
                   </span>

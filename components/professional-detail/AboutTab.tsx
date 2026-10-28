@@ -61,7 +61,7 @@ export default function AboutTab({ proData }: AboutTabProps) {
   return (
     <div className="animate-in fade-in duration-150 space-y-8">
       {quote && (
-        <blockquote className="font-light italic text-lg sm:text-xl text-foreground border-l-4 border-primary pl-6 py-2 leading-relaxed bg-accent/20 rounded-r-xl">
+        <blockquote className="text-lg sm:text-xl text-foreground font-normal border-l-4 border-primary pl-6 py-2 leading-relaxed bg-accent/20 rounded-r-xl">
           &ldquo;{quote}&rdquo;
         </blockquote>
       )}

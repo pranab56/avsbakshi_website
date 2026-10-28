@@ -131,7 +131,7 @@ function CustomerBookingsContent() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           My Bookings
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -214,7 +214,7 @@ function CustomerBookingsContent() {
                 {/* Booking Info */}
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-serif font-bold text-base sm:text-lg text-foreground leading-tight">
+                    <h3 className="font-bold text-base sm:text-lg text-foreground leading-tight">
                       {booking.stylistName}
                     </h3>
                     {booking.salonName && (
@@ -234,7 +234,7 @@ function CustomerBookingsContent() {
                       {booking.dateTime}
                     </span>
 
-                    <span className="font-serif italic font-bold text-primary text-sm">
+                    <span className="font-bold text-primary text-sm">
                       {booking.price}
                     </span>
                   </div>
@@ -287,7 +287,7 @@ function CustomerBookingsContent() {
         </div>
       ) : (
         <div className="max-w-3xl bg-accent/60 border border-border rounded-2xl p-12 text-center text-muted-foreground space-y-3">
-          <p className="font-serif text-lg font-bold text-foreground">No {activeTab} bookings found</p>
+          <p className="text-lg font-bold text-foreground">No {activeTab} bookings found</p>
           <p className="text-xs max-w-sm mx-auto">
             You don't have any {activeTab} appointment bookings at the moment. Browse top rated specialists to book your next service.
           </p>

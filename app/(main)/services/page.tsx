@@ -52,12 +52,7 @@ export default function ServicesPage() {
           cat.image ||
           cat.img ||
           "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=800&q=80",
-        desc:
-          cat.description ||
-          cat.desc ||
-          (cat.name
-            ? `Top-rated verified professionals specializing in ${cat.name.toLowerCase()} treatments.`
-            : "Professional beauty & wellness services"),
+        desc: cat.description || cat.desc || "",
       }));
     }
     return [];
@@ -254,7 +249,7 @@ export default function ServicesPage() {
         {/* Section Header with Category Filter Pills */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 mb-8 pb-4 border-b border-border/50">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-serif">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
               Explore Services
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
@@ -309,7 +304,7 @@ export default function ServicesPage() {
             <div className="w-14 h-14 rounded-full bg-[#D99722]/10 text-[#D99722] mx-auto flex items-center justify-center">
               <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold font-serif text-foreground">
+            <h3 className="text-xl font-bold text-foreground">
               {searchQuery ? "No categories found" : "No Categories Available"}
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -374,22 +369,21 @@ export default function ServicesPage() {
 
                     {/* Bottom Header Info */}
                     <div className="absolute bottom-3 left-4 right-4 text-left z-10 space-y-0.5">
-                      <h2 className="text-lg sm:text-xl font-bold text-white leading-tight font-serif group-hover/img:text-[#D99722] transition-colors">
+                      <h2 className="text-lg sm:text-xl font-bold text-white leading-tight group-hover/img:text-[#D99722] transition-colors">
                         {cat.title}
                       </h2>
-                      <p className="text-[11px] text-white/80 font-normal line-clamp-1">
-                        {cat.desc}
-                      </p>
                     </div>
                   </Link>
 
                   {/* Category Body & Action */}
                   <div className="p-4 space-y-3 flex-1 flex flex-col justify-between bg-card">
-                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                      {cat.desc}
-                    </p>
+                    {cat.desc ? (
+                      <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                        {cat.desc}
+                      </p>
+                    ) : null}
 
-                    <div className="pt-3 border-t border-border/40">
+                    <div className={cat.desc ? "pt-3 border-t border-border/40" : ""}>
                       <Link
                         href={`/professionals?serviceCategory=${encodeURIComponent(cat.id)}`}
                         className="w-full py-2.5 px-3 rounded-xl bg-accent hover:bg-[#D99722] text-foreground hover:text-white text-xs font-semibold flex items-center justify-between transition-all group/btn cursor-pointer shadow-2xs"

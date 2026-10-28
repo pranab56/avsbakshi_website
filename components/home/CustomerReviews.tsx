@@ -149,7 +149,7 @@ export default function CustomerReviews() {
                   </div>
 
                   {/* Quote */}
-                  <blockquote className="font-light italic text-base sm:text-xl lg:text-2xl text-foreground leading-relaxed max-w-xl mx-auto text-center mb-6">
+                  <blockquote className="text-base sm:text-xl lg:text-2xl text-foreground font-normal leading-relaxed max-w-xl mx-auto text-center mb-6">
                     {review.quote}
                   </blockquote>
 

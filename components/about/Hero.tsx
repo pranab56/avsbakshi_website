@@ -22,7 +22,7 @@ export default function Hero() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.12] tracking-tight text-white">
               We built the <br className="hidden sm:inline" />
               platform we needed, <br />
-              but <span className="font-light italic text-[#D99722]">could never find.</span>
+              but <span className="text-[#D99722]">could never find.</span>
             </h1>
 
             <p className="text-sm sm:text-base text-zinc-300 font-normal leading-relaxed max-w-lg">
@@ -62,7 +62,7 @@ export default function Hero() {
                   <p className="text-xs text-zinc-300">Empowering beauty independence</p>
                   <p className="text-sm font-bold text-white">Created by Stylists, for Stylists</p>
                 </div>
-                <span className="w-10 h-10 rounded-xl bg-[#D99722]/20 border border-[#D99722]/50 flex items-center justify-center text-[#D99722] shrink-0 font-serif font-bold">
+                <span className="w-10 h-10 rounded-xl bg-[#D99722]/20 border border-[#D99722]/50 flex items-center justify-center text-[#D99722] shrink-0 font-bold">
                   CS
                 </span>
               </div>

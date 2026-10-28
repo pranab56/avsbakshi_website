@@ -492,7 +492,7 @@ export default function BusinessProfileView() {
             <Building2 className="w-3.5 h-3.5" />
             <span>Salon Business Management</span>
           </div>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground pt-1">
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground pt-1 tracking-tight">
             Business Profile
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
@@ -567,7 +567,7 @@ export default function BusinessProfileView() {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-primary/20 text-primary flex items-center justify-center font-bold text-3xl font-serif">
+                    <div className="w-full h-full bg-primary/20 text-primary flex items-center justify-center font-bold text-3xl">
                       {formData.name?.charAt(0) || "S"}
                     </div>
                   )}
@@ -582,7 +582,7 @@ export default function BusinessProfileView() {
                 {/* Salon Name, Rating, Category, Description */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
                       {formData.name || "Salon Business"}
                     </h2>
                     <span className="bg-primary/15 text-primary text-xs font-bold px-3 py-1 rounded-full border border-primary/20">
@@ -675,7 +675,7 @@ export default function BusinessProfileView() {
             <div ref={leftColRef} className="lg:col-span-5 flex flex-col gap-6">
               <div className="bg-card border border-border rounded-2xl p-6 space-y-5 shadow-2xs">
                 <div className="flex items-center justify-between border-b border-border pb-3.5">
-                  <h3 className="font-serif font-bold text-base text-foreground flex items-center gap-2">
+                  <h3 className="font-bold text-base text-foreground flex items-center gap-2">
                     <Building2 className="w-4 h-4 text-primary" />
                     <span>Business Information</span>
                   </h3>
@@ -839,7 +839,7 @@ export default function BusinessProfileView() {
               {salonData?.createdBy && (
                 <div className="bg-card border border-border rounded-2xl p-5 space-y-3 shadow-2xs">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold font-serif text-lg shrink-0">
+                    <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold text-lg shrink-0">
                       {salonData.createdBy.firstName?.[0] || <User className="w-5 h-5" />}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -878,7 +878,7 @@ export default function BusinessProfileView() {
                 <div className="flex items-center justify-between border-b border-border pb-3.5 shrink-0">
                   <div className="flex items-center gap-2">
                     <ImageIcon className="w-4 h-4 text-primary" />
-                    <h3 className="font-serif font-bold text-base text-foreground">
+                    <h3 className="font-bold text-base text-foreground">
                       Photo Gallery Showcase
                     </h3>
                     <span className="text-xs bg-primary/10 text-primary font-bold px-2.5 py-0.5 rounded-full">
@@ -1054,7 +1054,7 @@ export default function BusinessProfileView() {
       {activeTab === "edit" && (
         <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-6 animate-in fade-in duration-200 shadow-xs max-w-3xl">
           <div className="border-b border-border pb-4">
-            <h2 className="font-serif font-bold text-xl text-foreground">Edit Salon Profile</h2>
+            <h2 className="font-bold text-xl text-foreground">Edit Salon Profile</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               Update your business name, logo image, category, contact information, and biography.
             </p>
@@ -1198,7 +1198,7 @@ export default function BusinessProfileView() {
       {activeTab === "location" && (
         <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-6 animate-in fade-in duration-200 shadow-xs max-w-4xl">
           <div className="border-b border-border pb-4">
-            <h2 className="font-serif font-bold text-xl text-foreground flex items-center gap-2">
+            <h2 className="font-bold text-xl text-foreground flex items-center gap-2">
               <MapPin className="w-5 h-5 text-primary" />
               <span>Salon Location &amp; Map</span>
             </h2>
@@ -1254,7 +1254,7 @@ export default function BusinessProfileView() {
       {activeTab === "hours" && (
         <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-6 animate-in fade-in duration-200 shadow-xs max-w-3xl">
           <div className="border-b border-border pb-4">
-            <h2 className="font-serif font-bold text-xl text-foreground flex items-center gap-2">
+            <h2 className="font-bold text-xl text-foreground flex items-center gap-2">
               <Clock className="w-5 h-5 text-primary" />
               <span>Weekly Operating Hours</span>
             </h2>
@@ -1333,7 +1333,7 @@ export default function BusinessProfileView() {
         <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-6 animate-in fade-in duration-200 shadow-xs max-w-5xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
             <div>
-              <h2 className="font-serif font-bold text-xl text-foreground flex items-center gap-2">
+              <h2 className="font-bold text-xl text-foreground flex items-center gap-2">
                 <ImageIcon className="w-5 h-5 text-primary" />
                 <span>Salon Interior &amp; Gallery Photos</span>
               </h2>

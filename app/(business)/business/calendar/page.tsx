@@ -122,7 +122,7 @@ export default function BusinessCalendarPage() {
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Month / Year Title */}
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
           {currentMonth}
         </h1>
 
@@ -242,7 +242,7 @@ export default function BusinessCalendarPage() {
                     {wd.dayName}
                   </span>
                   <span
-                    className={`font-serif text-lg font-bold block ${
+                    className={`text-lg font-bold block ${
                       wd.isHighlighted ? "text-primary" : "text-foreground"
                     }`}
                   >
@@ -299,7 +299,7 @@ export default function BusinessCalendarPage() {
       {view === "Day" && (
         <div className="bg-card border border-border rounded-lg p-6 shadow-xs space-y-6">
           {/* Day Title */}
-          <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground">
             Monday 19 August
           </h2>
 

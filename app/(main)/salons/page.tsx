@@ -124,12 +124,12 @@ function SalonsContent() {
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-normal leading-tight text-white">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold leading-tight text-white tracking-tight">
               Discover Top-Rated <br />
-              <span className="font-light italic text-[#CAA054]">Beauty Salons & Studios</span>
+              <span className="text-[#D99722]">Beauty Salons & Studios</span>
             </h1>
 
-            <p className="text-xs sm:text-sm text-zinc-300 font-light max-w-xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-zinc-300 font-normal max-w-xl leading-relaxed">
               Explore luxury salons, hair studios, and grooming spaces near you with instant booking and verified reviews.
             </p>
           </div>

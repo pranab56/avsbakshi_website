@@ -8,9 +8,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
+  --font-serif: var(--font-sans);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-heading: var(--font-serif);
+  --font-heading: var(--font-sans);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -42,7 +42,7 @@
 }
 
 .font-serif {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), sans-serif !important;
 }
 
 /* Hide Google Translate toolbar */

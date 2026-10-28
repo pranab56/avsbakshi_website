@@ -237,7 +237,7 @@ export default function ProfessionalPortfolioPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
-                        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+                        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
                             Portfolio Showcase
                         </h1>
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/20">
@@ -298,7 +298,7 @@ export default function ProfessionalPortfolioPage() {
             {/* Gallery Header */}
             <div className="flex items-center justify-between pt-1">
                 <div className="flex items-center gap-3">
-                    <h2 className="font-serif italic font-normal text-2xl text-foreground">
+                    <h2 className="text-2xl font-bold text-foreground">
                         Photo Gallery
                     </h2>
                     <span className="text-xs font-bold text-muted-foreground bg-accent px-2.5 py-1 rounded-full border border-border">
@@ -342,7 +342,7 @@ export default function ProfessionalPortfolioPage() {
                         <ImageIcon className="w-8 h-8 text-muted-foreground/60" />
                     </div>
                     <div>
-                        <h3 className="font-serif font-bold text-lg text-foreground">
+                        <h3 className="font-bold text-lg text-foreground">
                             No Portfolio Photos Yet
                         </h3>
                         <p className="text-xs text-muted-foreground max-w-md mx-auto mt-1">
@@ -546,7 +546,7 @@ export default function ProfessionalPortfolioPage() {
                         {/* Modal Header */}
                         <div className="p-4 bg-accent/60 border-b border-border flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <span className="font-serif font-bold text-base text-foreground">
+                                <span className="font-bold text-base text-foreground">
                                     Photo #{previewModalIndex + 1} of {photos.length}
                                 </span>
                                 {previewModalIndex === 0 && (

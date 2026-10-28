@@ -75,7 +75,7 @@ export default function ForBusinessesSection() {
             <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
               FOR BUSINESSES
             </span>
-            <h2 className="  text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] mb-4">
               Run your salon from one powerful platform.
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">

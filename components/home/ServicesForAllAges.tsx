@@ -65,7 +65,7 @@ export default function ServicesForAllAges() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-2 sm:mb-3">
             EVERYONE IS WELCOME
           </span>
-          <h2 className="  text-xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
+          <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3 sm:mb-4">
             Services for all ages
           </h2>
           <p className="text-xs sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">

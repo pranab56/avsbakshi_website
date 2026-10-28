@@ -52,9 +52,9 @@ export default function HowItWorks() {
                   : "bg-white dark:bg-[#222120] text-[#1C1C1E] dark:text-white"
               }`}
             >
-              {/* Elegant Italic Serif Step Number */}
+              {/* Step Number */}
               <span
-                className={`font-serif italic text-5xl sm:text-6xl font-light mb-3 select-none ${
+                className={`font-extrabold text-5xl sm:text-6xl mb-3 select-none tracking-tight ${
                   step.active
                     ? "text-white/65"
                     : "text-[#C9BEAA] dark:text-zinc-600"
@@ -65,7 +65,7 @@ export default function HowItWorks() {
 
               {/* Title */}
               <h3
-                className={`font-serif text-xl sm:text-2xl font-bold mb-2.5 leading-snug ${
+                className={`text-xl sm:text-2xl font-bold mb-2.5 leading-snug ${
                   step.active ? "text-white" : "text-[#1C1C1E] dark:text-white"
                 }`}
               >
@@ -74,7 +74,7 @@ export default function HowItWorks() {
 
               {/* Description */}
               <p
-                className={`text-xs sm:text-sm font-light leading-relaxed max-w-[260px] ${
+                className={`text-xs sm:text-sm font-normal leading-relaxed max-w-[260px] ${
                   step.active
                     ? "text-white/90"
                     : "text-[#66635D] dark:text-zinc-400"

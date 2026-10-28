@@ -78,7 +78,7 @@ export default function BusinessReviewsPage() {
     <div className="space-y-6 pb-16">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           Reviews
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -91,7 +91,7 @@ export default function BusinessReviewsPage() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Left Rating Overview */}
           <div className="md:col-span-4 flex flex-col items-center sm:items-start space-y-2 border-b md:border-b-0 md:border-r border-border pb-6 md:pb-0 md:pr-8">
-            <div className="font-serif italic font-normal text-5xl sm:text-6xl text-foreground leading-none">
+            <div className="text-5xl sm:text-6xl font-extrabold text-foreground leading-none tracking-tight">
               4.9
             </div>
             <div className="flex items-center gap-1 text-[#D99722]">
@@ -138,21 +138,21 @@ export default function BusinessReviewsPage() {
       {/* 3 Metric Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#D99722]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             4.9
           </div>
           <p className="text-xs text-muted-foreground font-normal">Communication</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#D99722]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             5.0
           </div>
           <p className="text-xs text-muted-foreground font-normal">Skill</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-[#D99722]/40 transition-colors">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             4.7
           </div>
           <p className="text-xs text-muted-foreground font-normal">Value</p>
@@ -181,7 +181,7 @@ export default function BusinessReviewsPage() {
 
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-serif font-bold text-base sm:text-lg text-foreground">
+                    <h3 className="font-bold text-base sm:text-lg text-foreground">
                       {review.clientName}
                     </h3>
                     {review.verified && (

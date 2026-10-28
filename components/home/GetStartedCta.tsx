@@ -20,15 +20,15 @@ export default function GetStartedCta() {
           </span>
 
           {/* Main Headline */}
-          <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.12] text-[#1C1C1E] dark:text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.12] text-[#1C1C1E] dark:text-white tracking-tight">
             Ready for Your Next <br />
-            <span className="font-serif italic text-[#B98C44] dark:text-[#D99722]">
+            <span className="text-[#B98C44] dark:text-[#D99722]">
               Appointment?
             </span>
           </h2>
 
           {/* Subtitle */}
-          <p className="text-xs sm:text-sm text-[#66635D] dark:text-zinc-400 font-light leading-relaxed max-w-lg mx-auto pt-1 pb-4 sm:pb-6">
+          <p className="text-xs sm:text-sm text-[#66635D] dark:text-zinc-400 font-normal leading-relaxed max-w-lg mx-auto pt-1 pb-4 sm:pb-6">
             Join thousands of customers discovering and booking beauty services they love.
           </p>
 

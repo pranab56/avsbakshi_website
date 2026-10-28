@@ -92,7 +92,7 @@ export default function CustomerFavoritesPage() {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           Favorites
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -173,10 +173,10 @@ export default function CustomerFavoritesPage() {
                 <div className="space-y-2">
                   {/* Name & Price Row */}
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground leading-tight">
+                    <h3 className="font-bold text-lg sm:text-xl text-foreground leading-tight">
                       {item.name}
                     </h3>
-                    <span className="font-serif italic font-bold text-lg sm:text-xl text-primary shrink-0">
+                    <span className="font-bold text-lg sm:text-xl text-primary shrink-0">
                       {item.price}
                     </span>
                   </div>
@@ -235,7 +235,7 @@ export default function CustomerFavoritesPage() {
         </div>
       ) : (
         <div className="bg-accent/60 border border-border rounded-2xl p-12 text-center text-muted-foreground space-y-2">
-          <p className="font-serif text-lg text-foreground">No saved {activeTab} yet.</p>
+          <p className="text-lg font-bold text-foreground">No saved {activeTab} yet.</p>
           <p className="text-xs">Browse professionals and click the heart icon to save them to your favorites.</p>
         </div>
       )}

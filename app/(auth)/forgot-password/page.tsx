@@ -178,7 +178,7 @@ export default function ForgotPasswordPage() {
               className="h-10 w-auto object-contain hidden dark:block"
             />
             <div className="space-y-1">
-              <h1 className="  text-3xl font-bold text-foreground">
+              <h1 className="text-3xl font-bold text-foreground">
                 Reset Password
               </h1>
               <p className="text-xs text-muted-foreground">
@@ -231,7 +231,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div className="space-y-1">
-            <h1 className="  text-2xl sm:text-3xl font-bold text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
               Enter Verification Code
             </h1>
             <p className="text-xs text-muted-foreground">
@@ -292,7 +292,7 @@ export default function ForgotPasswordPage() {
       {step === 3 && (
         <div className="space-y-6">
           <div className="space-y-1">
-            <h1 className="  text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-bold text-foreground">
               Set New Password
             </h1>
             <p className="text-xs text-muted-foreground">

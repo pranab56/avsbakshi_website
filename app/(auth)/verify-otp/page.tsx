@@ -156,7 +156,7 @@ function VerifyOtpContent() {
             <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-5 h-5" />
             </div>
-            <h1 className="  text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-bold text-foreground">
               Verify Phone Number
             </h1>
           </div>

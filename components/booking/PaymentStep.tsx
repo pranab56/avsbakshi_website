@@ -39,7 +39,7 @@ export default function PaymentStep({
   return (
     <div className="space-y-6 animate-in fade-in duration-150">
       <div>
-        <h1 className="  text-3xl sm:text-4xl font-normal text-foreground mb-1">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight mb-1">
           Payment
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal">

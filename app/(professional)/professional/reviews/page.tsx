@@ -48,7 +48,7 @@ export default function ProfessionalReviewsPage() {
     <div className="space-y-6 pb-16 font-sans text-foreground">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           Reviews
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -61,7 +61,7 @@ export default function ProfessionalReviewsPage() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
           {/* Left Rating Overview */}
           <div className="md:col-span-4 flex flex-col items-center sm:items-start space-y-2 border-b md:border-b-0 md:border-r border-border pb-6 md:pb-0 md:pr-8">
-            <div className="font-serif italic font-normal text-5xl sm:text-6xl text-foreground leading-none">
+            <div className="text-5xl sm:text-6xl font-extrabold text-foreground leading-none tracking-tight">
               {avgRating}
             </div>
             <div className="flex items-center gap-1 text-amber-500">
@@ -114,7 +114,7 @@ export default function ProfessionalReviewsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-primary/40 transition-colors">
           <div className="flex items-center justify-between mb-1">
-            <div className="font-serif italic text-3xl font-normal text-foreground">
+            <div className="text-3xl font-extrabold text-foreground tracking-tight">
               {avgRating}
             </div>
             <Award className="w-5 h-5 text-primary opacity-80" />
@@ -124,7 +124,7 @@ export default function ProfessionalReviewsPage() {
 
         <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-primary/40 transition-colors">
           <div className="flex items-center justify-between mb-1">
-            <div className="font-serif italic text-3xl font-normal text-foreground">
+            <div className="text-3xl font-extrabold text-foreground tracking-tight">
               {ratingCounts[5]}
             </div>
             <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
@@ -134,7 +134,7 @@ export default function ProfessionalReviewsPage() {
 
         <div className="bg-card border border-border rounded-lg p-5 text-center sm:text-left shadow-2xs hover:border-primary/40 transition-colors">
           <div className="flex items-center justify-between mb-1">
-            <div className="font-serif italic text-3xl font-normal text-foreground">
+            <div className="text-3xl font-extrabold text-foreground tracking-tight">
               {positiveFeedbackPct}%
             </div>
             <ThumbsUp className="w-5 h-5 text-emerald-500 opacity-80" />
@@ -154,7 +154,7 @@ export default function ProfessionalReviewsPage() {
             <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto">
               <MessageSquare className="w-6 h-6" />
             </div>
-            <h3 className="font-serif font-bold text-lg text-foreground">No Reviews Yet</h3>
+            <h3 className="text-lg font-bold text-foreground">No Reviews Yet</h3>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
               When clients book your services and leave feedback, their ratings and reviews will be displayed here.
             </p>
@@ -214,7 +214,7 @@ export default function ProfessionalReviewsPage() {
                           unoptimized
                         />
                       ) : (
-                        <span className="font-serif italic font-bold text-primary text-base">
+                        <span className="font-bold text-primary text-base">
                           {clientName[0]?.toUpperCase() || "C"}
                         </span>
                       )}
@@ -222,7 +222,7 @@ export default function ProfessionalReviewsPage() {
 
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-serif font-bold text-base sm:text-lg text-foreground">
+                        <h3 className="font-bold text-base sm:text-lg text-foreground">
                           {clientName}
                         </h3>
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-bold rounded-full uppercase tracking-wider">

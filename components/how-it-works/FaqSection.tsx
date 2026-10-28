@@ -43,7 +43,7 @@ export default function FaqSection() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
             GOOD TO KNOW
           </span>
-          <h2 className="  text-3xl sm:text-4xl font-bold text-foreground">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
             Questions, answered.
           </h2>
         </div>

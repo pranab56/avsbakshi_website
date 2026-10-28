@@ -111,7 +111,7 @@ export default function ProfessionalMyCustomersPage() {
     <div className="space-y-6 pb-16">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           My Customers
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -202,7 +202,7 @@ export default function ProfessionalMyCustomersPage() {
               </div>
             ))
           ) : (
-            <div className="p-12 text-center text-muted-foreground text-sm italic">
+            <div className="p-12 text-center text-muted-foreground text-sm">
               No clients found matching &quot;{searchQuery}&quot;.
             </div>
           )}

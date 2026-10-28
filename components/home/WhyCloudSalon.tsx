@@ -37,7 +37,7 @@ export default function WhyCloudSalon() {
                 WHY CLOUD SALON
               </span>
             </div>
-            <h2 className="  text-3xl sm:text-4xl lg:text-4xl font-bold text-foreground leading-[1.12] mb-3">
+            <h2 className="text-3xl sm:text-4xl lg:text-4xl font-bold text-foreground leading-[1.12] mb-3">
               Beauty discovery, <br />
               <span className="text-[#D99722]">built different.</span>
             </h2>

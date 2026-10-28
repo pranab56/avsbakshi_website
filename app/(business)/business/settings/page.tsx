@@ -184,7 +184,7 @@ export default function BusinessSettingsPage() {
       {/* Page Title & Subtitle */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
             Account &amp; Business Profile Settings
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
@@ -231,7 +231,7 @@ export default function BusinessSettingsPage() {
           {activeTab === "Profile" && (
             <div className="space-y-6">
               <div className="border-b border-border pb-3">
-                <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+                <h2 className="font-bold text-xl sm:text-2xl text-foreground">
                   Basic Profile Information
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -241,7 +241,7 @@ export default function BusinessSettingsPage() {
 
               {/* Avatar Photo Section */}
               <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-md bg-secondary text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
+                <div className="relative w-16 h-16 rounded-md bg-secondary text-foreground font-bold text-2xl flex items-center justify-center shadow-xs shrink-0 overflow-hidden border border-border">
                   {avatarPreview ? (
                     <Image
                       src={avatarPreview}
@@ -255,7 +255,7 @@ export default function BusinessSettingsPage() {
                   )}
                 </div>
                 <div className="space-y-1">
-                  <h3 className="font-serif font-bold text-lg text-foreground">
+                  <h3 className="font-bold text-lg text-foreground">
                     {profileForm.businessName}
                   </h3>
                   <input
@@ -361,7 +361,7 @@ export default function BusinessSettingsPage() {
             <div className="space-y-6">
               <div className="border-b border-border pb-3 flex items-center justify-between">
                 <div>
-                  <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+                  <h2 className="font-bold text-xl sm:text-2xl text-foreground">
                     Public About Page Information
                   </h2>
                   <p className="text-xs text-muted-foreground mt-0.5">
@@ -397,7 +397,7 @@ export default function BusinessSettingsPage() {
                     })
                   }
                   placeholder="e.g. Our philosophy is to craft an unparalleled luxury experience..."
-                  className="w-full bg-background border border-input rounded-sm p-4 text-sm italic font-serif text-foreground outline-none focus:ring-1 focus:ring-ring"
+                  className="w-full bg-background border border-input rounded-sm p-4 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring"
                 />
               </div>
 
@@ -550,7 +550,7 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Notifications" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+              <h2 className="font-bold text-xl sm:text-2xl text-foreground">
                 Notification Preferences
               </h2>
 
@@ -686,7 +686,7 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Privacy" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+              <h2 className="font-bold text-xl sm:text-2xl text-foreground">
                 Privacy Settings
               </h2>
 
@@ -736,7 +736,7 @@ export default function BusinessSettingsPage() {
 
               {/* Danger Zone Box */}
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-5 sm:p-6 space-y-3 mt-8">
-                <h3 className="font-serif font-bold text-lg text-red-600 dark:text-red-400">
+                <h3 className="font-bold text-lg text-red-600 dark:text-red-400">
                   Danger Zone
                 </h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -759,7 +759,7 @@ export default function BusinessSettingsPage() {
           {/* ------------------------------------------------------------- */}
           {activeTab === "Change Password" && (
             <div className="space-y-6">
-              <h2 className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+              <h2 className="font-bold text-xl sm:text-2xl text-foreground">
                 Security
               </h2>
 
@@ -790,7 +790,7 @@ export default function BusinessSettingsPage() {
         <DialogContent className="sm:max-w-2xl bg-card border border-border text-card-foreground p-6 rounded-2xl shadow-xl max-h-[85vh] overflow-y-auto">
           <DialogHeader className="space-y-1 text-left border-b border-border pb-3">
             <div className="flex items-center justify-between">
-              <DialogTitle className="font-serif font-bold text-xl text-foreground">
+              <DialogTitle className="font-bold text-xl text-foreground">
                 Public &quot;About&quot; Preview
               </DialogTitle>
               <span className="bg-[#D99722]/15 text-[#D99722] text-xs font-bold px-2.5 py-1 rounded-full">
@@ -805,7 +805,7 @@ export default function BusinessSettingsPage() {
           <div className="space-y-6 pt-3">
             {/* Header Banner Mockup */}
             <div className="flex items-start gap-4 p-5 bg-secondary border border-border rounded-xl">
-              <div className="relative w-16 h-16 rounded-md bg-muted text-foreground font-serif italic text-2xl flex items-center justify-center font-normal shadow-xs shrink-0 overflow-hidden border border-border">
+              <div className="relative w-16 h-16 rounded-md bg-muted text-foreground font-bold text-2xl flex items-center justify-center shadow-xs shrink-0 overflow-hidden border border-border">
                 {avatarPreview ? (
                   <Image
                     src={avatarPreview}
@@ -819,7 +819,7 @@ export default function BusinessSettingsPage() {
                 )}
               </div>
               <div className="space-y-1 flex-1">
-                <h3 className="font-serif font-bold text-xl text-foreground">
+                <h3 className="font-bold text-xl text-foreground">
                   {profileForm.businessName}
                 </h3>
                 <p className="text-xs font-medium text-[#D99722]">
@@ -841,7 +841,7 @@ export default function BusinessSettingsPage() {
             {/* Philosophy Quote Box */}
             {profileForm.philosophyQuote && (
               <div className="bg-secondary/60 border-l-4 border-[#D99722] p-4 rounded-r-xl">
-                <p className="font-serif italic text-sm text-foreground leading-relaxed">
+                <p className="text-sm text-foreground leading-relaxed">
                   {profileForm.philosophyQuote}
                 </p>
               </div>
@@ -850,7 +850,7 @@ export default function BusinessSettingsPage() {
             {/* Bio Section */}
             {profileForm.bio && (
               <div className="space-y-2">
-                <h4 className="font-serif font-bold text-base text-foreground">
+                <h4 className="font-bold text-base text-foreground">
                   About Salon
                 </h4>
                 <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -862,7 +862,7 @@ export default function BusinessSettingsPage() {
             {/* Amenities Section */}
             {amenities.length > 0 && (
               <div className="space-y-2">
-                <h4 className="font-serif font-bold text-base text-foreground">
+                <h4 className="font-bold text-base text-foreground">
                   Salon Amenities &amp; Services
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -895,7 +895,7 @@ export default function BusinessSettingsPage() {
       <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
         <DialogContent className="sm:max-w-md bg-card border border-border text-card-foreground p-6 rounded-lg shadow-lg">
           <DialogHeader className="space-y-1.5 text-left">
-            <DialogTitle className="font-serif font-bold text-xl text-foreground">
+            <DialogTitle className="font-bold text-xl text-foreground">
               Change Password
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">

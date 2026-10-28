@@ -13,7 +13,7 @@ export default function Hero() {
 
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight">
           Terms &amp;{" "}
-          <span className="font-serif italic text-[#D99722] font-normal">
+          <span className="text-[#D99722]">
             Conditions
           </span>
         </h1>

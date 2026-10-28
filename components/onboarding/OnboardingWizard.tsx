@@ -437,7 +437,7 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
                   >
                     <ArrowLeft className="w-3.5 h-3.5" /> Back to choices
                   </button>
-                  <h2 className="font-serif italic font-normal text-2xl sm:text-3xl text-foreground">
+                  <h2 className="font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight">
                     Salon Business Setup
                   </h2>
                 </div>

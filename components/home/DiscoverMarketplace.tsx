@@ -38,7 +38,7 @@ export default function DiscoverMarketplace() {
           <h2 className="text-2xl sm:text-4xl font-bold text-foreground">
             Find your perfect beauty experience
           </h2>
-          <p className="text-xs text-muted-foreground mt-1 font-light">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-normal">
             Explore top rated specialists, master colorists, and beauty professionals.
           </p>
         </div>

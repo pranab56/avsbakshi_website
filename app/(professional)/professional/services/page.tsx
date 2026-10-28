@@ -179,7 +179,7 @@ export default function ProfessionalServicesPage() {
           <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
             {activeServicesCount} active service{activeServicesCount !== 1 ? "s" : ""}
           </p>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
             Services
           </h1>
         </div>
@@ -221,7 +221,7 @@ export default function ProfessionalServicesPage() {
             <Scissors className="w-6 h-6 text-[#D99722]" />
           </div>
           <div className="space-y-1">
-            <h3 className="font-serif text-lg font-semibold text-foreground">
+            <h3 className="text-lg font-bold text-foreground">
               No services added yet
             </h3>
             <p className="text-xs text-muted-foreground max-w-sm">
@@ -257,7 +257,7 @@ export default function ProfessionalServicesPage() {
                   )}
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground">
+                      <h3 className="font-bold text-lg sm:text-xl text-foreground">
                         {service.name}
                       </h3>
                       {service.uid && (
@@ -286,7 +286,7 @@ export default function ProfessionalServicesPage() {
 
                 {/* Right Price & Actions */}
                 <div className="flex items-center gap-4 sm:gap-6 justify-between sm:justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
-                  <div className="font-serif italic font-normal text-2xl sm:text-3xl text-foreground pr-2">
+                  <div className="font-bold text-2xl sm:text-3xl text-foreground pr-2">
                     ${service.priceInUSD}
                   </div>
 
@@ -319,7 +319,7 @@ export default function ProfessionalServicesPage() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-xl bg-card border border-border p-6 sm:p-8 rounded-lg shadow-lg text-card-foreground">
           <DialogHeader className="text-left space-y-1 pb-2">
-            <DialogTitle className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+            <DialogTitle className="font-bold text-xl sm:text-2xl text-foreground">
               {modalMode === "add" ? "Create Service" : "Edit Service Details"}
             </DialogTitle>
           </DialogHeader>

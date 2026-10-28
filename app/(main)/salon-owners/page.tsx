@@ -280,7 +280,7 @@ export default function SalonOwnersPage() {
             <span>Salon Owner Workspaces</span>
           </div>
 
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl lg:text-5xl text-foreground">
+          <h1 className="font-extrabold text-3xl sm:text-4xl lg:text-5xl text-foreground tracking-tight">
             Work Space
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide max-w-2xl leading-relaxed">
@@ -414,7 +414,7 @@ export default function SalonOwnersPage() {
               <Armchair className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-serif text-lg font-semibold text-foreground">
+              <h3 className="text-lg font-bold text-foreground">
                 No workspaces found
               </h3>
               <p className="text-xs text-muted-foreground max-w-sm">
@@ -495,7 +495,7 @@ export default function SalonOwnersPage() {
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <Link href={`/salon-owners/${item._id}`}>
-                            <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground leading-tight hover:text-[#D99722] transition-colors truncate">
+                            <h3 className="font-bold text-lg sm:text-xl text-foreground leading-tight hover:text-[#D99722] transition-colors truncate">
                               {chairName}
                             </h3>
                           </Link>
@@ -505,9 +505,9 @@ export default function SalonOwnersPage() {
                           </div>
                         </div>
 
-                        <span className="font-serif italic font-bold text-lg sm:text-xl text-[#D99722] shrink-0">
+                        <span className="font-bold text-lg sm:text-xl text-[#D99722] shrink-0">
                           ${pricePerDay}
-                          <span className="text-xs not-italic font-sans text-muted-foreground font-normal">
+                          <span className="text-xs text-muted-foreground font-normal">
                             /day
                           </span>
                         </span>
@@ -596,7 +596,7 @@ export default function SalonOwnersPage() {
           <div className="bg-card border border-border rounded-lg max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in-95 duration-150 space-y-5 text-foreground">
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="space-y-0.5">
-                <h3 className="font-serif font-bold text-xl text-foreground">
+                <h3 className="font-bold text-xl text-foreground">
                   Book {selectedChair.chair?.name || selectedChair.name}
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -618,7 +618,7 @@ export default function SalonOwnersPage() {
             {bookingSuccess ? (
               <div className="py-8 text-center space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto animate-bounce" />
-                <h4 className="font-serif font-bold text-lg text-foreground">
+                <h4 className="font-bold text-lg text-foreground">
                   Booking Request Sent!
                 </h4>
                 <p className="text-xs text-muted-foreground">
@@ -692,7 +692,7 @@ export default function SalonOwnersPage() {
                   </div>
                   <div className="border-t border-border pt-1 mt-1 flex justify-between font-semibold text-foreground text-sm">
                     <span>Total Estimated</span>
-                    <span className="font-serif text-[#D99722]">
+                    <span className="font-bold text-[#D99722]">
                       ${estimatedTotal} USD
                     </span>
                   </div>

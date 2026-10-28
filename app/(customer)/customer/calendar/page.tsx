@@ -126,7 +126,7 @@ export default function CustomerCalendarPage() {
       {/* Top Header Row with Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
             My Appointments Calendar
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1">
@@ -139,7 +139,7 @@ export default function CustomerCalendarPage() {
       <div className="space-y-6 relative">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <h2 className="font-serif italic font-normal text-2xl text-foreground">
+            <h2 className="text-2xl font-bold text-foreground">
               {formattedHeaderMonth}
             </h2>
             <button
@@ -367,7 +367,7 @@ export default function CustomerCalendarPage() {
         {/* ============================================================= */}
         {view === "Day" && (
           <div className="bg-card border border-border rounded-xl p-6 shadow-xs space-y-6">
-            <h3 className="font-serif font-bold text-xl sm:text-2xl text-foreground flex items-center gap-2">
+            <h3 className="font-bold text-xl sm:text-2xl text-foreground flex items-center gap-2">
               <span>{currentDateState.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</span>
             </h3>
 
@@ -401,7 +401,7 @@ export default function CustomerCalendarPage() {
                           <Clock className="w-3.5 h-3.5" />
                           <span>{formatDateFull(appt.startsAt || appt.scheduledAt)} ({appt.totalDurationInMinutes || 30} min)</span>
                         </p>
-                        <p className="text-xs font-serif italic font-bold">
+                        <p className="text-xs font-bold text-foreground">
                           Total: ${appt.pricing?.total ?? appt.pricing?.subtotal ?? 0}
                         </p>
                       </div>
@@ -416,7 +416,7 @@ export default function CustomerCalendarPage() {
                 })}
               </div>
             ) : (
-              <div className="p-12 text-center text-muted-foreground text-sm italic">
+              <div className="p-12 text-center text-muted-foreground text-sm">
                 No appointments scheduled.
               </div>
             )}
@@ -433,7 +433,7 @@ export default function CustomerCalendarPage() {
               <div className="bg-accent p-4 border-b border-border flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CalendarIcon className="w-4 h-4 text-primary" />
-                  <h3 className="font-serif font-bold text-base text-foreground">
+                  <h3 className="font-bold text-base text-foreground">
                     Appointment Details
                   </h3>
                 </div>
@@ -513,7 +513,7 @@ export default function CustomerCalendarPage() {
                 {/* Pricing Total */}
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-xs font-semibold text-muted-foreground">Total Price:</span>
-                  <span className="font-serif italic font-bold text-lg text-primary">
+                  <span className="font-bold text-lg text-primary">
                     ${selectedAppointment.pricing?.total ?? selectedAppointment.pricing?.subtotal ?? 0}
                   </span>
                 </div>

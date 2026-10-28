@@ -148,7 +148,7 @@ export default function VerifyEmailForm() {
             {/* <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <MailCheck className="w-5 h-5" />
             </div> */}
-            <h1 className="  text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-bold text-foreground">
               Verify Your Email
             </h1>
           </div>

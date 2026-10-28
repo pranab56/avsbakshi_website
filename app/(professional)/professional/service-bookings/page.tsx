@@ -162,7 +162,7 @@ export default function ProfessionalBookingsPage() {
       {/* Header Section */}
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
             Bookings
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -354,7 +354,7 @@ export default function ProfessionalBookingsPage() {
                     </div>
 
                     {/* Price */}
-                    <div className="col-span-1 font-serif italic font-bold text-foreground text-sm sm:text-base">
+                    <div className="col-span-1 font-bold text-foreground text-sm sm:text-base">
                       <span className="md:hidden text-xs text-muted-foreground block font-sans font-normal">
                         Price:
                       </span>
@@ -457,7 +457,7 @@ export default function ProfessionalBookingsPage() {
             <div className="bg-accent p-4 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Eye className="w-4 h-4 text-primary" />
-                <h3 className="font-serif font-bold text-base text-foreground">
+                <h3 className="font-bold text-base text-foreground">
                   Appointment Details
                 </h3>
               </div>
@@ -586,7 +586,7 @@ export default function ProfessionalBookingsPage() {
                     <span>-${selectedAppointment.pricing?.discount}</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between font-serif italic font-bold text-base text-foreground pt-1 border-t border-border">
+                <div className="flex items-center justify-between font-bold text-base text-foreground pt-1 border-t border-border">
                   <span>Total Amount:</span>
                   <span className="text-primary">${selectedAppointment.pricing?.total ?? selectedAppointment.pricing?.subtotal ?? 0}</span>
                 </div>
@@ -670,7 +670,7 @@ export default function ProfessionalBookingsPage() {
               </div>
 
               <div className="space-y-1">
-                <h3 className="font-serif font-bold text-xl text-foreground">
+                <h3 className="font-bold text-xl text-foreground">
                   {confirmActionModal.newStatus === "confirmed"
                     ? "Confirm Appointment?"
                     : "Cancel Appointment?"}

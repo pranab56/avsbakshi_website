@@ -133,7 +133,7 @@ export default function ProfessionalDashboardPage() {
             year: "numeric",
           })}
         </p>
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
           Good day, <span className="notranslate" translate="no">{proName}</span>.
         </h1>
       </div>
@@ -144,7 +144,7 @@ export default function ProfessionalDashboardPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Building2 className="w-5 h-5 text-primary" />
-              <h3 className="font-serif font-bold text-lg text-foreground">Create &amp; Manage Your Salon Business</h3>
+              <h3 className="font-bold text-lg text-foreground">Create &amp; Manage Your Salon Business</h3>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Setup your salon page, list services, configure chair spaces, and start accepting client bookings directly.
@@ -178,7 +178,7 @@ export default function ProfessionalDashboardPage() {
                   </div>
                 </div>
                 <div>
-                  <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                     {stat.value}
                   </div>
                   <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">
@@ -197,7 +197,7 @@ export default function ProfessionalDashboardPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <BarChart2 className="w-5 h-5 text-[#D99722]" />
-              <h2 className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 Monthly Appointments Growth
               </h2>
             </div>

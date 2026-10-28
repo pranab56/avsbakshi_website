@@ -43,7 +43,7 @@ export default function FaqAccordion() {
           <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block">
             GOOD TO KNOW
           </span>
-          <h2 className="  text-2xl sm:text-3xl lg:text-4xl font-bold leading-[1.1] text-foreground">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-[1.1] text-foreground">
             Questions, answered.
           </h2>
         </div>

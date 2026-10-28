@@ -17,7 +17,7 @@ export default function OverviewStatsGrid({ stats }: OverviewStatsGridProps) {
           className="bg-card border border-border rounded-lg p-4 sm:p-6 transition-all shadow-xs"
         >
           <div
-            className={`  italic text-2xl sm:text-4xl font-normal mb-1.5 sm:mb-2.5 ${stat.isHighlighted ? "text-primary" : "text-foreground"
+            className={`font-extrabold text-2xl sm:text-4xl mb-1.5 sm:mb-2.5 tracking-tight ${stat.isHighlighted ? "text-primary" : "text-foreground"
               }`}
           >
             {stat.value}

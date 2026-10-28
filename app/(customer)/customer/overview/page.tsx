@@ -57,7 +57,7 @@ export default function CustomerOverviewPage() {
             year: "numeric",
           })}
         </p>
-        <h1 className="font-serif italic font-normal text-2xl sm:text-4xl text-foreground">
+        <h1 className="font-extrabold text-2xl sm:text-4xl text-foreground tracking-tight">
           Welcome back, <span className="notranslate" translate="no">{customerName}</span>.
         </h1>
       </div>
@@ -79,7 +79,7 @@ export default function CustomerOverviewPage() {
                 </div>
               </div>
               <div>
-                <div className="font-serif italic text-2xl sm:text-3xl font-bold text-foreground">
+                <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                   {stat.value}
                 </div>
                 <p className="text-xs text-muted-foreground font-medium mt-1 leading-snug">

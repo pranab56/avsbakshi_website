@@ -57,7 +57,7 @@ export default function ForProfessionalsSection() {
             <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-3">
               FOR PROFESSIONALS
             </span>
-            <h2 className="  text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground leading-[1.15] mb-4">
               Turn your talent into a thriving beauty business.
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">

@@ -1,7 +1,7 @@
 import ReduxProvider from "@/components/providers/ReduxProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import type { Metadata } from "next";
-import { Manrope, Fraunces } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { I18nProvider } from "@/components/providers/i18n-provider";
@@ -12,14 +12,6 @@ const manrope = Manrope({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
-});
-
-const fraunces = Fraunces({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-  display: "swap",
-  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +28,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${manrope.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-[#D99722]/20 selection:text-[#D99722]">
         <ThemeProvider

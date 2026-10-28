@@ -7,9 +7,9 @@ export default function GetStartedCta() {
         <span className="text-xs font-semibold text-primary uppercase tracking-[0.2em] block mb-4">
           GET STARTED
         </span>
-        <h2 className="  text-4xl sm:text-5xl lg:text-6xl font-normal text-foreground leading-[1.15] mb-4">
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.15] mb-4 tracking-tight">
           Ready to grow <br />
-          <span className="font-light italic text-primary">your business?</span>
+          <span className="text-primary">your business?</span>
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md mx-auto mb-8">
           Join Cloud Salon today and start connecting with customers who are looking for exactly what you offer.

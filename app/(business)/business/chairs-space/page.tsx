@@ -215,7 +215,7 @@ export default function ChairsSpacePage() {
           <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
             {totalChairs} {totalChairs === 1 ? "chair" : "chairs"} total · {availableChairs} available today
           </p>
-          <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+          <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
             Chairs &amp; Space
           </h1>
         </div>
@@ -235,28 +235,28 @@ export default function ChairsSpacePage() {
       {/* 4 Stat Metric Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             {totalChairs}
           </div>
           <p className="text-xs text-muted-foreground font-normal">Total Chairs</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             {availableChairs}
           </div>
           <p className="text-xs text-muted-foreground font-normal">Available / Active</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-foreground mb-1">
+          <div className="text-3xl font-extrabold text-foreground mb-1 tracking-tight">
             {occupiedChairs}
           </div>
           <p className="text-xs text-muted-foreground font-normal">Occupied</p>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-5 shadow-2xs">
-          <div className="font-serif italic text-3xl font-normal text-[#D99722] mb-1">
+          <div className="text-3xl font-extrabold text-[#D99722] mb-1 tracking-tight">
             {maintenanceChairs}
           </div>
           <p className="text-xs text-muted-foreground font-normal">Maintenance</p>
@@ -289,7 +289,7 @@ export default function ChairsSpacePage() {
             <Armchair className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h3 className="font-serif text-lg font-semibold text-foreground">No chairs found</h3>
+            <h3 className="text-lg font-bold text-foreground">No chairs found</h3>
             <p className="text-xs text-muted-foreground max-w-sm">
               You haven&apos;t added any chairs yet. Click the button below to add your first chair.
             </p>
@@ -322,7 +322,7 @@ export default function ChairsSpacePage() {
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground">
+                    <h3 className="font-bold text-lg sm:text-xl text-foreground">
                       {chair.name}
                     </h3>
                     {chair.uid && (
@@ -360,9 +360,9 @@ export default function ChairsSpacePage() {
 
               {/* Right Price & Actions */}
               <div className="flex items-center gap-4 sm:gap-6 justify-between sm:justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
-                <div className="font-serif italic font-normal text-xl sm:text-2xl text-foreground">
+                <div className="font-bold text-xl sm:text-2xl text-foreground">
                   ${chair.pricePerDayInUSD}
-                  <span className="text-xs text-muted-foreground not-italic font-sans">/day</span>
+                  <span className="text-xs text-muted-foreground font-normal">/day</span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -395,7 +395,7 @@ export default function ChairsSpacePage() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-xl bg-card border border-border p-6 sm:p-8 rounded-lg shadow-lg text-card-foreground max-h-[90vh] overflow-y-auto">
           <DialogHeader className="text-left space-y-1 pb-2">
-            <DialogTitle className="font-serif font-bold text-xl sm:text-2xl text-foreground">
+            <DialogTitle className="font-bold text-xl sm:text-2xl text-foreground">
               {modalMode === "add" ? "Add New Chair" : "Edit Chair Details"}
             </DialogTitle>
           </DialogHeader>
@@ -663,7 +663,7 @@ export default function ChairsSpacePage() {
       <Dialog open={!!deletingChair} onOpenChange={(open) => !open && setDeletingChair(null)}>
         <DialogContent className="sm:max-w-md bg-card border border-border p-6 rounded-lg shadow-lg text-card-foreground">
           <DialogHeader className="text-left space-y-2">
-            <DialogTitle className="font-serif font-bold text-xl text-foreground">
+            <DialogTitle className="font-bold text-xl text-foreground">
               Delete Chair
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">

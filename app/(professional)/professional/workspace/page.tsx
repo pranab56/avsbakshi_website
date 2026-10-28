@@ -236,7 +236,7 @@ export default function ProfessionalWorkspacePage() {
     <div className="space-y-6 pb-16">
       {/* Header Section */}
       <div className="space-y-1">
-        <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
           Work Space
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground font-normal tracking-wide">
@@ -300,7 +300,7 @@ export default function ProfessionalWorkspacePage() {
                 <Armchair className="w-6 h-6" />
               </div>
               <div className="space-y-1">
-                <h3 className="font-serif text-lg font-semibold text-foreground">
+                <h3 className="text-lg font-bold text-foreground">
                   No workspaces available
                 </h3>
                 <p className="text-xs text-muted-foreground max-w-sm">
@@ -377,7 +377,7 @@ export default function ProfessionalWorkspacePage() {
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <Link href={`/professional/workspace/${item._id}`}>
-                              <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground leading-tight hover:text-primary transition-colors">
+                              <h3 className="font-bold text-lg sm:text-xl text-foreground leading-tight hover:text-primary transition-colors">
                                 {item.name}
                               </h3>
                             </Link>
@@ -386,9 +386,9 @@ export default function ProfessionalWorkspacePage() {
                               <span>{salonName}</span>
                             </div>
                           </div>
-                          <span className="font-serif italic font-bold text-lg sm:text-xl text-primary shrink-0">
+                          <span className="font-bold text-lg sm:text-xl text-primary shrink-0">
                             ${item.pricePerDayInUSD}
-                            <span className="text-xs not-italic font-sans text-muted-foreground font-normal">
+                            <span className="text-xs text-muted-foreground font-normal">
                               /day
                             </span>
                           </span>
@@ -509,7 +509,7 @@ export default function ProfessionalWorkspacePage() {
                     </div>
 
                     <div className="space-y-0.5 sm:space-y-1">
-                      <h3 className="font-serif font-bold text-base sm:text-lg text-foreground leading-tight">
+                      <h3 className="font-bold text-base sm:text-lg text-foreground leading-tight">
                         {title}
                       </h3>
                       <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -532,7 +532,7 @@ export default function ProfessionalWorkspacePage() {
                         {statusStr}
                       </span>
                     </div>
-                    <div className="font-serif font-bold text-lg sm:text-xl text-foreground">
+                    <div className="font-bold text-lg sm:text-xl text-foreground">
                       {priceStr}
                     </div>
                   </div>
@@ -541,7 +541,7 @@ export default function ProfessionalWorkspacePage() {
             })
           ) : (
             <div className="bg-accent/60 border border-border rounded-lg p-12 text-center text-muted-foreground space-y-2">
-              <p className="font-serif text-lg text-foreground">No active workspace bookings found.</p>
+              <p className="font-bold text-lg text-foreground">No active workspace bookings found.</p>
               <p className="text-xs">Browse workspaces and select dates to book a station.</p>
             </div>
           )}
@@ -555,7 +555,7 @@ export default function ProfessionalWorkspacePage() {
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="space-y-0.5">
-                <h3 className="font-serif font-bold text-xl text-foreground">
+                <h3 className="font-bold text-xl text-foreground">
                   Book {selectedChair.name}
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -574,7 +574,7 @@ export default function ProfessionalWorkspacePage() {
             {bookingSuccess ? (
               <div className="py-8 text-center space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto animate-bounce" />
-                <h4 className="font-serif font-bold text-lg text-foreground">
+                <h4 className="font-bold text-lg text-foreground">
                   Booking Request Sent!
                 </h4>
                 <p className="text-xs text-muted-foreground">
@@ -648,7 +648,7 @@ export default function ProfessionalWorkspacePage() {
                   </div>
                   <div className="border-t border-border pt-1 mt-1 flex justify-between font-semibold text-foreground text-sm">
                     <span>Total Estimated</span>
-                    <span className="font-serif text-primary">
+                    <span className="font-bold text-primary">
                       ${estimatedTotal}
                     </span>
                   </div>

@@ -361,7 +361,7 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
         {/* Workspace Title Header */}
         <div className="space-y-3 mb-8">
           {chair?.name && (
-            <h1 className="font-serif italic font-normal text-3xl sm:text-4xl text-foreground">
+            <h1 className="font-extrabold text-3xl sm:text-4xl text-foreground tracking-tight">
               {chair.name}
             </h1>
           )}
@@ -695,7 +695,7 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
                   Rental Rate
                 </span>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="font-serif italic font-bold text-3xl sm:text-4xl text-[#D99722]">
+                  <span className="font-bold text-3xl sm:text-4xl text-[#D99722]">
                     ${dailyPrice}
                   </span>
                   <span className="text-sm text-muted-foreground">/ day</span>
@@ -706,7 +706,7 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
               {bookingSuccess ? (
                 <div className="py-8 text-center space-y-3">
                   <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto animate-bounce" />
-                  <h4 className="font-serif font-bold text-lg text-foreground">
+                  <h4 className="font-bold text-lg text-foreground">
                     Booking Request Sent!
                   </h4>
                   <p className="text-xs text-muted-foreground">
@@ -782,7 +782,7 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
 
                     <div className="border-t border-border pt-2.5 flex items-center justify-between text-sm font-bold text-foreground">
                       <span>Total Estimated Cost</span>
-                      <span className="font-serif italic text-lg text-[#D99722]">
+                      <span className="font-bold text-lg text-[#D99722]">
                         ${estimatedTotal} USD
                       </span>
                     </div>
