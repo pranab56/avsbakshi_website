@@ -513,6 +513,11 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
                           {salon.address.line1}
                         </p>
                       )}
+                      {salon.address?.line2 && (
+                        <p className="text-muted-foreground text-xs font-medium">
+                          {salon.address.line2}
+                        </p>
+                      )}
                       <p className="text-muted-foreground">
                         {[
                           salon.address?.city,

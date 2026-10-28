@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -11,37 +11,17 @@ import {
   MapPin,
   Search,
   Calendar,
-  DollarSign,
-  User,
-  Clock,
   Sparkles,
-  ChevronRight,
-  ArrowRight,
   CheckCircle2,
-  AlertCircle,
   X,
-  Phone,
-  Mail,
   Heart,
   Star,
   Loader2,
-  ChevronDown,
-  Check,
-  ArrowUpDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import ChairImage from "@/components/shared/ChairImage";
-import {
-  useGetAllChairRentalsQuery,
-  useCreateChairRentalMutation,
-} from "@/features/chairRental/chairRentalApi";
-
-const sortOptions = [
-  { value: "default", label: "Default Sort" },
-  { value: "price-low", label: "Price: Low to High" },
-  { value: "price-high", label: "Price: High to Low" },
-  { value: "newest", label: "Newest First" },
-];
+import { useGetAllChairsQuery } from "@/features/chair/chairApi";
+import { useCreateChairRentalMutation } from "@/features/chairRental/chairRentalApi";
 
 export default function SalonOwnersPage() {
   const router = useRouter();
@@ -50,29 +30,7 @@ export default function SalonOwnersPage() {
 
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("default");
-  const [isSortOpen, setIsSortOpen] = useState(false);
-  const sortDropdownRef = useRef<HTMLDivElement>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
-
-  // Close sort dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        sortDropdownRef.current &&
-        !sortDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsSortOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const currentSortOption =
-    sortOptions.find((o) => o.value === sortBy) || sortOptions[0];
 
   // Quick booking modal state
   const [selectedChair, setSelectedChair] = useState<any | null>(null);
@@ -99,19 +57,19 @@ export default function SalonOwnersPage() {
   const [startDate, setStartDate] = useState(getTodayString());
   const [endDate, setEndDate] = useState(getFutureString(2));
 
-  // Fetch chair rentals from API
-  const { data: rentalsRes, isLoading, isFetching, refetch } = useGetAllChairRentalsQuery({
+  // Fetch all chairs from API using useGetAllChairsQuery with searchTerm and static active status
+  const { data: chairsRes, isLoading, isFetching, refetch } = useGetAllChairsQuery({
     page,
     limit: 12,
     searchTerm: searchTerm.trim() ? searchTerm.trim() : undefined,
-    status: statusFilter !== "all" ? statusFilter : undefined,
+    status: "active",
   });
 
   const [createChairRental, { isLoading: isBookingLoading }] = useCreateChairRentalMutation();
 
-  const rawRentals = Array.isArray(rentalsRes?.data) ? rentalsRes.data : [];
-  const pagination = rentalsRes?.pagination || {
-    total: rawRentals.length,
+  const rawChairs = Array.isArray(chairsRes?.data) ? chairsRes.data : [];
+  const pagination = chairsRes?.pagination || {
+    total: rawChairs.length,
     limit: 12,
     page: 1,
     totalPage: 1,
@@ -123,59 +81,37 @@ export default function SalonOwnersPage() {
     );
   };
 
-  // Client-side filtering & sorting
-  const filteredRentals = useMemo(() => {
-    let result = [...rawRentals];
+  // Client-side filtering (ensuring only active chairs and matching search term)
+  const filteredChairs = useMemo(() => {
+    let result = [...rawChairs];
+
+    // Filter for active chairs
+    result = result.filter(
+      (item: any) => (item.status || item.chair?.status || "active").toLowerCase() === "active"
+    );
 
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase();
       result = result.filter((item: any) => {
-        const chairName = item.chair?.name?.toLowerCase() || item.name?.toLowerCase() || "";
-        const chairLocation = item.chair?.location?.toLowerCase() || item.location?.toLowerCase() || "";
-        const salonName = item.salon?.name?.toLowerCase() || "";
-        const salonEmail = item.salon?.email?.toLowerCase() || "";
+        const chairName = (item.name || item.chair?.name || "").toLowerCase();
+        const chairLocation = (item.location || item.chair?.location || "").toLowerCase();
+        const salonName = (item.salon?.name || "").toLowerCase();
+        const salonEmail = (item.salon?.email || "").toLowerCase();
         const uid = (item.uid || item.chair?.uid || "").toLowerCase();
+        const desc = (item.description || item.chair?.description || "").toLowerCase();
         return (
           chairName.includes(q) ||
           chairLocation.includes(q) ||
           salonName.includes(q) ||
           salonEmail.includes(q) ||
-          uid.includes(q)
+          uid.includes(q) ||
+          desc.includes(q)
         );
       });
     }
 
-    if (statusFilter !== "all") {
-      result = result.filter(
-        (item: any) =>
-          item.status?.toLowerCase() === statusFilter.toLowerCase() ||
-          item.chair?.status?.toLowerCase() === statusFilter.toLowerCase()
-      );
-    }
-
-    if (sortBy === "price-low") {
-      result.sort((a: any, b: any) => {
-        const priceA = a.chair?.pricePerDayInUSD || a.pricePerDayInUSD || a.pricing?.total || 0;
-        const priceB = b.chair?.pricePerDayInUSD || b.pricePerDayInUSD || b.pricing?.total || 0;
-        return priceA - priceB;
-      });
-    } else if (sortBy === "price-high") {
-      result.sort((a: any, b: any) => {
-        const priceA = a.chair?.pricePerDayInUSD || a.pricePerDayInUSD || a.pricing?.total || 0;
-        const priceB = b.chair?.pricePerDayInUSD || b.pricePerDayInUSD || b.pricing?.total || 0;
-        return priceB - priceA;
-      });
-    } else if (sortBy === "newest") {
-      result.sort(
-        (a: any, b: any) =>
-          new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
-      );
-    }
-
     return result;
-  }, [rawRentals, searchTerm, statusFilter, sortBy]);
-
-  const totalCount = pagination.total || filteredRentals.length;
+  }, [rawChairs, searchTerm]);
 
   const calculateDays = (start: string, end: string) => {
     if (!start || !end) return 1;
@@ -188,8 +124,8 @@ export default function SalonOwnersPage() {
 
   const rentalDays = calculateDays(startDate, endDate);
   const selectedDailyPrice =
-    selectedChair?.chair?.pricePerDayInUSD ||
     selectedChair?.pricePerDayInUSD ||
+    selectedChair?.chair?.pricePerDayInUSD ||
     selectedChair?.pricing?.total ||
     45;
   const estimatedTotal = selectedDailyPrice * rentalDays;
@@ -234,9 +170,9 @@ export default function SalonOwnersPage() {
     }
 
     const chairIdToBook =
+      selectedChair._id ||
       selectedChair.chair?._id ||
-      (typeof selectedChair.chair === "string" ? selectedChair.chair : null) ||
-      selectedChair._id;
+      (typeof selectedChair.chair === "string" ? selectedChair.chair : null);
 
     try {
       const payload = {
@@ -291,97 +227,25 @@ export default function SalonOwnersPage() {
 
       {/* Main Content Area */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
-        {/* Search & Filter Bar */}
-        <div className="bg-card rounded-2xl border border-border p-4 shadow-xs space-y-4">
-          <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by salon name, chair name, or location..."
-                className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-background border border-border text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#D99722]/40"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="flex items-center bg-background rounded-xl p-1 border border-border">
-                {["all", "active", "pending", "confirmed"].map((st) => (
-                  <button
-                    key={st}
-                    onClick={() => setStatusFilter(st)}
-                    className={`px-3 py-1.5 text-xs font-semibold rounded-lg capitalize transition-all cursor-pointer ${statusFilter === st
-                        ? "bg-[#D99722] text-white shadow-2xs"
-                        : "text-muted-foreground hover:text-foreground"
-                      }`}
-                  >
-                    {st === "all" ? "All" : st}
-                  </button>
-                ))}
-              </div>
-
-              {/* Modern Sort Dropdown */}
-              <div className="relative" ref={sortDropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setIsSortOpen((prev) => !prev)}
-                  className="h-9 px-3.5 rounded-xl bg-background border border-border hover:border-[#D99722]/50 text-xs font-semibold text-foreground flex items-center gap-2 transition-all cursor-pointer shadow-2xs active:scale-[0.98]"
-                >
-                  <ArrowUpDown className="w-3.5 h-3.5 text-[#D99722]" />
-                  <span>{currentSortOption.label}</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${isSortOpen ? "rotate-180 text-[#D99722]" : ""
-                      }`}
-                  />
-                </button>
-
-                {isSortOpen && (
-                  <div className="absolute right-0 top-full mt-1.5 w-48 bg-card border border-border rounded-xl shadow-xl p-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150 space-y-0.5">
-                    {sortOptions.map((opt) => {
-                      const isSelected = sortBy === opt.value;
-                      return (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => {
-                            setSortBy(opt.value);
-                            setIsSortOpen(false);
-                          }}
-                          className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg transition-colors text-left cursor-pointer ${isSelected
-                              ? "bg-[#D99722]/10 text-[#D99722] font-bold"
-                              : "text-foreground hover:bg-accent font-medium"
-                            }`}
-                        >
-                          <span>{opt.label}</span>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-[#D99722]" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Reset button only when search query is entered (never for status tabs) */}
-              {searchTerm.trim().length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setSearchTerm("")}
-                  className="px-2.5 py-1.5 text-xs font-semibold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer flex items-center gap-1"
-                >
-                  <X className="w-3.5 h-3.5" />
-                  <span>Reset Search</span>
-                </button>
-              )}
-            </div>
+        {/* Search Bar */}
+        <div className="bg-card rounded-2xl border border-border p-4 shadow-xs">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by salon name, chair name, or location..."
+              className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-background border border-border text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#D99722]/40"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -390,7 +254,7 @@ export default function SalonOwnersPage() {
           <div className="flex items-center gap-2">
             <Armchair className="w-5 h-5 text-[#D99722]" />
             <h2 className="text-base sm:text-lg font-bold text-foreground">
-              Available Work Spaces ({filteredRentals.length})
+              Available Work Spaces ({filteredChairs.length})
             </h2>
           </div>
           {isFetching && (
@@ -398,7 +262,7 @@ export default function SalonOwnersPage() {
           )}
         </div>
 
-        {/* Workspaces Grid matching Professional Workspace cards */}
+        {/* Workspaces Grid */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
@@ -408,7 +272,7 @@ export default function SalonOwnersPage() {
               />
             ))}
           </div>
-        ) : filteredRentals.length === 0 ? (
+        ) : filteredChairs.length === 0 ? (
           <div className="p-16 text-center bg-card border border-border rounded-xl flex flex-col items-center justify-center space-y-4 my-8">
             <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-muted-foreground">
               <Armchair className="w-6 h-6" />
@@ -418,39 +282,39 @@ export default function SalonOwnersPage() {
                 No workspaces found
               </h3>
               <p className="text-xs text-muted-foreground max-w-sm">
-                No workspaces matched your search criteria. Please adjust your filters or search keywords.
+                No workspaces matched your search criteria. Please adjust your search keywords.
               </p>
             </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredRentals.map((item: any) => {
+            {filteredChairs.map((item: any) => {
               const isFav = favorites.includes(item._id);
-              const chair = item.chair || {};
+              const chair = item.chair || item;
               const salonObj = typeof item.salon === "object" ? item.salon : null;
-              const chairName = chair.name || item.name || "Salon Work Space";
+              const chairName = item.name || chair.name || "Salon Work Space";
               const salonName = salonObj?.name || "Salon Studio";
               const category = salonObj?.businessType || "Hair & Beauty";
               const rating = salonObj?.avgRating || 5.0;
               const reviewCount = salonObj?.totalReviews || 0;
               const pricePerDay =
-                chair.pricePerDayInUSD || item.pricePerDayInUSD || item.pricing?.total || 45;
+                item.pricePerDayInUSD || chair.pricePerDayInUSD || item.pricing?.total || 45;
 
               const imageSrc =
-                chair.photo ||
                 item.photo ||
+                chair.photo ||
                 salonObj?.photos?.[0] ||
                 salonObj?.logo ||
                 "";
 
               const locationStr =
-                chair.location ||
                 item.location ||
+                chair.location ||
                 [salonObj?.address?.line1, salonObj?.address?.city].filter(Boolean).join(", ") ||
                 "Ground Floor Main Station";
 
               const descriptionStr =
-                chair.description || item.description || "";
+                item.description || chair.description || "";
 
               return (
                 <div
@@ -471,7 +335,7 @@ export default function SalonOwnersPage() {
 
                     {/* Status Badge */}
                     <span className="absolute top-3 left-3 bg-background/85 backdrop-blur-xs text-foreground text-[11px] font-medium px-3 py-1 rounded-full shadow-xs border border-border capitalize">
-                      {item.status || chair.status || "Available"}
+                      {item.status || chair.status || "Active"}
                     </span>
 
                     {/* Heart Favorite Button */}
@@ -482,8 +346,9 @@ export default function SalonOwnersPage() {
                       className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/85 backdrop-blur-xs flex items-center justify-center text-[#D99722] hover:bg-background transition-all cursor-pointer shadow-xs border border-border"
                     >
                       <Heart
-                        className={`w-4 h-4 ${isFav ? "fill-[#D99722] text-[#D99722]" : "text-[#D99722]"
-                          }`}
+                        className={`w-4 h-4 ${
+                          isFav ? "fill-[#D99722] text-[#D99722]" : "text-[#D99722]"
+                        }`}
                       />
                     </button>
                   </div>
@@ -500,7 +365,7 @@ export default function SalonOwnersPage() {
                             </h3>
                           </Link>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5 font-medium truncate">
-                            <Building2 className="w-3 h-3 text-[#D99722] shrink-0" />
+                            <Building2 className="w-3 h-3 text-[#D99722]" shrink-0 />
                             <span className="truncate">{salonName}</span>
                           </div>
                         </div>
@@ -518,7 +383,7 @@ export default function SalonOwnersPage() {
                         {category}
                       </p>
 
-                      {/* Description (if present) */}
+                      {/* Description */}
                       {descriptionStr && (
                         <p className="text-xs text-muted-foreground line-clamp-2">
                           {descriptionStr}
@@ -590,14 +455,14 @@ export default function SalonOwnersPage() {
         )}
       </div>
 
-      {/* Book Work Space Dialog Modal - identical to professional workspace */}
+      {/* Book Work Space Dialog Modal */}
       {selectedChair && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-card border border-border rounded-lg max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in-95 duration-150 space-y-5 text-foreground">
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="space-y-0.5">
                 <h3 className="font-bold text-xl text-foreground">
-                  Book {selectedChair.chair?.name || selectedChair.name}
+                  Book {selectedChair.name || selectedChair.chair?.name || "Workspace"}
                 </h3>
                 <p className="text-xs text-muted-foreground">
                   {typeof selectedChair.salon === "object"

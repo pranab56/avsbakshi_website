@@ -1211,26 +1211,15 @@ export default function BusinessProfileView() {
             lat={formData.location.coordinates[1]}
             lng={formData.location.coordinates[0]}
             addressLine1={formData.address.line1}
+            addressLine2={formData.address.line2}
+            onAddressLine2Change={(val) =>
+              setFormData({
+                ...formData,
+                address: { ...formData.address, line2: val },
+              })
+            }
             onLocationSelect={handleLocationSelect}
           />
-
-          <div className="space-y-1.5 pt-2">
-            <label className="text-xs font-semibold text-foreground block">
-              Address Line 2 (Suite / Unit / Floor) <span className="text-muted-foreground font-normal">(Optional)</span>
-            </label>
-            <input
-              type="text"
-              value={formData.address.line2}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, line2: e.target.value },
-                })
-              }
-              placeholder="e.g. Suite 3B, Level 4"
-              className="w-full bg-accent/50 border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            />
-          </div>
 
           <div className="pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground flex items-center gap-1.5">

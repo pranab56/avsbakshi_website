@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
         hostname: 't3.ftcdn.net',
       },
       {
-        protocol: 'https',
+        protocol: 'https', 
         hostname: 'media.thecloudsalon.com',
       },
       {

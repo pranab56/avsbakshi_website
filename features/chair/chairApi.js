@@ -30,10 +30,37 @@ export const chairApi = baseApi.injectEndpoints({
         }),
 
         getAllChairs: builder.query({
-            query: () => ({
-                url: "/chairs",
-                method: "GET",
-            }),
+            query: (params = {}) => {
+                const cleanedParams = {
+                    status: "active",
+                };
+
+                if (typeof params === 'string') {
+                    if (params.trim()) {
+                        cleanedParams.searchTerm = params.trim();
+                    }
+                } else if (params && typeof params === 'object') {
+                    Object.keys(params).forEach((key) => {
+                        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+                            cleanedParams[key] = params[key];
+                        }
+                    });
+
+                    if (params.search && !cleanedParams.searchTerm) {
+                        cleanedParams.searchTerm = params.search;
+                        delete cleanedParams.search;
+                    }
+
+                    // Statically enforce status: "active"
+                    cleanedParams.status = "active";
+                }
+
+                return {
+                    url: "/chairs",
+                    method: "GET",
+                    params: cleanedParams,
+                };
+            },
             providesTags: ["chair"]
         }),
 

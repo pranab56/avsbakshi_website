@@ -29,11 +29,11 @@ import {
 import { toast } from "sonner";
 import ChairImage from "@/components/shared/ChairImage";
 import ShareModal from "@/components/shared/ShareModal";
+import { useGetSingleChairQuery } from "@/features/chair/chairApi";
 import {
   useGetSingleCharRentalsQuery,
   useCreateChairRentalMutation,
 } from "@/features/chairRental/chairRentalApi";
-import { useGetSingleChairQuery } from "@/features/chair/chairApi";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -73,35 +73,36 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
   const [startDate, setStartDate] = useState(getTodayString());
   const [endDate, setEndDate] = useState(getFutureString(2));
 
-  // RTK Query: Check single chair rental first, fallback to single chair if needed
-  const {
-    data: rentalRes,
-    isLoading: isRentalLoading,
-    isError: isRentalError,
-    refetch: refetchRental,
-  } = useGetSingleCharRentalsQuery(rentalId, { skip: !rentalId });
-
+  // RTK Query: fetch single chair directly from chairApi (useGetSingleChairQuery)
   const {
     data: chairRes,
     isLoading: isChairLoading,
+    isError: isChairError,
     refetch: refetchChair,
-  } = useGetSingleChairQuery(rentalId, {
-    skip: !rentalId || Boolean(rentalRes?.data),
+  } = useGetSingleChairQuery(rentalId, { skip: !rentalId });
+
+  // Fallback to chair rental if chair response is not found
+  const {
+    data: rentalRes,
+    isLoading: isRentalLoading,
+    refetch: refetchRental,
+  } = useGetSingleCharRentalsQuery(rentalId, {
+    skip: !rentalId || Boolean(chairRes?.data),
   });
 
   const [createChairRental, { isLoading: isBookingLoading }] =
     useCreateChairRentalMutation();
 
+  const chairData = chairRes?.data || null;
   const rentalData = rentalRes?.data || null;
-  const directChairData = chairRes?.data || null;
 
   // Resolved chair & salon objects
-  const chair = rentalData?.chair || directChairData || null;
+  const chair = chairData || rentalData?.chair || null;
   const salon =
-    (typeof rentalData?.salon === "object" && rentalData?.salon !== null
-      ? rentalData.salon
-      : typeof chair?.salon === "object" && chair?.salon !== null
+    (typeof chair?.salon === "object" && chair?.salon !== null
       ? chair.salon
+      : typeof rentalData?.salon === "object" && rentalData?.salon !== null
+      ? rentalData.salon
       : null) || null;
   const professional =
     typeof rentalData?.professional === "object" && rentalData?.professional !== null
@@ -197,15 +198,15 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
     }
   };
 
-  // Full address formatter from API address object
+  // Address formatter for share modal and page subtitle
   const formattedAddress = useMemo(() => {
     if (!salon?.address) return null;
+    if (typeof salon.address === "string") return salon.address;
     const parts = [
       salon.address.line1,
-      salon.address.line2,
+      salon.address.line2 !== salon.address.line1 ? salon.address.line2 : null,
       salon.address.city,
       salon.address.state,
-      salon.address.postalCode,
       salon.address.country,
     ].filter(Boolean);
     return parts.length > 0 ? parts.join(", ") : null;
@@ -223,8 +224,10 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
 
     const targetChairId =
       chair?._id ||
+      chairData?._id ||
       (typeof rentalData?.chair === "string" ? rentalData.chair : null) ||
-      directChairData?._id;
+      rentalData?.chair?._id ||
+      rentalId;
 
     if (!targetChairId) {
       toast.error("Chair station information could not be determined.");
@@ -271,7 +274,7 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
     }
   };
 
-  const isLoading = isRentalLoading || (isChairLoading && !rentalData);
+  const isLoading = (isChairLoading && !chairData) || (isRentalLoading && !chairData && !rentalData);
 
   if (isLoading) {
     return (
@@ -286,7 +289,7 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
     );
   }
 
-  if ((isRentalError && !chair) || (!rentalData && !directChairData)) {
+  if ((isChairError && !chair) || (!chair && !rentalData)) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center py-20 px-4">
         <div className="p-8 rounded-2xl bg-card border border-border max-w-md text-center shadow-lg space-y-4">
@@ -300,8 +303,8 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
               onClick={() => {
-                refetchRental();
                 refetchChair();
+                refetchRental();
               }}
               className="px-4 py-2 rounded-xl bg-accent hover:bg-accent/80 text-foreground text-xs font-semibold border border-border cursor-pointer transition-colors"
             >
@@ -575,12 +578,52 @@ export default function WorkspaceDetailPage({ params }: PageProps) {
 
                 {/* Salon Contact & Address Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  {formattedAddress && (
+                  {salon?.address && (salon.address.line1 || salon.address.line2 || salon.address.city || typeof salon.address === "string") && (
                     <div className="flex items-start gap-2.5 p-3 rounded-xl bg-background border border-border text-xs">
                       <MapPin className="w-4 h-4 text-[#D99722] shrink-0 mt-0.5" />
-                      <div>
+                      <div className="space-y-1.5 min-w-0 flex-1">
                         <span className="font-semibold text-foreground block">Address</span>
-                        <span className="text-muted-foreground">{formattedAddress}</span>
+
+                        {typeof salon.address === "string" ? (
+                          <span className="text-muted-foreground block">{salon.address}</span>
+                        ) : (
+                          <>
+                            {salon.address.line1 && (
+                              <div className="space-y-0.5">
+                                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">
+                                  Address Line 1
+                                </span>
+                                <span className="text-foreground font-medium block break-words">
+                                  {salon.address.line1}
+                                </span>
+                              </div>
+                            )}
+
+                            {salon.address.line2 && (
+                              <div className={`space-y-0.5 ${salon.address.line1 ? "pt-1 border-t border-border/40" : ""}`}>
+                                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">
+                                  Address Line 2
+                                </span>
+                                <span className="text-muted-foreground block break-words">
+                                  {salon.address.line2}
+                                </span>
+                              </div>
+                            )}
+
+                            {(salon.address.city || salon.address.state || salon.address.postalCode || salon.address.country) && (
+                              <div className={`text-[11px] text-muted-foreground ${salon.address.line1 || salon.address.line2 ? "pt-1 border-t border-border/40" : ""}`}>
+                                {[
+                                  salon.address.city,
+                                  salon.address.state,
+                                  salon.address.postalCode,
+                                  salon.address.country,
+                                ]
+                                  .filter(Boolean)
+                                  .join(", ")}
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   )}

@@ -54,24 +54,13 @@ export default function StepAddress({
           lat={formData.latitude}
           lng={formData.longitude}
           addressLine1={formData.line1}
+          addressLine2={formData.line2}
+          onAddressLine2Change={(val) => setFormData((prev: any) => ({ ...prev, line2: val }))}
           onLocationSelect={onLocationSelect}
         />
         {errors.line1 && (
           <p className="text-destructive text-[11px] font-medium pt-1">{errors.line1}</p>
         )}
-      </div>
-
-      <div className="space-y-1.5 pt-1">
-        <label className="text-xs font-semibold text-foreground block">
-          Address Line 2 (Suite / Unit / Floor) <span className="text-muted-foreground font-normal">(Optional)</span>
-        </label>
-        <input
-          type="text"
-          value={formData.line2}
-          onChange={(e) => setFormData((prev: any) => ({ ...prev, line2: e.target.value }))}
-          placeholder="e.g. Suite 3B, Level 4"
-          className="w-full bg-accent/50 border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-        />
       </div>
     </div>
   );

@@ -19,6 +19,9 @@ interface GoogleMapPickerProps {
   lat: number;
   lng: number;
   addressLine1?: string;
+  addressLine2?: string;
+  onAddressLine2Change?: (val: string) => void;
+  children?: React.ReactNode;
   onLocationSelect: (data: GoogleLocationData) => void;
 }
 
@@ -28,6 +31,9 @@ export default function GoogleMapPicker({
   lat,
   lng,
   addressLine1 = "",
+  addressLine2 = "",
+  onAddressLine2Change,
+  children,
   onLocationSelect,
 }: GoogleMapPickerProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -231,84 +237,80 @@ export default function GoogleMapPicker({
     }
   }, [lat, lng]);
 
-  const handleUseCurrentLocation = () => {
-    if (navigator.geolocation) {
-      setIsGeocoding(true);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const userLat = pos.coords.latitude;
-          const userLng = pos.coords.longitude;
-          if (mapRef.current && markerRef.current) {
-            mapRef.current.setCenter({ lat: userLat, lng: userLng });
-            mapRef.current.setZoom(16);
-            markerRef.current.setPosition({ lat: userLat, lng: userLng });
-          }
-          reverseGeocode(userLat, userLng);
-        },
-        (err) => {
-          console.error("Geolocation error:", err);
-          setIsGeocoding(false);
-        }
-      );
-    }
-  };
-
   return (
-    <div className="space-y-3">
-      {/* Search Input Box */}
-      <div className="relative flex flex-col sm:flex-row items-center gap-2">
-        <div className="relative flex-1 w-full">
-          <MapPin className="w-4 h-4 text-primary absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+    <div className="space-y-4">
+      {/* 1. Address Line 1 */}
+      <div className="space-y-1.5">
+        <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+          <span>Address Line 1</span>
+          <span className="text-[11px] text-muted-foreground font-normal">Search or pin on map</span>
+        </label>
+        <div className="relative flex flex-col sm:flex-row items-center gap-2">
+          <div className="relative flex-1 w-full">
+            <MapPin className="w-4 h-4 text-primary absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none z-10" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search address or location"
+              className="w-full bg-accent/60 border border-border rounded-xl pl-10 pr-9 py-3 text-xs sm:text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs transition-all"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer z-10"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Address Line 2 */}
+      {onAddressLine2Change !== undefined ? (
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+            <span>Address Line 2 (Suite / Unit / Floor)</span>
+            <span className="text-[11px] text-muted-foreground font-normal">Optional</span>
+          </label>
           <input
-            ref={inputRef}
             type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search address or location"
-            className="w-full bg-accent/60 border border-border rounded-xl pl-10 pr-9 py-3 text-xs sm:text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs transition-all"
+            value={addressLine2 || ""}
+            onChange={(e) => onAddressLine2Change(e.target.value)}
+            placeholder="e.g. Suite 3B, Level 4"
+            className="w-full bg-accent/60 border border-border rounded-xl px-4 py-3 text-xs sm:text-sm text-foreground outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-xs transition-all"
           />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer z-10"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
+        </div>
+      ) : children ? (
+        children
+      ) : null}
+
+      {/* 3. Tarpor Map Hobe (Google Map Canvas) */}
+      <div className="space-y-1.5 pt-1">
+        <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+          <span className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-primary" />
+            <span>Map Location</span>
+          </span>
+          <span className="text-[11px] text-muted-foreground font-normal italic">
+            Click map or drag marker to pinpoint
+          </span>
+        </label>
+        <div className="relative rounded-2xl overflow-hidden border border-border shadow-md h-[300px] sm:h-[360px] w-full bg-accent/30">
+          <div ref={mapContainerRef} className="w-full h-full" />
+          {(isLoading || isGeocoding) && (
+            <div className="absolute inset-0 bg-background/60 backdrop-blur-xs flex items-center justify-center z-20">
+              <div className="bg-card border border-border px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-xs font-medium text-foreground">
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                <span>{isLoading ? "Loading Google Map..." : "Fetching location details..."}</span>
+              </div>
+            </div>
           )}
         </div>
-
-        {/* <button
-          type="button"
-          onClick={handleUseCurrentLocation}
-          className="w-full sm:w-auto bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 text-xs font-semibold px-4 py-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors shrink-0 cursor-pointer shadow-xs"
-        >
-          {isGeocoding ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Navigation className="w-4 h-4" />
-          )}
-          <span>My Location</span>
-        </button> */}
       </div>
-
-      {/* Google Map Canvas */}
-      <div className="relative rounded-2xl overflow-hidden border border-border shadow-md h-[300px] sm:h-[360px] w-full bg-accent/30">
-        <div ref={mapContainerRef} className="w-full h-full" />
-        {(isLoading || isGeocoding) && (
-          <div className="absolute inset-0 bg-background/60 backdrop-blur-xs flex items-center justify-center z-20">
-            <div className="bg-card border border-border px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-xs font-medium text-foreground">
-              <Loader2 className="w-4 h-4 animate-spin text-primary" />
-              <span>{isLoading ? "Loading Google Map..." : "Fetching location details..."}</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      <p className="text-[11px] text-muted-foreground italic flex items-center gap-1">
-        <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-        Click anywhere on the map or drag the marker to pinpoint your salon location.
-      </p>
     </div>
   );
 }
