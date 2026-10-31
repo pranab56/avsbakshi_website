@@ -20,6 +20,7 @@ import {
   Loader2,
   ArrowRight,
   Share2,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import ChairImage from "@/components/shared/ChairImage";
@@ -75,19 +76,26 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
   const [endDate, setEndDate] = useState(getFutureString(2));
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
 
-  // Calculate rental days
+  // Calculate rental days (inclusive of start and end date)
   const rentalDays = useMemo(() => {
     if (!startDate || !endDate) return 1;
-    const s = new Date(startDate);
-    const e = new Date(endDate);
-    const diffTime = e.getTime() - s.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 1;
+    const [sY, sM, sD] = startDate.split("-").map(Number);
+    const [eY, eM, eD] = endDate.split("-").map(Number);
+    if (!sY || !sM || !sD || !eY || !eM || !eD) return 1;
+
+    const sUTC = Date.UTC(sY, sM - 1, sD);
+    const eUTC = Date.UTC(eY, eM - 1, eD);
+    const diffTime = eUTC - sUTC;
+    if (diffTime < 0) return 1;
+
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays + 1; // Inclusive: e.g. 31st to 31st = 1 day, 31st to 1st = 2 days
   }, [startDate, endDate]);
 
   const dailyPrice = chairData?.pricePerDayInUSD || 0;
   const estimatedSubtotal = dailyPrice * rentalDays;
-  const estimatedTotal = estimatedSubtotal;
+  const platformFee = Math.round(estimatedSubtotal * 0.10 * 100) / 100;
+  const estimatedTotal = Math.round((estimatedSubtotal + platformFee) * 100) / 100;
 
   const formatStartDateISO = (dateStr: string) => {
     try {
@@ -694,21 +702,45 @@ export default function WorkspaceDetailPage({ params }: WorkspaceDetailPageProps
               {/* Price Calculation Summary */}
               <div className="p-4 rounded-xl bg-accent/30 border border-border space-y-2.5 text-xs">
                 <div className="flex items-center justify-between text-muted-foreground">
-                  <span>
-                    ${chairData.pricePerDayInUSD} × {rentalDays}{" "}
-                    {rentalDays === 1 ? "day" : "days"}
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-muted-foreground/70" />
+                    <span>Rental Duration</span>
                   </span>
                   <span className="font-semibold text-foreground">
-                    ${estimatedSubtotal}
+                    {rentalDays} {rentalDays === 1 ? "day" : "days"}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-muted-foreground">
+                  <span>
+                    Chair Rental (${chairData.pricePerDayInUSD} × {rentalDays}{" "}
+                    {rentalDays === 1 ? "day" : "days"})
+                  </span>
+                  <span className="font-semibold text-foreground">
+                    ${estimatedSubtotal.toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                    <span>Platform Fee (10%)</span>
+                  </span>
+                  <span className="font-semibold text-foreground">
+                    ${platformFee.toFixed(2)}
                   </span>
                 </div>
 
                 <div className="border-t border-border pt-2.5 flex items-center justify-between text-sm font-bold text-foreground">
-                  <span>Total Estimated Cost</span>
+                  <span>Total Amount</span>
                   <span className="font-bold text-lg text-primary">
-                    ${estimatedTotal}
+                    ${estimatedTotal.toFixed(2)} USD
                   </span>
                 </div>
+
+                <p className="text-[11px] text-muted-foreground/80 pt-1 leading-normal">
+                  Includes 10% platform fee for secure booking protection and reservation guarantee.
+                </p>
               </div>
 
               {/* Submit Button */}

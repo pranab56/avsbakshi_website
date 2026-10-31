@@ -12,6 +12,7 @@ import ReviewStep from "@/components/booking/ReviewStep";
 import BookingSummarySidebar from "@/components/booking/BookingSummarySidebar";
 import { useGetSingleProfessionalQuery, useGetServiceByProfessionalQuery } from "@/features/profesional/profesionalApi";
 import { useCreateAppointmentMutation } from "@/features/appointment/appointmentApi";
+import { getToken, getUser } from "@/utils/storage";
 
 function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -93,7 +94,8 @@ function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
   // Pricing calculations
   const subtotal = selectedServices.reduce((acc, item) => acc + (item.priceInUSD || 0), 0);
   const discount = subtotal >= 150 ? 20 : 0;
-  const total = Math.max(0, subtotal - discount);
+  const platformFee = Math.round(subtotal * 0.10 * 100) / 100;
+  const total = Math.max(0, Math.round((subtotal - discount + platformFee) * 100) / 100);
 
   // RTK Mutation for appointment creation
   const [createAppointment, { isLoading: isSubmitting }] = useCreateAppointmentMutation();
@@ -158,8 +160,11 @@ function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
 
     const currentBookingUrl = `/book/${proData.id}?proId=${proData.id}&serviceIds=${selectedServices.map((s) => s._id).join(",")}&date=${encodeURIComponent(selectedDate)}&time=${encodeURIComponent(selectedTime)}&step=4`;
 
+    const activeToken = token || (typeof window !== "undefined" ? getToken() : null);
+    const activeUser = user || (typeof window !== "undefined" ? getUser() : null);
+
     // 1. If not logged in -> redirect to Login page with preserved booking URL
-    if (!token || !user) {
+    if (!activeToken && !activeUser) {
       if (typeof window !== "undefined") {
         sessionStorage.setItem("pendingBookingUrl", currentBookingUrl);
       }
@@ -169,7 +174,7 @@ function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
     }
 
     // 2. If user is logged in, check role
-    const role = (user?.role || "customer").toLowerCase();
+    const role = (activeUser?.role || "customer").toLowerCase();
     if (role !== "customer" && role !== "user") {
       toast.error("Only customer accounts can confirm bookings.");
       return;
@@ -183,6 +188,8 @@ function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
       pricing: {
         subtotal,
         discount,
+        platformFee,
+        serviceFee: platformFee,
         total,
       },
     };
@@ -256,6 +263,7 @@ function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
                 proData={proData}
                 subtotal={subtotal}
                 discount={discount}
+                platformFee={platformFee}
                 total={total}
                 handleConfirmBooking={handleConfirmBooking}
                 isSubmitting={isSubmitting}
@@ -270,6 +278,7 @@ function BookingFlowContent({ params }: { params: Promise<{ id: string }> }) {
             proData={proData}
             subtotal={subtotal}
             discount={discount}
+            platformFee={platformFee}
             total={total}
           />
         </div>

@@ -50,7 +50,7 @@ export default function DashboardLayout({
 
   const token = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.token);
   const { data: profileResponse, isLoading: isProfileLoading } = useGetMyProfileQuery(undefined, {
-    skip: !token && !getToken(),
+    skip: !token && !user,
   });
 
   const profileData = profileResponse?.data || profileResponse;

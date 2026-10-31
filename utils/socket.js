@@ -7,15 +7,7 @@ let socket = null;
 export const getSocket = () => {
   if (typeof window === "undefined") return null;
 
-  const token =
-    getToken() ||
-    (typeof localStorage !== "undefined"
-      ? localStorage.getItem("salon-token") ||
-        localStorage.getItem("realState-token") ||
-        localStorage.getItem("token") ||
-        localStorage.getItem("accessToken") ||
-        ""
-      : "");
+  const token = getToken() || "";
 
   if (!socket) {
     socket = io(baseURL, {
@@ -69,4 +61,3 @@ export const disconnectSocket = () => {
     socket = null;
   }
 };
-

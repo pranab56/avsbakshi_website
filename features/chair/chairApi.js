@@ -54,7 +54,6 @@ export const chairApi = baseApi.injectEndpoints({
                     // Statically enforce status: "active"
                     cleanedParams.status = "active";
                 }
-
                 return {
                     url: "/chairs",
                     method: "GET",
@@ -86,7 +85,6 @@ export const chairApi = baseApi.injectEndpoints({
     }),
 });
 
-// Export hooks
 export const {
     useCreateChairMutation,
     useUpdateChairMutation,

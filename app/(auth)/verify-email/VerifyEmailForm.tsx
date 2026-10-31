@@ -9,6 +9,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { useResendOtpMutation, useVerifyOtpMutation } from '@/features/auth/authApi';
 import { setCredentials } from '@/features/auth/authSlice';
+import { saveToken, saveRefreshToken, saveUser } from '@/utils/storage';
 import OnboardingModal from '@/components/auth/OnboardingModal';
 
 export default function VerifyEmailForm() {
@@ -68,17 +69,9 @@ export default function VerifyEmailForm() {
       const role = res?.data?.role || res?.role || userData?.role || searchParams.get("role") || "customer";
 
       if (tokenData) {
-        // Store token & role securely in httpOnly cookies via server handler
-        await fetch("/api/auth/session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: tokenData,
-            refreshToken: refreshToken || null,
-            role: role,
-            user: userData || null,
-          }),
-        });
+        saveToken(tokenData);
+        if (refreshToken) saveRefreshToken(refreshToken);
+        if (userData) saveUser(userData);
 
         dispatch(
           setCredentials({
@@ -87,6 +80,20 @@ export default function VerifyEmailForm() {
             user: userData || null,
           })
         );
+
+        try {
+          await fetch("/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              token: tokenData,
+              refreshToken: refreshToken || null,
+              role: role,
+              user: userData || null,
+            }),
+          });
+        } catch {}
       }
 
       toast.success(res?.message || 'Verification Successful');

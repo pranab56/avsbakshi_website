@@ -6,5 +6,5 @@ interface RedirectProps {
 
 export default async function SingleSalonOwnerRedirect({ params }: RedirectProps) {
   const resolved = await params;
-  redirect(`/salon-owners/${resolved.id}`);
+  redirect(`/workspaces/${resolved.id}`);
 }

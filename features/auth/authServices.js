@@ -1,14 +1,19 @@
+import {
+  saveToken as persistToken,
+  getToken as retrieveToken,
+  removeStorage,
+} from "../../utils/storage";
+
 export const saveToken = (token) => {
-  localStorage.setItem("drebalAdmin", token);
+  persistToken(token);
 };
 
 export const getToken = () => {
-  return localStorage.getItem("drebalAdmin");
+  return retrieveToken();
 };
 
 export const removeToken = () => {
-  localStorage.removeItem("drebalAdmin");
-  localStorage.removeItem("adminLoginId");
+  removeStorage();
 };
 
 export const isAuthenticated = () => {

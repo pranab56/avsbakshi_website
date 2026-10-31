@@ -586,6 +586,17 @@ export default function ProfessionalBookingsPage() {
                     <span>-${selectedAppointment.pricing?.discount}</span>
                   </div>
                 )}
+                {(selectedAppointment.pricing?.platformFee !== undefined ||
+                  selectedAppointment.pricing?.serviceFee !== undefined) && (
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <span>Platform Fee (10%):</span>
+                    <span>
+                      $
+                      {selectedAppointment.pricing?.platformFee ??
+                        selectedAppointment.pricing?.serviceFee}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center justify-between font-bold text-base text-foreground pt-1 border-t border-border">
                   <span>Total Amount:</span>
                   <span className="text-primary">${selectedAppointment.pricing?.total ?? selectedAppointment.pricing?.subtotal ?? 0}</span>

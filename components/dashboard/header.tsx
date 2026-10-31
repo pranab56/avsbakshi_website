@@ -24,14 +24,13 @@ export default function DashboardHeader({
   const token = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.token);
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
 
-  const { data: profileResponse } = useGetMyProfileQuery(undefined, { skip: !token });
+  const { data: profileResponse } = useGetMyProfileQuery(undefined);
   const profileData = profileResponse?.data;
   const storedUser = typeof window !== "undefined" ? getUser() : null;
   const storedDisplayName = typeof window !== "undefined" ? localStorage.getItem("userDisplayName") : null;
   const currentUser = profileData || user || storedUser;
 
   const { data: notificationRes } = useGetAllNotificationQuery(undefined, {
-    skip: !token,
     pollingInterval: 60000,
   });
 

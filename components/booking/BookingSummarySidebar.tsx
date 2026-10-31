@@ -1,4 +1,4 @@
-import { Star, Check } from "lucide-react";
+import { Star, Check, ShieldCheck } from "lucide-react";
 import ChairImage from "@/components/shared/ChairImage";
 import { ServiceItem } from "./ServiceStep";
 
@@ -9,6 +9,7 @@ interface BookingSummarySidebarProps {
   proData?: any;
   subtotal: number;
   discount: number;
+  platformFee?: number;
   total: number;
 }
 
@@ -19,8 +20,13 @@ export default function BookingSummarySidebar({
   proData,
   subtotal,
   discount,
+  platformFee,
   total,
 }: BookingSummarySidebarProps) {
+  const calculatedFee =
+    platformFee !== undefined
+      ? platformFee
+      : Math.round(subtotal * 0.10 * 100) / 100;
   const proName = proData?.name || "Professional Specialist";
   const proTitle = proData?.title || "Master Barber & Grooming Specialist";
   const proAvatar =
@@ -88,25 +94,39 @@ export default function BookingSummarySidebar({
           </div>
         </div>
 
-        {/* Subtotal, Discount & Total */}
+        {/* Subtotal, Discount, Platform Fee & Total */}
         <div className="pt-4 border-t border-border/60 space-y-2 text-xs">
           <div className="flex justify-between text-muted-foreground">
             <span>Subtotal</span>
-            <span className="font-bold text-foreground">${subtotal} USD</span>
+            <span className="font-bold text-foreground">${subtotal.toFixed(2)} USD</span>
           </div>
 
           {discount > 0 && (
             <div className="flex justify-between text-emerald-500 font-semibold">
               <span>Discount</span>
-              <span>-${discount} USD</span>
+              <span>-${discount.toFixed(2)} USD</span>
             </div>
           )}
+
+          <div className="flex justify-between items-center text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#D99722]" />
+              <span>Platform Fee (10%)</span>
+            </span>
+            <span className="font-bold text-foreground">
+              ${calculatedFee.toFixed(2)} USD
+            </span>
+          </div>
         </div>
 
         <div className="pt-4 border-t border-border flex justify-between items-center text-foreground">
           <span className="text-base font-extrabold">Total</span>
-          <span className="text-2xl font-extrabold text-[#D99722]">${total} <span className="text-xs font-normal text-muted-foreground">USD</span></span>
+          <span className="text-2xl font-extrabold text-[#D99722]">${total.toFixed(2)} <span className="text-xs font-normal text-muted-foreground">USD</span></span>
         </div>
+
+        <p className="text-[11px] text-muted-foreground/80 leading-tight">
+          Includes 10% platform fee for booking protection and secure payments.
+        </p>
       </div>
     </div>
   );

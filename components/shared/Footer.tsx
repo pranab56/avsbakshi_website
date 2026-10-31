@@ -104,7 +104,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/salon-owners" className="text-zinc-400 hover:text-[#D99722] transition-colors">
+                <Link href="/workspaces" className="text-zinc-400 hover:text-[#D99722] transition-colors">
                   Salon Owners &amp; Workspaces
                 </Link>
               </li>

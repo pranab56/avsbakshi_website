@@ -7,24 +7,18 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { ArrowLeft, User, Scissors, Building2, Loader2, Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { ArrowLeft, Loader2, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Suspense, useState, useEffect } from "react";
-import { Combobox } from "@/components/ui/combobox";
-import { PhoneInput } from "@/components/ui/phone-input";
 import { useSignUpMutation } from "@/features/auth/authApi";
 
 const roles = [
   {
     value: "customer",
     label: "Customer",
-    description: "Book beauty services",
-    icon: User,
   },
   {
     value: "professional",
     label: "Professional",
-    description: "Offer your skills & create your business",
-    icon: Scissors,
   }
 ];
 
@@ -132,6 +126,57 @@ function RegisterFormContent() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Role Selection (Radio Buttons) */}
+        <div className="space-y-1.5 text-left">
+          <label className="text-xs font-bold text-foreground block">
+            I am joining as
+          </label>
+          <input type="hidden" {...register("role")} value={selectedRole.value} />
+
+          <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Select role">
+            {roles.map((role) => {
+              const isSelected = selectedRole.value === role.value;
+              return (
+                <button
+                  key={role.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
+                  onClick={() => {
+                    setSelectedRole(role);
+                    setValue("role", role.value, { shouldValidate: true });
+                  }}
+                  className={`group relative h-11 px-3.5 rounded-xl border flex items-center gap-2.5 cursor-pointer select-none transition-colors duration-150 ${
+                    isSelected
+                      ? "border-[#D99722] bg-[#D99722]/10 text-foreground"
+                      : "border-border bg-card hover:bg-accent/50 text-foreground"
+                  }`}
+                >
+                  {/* Left radio button circle */}
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors duration-150 shrink-0 ${
+                      isSelected
+                        ? "border-[#D99722] bg-[#D99722]"
+                        : "border-muted-foreground/40 bg-transparent group-hover:border-muted-foreground"
+                    }`}
+                  >
+                    {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                  </div>
+
+                  <span className="font-semibold text-sm">
+                    {role.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {errors.role && (
+            <p className="text-destructive text-[11px] font-medium mt-1">
+              {errors.role.message}
+            </p>
+          )}
+        </div>
+
         {/* First & Last Name */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5 text-left">
@@ -194,29 +239,6 @@ function RegisterFormContent() {
           {errors.email && (
             <p className="text-destructive text-[11px] font-medium mt-1">
               {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        {/* Role Dropdown */}
-        <div className="space-y-1.5 text-left relative">
-          <label className="text-xs font-bold text-foreground block">I am joining as</label>
-          <input type="hidden" {...register("role")} value={selectedRole.value} />
-          <Combobox
-            options={roles}
-            value={selectedRole.value}
-            onChange={(val) => {
-              const r = roles.find((role) => role.value === val) || roles[0];
-              setSelectedRole(r);
-              setValue("role", r.value, { shouldValidate: true });
-            }}
-            error={!!errors.role}
-            triggerClassName="w-full h-12 px-3.5 rounded-xl border border-border bg-card hover:bg-accent/40 text-foreground text-sm font-medium transition-all focus:border-[#D99722] focus:ring-[#D99722]/20 shadow-2xs"
-            align="start"
-          />
-          {errors.role && (
-            <p className="text-destructive text-[11px] font-medium mt-1">
-              {errors.role.message}
             </p>
           )}
         </div>

@@ -153,7 +153,10 @@ export default function ServicesTab({ professionalId }: ServicesTabProps) {
               SELECTED SERVICES ({selectedServiceIds.length})
             </span>
             <div className="text-xl font-extrabold text-foreground">
-              ${subtotalPrice} <span className="text-xs font-normal text-muted-foreground">Subtotal</span>
+              ${subtotalPrice.toFixed(2)}{" "}
+              <span className="text-xs font-normal text-muted-foreground">
+                (+10% platform fee at checkout)
+              </span>
             </div>
           </div>
 

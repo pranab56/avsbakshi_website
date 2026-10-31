@@ -37,7 +37,7 @@ export default function Navbar() {
   const token = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.token);
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
 
-  const { data: profileResponse, isLoading: isProfileLoading, isFetching: isProfileFetching } = useGetMyProfileQuery(undefined, { skip: !token });
+  const { data: profileResponse, isLoading: isProfileLoading, isFetching: isProfileFetching } = useGetMyProfileQuery(undefined, { skip: !token && !user });
   const profileData = profileResponse?.data;
   const currentUser = profileData;
   const userRole = currentUser?.role || user?.role;
@@ -52,7 +52,6 @@ export default function Navbar() {
 
   const [mounted, setMounted] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [signUpOpen, setSignUpOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -60,10 +59,9 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-    router.prefetch("/login?logout=true");
-  }, [router]);
+  }, []);
 
-  const isLoggedIn = mounted && Boolean(token);
+  const isLoggedIn = mounted && Boolean(token || user);
 
   const handleLogout = () => {
     setIsLoggingOut(true);
@@ -113,7 +111,9 @@ export default function Navbar() {
   const isSalonsActive =
     pathname === "/salons" ||
     pathname.startsWith("/salons/");
-  const isSalonOwnersActive =
+  const isWorkspacesActive =
+    pathname === "/workspaces" ||
+    pathname.startsWith("/workspaces/") ||
     pathname === "/salon-owners" ||
     pathname.startsWith("/salon-owners/") ||
     pathname === "/salon-owner" ||
@@ -220,15 +220,15 @@ export default function Navbar() {
               />
             </Link>
 
-            {/* Salon Owners */}
+            {/* Workspaces */}
             <Link
-              href="/salon-owners"
-              className={`group relative py-2 transition-colors ${isSalonOwnersActive ? "text-foreground font-semibold" : "hover:text-foreground"
+              href="/workspaces"
+              className={`group relative py-2 transition-colors ${isWorkspacesActive ? "text-foreground font-semibold" : "hover:text-foreground"
                 }`}
             >
-              <span>Salon Owners</span>
+              <span>Workspaces</span>
               <span
-                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isSalonOwnersActive ? "w-full" : "w-0 group-hover:w-full"
+                className={`absolute bottom-0 left-0 h-[2px] bg-[#D99722] rounded-full transition-all duration-300 ease-out ${isWorkspacesActive ? "w-full" : "w-0 group-hover:w-full"
                   }`}
               />
             </Link>
@@ -467,61 +467,13 @@ export default function Navbar() {
                   Login
                 </Link>
 
-                {/* Get Started Gold Dropdown CTA */}
-                <div className="relative shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setSignUpOpen(!signUpOpen)}
-                    className="h-10 px-4 rounded-sm bg-[#D99722] hover:bg-[#C2841B] text-white text-xs font-semibold shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 relative z-50 whitespace-nowrap shrink-0"
-                  >
-                    <span className="whitespace-nowrap">Get Started</span>
-                    <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${signUpOpen ? "rotate-180" : ""}`} />
-                  </button>
-
-                {signUpOpen && (
-                  <>
-                    {/* Click outside backdrop */}
-                    <div
-                      className="fixed inset-0 z-40 bg-transparent"
-                      onClick={() => setSignUpOpen(false)}
-                    />
-
-                    <div className="absolute top-full right-0 w-64 bg-popover rounded-lg shadow-2xl border border-border p-2 animate-in fade-in slide-in-from-top-2 duration-150 text-popover-foreground z-50 mt-1.5">
-                      <div className="px-3 py-1.5 text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">
-                        Create an account as
-                      </div>
-
-                      <Link
-                        href="/register?role=customer"
-                        onClick={() => setSignUpOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
-                          <User className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-xs">Customer</div>
-                          <div className="text-[11px] text-muted-foreground">Book services & appointments</div>
-                        </div>
-                      </Link>
-
-                      <Link
-                        href="/register?role=professional"
-                        onClick={() => setSignUpOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-foreground hover:bg-accent hover:text-primary transition-colors group/item"
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover/item:bg-primary group-hover/item:text-primary-foreground transition-colors">
-                          <Scissors className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-xs">Professional</div>
-                          <div className="text-[11px] text-muted-foreground">Offer skills & manage business</div>
-                        </div>
-                      </Link>
-                    </div>
-                  </>
-                )}
-              </div>
+                {/* Sign Up Button */}
+                <Link
+                  href="/register"
+                  className="h-10 px-4 rounded-sm border border-border bg-card hover:bg-accent hover:text-[#D99722] text-foreground text-xs font-semibold shadow-2xs flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0 whitespace-nowrap"
+                >
+                  Sign Up
+                </Link>
             </>
           )}
           </div>
@@ -609,15 +561,15 @@ export default function Navbar() {
             </Link>
 
             <Link
-              href="/salon-owners"
+              href="/workspaces"
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isSalonOwnersActive
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all active:scale-[0.98] ${isWorkspacesActive
                 ? "bg-accent text-primary font-semibold border-l-4 border-primary shadow-xs"
                 : "text-foreground hover:bg-accent/60"
                 }`}
             >
-              <Armchair className={`w-5 h-5 ${isSalonOwnersActive ? "text-primary" : "text-muted-foreground"}`} />
-              <span>Salon Owners</span>
+              <Armchair className={`w-5 h-5 ${isWorkspacesActive ? "text-primary" : "text-muted-foreground"}`} />
+              <span>Workspaces</span>
             </Link>
 
             <Link
@@ -737,7 +689,7 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <div className="pb-1">
+                  <div className="grid grid-cols-2 gap-2 pb-1">
                     <Button
                       href="/login"
                       variant="outline"
@@ -746,6 +698,15 @@ export default function Navbar() {
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Login
+                    </Button>
+                    <Button
+                      href="/register"
+                      variant="outline"
+                      fullWidth
+                      size="md"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Sign Up
                     </Button>
                   </div>
 

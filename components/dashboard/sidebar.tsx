@@ -35,9 +35,7 @@ export default function DashboardSidebar({
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  useEffect(() => {
-    router.prefetch("/login?logout=true");
-  }, [router]);
+
 
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
 

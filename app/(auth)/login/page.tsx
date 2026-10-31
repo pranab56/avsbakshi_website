@@ -12,6 +12,7 @@ import { Loader2, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { Suspense, useState, useEffect } from "react";
 import { useLoginMutation } from "@/features/auth/authApi";
 import { setCredentials, logout } from "@/features/auth/authSlice";
+import { saveToken, saveRefreshToken, saveUser } from "@/utils/storage";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
@@ -28,7 +29,10 @@ function LoginFormContent() {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
 
-  const redirectParam = searchParams.get("redirect") || (typeof window !== "undefined" ? sessionStorage.getItem("pendingBookingUrl") : null);
+  const redirectParam =
+    searchParams.get("redirect") ||
+    searchParams.get("callbackUrl") ||
+    (typeof window !== "undefined" ? sessionStorage.getItem("pendingBookingUrl") : null);
 
   useEffect(() => {
     if (searchParams.get("logout") === "true") {
@@ -81,18 +85,12 @@ function LoginFormContent() {
       }
 
       if (tokenData) {
-        // Store token & role securely in httpOnly cookies via server handler
-        await fetch("/api/auth/session", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token: tokenData,
-            refreshToken: refreshToken || null,
-            role: role,
-            user: userData || null,
-          }),
-        });
+        // 1. Immediately persist on client (in-memory, localStorage, and client cookies)
+        saveToken(tokenData);
+        if (refreshToken) saveRefreshToken(refreshToken);
+        if (userData) saveUser(userData);
 
+        // 2. Dispatch to Redux store
         dispatch(
           setCredentials({
             token: tokenData,
@@ -100,6 +98,23 @@ function LoginFormContent() {
             user: userData || null,
           })
         );
+
+        // 3. Establish server HTTP session cookies in background
+        try {
+          await fetch("/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              token: tokenData,
+              refreshToken: refreshToken || null,
+              role: role,
+              user: userData || null,
+            }),
+          });
+        } catch {
+          // If server cookie call has minor delay or error, client storage already ensures active session
+        }
       }
 
       toast.success(res?.message || "User logged in successfully.");

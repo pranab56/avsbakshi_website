@@ -15,12 +15,14 @@ import {
   X,
   CheckCircle2,
   Armchair,
+  Clock,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { useGetMyProfileQuery } from "@/features/profile/profileApi";
+import { useGetAllChairsQuery } from "@/features/chair/chairApi";
 import {
-  useGetAllChairRentalsQuery,
   useGetMyRentalsQuery,
   useCreateChairRentalMutation,
   useUpdateChairRentalMutation,
@@ -89,7 +91,7 @@ export default function ProfessionalWorkspacePage() {
     isError: isErrorChairs,
     error: errorChairs,
     refetch: refetchChairs,
-  } = useGetAllChairRentalsQuery({}, { skip: isSalonOwner });
+  } = useGetAllChairsQuery({ status: "active" }, { skip: isSalonOwner });
 
   const {
     data: myRentalsRes,
@@ -150,15 +152,24 @@ export default function ProfessionalWorkspacePage() {
 
   const calculateDays = (start: string, end: string) => {
     if (!start || !end) return 1;
-    const s = new Date(start);
-    const e = new Date(end);
-    const diffTime = e.getTime() - s.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 1;
+    const [sY, sM, sD] = start.split("-").map(Number);
+    const [eY, eM, eD] = end.split("-").map(Number);
+    if (!sY || !sM || !sD || !eY || !eM || !eD) return 1;
+
+    const sUTC = Date.UTC(sY, sM - 1, sD);
+    const eUTC = Date.UTC(eY, eM - 1, eD);
+    const diffTime = eUTC - sUTC;
+    if (diffTime < 0) return 1;
+
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays + 1; // Inclusive: e.g. 31st to 31st = 1 day, 31st to 1st = 2 days
   };
 
   const rentalDays = calculateDays(startDate, endDate);
-  const estimatedTotal = (selectedChair?.pricePerDayInUSD || 0) * rentalDays;
+  const dailyRate = selectedChair?.pricePerDayInUSD || 0;
+  const estimatedSubtotal = dailyRate * rentalDays;
+  const platformFee = Math.round(estimatedSubtotal * 0.10 * 100) / 100;
+  const estimatedTotal = Math.round((estimatedSubtotal + platformFee) * 100) / 100;
 
   const formatStartDateISO = (dateStr: string) => {
     try {
@@ -339,7 +350,7 @@ export default function ProfessionalWorkspacePage() {
                     {/* Image Container */}
                     <div className="relative w-full h-56 bg-accent">
                       <Link
-                        href={`/professional/workspace/${item._id}`}
+                        href={`/workspaces/${item._id}`}
                         className="block w-full h-full group"
                       >
                         <ChairImage
@@ -376,7 +387,7 @@ export default function ProfessionalWorkspacePage() {
                         {/* Title & Price Row */}
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <Link href={`/professional/workspace/${item._id}`}>
+                            <Link href={`/workspaces/${item._id}`}>
                               <h3 className="font-bold text-lg sm:text-xl text-foreground leading-tight hover:text-primary transition-colors">
                                 {item.name}
                               </h3>
@@ -431,7 +442,7 @@ export default function ProfessionalWorkspacePage() {
                       {/* Book Action */}
                       <div className="pt-2">
                         <Link
-                          href={`/professional/workspace/${item._id}`}
+                          href={`/workspaces/${item._id}`}
                           className="w-full block text-center bg-primary hover:bg-primary/90 active:scale-[0.98] text-primary-foreground py-2.5 rounded-sm font-medium text-xs sm:text-sm transition-all cursor-pointer"
                         >
                           Book Work Space
@@ -492,10 +503,18 @@ export default function ProfessionalWorkspacePage() {
 
               const statusStr = booking.status || "pending";
 
+              const targetChairId =
+                chairObj?._id ||
+                (chairObj as { id?: string })?.id ||
+                (typeof booking.chair === "string" ? booking.chair : null) ||
+                (booking as { chairId?: string }).chairId ||
+                booking._id;
+
               return (
-                <div
+                <Link
                   key={booking._id}
-                  className="bg-card border border-border rounded-lg p-4 sm:p-5 flex items-center justify-between shadow-xs hover:border-primary/50 transition-all"
+                  href={`/workspaces/${targetChairId}`}
+                  className="bg-card border border-border rounded-lg p-4 sm:p-5 flex items-center justify-between shadow-xs hover:border-[#D99722]/60 hover:shadow-md transition-all group cursor-pointer block"
                 >
                   {/* Left Side: Thumbnail & Title */}
                   <div className="flex items-center gap-4 sm:gap-5">
@@ -504,12 +523,12 @@ export default function ProfessionalWorkspacePage() {
                         src={img}
                         alt={title}
                         fill
-                        className="object-cover"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
 
                     <div className="space-y-0.5 sm:space-y-1">
-                      <h3 className="font-bold text-base sm:text-lg text-foreground leading-tight">
+                      <h3 className="font-bold text-base sm:text-lg text-foreground leading-tight group-hover:text-primary transition-colors">
                         {title}
                       </h3>
                       <p className="text-xs sm:text-sm text-muted-foreground font-normal">
@@ -536,7 +555,7 @@ export default function ProfessionalWorkspacePage() {
                       {priceStr}
                     </div>
                   </div>
-                </div>
+                </Link>
               );
             })
           ) : (
@@ -633,23 +652,35 @@ export default function ProfessionalWorkspacePage() {
                 </div>
 
                 {/* Price Breakdown */}
-                <div className="bg-accent/70 border border-border rounded-lg p-3 space-y-1 text-xs text-muted-foreground">
-                  <div className="flex justify-between">
-                    <span>Daily Rate</span>
-                    <span className="font-medium text-foreground">
-                      ${selectedChair.pricePerDayInUSD} / day
+                <div className="bg-accent/70 border border-border rounded-lg p-3 space-y-2 text-xs text-muted-foreground">
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-muted-foreground/70" />
+                      <span>Duration</span>
                     </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Estimated Duration</span>
                     <span className="font-medium text-foreground">
                       {rentalDays} {rentalDays === 1 ? "Day" : "Days"}
                     </span>
                   </div>
-                  <div className="border-t border-border pt-1 mt-1 flex justify-between font-semibold text-foreground text-sm">
-                    <span>Total Estimated</span>
+                  <div className="flex justify-between">
+                    <span>Daily Rate (${selectedChair.pricePerDayInUSD} × {rentalDays} {rentalDays === 1 ? "day" : "days"})</span>
+                    <span className="font-medium text-foreground">
+                      ${estimatedSubtotal.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                      <span>Platform Fee (10%)</span>
+                    </span>
+                    <span className="font-semibold text-foreground">
+                      ${platformFee.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="border-t border-border pt-2 flex justify-between font-semibold text-foreground text-sm">
+                    <span>Total Amount</span>
                     <span className="font-bold text-primary">
-                      ${estimatedTotal}
+                      ${estimatedTotal.toFixed(2)} USD
                     </span>
                   </div>
                 </div>

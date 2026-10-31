@@ -1,4 +1,4 @@
-import { Check, Calendar, Clock, MapPin, Sparkles } from "lucide-react";
+import { Check, Calendar, Clock, MapPin, Sparkles, ShieldCheck } from "lucide-react";
 import { ServiceItem } from "./ServiceStep";
 
 interface ReviewStepProps {
@@ -8,6 +8,7 @@ interface ReviewStepProps {
   proData?: any;
   subtotal: number;
   discount: number;
+  platformFee?: number;
   total: number;
   handleConfirmBooking: () => void;
   isSubmitting?: boolean;
@@ -20,10 +21,15 @@ export default function ReviewStep({
   proData,
   subtotal,
   discount,
+  platformFee,
   total,
   handleConfirmBooking,
   isSubmitting = false,
 }: ReviewStepProps) {
+  const calculatedFee =
+    platformFee !== undefined
+      ? platformFee
+      : Math.round(subtotal * 0.10 * 100) / 100;
   const proName = proData?.name || "Professional Specialist";
   const proTitle = proData?.title || "Master Barber & Grooming Specialist";
   const proAvatar =
@@ -107,24 +113,38 @@ export default function ReviewStep({
         {/* Pricing Summary Breakdown */}
         <div className="pt-4 border-t border-border/60 space-y-2 text-xs">
           <div className="flex justify-between text-muted-foreground">
-            <span>Subtotal ({selectedServices.length} services)</span>
-            <span className="font-bold text-foreground">${subtotal} USD</span>
+            <span>Subtotal ({selectedServices.length} {selectedServices.length === 1 ? "service" : "services"})</span>
+            <span className="font-bold text-foreground">${subtotal.toFixed(2)} USD</span>
           </div>
 
           {discount > 0 && (
-            <div className="flex justify-between text-emerald-500">
+            <div className="flex justify-between text-emerald-500 font-semibold">
               <span>Promotional Discount</span>
-              <span className="font-bold">-${discount} USD</span>
+              <span className="font-bold">-${discount.toFixed(2)} USD</span>
             </div>
           )}
+
+          <div className="flex justify-between items-center text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#D99722]" />
+              <span>Platform Fee (10%)</span>
+            </span>
+            <span className="font-bold text-foreground">
+              ${calculatedFee.toFixed(2)} USD
+            </span>
+          </div>
         </div>
 
         <div className="pt-4 border-t border-border flex justify-between items-center text-foreground">
           <span className="text-xl font-extrabold">Total Amount</span>
           <span className="text-2xl sm:text-3xl font-extrabold text-[#D99722]">
-            ${total} <span className="text-xs font-normal text-muted-foreground">USD</span>
+            ${total.toFixed(2)} <span className="text-xs font-normal text-muted-foreground">USD</span>
           </span>
         </div>
+
+        <p className="text-[11px] text-muted-foreground/80 leading-tight">
+          Includes 10% platform fee for secure booking protection and reservation guarantee.
+        </p>
       </div>
 
       {/* Cancellation Policy Banner */}
