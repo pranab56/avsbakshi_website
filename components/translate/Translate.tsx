@@ -142,8 +142,39 @@ export default function GoogleTranslate() {
             }
         };
 
+        const clearGoogleTransCookie = () => {
+            const hostname = window.location.hostname;
+            const domainParts = hostname.split(".");
+            const paths = ["/", ""];
+            paths.forEach((p) => {
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p};`;
+                document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}; SameSite=Lax;`;
+                if (domainParts.length > 1) {
+                    const domain = "." + domainParts.slice(-2).join(".");
+                    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}; domain=${domain};`;
+                    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}; domain=${domain}; SameSite=Lax;`;
+                }
+            });
+            document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        };
+
         window.__applyTranslate = (targetLang: string) => {
             console.log(`[Google Translate] Switching to: ${targetLang}`);
+
+            if (targetLang === "en") {
+                const hadTranslatedState =
+                    document.cookie.includes("googtrans=/en/") ||
+                    document.documentElement.classList.contains("translated-ltr") ||
+                    document.documentElement.classList.contains("translated-rtl");
+                clearGoogleTransCookie();
+                if (hadTranslatedState) {
+                    // Full reload ensures 100% clean original English DOM without round-trip mistranslations like "Trade shows"
+                    window.location.reload();
+                    return;
+                }
+                return;
+            }
+
             const setCookie = (lang: string) => {
                 const domain = window.location.hostname.split(".").slice(-2).join(".");
                 const date = new Date();
@@ -183,12 +214,39 @@ export default function GoogleTranslate() {
             }, 300);
         };
 
+        // Sanitize any mistranslated "Trade shows" / "Trade show" back to "Salons" in navigation links
+        const sanitizeMistranslations = () => {
+            const currentCookie = document.cookie.match(/googtrans=\/en\/([a-z]{2})/)?.[1];
+            if (!currentCookie || currentCookie === "en") {
+                const salonLinks = document.querySelectorAll<HTMLElement>('a[href="/salons"], a[href^="/salons/"]');
+                salonLinks.forEach((link) => {
+                    const walker = document.createTreeWalker(link, NodeFilter.SHOW_TEXT);
+                    let node: Node | null;
+                    while ((node = walker.nextNode())) {
+                        if (node.nodeValue && /(trade\s*shows?|ferias?\s*comerciales?)/i.test(node.nodeValue.trim())) {
+                            node.nodeValue = "Salons";
+                        }
+                    }
+                });
+            }
+        };
+
+        sanitizeMistranslations();
+        const salonObserver = new MutationObserver(() => {
+            sanitizeMistranslations();
+        });
+        salonObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+
         // Load the script
         const script = document.createElement("script");
         script.id = "google-translate-script";
         script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
         script.async = true;
         document.body.appendChild(script);
+
+        return () => {
+            salonObserver.disconnect();
+        };
     }, []);
 
     return (

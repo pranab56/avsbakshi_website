@@ -45,7 +45,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="w-full relative bg-white dark:bg-[#121214] text-foreground select-none overflow-hidden transition-colors duration-200">
+    <section className="w-full relative bg-white dark:bg-[#121214] text-foreground select-none overflow-hidden transition-colors duration-200 border-b border-border/40">
       {/* Subtle Animated Ambient Glow in Background */}
       <div className="absolute top-1/4 left-[-5%] w-96 h-96 bg-[#D99722]/8 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" />
 
@@ -89,12 +89,12 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="lg:col-span-5 space-y-3 lg:space-y-2.5 2xl:space-y-4 text-left"
+            className="lg:col-span-6 xl:col-span-6 2xl:col-span-6 space-y-2 lg:space-y-2 2xl:space-y-3 text-left relative z-20"
           >
             {/* Top Golden Subtitle */}
             <motion.div
               variants={fadeInUp}
-              className="flex items-center mt-2 sm:mt-4 lg:mt-6 gap-2 text-[10px] sm:text-xs lg:text-[10px] 2xl:text-xs font-bold text-[#D99722] uppercase tracking-[0.18em]"
+              className="flex items-center mt-1 sm:mt-2 lg:mt-2.5 gap-2 text-[10px] sm:text-xs lg:text-[10px] 2xl:text-xs font-bold text-[#D99722] uppercase tracking-[0.18em]"
             >
               <motion.span
                 initial={{ width: 0 }}
@@ -117,7 +117,7 @@ export default function Hero() {
             </motion.div>
 
             {/* 5 Horizontal Feature Badges */}
-            <motion.div variants={fadeInUp} className="grid grid-cols-5 gap-1 sm:gap-2 pt-0.5 lg:pt-1 max-w-lg">
+            <motion.div variants={fadeInUp} className="grid grid-cols-5 gap-1 sm:gap-2 pt-0 max-w-lg">
               {horizontalFeatures.map((item, idx) => {
                 return (
                   <motion.div
@@ -142,7 +142,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Action Buttons */}
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1 lg:pt-1.5 2xl:pt-2">
+            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-0.5 lg:pt-0.5 2xl:pt-1">
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Link
                   href="/professionals"
@@ -163,7 +163,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Search Box placed below the buttons */}
-            <motion.div variants={fadeInUp} className="pt-2 sm:pt-2.5 max-w-lg">
+            <motion.div variants={fadeInUp} className="!mt-1.5 sm:!mt-2 w-full max-w-2xl">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -204,7 +204,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Spacer for Right Column on Desktop Grid */}
-          <div className="hidden lg:block lg:col-span-7" />
+          <div className="hidden lg:block lg:col-span-6 xl:col-span-6 2xl:col-span-6" />
         </div>
       </div>
     </section>

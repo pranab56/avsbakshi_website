@@ -120,7 +120,7 @@ function SalonsContent() {
         <div className="absolute top-1/4 left-[-5%] w-96 h-96 bg-[#D99722]/8 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse" />
 
         {/* Desktop Golden Arc Frame Pinned to Viewport Right-0 */}
-        <div className="hidden lg:flex absolute inset-y-0 -top-[6px] -bottom-[6px] right-0 w-[calc(48vw)] xl:w-[calc(50vw)] rounded-l-full border-l-[22px] xl:border-l-[26px] border-t-[3.5px] border-b-[3.5px] border-[#D99722] shadow-2xl overflow-hidden bg-[#121110] items-stretch z-0">
+        <div className="hidden lg:flex absolute top-0 lg:h-[380px] 2xl:h-[542px] -mt-1 right-0 w-[calc(52vw)] xl:w-[calc(55vw)] rounded-l-full border-l-[25px] border-t-[3.5px] border-b-[3.5px] border-[#D99722] shadow-2xl overflow-hidden bg-[#121110] items-stretch z-0">
           <div className="w-full relative overflow-hidden h-full">
             <motion.div
               animate={{ scale: [1, 1.035, 1] }}
@@ -139,88 +139,92 @@ function SalonsContent() {
           </div>
         </div>
 
-        {/* Hero Left Content Container */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-10 sm:py-14 lg:py-16 min-h-[440px] sm:min-h-[460px] lg:min-h-[480px] xl:min-h-[500px] flex flex-col justify-center">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-            <Link
-              href="/"
-              className="flex items-center gap-1 hover:text-foreground transition-colors"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Home</span>
-            </Link>
-            <span>/</span>
-            <span className="text-foreground font-semibold">Salons</span>
-          </div>
-
-          <div className="max-w-2xl space-y-4">
-            {/* Tagline Ribbon */}
-            <div className="flex items-center gap-2.5 text-[11px] sm:text-xs font-bold text-[#D99722] uppercase tracking-[0.2em]">
-              <span className="w-7 h-[2px] bg-[#D99722] inline-block" />
-              <span>VERIFIED SALONS &amp; BOUTIQUES</span>
-            </div>
-
-            {/* Headline */}
-            <h1 className="font-extrabold text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-[1.1] tracking-tight text-[#1C1C1E] dark:text-white">
-              Discover top salons. <br />
-              <span className="text-[#D99722]">Elevate your experience.</span>
-            </h1>
-
-            {/* Subtext */}
-            <p className="text-xs sm:text-sm lg:text-base text-muted-foreground font-normal max-w-xl leading-relaxed">
-              Explore luxury salons, hair studios, and grooming spaces near you with instant booking and verified reviews.
-            </p>
-          </div>
-
-          {/* Floating Search Bar */}
-          <div className="mt-8 pt-2 max-w-3xl">
-            <div className="bg-card border border-border shadow-xl rounded-2xl p-2 sm:p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              {/* Salon Name / Keyword Search */}
-              <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-accent/40 rounded-xl border border-border/50 focus-within:border-[#D99722] focus-within:bg-background transition-all">
-                <Building2 className="w-5 h-5 text-muted-foreground shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Salon name or business..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  className="w-full bg-transparent text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-                />
-                {searchTerm && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchTerm("")}
-                    className="text-muted-foreground hover:text-foreground p-1 cursor-pointer"
-                    title="Clear search"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
+        {/* Main Grid Container for Left Content */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center min-h-[380px] sm:min-h-[440px] lg:min-h-[370px] 2xl:min-h-[535px] py-8 lg:py-0">
+            <div className="lg:col-span-6 xl:col-span-6 2xl:col-span-6 space-y-2.5 lg:space-y-2 2xl:space-y-3.5 text-left relative z-20">
+              {/* Breadcrumb */}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Link
+                  href="/"
+                  className="flex items-center gap-1 hover:text-foreground transition-colors"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Home</span>
+                </Link>
+                <span>/</span>
+                <span className="text-foreground font-semibold">Salons</span>
               </div>
 
-              {/* Location Input */}
-              <div className="flex-1">
-                <GooglePlacesInput
-                  placeholder="City, area or address..."
-                  value={locationAddress}
-                  onPlaceSelectAction={handlePlaceSelect}
-                  onTextChange={(val) => setLocationAddress(val)}
-                  onKeyDown={handleKeyDown}
-                  className="!h-11 !rounded-xl text-xs sm:text-sm"
-                />
+              {/* Tagline Ribbon */}
+              <div className="flex items-center gap-2 text-[10px] sm:text-xs font-bold text-[#D99722] uppercase tracking-[0.18em]">
+                <span className="w-6 h-[2px] bg-[#D99722] inline-block" />
+                <span>VERIFIED SALONS &amp; BOUTIQUES</span>
               </div>
 
-              {/* Action Button: Find Salons */}
-              <button
-                type="button"
-                onClick={handleSearch}
-                className="px-7 py-3 rounded-xl bg-[#D99722] hover:bg-[#C2841B] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer active:scale-98"
-              >
-                <span>Find Salons</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {/* Headline */}
+              <div className="space-y-1">
+                <h1 className="font-extrabold text-2xl sm:text-3xl lg:text-3xl xl:text-4xl 2xl:text-5xl leading-[1.15] tracking-tight text-[#1C1C1E] dark:text-white">
+                  Discover top salons. <br />
+                  <span className="text-[#D99722]">Elevate your experience.</span>
+                </h1>
+                <p className="text-xs sm:text-sm text-muted-foreground font-normal max-w-lg leading-relaxed">
+                  Explore luxury salons, hair studios, and grooming spaces near you with instant booking.
+                </p>
+              </div>
+
+              {/* Search Bar */}
+              <div className="pt-1.5 w-full max-w-2xl">
+                <div className="bg-card border border-border shadow-xl rounded-2xl p-1.5 sm:p-2 flex flex-col gap-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <div className="flex-1 flex items-center gap-2 px-3 py-2 bg-accent/40 rounded-xl border border-border/50 focus-within:border-[#D99722] focus-within:bg-background transition-all">
+                      <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <input
+                        type="text"
+                        placeholder="Salon name or business..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="w-full bg-transparent text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                      />
+                      {searchTerm && (
+                        <button
+                          type="button"
+                          onClick={() => setSearchTerm("")}
+                          className="text-muted-foreground hover:text-foreground p-0.5 cursor-pointer"
+                          title="Clear search"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="flex-1">
+                      <GooglePlacesInput
+                        placeholder="City, area or address..."
+                        value={locationAddress}
+                        onPlaceSelectAction={handlePlaceSelect}
+                        onTextChange={(val) => setLocationAddress(val)}
+                        onKeyDown={handleKeyDown}
+                        className="!h-10 !rounded-xl text-xs sm:text-sm"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleSearch}
+                      className="px-5 py-2.5 rounded-xl bg-[#D99722] hover:bg-[#C2841B] text-white text-xs sm:text-sm font-bold shadow-md transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer active:scale-95"
+                    >
+                      <span>Find Salons</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Spacer for Right Column on Desktop Grid */}
+            <div className="hidden lg:block lg:col-span-6 xl:col-span-6 2xl:col-span-6" />
           </div>
         </div>
       </section>

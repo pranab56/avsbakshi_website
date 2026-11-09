@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout } from '../features/auth/authSlice';
 import { baseURL } from './BaseURL';
-import { getToken } from './storage';
+import { getToken, removeStorage } from './storage';
 
 // When running in the browser, send API requests through the local Next.js proxy (/api/v1)
 // so that cookies and headers are seamlessly forwarded.
@@ -53,6 +53,9 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     const looksLikeAuthError = authKeywords.some((k) => lower.includes(k));
 
     if (looksLikeAuthError) {
+      api.dispatch(logout());
+      removeStorage();
+
       if (typeof window !== "undefined") {
         const pathname = window.location.pathname;
         const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register');
@@ -63,7 +66,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
         // Only redirect to login if user is actively inside a protected route
         if (isProtectedRoute && !isAuthRoute) {
-          api.dispatch(logout());
           try {
             const redirectUrl = `/login?redirect=${encodeURIComponent(pathname)}&callbackUrl=${encodeURIComponent(pathname)}`;
             window.location.replace(redirectUrl);

@@ -27,6 +27,7 @@ interface ComboboxProps {
   labelClassName?: string;
   prefix?: React.ReactNode;
   align?: 'start' | 'center' | 'end';
+  noTranslate?: boolean;
 }
 
 export function Combobox({
@@ -44,6 +45,7 @@ export function Combobox({
   labelClassName,
   prefix,
   align = 'start',
+  noTranslate = false,
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -63,7 +65,9 @@ export function Combobox({
     <Popover modal={false} open={disabled ? false : open} onOpenChange={disabled ? undefined : setOpen}>
       <PopoverTrigger
         disabled={disabled}
+        translate={noTranslate ? "no" : undefined}
         className={cn(
+          noTranslate && 'notranslate',
           'flex w-full items-center justify-between gap-3 outline-none transition-colors duration-150 cursor-pointer border select-none',
           triggerClassName ||
           cn(
@@ -77,7 +81,7 @@ export function Combobox({
           className
         )}
       >
-        <div className="flex items-center gap-3 truncate text-left min-w-0 flex-1">
+        <div className={cn("flex items-center gap-3 truncate text-left min-w-0 flex-1", noTranslate && "notranslate")} translate={noTranslate ? "no" : undefined}>
           {prefix}
           {SelectedIcon && (
             <div className="w-8 h-8 rounded-lg bg-primary/15 text-primary flex items-center justify-center shrink-0 shadow-2xs">
@@ -85,11 +89,11 @@ export function Combobox({
             </div>
           )}
           <div className="flex flex-col text-left truncate min-w-0">
-            <span className={cn(labelClassName || "font-bold text-xs sm:text-sm", "truncate leading-tight")}>
+            <span className={cn(labelClassName || "font-bold text-xs sm:text-sm", "truncate leading-tight", noTranslate && "notranslate")} translate={noTranslate ? "no" : undefined}>
               {selected ? selected.label : placeholder}
             </span>
             {selected?.description && (
-              <span className="text-[11px] opacity-80 font-medium truncate mt-0.5">
+              <span className={cn("text-[11px] opacity-80 font-medium truncate mt-0.5", noTranslate && "notranslate")} translate={noTranslate ? "no" : undefined}>
                 {selected.description}
               </span>
             )}
@@ -106,7 +110,9 @@ export function Combobox({
         side="bottom"
         align={align}
         sideOffset={6}
+        translate={noTranslate ? "no" : undefined}
         className={cn(
+          noTranslate && 'notranslate',
           'w-[var(--anchor-width)] min-w-[200px] p-1.5 rounded-lg border border-border/80 bg-card/95 backdrop-blur-xl text-popover-foreground shadow-2xl overflow-hidden z-50 animate-in fade-in-0 slide-in-from-top-2 duration-200',
           contentClassName
         )}
@@ -125,13 +131,14 @@ export function Combobox({
             />
           </div>
         )}
-        <ul className="max-h-64 overflow-y-auto space-y-1 py-0.5">
+        <ul className={cn("max-h-64 overflow-y-auto space-y-1 py-0.5", noTranslate && "notranslate")} translate={noTranslate ? "no" : undefined}>
           {filtered.map((option) => {
             const Icon = option.icon;
             const isSelected = option.value === value;
             return (
               <li
                 key={option.value}
+                translate={noTranslate ? "no" : undefined}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   onChange(option.value);
@@ -140,12 +147,13 @@ export function Combobox({
                 }}
                 className={cn(
                   'flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold cursor-pointer transition-all duration-150 select-none gap-3 group',
+                  noTranslate && 'notranslate',
                   isSelected
                     ? 'bg-primary/15 text-primary border border-primary/30 shadow-2xs font-bold'
                     : 'text-foreground hover:bg-accent/70'
                 )}
               >
-                <div className="flex items-center gap-3 truncate">
+                <div className={cn("flex items-center gap-3 truncate", noTranslate && "notranslate")} translate={noTranslate ? "no" : undefined}>
                   {Icon && (
                     <div
                       className={cn(
@@ -159,11 +167,11 @@ export function Combobox({
                     </div>
                   )}
                   <div className="flex flex-col text-left truncate">
-                    <span className={cn('truncate font-bold text-xs', isSelected ? 'text-primary' : 'text-foreground')}>
+                    <span className={cn('truncate font-bold text-xs', isSelected ? 'text-primary' : 'text-foreground', noTranslate && 'notranslate')} translate={noTranslate ? "no" : undefined}>
                       {option.label}
                     </span>
                     {option.description && (
-                      <span className="text-[11px] text-muted-foreground font-medium truncate mt-0.5">
+                      <span className={cn("text-[11px] text-muted-foreground font-medium truncate mt-0.5", noTranslate && "notranslate")} translate={noTranslate ? "no" : undefined}>
                         {option.description}
                       </span>
                     )}

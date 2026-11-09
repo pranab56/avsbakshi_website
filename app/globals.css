@@ -153,6 +153,19 @@ body {
   --ring: #D99722;
 }
 
+/* Responsive font-size: Upgrade 14px (text-sm) to 16px (1rem) on desktop/tablet (>= 640px), keeping mobile (< 640px) unchanged at 14px */
+@media (min-width: 640px) {
+  :root {
+    --text-sm: 1rem;
+    --text-sm--line-height: calc(1.5 / 1);
+  }
+
+  .text-sm {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
 @layer base {
   body {
     @apply bg-background text-foreground;

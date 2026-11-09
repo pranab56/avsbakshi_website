@@ -37,9 +37,15 @@ export default function Navbar() {
   const token = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.token);
   const user = useSelector((state: { auth?: { token?: string | null; user?: any } }) => state.auth?.user);
 
-  const { data: profileResponse, isLoading: isProfileLoading, isFetching: isProfileFetching } = useGetMyProfileQuery(undefined, { skip: !token && !user });
+  const {
+    data: profileResponse,
+    isLoading: isProfileLoading,
+    isFetching: isProfileFetching,
+    isError: isProfileError,
+  } = useGetMyProfileQuery(undefined, { skip: !token });
+
   const profileData = profileResponse?.data;
-  const currentUser = profileData;
+  const currentUser = profileData || user;
   const userRole = currentUser?.role || user?.role;
 
   const userImage = typeof currentUser?.image === "string" && currentUser.image.trim().length > 0 ? currentUser.image : null;
@@ -61,7 +67,16 @@ export default function Navbar() {
     setMounted(true);
   }, []);
 
-  const isLoggedIn = mounted && Boolean(token || user);
+  // If token is present but profile API returns an error (e.g. 401 expired/invalid), clear state
+  useEffect(() => {
+    if (token && isProfileError) {
+      dispatch(logout());
+      removeStorage();
+    }
+  }, [token, isProfileError, dispatch]);
+
+  const isAuthChecking = Boolean(token) && isProfileLoading && !currentUser && !isProfileError;
+  const isLoggedIn = mounted && Boolean(token) && Boolean(currentUser) && !isProfileError;
 
   const handleLogout = () => {
     setIsLoggingOut(true);
@@ -270,13 +285,15 @@ export default function Navbar() {
               options={languageOptions}
               value={currentLangCode}
               onChange={changeLanguage}
-              triggerClassName="h-10 px-3 rounded-sm border-border bg-card hover:bg-accent text-xs font-semibold text-foreground shadow-2xs"
-              labelClassName="text-xs font-semibold"
+              triggerClassName="h-10 px-3 rounded-sm border-border bg-card hover:bg-accent text-xs font-semibold text-foreground shadow-2xs notranslate"
+              contentClassName="notranslate"
+              labelClassName="text-xs font-semibold notranslate"
               align="end"
+              noTranslate
             />
 
             {/* Desktop Actions */}
-            {!mounted || (token && (isProfileLoading || isProfileFetching || !profileData)) ? (
+            {isAuthChecking ? (
               <div className="h-10 px-3 rounded-sm bg-card border border-border/80 shadow-2xs flex items-center gap-2 animate-pulse w-32 shrink-0">
                 <div className="w-6 h-6 rounded-md bg-muted/80 shrink-0" />
                 <div className="h-3.5 w-16 bg-muted/80 rounded-sm flex-1" />
@@ -488,8 +505,10 @@ export default function Navbar() {
               value={currentLangCode}
               onChange={changeLanguage}
               prefix={<Globe className="w-3.5 h-3.5 text-primary shrink-0" />}
-              triggerClassName="h-8 px-2 rounded-lg border-border bg-card hover:bg-accent text-xs font-semibold text-foreground"
+              triggerClassName="h-8 px-2 rounded-lg border-border bg-card hover:bg-accent text-xs font-semibold text-foreground notranslate"
+              contentClassName="notranslate"
               align="end"
+              noTranslate
             />
             <ThemeToggle />
             {isLoggedIn && (
@@ -634,7 +653,7 @@ export default function Navbar() {
 
             {/* Mobile Sign Up / Account Options */}
             <div className="pt-3 border-t border-border space-y-2">
-              {!mounted || (token && (isProfileLoading || isProfileFetching || !profileData)) ? (
+              {isAuthChecking ? (
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/40 border border-border/60 animate-pulse">
                   <div className="w-10 h-10 rounded-xl bg-muted shrink-0" />
                   <div className="flex-1 space-y-2">
