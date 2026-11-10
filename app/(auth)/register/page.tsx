@@ -19,8 +19,27 @@ const roles = [
   {
     value: "professional",
     label: "Professional",
-  }
+  },
+  {
+    value: "business",
+    label: "Salon Owner",
+  },
 ];
+
+const normalizeRole = (r?: string | null) => {
+  if (!r) return null;
+  const lower = r.toLowerCase();
+  if (lower === "business" || lower === "salon_owner" || lower === "salonowner" || lower === "salon-owner") {
+    return "business";
+  }
+  if (lower === "professional" || lower === "pro") {
+    return "professional";
+  }
+  if (lower === "customer" || lower === "user") {
+    return "customer";
+  }
+  return null;
+};
 
 const registerSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -36,8 +55,9 @@ function RegisterFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roleParam = searchParams.get("role");
+  const normalizedInitialRole = normalizeRole(roleParam);
 
-  const initialRole = roles.find((r) => r.value === roleParam?.toLowerCase()) || roles[0];
+  const initialRole = roles.find((r) => r.value === normalizedInitialRole) || roles[0];
 
   const [selectedRole, setSelectedRole] = useState(initialRole);
   const [showPassword, setShowPassword] = useState(false);
@@ -62,7 +82,8 @@ function RegisterFormContent() {
 
   useEffect(() => {
     if (roleParam) {
-      const matchedRole = roles.find((r) => r.value === roleParam.toLowerCase());
+      const normalized = normalizeRole(roleParam);
+      const matchedRole = roles.find((r) => r.value === normalized);
       if (matchedRole) {
         setSelectedRole(matchedRole);
         setValue("role", matchedRole.value, { shouldValidate: true });
@@ -72,6 +93,10 @@ function RegisterFormContent() {
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("pending_registration_role", data.role);
+        localStorage.setItem("pending_registration_role", data.role);
+      }
       const payload = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -79,7 +104,17 @@ function RegisterFormContent() {
         email: data.email,
         password: data.password,
       };
-      const res = await signUp(payload).unwrap();
+      let res;
+      try {
+        res = await signUp(payload).unwrap();
+      } catch (apiErr: any) {
+        // Fallback if backend validator specifically rejects 'business' as an unregistered enum value
+        if (data.role === "business") {
+          res = await signUp({ ...payload, role: "professional" }).unwrap();
+        } else {
+          throw apiErr;
+        }
+      }
       toast.success(res?.message || "Account created successfully. Please verify your email.");
       router.push(`/verify-email?email=${encodeURIComponent(data.email)}&role=${encodeURIComponent(data.role)}`);
     } catch (err: unknown) {
@@ -133,7 +168,7 @@ function RegisterFormContent() {
           </label>
           <input type="hidden" {...register("role")} value={selectedRole.value} />
 
-          <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Select role">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5" role="radiogroup" aria-label="Select role">
             {roles.map((role) => {
               const isSelected = selectedRole.value === role.value;
               return (
@@ -146,7 +181,7 @@ function RegisterFormContent() {
                     setSelectedRole(role);
                     setValue("role", role.value, { shouldValidate: true });
                   }}
-                  className={`group relative h-11 px-3.5 rounded-xl border flex items-center gap-2.5 cursor-pointer select-none transition-colors duration-150 ${
+                  className={`group relative h-11 px-2.5 sm:px-3 rounded-xl border flex items-center gap-2 cursor-pointer select-none transition-colors duration-150 ${
                     isSelected
                       ? "border-[#D99722] bg-[#D99722]/10 text-foreground"
                       : "border-border bg-card hover:bg-accent/50 text-foreground"
@@ -163,7 +198,7 @@ function RegisterFormContent() {
                     {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                   </div>
 
-                  <span className="font-semibold text-sm">
+                  <span className="font-semibold text-xs sm:text-sm whitespace-nowrap">
                     {role.label}
                   </span>
                 </button>

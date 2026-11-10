@@ -541,7 +541,7 @@ export default function Chatbot() {
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="font-semibold text-sm leading-tight text-white tracking-tight">
-                    Cloud Salon AI
+                    Cloud Assistant
                   </h3>
                   <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-[#D99722]/20 text-[#D99722] font-semibold border border-[#D99722]/30">
                     Online

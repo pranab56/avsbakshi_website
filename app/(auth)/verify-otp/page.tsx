@@ -74,18 +74,43 @@ function VerifyOtpContent() {
       const tokenData = res?.data?.accessToken || res?.accessToken || res?.token;
       const refreshToken = res?.data?.refreshToken || res?.refreshToken;
       const userData = res?.data || res?.user;
-      const role = res?.data?.role || res?.role || userData?.role || searchParams.get("role") || "customer";
+
+      let savedRole = "";
+      if (typeof window !== "undefined") {
+        savedRole =
+          sessionStorage.getItem("pending_registration_role") ||
+          localStorage.getItem("pending_registration_role") ||
+          "";
+      }
+      const queryRole = searchParams.get("role");
+      const apiRole = res?.data?.role || res?.role || userData?.role;
+      const rawRole = (queryRole || savedRole || apiRole || "customer").toLowerCase().trim();
+
+      let normalizedRole = "customer";
+      if (
+        rawRole === "business" ||
+        rawRole === "salon_owner" ||
+        rawRole === "salonowner" ||
+        rawRole === "salon-owner"
+      ) {
+        normalizedRole = "business";
+      } else if (rawRole === "professional" || rawRole === "pro") {
+        normalizedRole = "professional";
+      } else {
+        normalizedRole = "customer";
+      }
 
       if (tokenData) {
         saveToken(tokenData);
         if (refreshToken) saveRefreshToken(refreshToken);
-        if (userData) saveUser(userData);
+        const resolvedUser = userData ? { ...userData, role: normalizedRole } : null;
+        if (resolvedUser) saveUser(resolvedUser);
 
         dispatch(
           setCredentials({
             token: tokenData,
             refreshToken: refreshToken || null,
-            user: userData || null,
+            user: resolvedUser,
           })
         );
 
@@ -97,16 +122,24 @@ function VerifyOtpContent() {
             body: JSON.stringify({
               token: tokenData,
               refreshToken: refreshToken || null,
-              role: role,
-              user: userData || null,
+              role: normalizedRole,
+              user: resolvedUser,
             }),
           });
         } catch {}
       }
 
+      // Cleanup pending registration storage
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("pending_registration_role");
+        localStorage.removeItem("pending_registration_role");
+      }
+
       toast.success(res?.message || "Verification Successful");
-      if (role === "professional" || role === "business") {
-        router.push("/onboarding");
+      if (normalizedRole === "business") {
+        router.push("/onboarding/business/saloninfo");
+      } else if (normalizedRole === "professional") {
+        router.push("/professional/dashboard");
       } else {
         router.push("/customer/overview");
       }

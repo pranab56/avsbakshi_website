@@ -24,7 +24,7 @@ export default function HomePage() {
       <Hero />
 
       {/* Role Cards Section (Commented out per request) */}
-      {/* <RoleCardsSection /> */}
+      <RoleCardsSection />
 
       {/* Bottom Stats Ticker (Commented out per request) */}
       {/* <StatsTicker /> */}

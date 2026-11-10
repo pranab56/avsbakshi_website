@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* 4-Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
-          
+
           {/* Column 1: Larger Logo (Top Left) & Brand Information */}
           <div className="space-y-5">
             <Link href="/" className="inline-block group">
@@ -28,18 +28,6 @@ export default function Footer() {
               Discover trusted beauty professionals, explore luxury salon workspaces, and book appointments seamlessly — all in one modern marketplace.
             </p>
 
-            <div className="pt-1 space-y-1.5 text-xs text-zinc-400">
-              <span className="font-semibold text-zinc-200 uppercase tracking-wider text-[11px] block">
-                Support &amp; Inquiries
-              </span>
-              <a
-                href="mailto:support@thecloudsalon.com"
-                className="inline-flex items-center gap-1.5 text-[#D99722] hover:underline transition-colors"
-              >
-                <Mail className="w-3.5 h-3.5 shrink-0" />
-                <span>support@thecloudsalon.com</span>
-              </a>
-            </div>
 
             {/* Social Icons */}
             <div className="flex items-center gap-3 pt-2">
@@ -152,8 +140,13 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
+                <Link href="/contact" className="text-zinc-400 hover:text-[#D99722] transition-colors">
+                  Help Center &amp; Contact
+                </Link>
+              </li>
+              <li>
                 <Link href="/faq" className="text-zinc-400 hover:text-[#D99722] transition-colors">
-                  Help Center &amp; FAQs
+                  Frequently Asked Questions
                 </Link>
               </li>
               <li>

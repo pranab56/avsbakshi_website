@@ -75,13 +75,18 @@ function LoginFormContent() {
 
       const role = String(rawRole).toLowerCase().trim();
 
-      // Only customer (or user) and professional roles are allowed.
+      // Only customer (or user), professional, and business (salon owner) roles are allowed.
       // Super admin or any other role throws an error and is blocked.
       const isCustomer = role === "customer" || role === "user";
       const isProfessional = role === "professional";
+      const isBusiness =
+        role === "business" ||
+        role === "salon_owner" ||
+        role === "salonowner" ||
+        role === "salon-owner";
 
-      if (!isCustomer && !isProfessional) {
-        throw new Error("Access denied. Only Customer and Professional accounts can log in here. Super Admin and unauthorized roles are not permitted.");
+      if (!isCustomer && !isProfessional && !isBusiness) {
+        throw new Error("Access denied. Only Customer, Professional, and Salon Owner accounts can log in here. Super Admin and unauthorized roles are not permitted.");
       }
 
       if (tokenData) {
@@ -121,7 +126,7 @@ function LoginFormContent() {
 
       // Check role & determine destination path
       let targetPath = "/customer/overview";
-      if (isProfessional) {
+      if (isProfessional || isBusiness) {
         targetPath = "/professional/dashboard";
       } else if (isCustomer) {
         if (redirectParam) {

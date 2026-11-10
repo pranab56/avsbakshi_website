@@ -10,7 +10,6 @@ import { useCreateSalonMutation } from "@/features/salon/salonApi";
 import { useUploadMutation } from "@/features/upload/uploadApi";
 import { useGetMyProfileQuery } from "@/features/profile/profileApi";
 
-import OnboardingChoiceScreen from "./OnboardingChoiceScreen";
 import OnboardingHeaderTimeline from "./OnboardingHeaderTimeline";
 import OnboardingSidebarGraphic from "./OnboardingSidebarGraphic";
 import StepSalonInfo from "./steps/StepSalonInfo";
@@ -47,18 +46,14 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
   }, [isSalonOwner, isProfileLoading, router]);
 
   // Parse step from URL path parameter (e.g. saloninfo+category+contact)
-  const getStepFromParams = (): { step: number; isBusinessMode: boolean } => {
+  const getStepFromParams = (): number => {
     const rawSlug = params?.slug;
-    if (!rawSlug && !isBusinessRoute) {
-      return { step: 1, isBusinessMode: false };
-    }
-
     const slugStr = Array.isArray(rawSlug)
       ? decodeURIComponent(rawSlug.join("/"))
       : decodeURIComponent(rawSlug || "");
 
-    if (!slugStr && !isBusinessRoute) {
-      return { step: 1, isBusinessMode: false };
+    if (!slugStr) {
+      return 1;
     }
 
     const stepsInUrl = slugStr.split("+").map((s) => s.trim().toLowerCase());
@@ -66,17 +61,13 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
     const foundIndex = STEP_SLUGS.indexOf(lastSlug);
 
     if (foundIndex >= 0) {
-      return { step: foundIndex + 1, isBusinessMode: true };
+      return foundIndex + 1;
     }
 
-    return { step: 1, isBusinessMode: true };
+    return 1;
   };
 
-  const initialRouteState = getStepFromParams();
-  const [onboardingMode, setOnboardingMode] = useState<"choose" | "business_flow">(
-    initialRouteState.isBusinessMode ? "business_flow" : "choose"
-  );
-  const [currentStep, setCurrentStep] = useState<number>(initialRouteState.step);
+  const [currentStep, setCurrentStep] = useState<number>(getStepFromParams);
 
   // Step Transition Loading State
   const [isStepLoading, setIsStepLoading] = useState<boolean>(false);
@@ -120,14 +111,8 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
 
   // Sync step from URL parameter changes (browser back/forward & refresh)
   useEffect(() => {
-    const routeState = getStepFromParams();
-    if (routeState.isBusinessMode) {
-      setOnboardingMode("business_flow");
-      setCurrentStep(routeState.step);
-    } else {
-      setOnboardingMode("choose");
-    }
-  }, [params?.slug, isBusinessRoute]);
+    setCurrentStep(getStepFromParams());
+  }, [params?.slug]);
 
   // Load saved form state from localStorage on mount
   useEffect(() => {
@@ -148,14 +133,14 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
 
   // Save form data state to localStorage on changes
   useEffect(() => {
-    if (typeof window !== "undefined" && onboardingMode === "business_flow") {
+    if (typeof window !== "undefined") {
       try {
         localStorage.setItem("salon_onboarding_formData", JSON.stringify(formData));
       } catch (e) {
         console.error("Error saving onboarding form state:", e);
       }
     }
-  }, [formData, onboardingMode]);
+  }, [formData]);
 
   const handleLocationSelect = (data: {
     lat: number;
@@ -293,8 +278,7 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
   const handlePrevStep = () => {
     if (isStepLoading) return;
     if (currentStep === 1) {
-      setOnboardingMode("choose");
-      router.push("/onboarding");
+      router.push("/professional/dashboard");
     } else {
       const prevStepNum = Math.max(currentStep - 1, 1);
       setIsStepLoading(true);
@@ -410,44 +394,28 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
 
         {/* Main Content Area */}
         <main className="my-auto py-8 w-full">
-          {/* MODE 1: CHOOSE ONBOARDING OPTION */}
-          {onboardingMode === "choose" && (
-            <OnboardingChoiceScreen
-              onSelectBusiness={() => {
-                setOnboardingMode("business_flow");
-                router.push(getStepUrl(1));
-              }}
-              onSelectSkip={handleSkipOnboarding}
-            />
-          )}
-
-          {/* MODE 2: MULTI-STEP BUSINESS CREATION WIZARD */}
-          {onboardingMode === "business_flow" && (
-            <div className="space-y-6 animate-in fade-in duration-200">
-              {/* Header */}
-              <div className="flex items-center justify-between border-b border-border pb-4">
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOnboardingMode("choose");
-                      router.push("/onboarding");
-                    }}
-                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 cursor-pointer"
-                  >
-                    <ArrowLeft className="w-3.5 h-3.5" /> Back to choices
-                  </button>
-                  <h2 className="font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight">
-                    Salon Business Setup
-                  </h2>
-                </div>
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <div>
+                <button
+                  type="button"
+                  onClick={() => router.push("/professional/dashboard")}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors mb-1 cursor-pointer"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" /> Back to Dashboard
+                </button>
+                <h2 className="font-extrabold text-2xl sm:text-3xl text-foreground tracking-tight">
+                  Salon Business Setup
+                </h2>
               </div>
+            </div>
 
-              {/* Modern 6-Step Timeline Header */}
-              <OnboardingHeaderTimeline
-                currentStep={currentStep}
-                onNavigateToStep={navigateToStep}
-              />
+            {/* Modern 6-Step Timeline Header */}
+            <OnboardingHeaderTimeline
+              currentStep={currentStep}
+              onNavigateToStep={navigateToStep}
+            />
 
               {/* STEP FORM CONTENT WRAPPER WITH OVERLAY LOADING */}
               <div className="relative min-h-[360px] rounded-2xl transition-all duration-300">
@@ -581,7 +549,6 @@ export default function OnboardingWizard({ isBusinessRoute = false }: { isBusine
                 )}
               </div>
             </div>
-          )}
         </main>
       </div>
 
